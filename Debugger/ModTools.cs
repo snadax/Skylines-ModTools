@@ -192,16 +192,8 @@ namespace ModTools
             }
         }
 
-        private bool modListUpdated = false;
-
         void Update()
         {
-            if (!modListUpdated && config.improvedWorkshopIntegration)
-            {
-                ImprovedWorkshopIntegration.RefreshPlugins();
-                modListUpdated = true;
-            }
-
             UpdateMouseScrolling();
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Q))
@@ -324,7 +316,6 @@ namespace ModTools
                 if (config.improvedWorkshopIntegration && updateMode == SimulationManager.UpdateMode.Undefined)
                 {
                     ImprovedWorkshopIntegration.Bootstrap();
-                    ImprovedWorkshopIntegration.RefreshPlugins();
                 }
                 else if (updateMode == SimulationManager.UpdateMode.Undefined)
                 {
