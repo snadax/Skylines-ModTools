@@ -90,7 +90,8 @@ namespace ModTools
                 return;
             }
 
-            var modsList = GameObject.Find("ModsList");
+            UITabContainer categoryContainer = GameObject.Find("CategoryContainer").GetComponent<UITabContainer>();
+            var modsList = categoryContainer.Find("Mods").Find("Content");
             if (modsList == null)
             {
                 return;
@@ -135,7 +136,7 @@ namespace ModTools
 
                 revertState3 = RedirectionHelper.RedirectCalls
                 (
-                    typeof(CustomContentPanel).GetMethod("RefreshPlugins",
+                    typeof(ContentManagerPanel).GetMethod("RefreshPlugins",
                         BindingFlags.Instance | BindingFlags.NonPublic),
                     typeof(ImprovedWorkshopIntegration).GetMethod("RefreshPlugins",
                         BindingFlags.Static | BindingFlags.Public)
@@ -233,7 +234,8 @@ namespace ModTools
                 return;
             }
 
-            var modsList = GameObject.Find("ModsList");
+            UITabContainer categoryContainer = GameObject.Find("CategoryContainer").GetComponent<UITabContainer>();
+            var modsList = categoryContainer.Find("Mods").Find("Content");
             if (modsList == null)
             {
                 return;
@@ -307,18 +309,18 @@ namespace ModTools
                 RedirectionHelper.RevertRedirect(typeof(PackageEntry).GetMethod("FormatPackageName",
                   BindingFlags.Static | BindingFlags.NonPublic), revertState2);
 
-                RedirectionHelper.RevertRedirect(typeof(CustomContentPanel).GetMethod("RefreshPlugins",
+                RedirectionHelper.RevertRedirect(typeof(ContentManagerPanel).GetMethod("RefreshPlugins",
                     BindingFlags.Instance | BindingFlags.NonPublic), revertState3);
             }
 
-            if (GameObject.Find("(Library) CustomContentPanel") != null)
+            if (GameObject.Find("(Library) ContentManagerPanel") != null)
             {
-                var customContentPanel = GameObject.Find("(Library) CustomContentPanel").GetComponent<CustomContentPanel>();
-                if (customContentPanel != null)
+                var ContentManagerPanel = GameObject.Find("(Library) ContentManagerPanel").GetComponent<ContentManagerPanel>();
+                if (ContentManagerPanel != null)
                 {
-                    typeof(CustomContentPanel).GetMethod("RefreshPlugins",
+                    typeof(ContentManagerPanel).GetMethod("RefreshPlugins",
                         BindingFlags.Instance | BindingFlags.NonPublic)
-                        .Invoke(customContentPanel, null);
+                        .Invoke(ContentManagerPanel, null);
                 }
             }
 
@@ -347,7 +349,8 @@ namespace ModTools
                 return;
             }
 
-            var modsList = GameObject.Find("ModsList");
+            UITabContainer categoryContainer = GameObject.Find("CategoryContainer").GetComponent<UITabContainer>();
+            var modsList = categoryContainer.Find("Mods").Find("Content");
             if (modsList == null)
             {
                 return;
