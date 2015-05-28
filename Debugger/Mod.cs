@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ColossalFramework.Plugins;
 using ICities;
 using UnityEngine;
@@ -25,11 +26,14 @@ namespace ModTools
 
             foreach (var item in plugins)
             {
-                if (item.Value.name != "409520576")
+                var instances = item.Value.GetInstances<IUserMod>();
+                if (instances.Length < 1)
                 {
                     continue;
                 }
-
+                if (!(instances.FirstOrDefault() is Mod)) { 
+                    continue;
+                }
                 return item.Value.isEnabled;
             }
 
