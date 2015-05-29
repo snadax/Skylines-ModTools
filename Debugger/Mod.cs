@@ -22,19 +22,14 @@ namespace ModTools
 #else
 
             var pluginManager = PluginManager.instance;
-            var plugins = Util.GetPrivate<Dictionary<string, PluginManager.PluginInfo>>(pluginManager, "m_Plugins");
+            var plugins = pluginManager.GetPluginsInfo();
 
             foreach (var item in plugins)
             {
-                var instances = item.Value.GetInstances<IUserMod>();
-                if (instances.Length < 1)
-                {
-                    continue;
+                var instances = item.GetInstances<IUserMod>();
+                if (instances.FirstOrDefault() is Mod) {
+                    return item.isEnabled;
                 }
-                if (!(instances.FirstOrDefault() is Mod)) { 
-                    continue;
-                }
-                return item.Value.isEnabled;
             }
 
             return false;

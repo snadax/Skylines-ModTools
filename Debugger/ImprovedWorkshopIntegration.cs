@@ -97,8 +97,6 @@ namespace ModTools
             bootstrapped = true;
         }
 
-        private static bool refreshModContents = false;
-
         public static void Revert()
         {
             if (thisGameObject != null)

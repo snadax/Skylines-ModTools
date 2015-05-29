@@ -59,6 +59,7 @@
     <Compile Include="Console.cs" />
     <Compile Include="DateTimeUtil.cs" />
     <Compile Include="Detours.cs" />
+    <Compile Include="ExtensionMethods\ArrayExt.cs" />
     <Compile Include="ExtensionMethods\MeshExtension.cs" />
     <Compile Include="ExtensionMethods\StringExtensions.cs" />
     <Compile Include="ExtensionMethods\UnityExtension.cs" />
@@ -107,7 +108,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy 000_ModTools.dll "C:\Users\user\AppData\Local\Colossal Order\Cities_Skylines\Addons\Mods\000_ModTools"</PostBuildEvent>
+    <PostBuildEvent>copy 000_ModTools.dll "D:\Games\Steam\steamapps\workshop\content\255710\450877484"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

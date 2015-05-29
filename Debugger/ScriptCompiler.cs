@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using ColossalFramework.Plugins;
+using UnityEngine;
+using UnityExtension;
+using Random = UnityEngine.Random;
 
 namespace ModTools
 {
@@ -13,18 +17,17 @@ namespace ModTools
         private static string sourcesPath;
         private static string dllsPath;
 
-        private static readonly string[] additionalAssemblies =
+        private static readonly string[] gameAssemblies =
         {
             "Assembly-CSharp.dll",
             "ICities.dll",
             "ColossalManaged.dll",
-            "UnityEngine.dll",
-            "../../../../workshop/content/255710/409520576/000_ModTools.dll"
+            "UnityEngine.dll"
         };
 
         static ScriptCompiler()
         {
-            var tempPath = UnityEngine.Application.temporaryCachePath;
+            var tempPath = Application.temporaryCachePath;
             workspacePath = Path.Combine(tempPath, "ModTools");
             if (!Directory.Exists(workspacePath))
             {
@@ -35,13 +38,13 @@ namespace ModTools
 
             sourcesPath = Path.Combine(workspacePath, "src");
             Directory.CreateDirectory(sourcesPath);
-            
+
             dllsPath = Path.Combine(workspacePath, "dll");
             Directory.CreateDirectory(dllsPath);
 
             PluginManager.eventLogMessage += (type, message) =>
             {
-         //       Log.Error(String.Format("PluginManager error ({0}) - {1}", type, message));
+                //       Log.Error(String.Format("PluginManager error ({0}) - {1}", type, message));
             };
         }
 
@@ -95,7 +98,7 @@ namespace ModTools
 
         public static bool CompileSource(List<ScriptEditorFile> sources, out string dllPath)
         {
-            var name = String.Format("tmp_{0}", UnityEngine.Random.Range(0, int.MaxValue));
+            var name = String.Format("tmp_{0}", Random.Range(0, int.MaxValue));
 
             var sourcePath = Path.Combine(sourcesPath, name);
 
@@ -104,13 +107,16 @@ namespace ModTools
             var outputPath = Path.Combine(dllsPath, name);
             Directory.CreateDirectory(outputPath);
 
-            foreach(var file in sources)
+            foreach (var file in sources)
             {
                 var sourceFilePath = Path.Combine(sourcePath, Path.GetFileName(file.path));
                 File.WriteAllText(sourceFilePath, file.source);
             }
 
             dllPath = Path.Combine(outputPath, Path.GetFileName(outputPath) + ".dll");
+
+            var modToolsAssembly = Util.ModToolsAssemblyPath;
+            var additionalAssemblies = gameAssemblies.Concatenate(new[]{modToolsAssembly});
 
             PluginManager.CompileSourceInFolder(sourcePath, outputPath, additionalAssemblies);
             return File.Exists(dllPath);
