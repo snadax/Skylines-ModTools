@@ -12,11 +12,17 @@ namespace ModTools
     {
 
 
-        private bool initializedBuildingsPanel = false;
+        private bool initializedZonedBuildingsPanel = false;
         private ZonedBuildingWorldInfoPanel zonedBuildingInfoPanel;
         private UILabel zonedBuildingAssetNameLabel;
         private UIButton zonedBuildingShowExplorerButton;
         private UIButton zonedBuildingDumpMeshTextureButton;
+
+        private bool initializedServiceBuildingsPanel = false;
+        private CityServiceWorldInfoPanel serviceBuildingInfoPanel;
+        private UILabel serviceBuildingAssetNameLabel;
+        private UIButton serviceBuildingShowExplorerButton;
+        private UIButton serviceBuildingDumpMeshTextureButton;
 
         private UIView uiView;
 
@@ -30,16 +36,20 @@ namespace ModTools
         private CitizenVehicleWorldInfoPanel citizenVehicleInfoPanel;
         private UILabel citizenVehicleAssetNameLabel;
         private UIButton citizenVehicleShowExplorerButton;
+        private UIButton citizenVehicleDumpTextureMeshButton;
 
         private bool initializedCityServiceVehiclePanel = false;
         private CityServiceVehicleWorldInfoPanel cityServiceVehicleInfoPanel;
         private UILabel cityServiceVehicleAssetNameLabel;
         private UIButton cityServiceVehicleShowExplorerButton;
+        private UIButton cityServiceVehicleDumpTextureMeshButton;
+
 
         private bool initializedPublicTransportVehiclePanel = false;
         private PublicTransportVehicleWorldInfoPanel publicTransportVehicleInfoPanel;
         private UILabel publicTransportVehicleAssetNameLabel;
         private UIButton publicTransportVehicleShowExplorerButton;
+        private UIButton publicTransportVehicleDumpTextureMeshButton;
 
 
         void Awake()
@@ -55,21 +65,32 @@ namespace ModTools
                 Destroy(zonedBuildingShowExplorerButton.gameObject);
                 Destroy(zonedBuildingDumpMeshTextureButton.gameObject);
 
+                Destroy(serviceBuildingAssetNameLabel.gameObject);
+                Destroy(serviceBuildingShowExplorerButton.gameObject);
+                Destroy(serviceBuildingDumpMeshTextureButton.gameObject);
+
+
                 zonedBuildingInfoPanel.component.Find<UILabel>("AllGood").isVisible = true;
                 zonedBuildingInfoPanel.component.Find<UIPanel>("ProblemsPanel").isVisible = true;
 
+                serviceBuildingInfoPanel.component.Find<UILabel>("AllGood").isVisible = true;
+                serviceBuildingInfoPanel.component.Find<UIPanel>("ProblemsPanel").isVisible = true;
+
                 Destroy(citizenVehicleAssetNameLabel.gameObject);
                 Destroy(citizenVehicleShowExplorerButton.gameObject);
+                Destroy(citizenVehicleDumpTextureMeshButton.gameObject);
 
                 citizenVehicleInfoPanel.component.Find<UILabel>("Type").isVisible = true;
 
                 Destroy(cityServiceVehicleAssetNameLabel.gameObject);
                 Destroy(cityServiceVehicleShowExplorerButton.gameObject);
+                Destroy(cityServiceVehicleDumpTextureMeshButton.gameObject);
 
                 cityServiceVehicleInfoPanel.component.Find<UILabel>("Type").isVisible = true;
 
                 Destroy(publicTransportVehicleAssetNameLabel.gameObject);
                 Destroy(publicTransportVehicleShowExplorerButton.gameObject);
+                Destroy(publicTransportVehicleDumpTextureMeshButton.gameObject);
 
                 publicTransportVehicleInfoPanel.component.Find<UILabel>("Type").isVisible = true;
             }
@@ -105,7 +126,7 @@ namespace ModTools
         UILabel CreateLabel(string text, int width, int height, UIComponent parentComponent, Vector3 offset,
             UIAlignAnchor anchor)
         {
-            var label = uiView.AddUIComponent(typeof (UILabel)) as UILabel;
+            var label = uiView.AddUIComponent(typeof(UILabel)) as UILabel;
             label.text = text;
             label.name = "ModTools Label";
             label.width = width;
@@ -116,59 +137,65 @@ namespace ModTools
             return label;
         }
 
-        void AddZonedBuildingPanelControls()
+        void AddBuildingPanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel,
+            out UIButton showExplorerButton, Vector3 showExplorerButtonOffset,
+            out UIButton dumpMeshTextureButton, Vector3 dumpMeshTextureButtonOffset)
         {
-            zonedBuildingInfoPanel.component.Find<UILabel>("AllGood").isVisible = false;
-            zonedBuildingInfoPanel.component.Find<UIPanel>("ProblemsPanel").isVisible = false;
+            infoPanel.component.Find<UILabel>("AllGood").isVisible = false;
+            infoPanel.component.Find<UIPanel>("ProblemsPanel").isVisible = false;
 
-            zonedBuildingAssetNameLabel = CreateLabel
+            assetNameLabel = CreateLabel
             (
                 "AssetName: <>", 160, 24,
-                zonedBuildingInfoPanel.component,
+                infoPanel.component,
                 new Vector3(8.0f, 48.0f, 0.0f),
                 UIAlignAnchor.TopLeft
             );
 
-            zonedBuildingShowExplorerButton = CreateButton
+            showExplorerButton = CreateButton
             (
                 "Find in SceneExplorer", 160, 24,
-                zonedBuildingInfoPanel.component,
-                new Vector3(-8.0f, 100.0f, 0.0f), 
-                UIAlignAnchor.TopRight, 
+                infoPanel.component,
+                showExplorerButtonOffset,
+                UIAlignAnchor.TopRight,
                 (component, param) =>
                 {
-                    InstanceID instance = Util.GetPrivate<InstanceID>(zonedBuildingInfoPanel, "m_InstanceID");
+                    InstanceID instance = Util.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     sceneExplorer.ExpandFromRefChain(buildingsBufferRefChain.Add(instance.Building));
                     sceneExplorer.visible = true;
                 }
             );
 
-            zonedBuildingDumpMeshTextureButton = CreateButton
+            dumpMeshTextureButton = CreateButton
             (
                 "Dump mesh+texture", 160, 24,
-                zonedBuildingInfoPanel.component,
-                new Vector3(-8.0f, 132.0f, 0.0f), 
-                UIAlignAnchor.TopRight, 
+                infoPanel.component,
+                dumpMeshTextureButtonOffset,
+                UIAlignAnchor.TopRight,
                 (component, param) =>
                 {
-                    InstanceID instance = Util.GetPrivate<InstanceID>(zonedBuildingInfoPanel, "m_InstanceID");
+                    InstanceID instance = Util.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     var building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
                     var material = building.Info.m_material;
                     var mesh = building.Info.m_mesh;
-
                     var assetName = building.Info.name;
 
-                    Log.Warning(String.Format("Dumping asset \"{0}\"", assetName));
-                    Util.DumpMeshToOBJ(mesh, String.Format("{0}.obj", assetName));
-                    Util.DumpTextureToPNG(material.GetTexture("_MainTex"), String.Format("{0}_MainTex.png", assetName));
-                    Util.DumpTextureToPNG(material.GetTexture("_XYSMap"), String.Format("{0}_xyz.png", assetName));
-                    Util.DumpTextureToPNG(material.GetTexture("_ACIMap"), String.Format("{0}_aci.png", assetName));
-                    Log.Warning("Done!");
+                    DumpAsset(assetName, mesh, material);
                 }
             );
         }
 
-        void AddVehiclePanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel, out UIButton ShowExplorerButton)
+        private static void DumpAsset(string assetName, Mesh mesh, Material material)
+        {
+            Log.Warning(String.Format("Dumping asset \"{0}\"", assetName));
+            Util.DumpMeshToOBJ(mesh, String.Format("{0}.obj", assetName));
+            Util.DumpTextureToPNG(material.GetTexture("_MainTex"), String.Format("{0}_MainTex.png", assetName));
+            Util.DumpTextureToPNG(material.GetTexture("_XYSMap"), String.Format("{0}_xyz.png", assetName));
+            Util.DumpTextureToPNG(material.GetTexture("_ACIMap"), String.Format("{0}_aci.png", assetName));
+            Log.Warning("Done!");
+        }
+
+        void AddVehiclePanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel, out UIButton showExplorerButton, out UIButton dumpMeshTextureButton)
         {
             infoPanel.component.Find<UILabel>("Type").isVisible = false;
 
@@ -180,11 +207,11 @@ namespace ModTools
                 UIAlignAnchor.TopLeft
             );
 
-            ShowExplorerButton = CreateButton
+            showExplorerButton = CreateButton
             (
                 "Find in SceneExplorer", 160, 24,
                 infoPanel.component,
-                new Vector3(-8.0f, -25.0f, 0.0f),
+                new Vector3(-8.0f, -57.0f, 0.0f),
                 UIAlignAnchor.BottomRight,
                 (component, param) =>
                 {
@@ -202,11 +229,37 @@ namespace ModTools
                     sceneExplorer.visible = true;
                 }
             );
+
+            dumpMeshTextureButton = CreateButton
+            (
+                "Dump mesh+texture", 160, 24,
+                infoPanel.component,
+                new Vector3(-8.0f, -25.0f, 0.0f),
+                UIAlignAnchor.BottomRight,
+                (component, param) =>
+                {
+                    InstanceID instance = Util.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    VehicleInfo vehicleInfo;
+                    if (instance.Vehicle == 0)
+                    {
+                        vehicleInfo  = VehicleManager.instance.m_parkedVehicles.m_buffer[instance.ParkedVehicle].Info;
+                    }
+                    else
+                    {
+                        vehicleInfo = VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle].Info;
+                    }
+                    var material = vehicleInfo.m_material;
+                    var mesh = vehicleInfo.m_mesh;
+                    var assetName = vehicleInfo.name;
+
+                    DumpAsset(assetName, mesh, material);
+                }
+            );
         }
 
         void Update()
         {
-            if (!initializedBuildingsPanel)
+            if (!initializedZonedBuildingsPanel)
             {
                 sceneExplorer = FindObjectOfType<SceneExplorer>();
 
@@ -219,8 +272,25 @@ namespace ModTools
                 zonedBuildingInfoPanel = GameObject.Find("(Library) ZonedBuildingWorldInfoPanel").GetComponent<ZonedBuildingWorldInfoPanel>();
                 if (zonedBuildingInfoPanel != null)
                 {
-                    AddZonedBuildingPanelControls();
-                    initializedBuildingsPanel = true;
+                    AddBuildingPanelControls(zonedBuildingInfoPanel, out zonedBuildingAssetNameLabel,
+                        out zonedBuildingShowExplorerButton, new Vector3(-8.0f, 100.0f, 0.0f),
+                        out zonedBuildingDumpMeshTextureButton, new Vector3(-8.0f, 132.0f, 0.0f)
+                        );
+                    initializedZonedBuildingsPanel = true;
+                }
+            }
+
+            if (!initializedServiceBuildingsPanel)
+            {
+                sceneExplorer = FindObjectOfType<SceneExplorer>();
+                serviceBuildingInfoPanel = GameObject.Find("(Library) CityServiceWorldInfoPanel").GetComponent<CityServiceWorldInfoPanel>();
+                if (serviceBuildingInfoPanel != null)
+                {
+                    AddBuildingPanelControls(serviceBuildingInfoPanel, out serviceBuildingAssetNameLabel,
+                        out serviceBuildingShowExplorerButton, new Vector3(-8.0f, 100.0f, 0.0f),
+                        out serviceBuildingDumpMeshTextureButton, new Vector3(-8.0f, 132.0f, 0.0f)
+                        );
+                    initializedServiceBuildingsPanel = true;
                 }
             }
 
@@ -239,14 +309,16 @@ namespace ModTools
                 vehiclesParkedBufferRefChain = vehiclesParkedBufferRefChain.Add(VehicleManager.instance);
                 vehiclesParkedBufferRefChain = vehiclesParkedBufferRefChain.Add(typeof(VehicleManager).GetField("m_parkedVehicles"));
                 vehiclesParkedBufferRefChain = vehiclesParkedBufferRefChain.Add(typeof(Array16<VehicleParked>).GetField("m_buffer"));
-                
+
                 citizenVehicleInfoPanel = GameObject.Find("(Library) CitizenVehicleWorldInfoPanel").GetComponent<CitizenVehicleWorldInfoPanel>();
                 if (citizenVehicleInfoPanel != null)
                 {
                     AddVehiclePanelControls(
-                        citizenVehicleInfoPanel, 
-                        out citizenVehicleAssetNameLabel, 
-                        out citizenVehicleShowExplorerButton);
+                        citizenVehicleInfoPanel,
+                        out citizenVehicleAssetNameLabel,
+                        out citizenVehicleShowExplorerButton,
+                        out citizenVehicleDumpTextureMeshButton
+                        );
                     initializedCitizenVehiclePanel = true;
                 }
             }
@@ -261,11 +333,12 @@ namespace ModTools
                     AddVehiclePanelControls(
                         cityServiceVehicleInfoPanel,
                         out cityServiceVehicleAssetNameLabel,
-                        out cityServiceVehicleShowExplorerButton);
+                        out cityServiceVehicleShowExplorerButton,
+                        out cityServiceVehicleDumpTextureMeshButton);
                     initializedCityServiceVehiclePanel = true;
                 }
             }
-            
+
             if (!initializedPublicTransportVehiclePanel)
             {
                 sceneExplorer = FindObjectOfType<SceneExplorer>();
@@ -274,9 +347,10 @@ namespace ModTools
                 if (publicTransportVehicleInfoPanel != null)
                 {
                     AddVehiclePanelControls(
-                        publicTransportVehicleInfoPanel, 
-                        out publicTransportVehicleAssetNameLabel, 
-                        out publicTransportVehicleShowExplorerButton);
+                        publicTransportVehicleInfoPanel,
+                        out publicTransportVehicleAssetNameLabel,
+                        out publicTransportVehicleShowExplorerButton,
+                        out publicTransportVehicleDumpTextureMeshButton);
                     initializedPublicTransportVehiclePanel = true;
                 }
             }
@@ -287,7 +361,14 @@ namespace ModTools
                 var building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
                 zonedBuildingAssetNameLabel.text = "AssetName: " + building.Info.name;
             }
-            
+
+            if (serviceBuildingInfoPanel.component.isVisible)
+            {
+                InstanceID instance = Util.GetPrivate<InstanceID>(serviceBuildingInfoPanel, "m_InstanceID");
+                var building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
+                serviceBuildingAssetNameLabel.text = "AssetName: " + building.Info.name;
+            }
+
             if (citizenVehicleInfoPanel.component.isVisible)
             {
                 InstanceID instance = Util.GetPrivate<InstanceID>(citizenVehicleInfoPanel, "m_InstanceID");
