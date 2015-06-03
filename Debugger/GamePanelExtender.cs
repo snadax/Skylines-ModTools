@@ -168,7 +168,7 @@ namespace ModTools
 
             dumpMeshTextureButton = CreateButton
             (
-                "Dump mesh+texture", 160, 24,
+                "Preview", 160, 24,
                 infoPanel.component,
                 dumpMeshTextureButtonOffset,
                 UIAlignAnchor.TopRight,
@@ -179,20 +179,9 @@ namespace ModTools
                     var material = building.Info.m_material;
                     var mesh = building.Info.m_mesh;
                     var assetName = building.Info.name;
-
-                    DumpAsset(assetName, mesh, material);
+                    MeshViewer.CreateMeshViewer(assetName, mesh, material);
                 }
             );
-        }
-
-        private static void DumpAsset(string assetName, Mesh mesh, Material material)
-        {
-            Log.Warning(String.Format("Dumping asset \"{0}\"", assetName));
-            Util.DumpMeshToOBJ(mesh, String.Format("{0}.obj", assetName));
-            Util.DumpTextureToPNG(material.GetTexture("_MainTex"), String.Format("{0}_MainTex.png", assetName));
-            Util.DumpTextureToPNG(material.GetTexture("_XYSMap"), String.Format("{0}_xyz.png", assetName));
-            Util.DumpTextureToPNG(material.GetTexture("_ACIMap"), String.Format("{0}_aci.png", assetName));
-            Log.Warning("Done!");
         }
 
         void AddVehiclePanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel, out UIButton showExplorerButton, out UIButton dumpMeshTextureButton)
@@ -232,7 +221,7 @@ namespace ModTools
 
             dumpMeshTextureButton = CreateButton
             (
-                "Dump mesh+texture", 160, 24,
+                "Preview", 160, 24,
                 infoPanel.component,
                 new Vector3(-8.0f, -25.0f, 0.0f),
                 UIAlignAnchor.BottomRight,
@@ -251,8 +240,7 @@ namespace ModTools
                     var material = vehicleInfo.m_material;
                     var mesh = vehicleInfo.m_mesh;
                     var assetName = vehicleInfo.name;
-
-                    DumpAsset(assetName, mesh, material);
+                    MeshViewer.CreateMeshViewer(assetName, mesh, material);
                 }
             );
         }

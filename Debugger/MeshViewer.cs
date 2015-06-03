@@ -8,7 +8,8 @@ namespace ModTools
     {
 
         public Mesh previewMesh = null;
-        public ReferenceChain caller = null;
+        public bool materialProvided = false;
+        public String assetName = null;
 
         private RenderTexture targetRT;
 
@@ -27,8 +28,6 @@ namespace ModTools
         {
             onDraw = DrawWindow;
 
-            material = new Material(Shader.Find("Diffuse"));
-           
             try
             {
                 light = GameObject.Find("Directional Light").GetComponent<Light>();
@@ -50,13 +49,22 @@ namespace ModTools
             meshViewerCamera.targetTexture = targetRT;
         }
 
-        public static MeshViewer CreateMeshViewer(ReferenceChain refChain, Mesh mesh)
+        public static MeshViewer CreateMeshViewer(String assetName, Mesh mesh, Material material)
         {
             var go = new GameObject("MeshViewer");
             go.transform.parent = ModTools.Instance.transform;
             var meshViewer = go.AddComponent<MeshViewer>();
-            meshViewer.caller = refChain;
+            meshViewer.assetName = assetName;
             meshViewer.previewMesh = mesh;
+            if (material != null)
+            {
+                meshViewer.material = material;
+                meshViewer.materialProvided = true;
+            }
+            else
+            {
+                meshViewer.material = new Material(Shader.Find("Diffuse")); ;
+            }
             meshViewer.visible = true;
             return meshViewer;
         }
@@ -93,14 +101,25 @@ namespace ModTools
         {
             if (previewMesh != null)
             {
-                title = String.Format("Previewing \"{0}\"", previewMesh.name);
-                
+                title = String.Format("Previewing \"{0}\"", assetName ?? previewMesh.name);
+
                 GUILayout.BeginHorizontal();
 
-                if (GUILayout.Button("Dump .obj", GUILayout.Width(128)))
+                if (!materialProvided)
                 {
-                    Util.DumpMeshToOBJ(previewMesh, previewMesh.name + ".obj");
+                    if (GUILayout.Button("Dump mesh", GUILayout.Width(128)))
+                    {
+                        Util.DumpMeshToOBJ(previewMesh, previewMesh.name + ".obj");
+                    }
                 }
+                else
+                {
+                    if (GUILayout.Button("Dump mesh+texture", GUILayout.Width(160)))
+                    {
+                        Util.DumpAsset(assetName, previewMesh, material);
+                    }
+                }
+                GUILayout.Label(String.Format("Triangles: {0}", previewMesh.triangles.Length / 3));
 
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
@@ -120,7 +139,7 @@ namespace ModTools
                     }
                     lastMousePos = pos;
                 }
-            
+
                 GUI.DrawTexture(new Rect(0.0f, 64.0f, rect.width, rect.height - 64.0f), targetRT, ScaleMode.StretchToFill, false);
             }
             else

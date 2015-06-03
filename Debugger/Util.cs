@@ -146,6 +146,16 @@ namespace ModTools
             }
         }
 
+        public static void DumpAsset(string assetName, Mesh mesh, Material material)
+        {
+            Log.Warning(String.Format("Dumping asset \"{0}\" mesh+texture", assetName));
+            DumpMeshToOBJ(mesh, String.Format("{0}.obj", assetName));
+            DumpTextureToPNG(material.GetTexture("_MainTex"), String.Format("{0}_MainTex.png", assetName));
+            DumpTextureToPNG(material.GetTexture("_XYSMap"), String.Format("{0}_xyz.png", assetName));
+            DumpTextureToPNG(material.GetTexture("_ACIMap"), String.Format("{0}_aci.png", assetName));
+            Log.Warning("Done!");
+        }
+
         public static FieldInfo FindField<T>(T o, string fieldName)
         {
             var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);

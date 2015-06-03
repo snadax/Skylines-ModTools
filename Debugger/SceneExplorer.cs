@@ -346,7 +346,7 @@ namespace ModTools
             {
                 if (GUILayout.Button("Preview"))
                 {
-                    MeshViewer.CreateMeshViewer(refChain, (Mesh) value);
+                    MeshViewer.CreateMeshViewer(null, (Mesh) value, null);
                 }
 
                 if (GUILayout.Button("Dump .obj"))
@@ -546,7 +546,7 @@ namespace ModTools
             {
                 if (GUILayout.Button("Preview"))
                 {
-                    MeshViewer.CreateMeshViewer(refChain, (Mesh)value);
+                    MeshViewer.CreateMeshViewer(null, (Mesh)value, null);
                 }
 
                 if (GUILayout.Button("Dump .obj"))
