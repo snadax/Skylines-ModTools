@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using ICities;
 using UnityEngine;
 
@@ -119,7 +120,15 @@ namespace ModTools
                         Util.DumpAsset(assetName, previewMesh, material);
                     }
                 }
-                GUILayout.Label(String.Format("Triangles: {0}", previewMesh.triangles.Length / 3));
+
+                if (previewMesh.isReadable)
+                {
+                    GUILayout.Label(String.Format("Triangles: {0}", previewMesh.triangles.Length / 3));
+                }
+                if (materialProvided && material.mainTexture != null)
+                {
+                    GUILayout.Label(String.Format("Texture size: {0}x{1}", material.mainTexture.width, material.mainTexture.height));
+                }
 
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ColossalFramework;
 using ColossalFramework.Plugins;
+using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
 
@@ -27,7 +29,8 @@ namespace ModTools
             foreach (var item in plugins)
             {
                 var instances = item.GetInstances<IUserMod>();
-                if (instances.FirstOrDefault() is Mod) {
+                if (instances.FirstOrDefault() is Mod)
+                {
                     return item.isEnabled;
                 }
             }
@@ -41,6 +44,9 @@ namespace ModTools
 
             try
             {
+                CODebugBase<LogChannel>.verbose = true;
+                CODebugBase<LogChannel>.EnableChannels(LogChannel.All);
+
                 InitModTools(SimulationManager.UpdateMode.Undefined);
 
                 var target = typeof(LoadingWrapper).GetMethod("OnLevelLoaded",
@@ -83,9 +89,17 @@ namespace ModTools
 
             var loadingExtensions = Util.GetPrivate<List<ILoadingExtension>>(wrapper, "m_LoadingExtensions");
 
-            for (int i = 0; i < loadingExtensions.Count; i++)
+            try
             {
-                loadingExtensions[i].OnLevelLoaded((LoadMode)mode);
+                for (int i = 0; i < loadingExtensions.Count; i++)
+                {
+                    loadingExtensions[i].OnLevelLoaded((LoadMode)mode);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+                UIView.ForwardException(new ModException("A Mod caused an error", ex));
             }
         }
 
@@ -105,5 +119,5 @@ namespace ModTools
         }
 
     }
-  
+
 }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using ColossalFramework;
 using ColossalFramework.UI;
 using UnityEngine;
 
@@ -49,6 +51,9 @@ namespace ModTools
         private bool headerExpanded = false;
 
         private float sceneTreeWidth = 320.0f;
+        private bool _isPloppingBuilding = false;
+        private bool dtFound;
+        private DefaultTool defaultTool;
 
         private Configuration config
         {
@@ -60,7 +65,7 @@ namespace ModTools
         {
             onDraw = DrawWindow;
             onException = ExceptionHandler;
-            onUnityGUI = () => GUIComboBox.DrawGUI();
+            onUnityGUI = GUIComboBox.DrawGUI;
 
             headerArea = new GUIArea(this);
             sceneTreeArea = new GUIArea(this);
@@ -69,12 +74,44 @@ namespace ModTools
             RecalculateAreas();
         }
 
+        public void Update()
+        {
+            if (!this.dtFound)
+            {
+                foreach (var defaultTool in FindObjectsOfType<DefaultTool>())
+                {
+                    if (this.dtFound || defaultTool.GetType().Name != "DefaultTool")
+                    {
+                        continue;
+                    }
+                    this.defaultTool = defaultTool;
+                    this.dtFound = true;
+                }
+            }
+
+            var toolManager = Singleton<ToolManager>.instance;
+            if (toolManager == null || toolManager.m_properties == null)
+            {
+                return;
+            }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Singleton<ToolManager>.instance.m_properties.CurrentTool = defaultTool;
+                _isPloppingBuilding = false;
+            }
+            ToolBase currentTool = toolManager.m_properties.CurrentTool;
+            if (currentTool != null && currentTool.GetType().Name.Equals("BuildingTool"))
+            {
+                _isPloppingBuilding = false;
+            }
+        }
+
         public void RecalculateAreas()
         {
             headerArea.absolutePosition.y = windowTopMargin;
             headerArea.relativeSize.x = 1.0f;
 
-            if (rect.width < (float) Screen.width/4.0f && currentRefChain != null)
+            if (rect.width < (float)Screen.width / 4.0f && currentRefChain != null)
             {
                 sceneTreeArea.relativeSize = Vector2.zero;
                 sceneTreeArea.relativeSize = Vector2.zero;
@@ -145,7 +182,7 @@ namespace ModTools
             ClearExpanded();
             searchDisplayString = String.Format("Showing results for \"{0}\"", refChain.ToString());
 
-            var rootGameObject = (GameObject) refChain.chainObjects[0];
+            var rootGameObject = (GameObject)refChain.chainObjects[0];
             sceneRoots.Add(rootGameObject, true);
 
             var expandedRefChain = new ReferenceChain().Add(rootGameObject);
@@ -156,29 +193,29 @@ namespace ModTools
                 switch (refChain.chainTypes[i])
                 {
                     case ReferenceChain.ReferenceType.GameObject:
-                        var go = (GameObject) refChain.chainObjects[i];
+                        var go = (GameObject)refChain.chainObjects[i];
                         expandedRefChain = expandedRefChain.Add(go);
                         expandedGameObjects.Add(expandedRefChain, true);
                         break;
                     case ReferenceChain.ReferenceType.Component:
-                        var component = (Component) refChain.chainObjects[i];
+                        var component = (Component)refChain.chainObjects[i];
                         expandedRefChain = expandedRefChain.Add(component);
                         expandedComponents.Add(expandedRefChain, true);
                         break;
                     case ReferenceChain.ReferenceType.Field:
-                        var field = (FieldInfo) refChain.chainObjects[i];
+                        var field = (FieldInfo)refChain.chainObjects[i];
                         expandedRefChain = expandedRefChain.Add(field);
                         expandedObjects.Add(expandedRefChain, true);
                         break;
                     case ReferenceChain.ReferenceType.Property:
-                        var property = (PropertyInfo) refChain.chainObjects[i];
+                        var property = (PropertyInfo)refChain.chainObjects[i];
                         expandedRefChain = expandedRefChain.Add(property);
                         expandedObjects.Add(expandedRefChain, true);
                         break;
                     case ReferenceChain.ReferenceType.Method:
                         break;
                     case ReferenceChain.ReferenceType.EnumerableItem:
-                        var index = (int) refChain.chainObjects[i];
+                        var index = (int)refChain.chainObjects[i];
                         selectedArrayStartIndices[expandedRefChain] = index;
                         selectedArrayEndIndices[expandedRefChain] = index;
                         expandedRefChain = expandedRefChain.Add(index);
@@ -297,6 +334,7 @@ namespace ModTools
             GUILayout.Label(field.Name);
 
             GUI.contentColor = Color.white;
+            GUI.contentColor = Color.white;
             GUILayout.Label(" = ");
             GUI.contentColor = config.valueColor;
 
@@ -324,38 +362,11 @@ namespace ModTools
             GUI.contentColor = Color.white;
 
             GUILayout.FlexibleSpace();
-
             if (GUILayout.Button("Watch"))
             {
                 ModTools.Instance.watches.AddWatch(refChain, field, obj);
             }
-
-            if (TypeUtil.IsTextureType(field.FieldType) && value != null)
-            {
-                if (GUILayout.Button("Preview"))
-                {
-                    TextureViewer.CreateTextureViewer(refChain, (Texture)value);
-                }
-
-                if (GUILayout.Button("Dump .png"))
-                {
-                    Util.DumpTextureToPNG((Texture)value);
-                }
-            }
-            else if (TypeUtil.IsMeshType(field.FieldType) && value != null)
-            {
-                if (GUILayout.Button("Preview"))
-                {
-                    MeshViewer.CreateMeshViewer(null, (Mesh) value, null);
-                }
-
-                if (GUILayout.Button("Dump .obj"))
-                {
-                    var outPath = refChain.ToString() + ".obj";
-                    outPath = outPath.Replace(' ', '_');
-                    Util.DumpMeshToOBJ(value as Mesh, outPath);
-                }
-            }
+            SetupButtons(field.FieldType, value, refChain);
 
             GUILayout.EndHorizontal();
             if (value != null && TypeUtil.IsReflectableType(field.FieldType) && expandedObjects.ContainsKey(refChain))
@@ -375,6 +386,87 @@ namespace ModTools
                 else
                 {
                     OnSceneTreeReflect(refChain, value);
+                }
+            }
+        }
+
+        private void SetupButtons(Type type, object value, ReferenceChain refChain)
+        {
+            if (value is BuildingInfo)
+            {
+                var info = (BuildingInfo)value;
+                if (GUILayout.Button("Plop"))
+                {
+                    StartPlopping(info);
+                }
+                if (info.m_mesh != null)
+                {
+                    if (GUILayout.Button("Preview"))
+                    {
+                        MeshViewer.CreateMeshViewer(info.name, info.m_mesh, info.m_material);
+                    }
+                }
+                if (info.m_lodMesh != null)
+                {
+                    if (GUILayout.Button("Preview LOD"))
+                    {
+                        MeshViewer.CreateMeshViewer(info + "_LOD", info.m_lodMesh, info.m_lodMaterial);
+                    }
+                }
+            }
+            if (value is PropInfo)
+            {
+                var info = (PropInfo)value;
+                if (info.m_mesh != null)
+                {
+                    if (GUILayout.Button("Preview"))
+                    {
+                        MeshViewer.CreateMeshViewer(info.name, info.m_mesh, info.m_material);
+                    }
+                }
+                if (info.m_lodMesh != null)
+                {
+                    if (GUILayout.Button("Preview LOD"))
+                    {
+                        MeshViewer.CreateMeshViewer(info + "_LOD", info.m_lodMesh, info.m_lodMaterial);
+                    }
+                }
+            }
+            if (value is TreeInfo)
+            {
+                var info = (TreeInfo)value;
+                if (info.m_mesh != null)
+                {
+                    if (GUILayout.Button("Preview"))
+                    {
+                        MeshViewer.CreateMeshViewer(info.name, info.m_mesh, info.m_material);
+                    }
+                }
+            }
+            if (TypeUtil.IsTextureType(type) && value != null)
+            {
+                if (GUILayout.Button("Preview"))
+                {
+                    TextureViewer.CreateTextureViewer(refChain, (Texture)value);
+                }
+
+                if (GUILayout.Button("Dump .png"))
+                {
+                    Util.DumpTextureToPNG((Texture)value);
+                }
+            }
+            else if (TypeUtil.IsMeshType(type) && value != null)
+            {
+                if (GUILayout.Button("Preview"))
+                {
+                    MeshViewer.CreateMeshViewer(null, (Mesh)value, null);
+                }
+
+                if (GUILayout.Button("Dump .obj"))
+                {
+                    var outPath = refChain.ToString() + ".obj";
+                    outPath = outPath.Replace(' ', '_');
+                    Util.DumpMeshToOBJ(value as Mesh, outPath);
                 }
             }
         }
@@ -462,9 +554,9 @@ namespace ModTools
             {
                 GUI.enabled = true;
 
-                if(GUILayout.Button("Evaluate"))
+                if (GUILayout.Button("Evaluate"))
                 {
-                    evaluatedProperties.Add(refChain, true);    
+                    evaluatedProperties.Add(refChain, true);
                 }
             }
             else
@@ -529,34 +621,7 @@ namespace ModTools
             {
                 ModTools.Instance.watches.AddWatch(refChain, property, obj);
             }
-
-            if (TypeUtil.IsTextureType(property.PropertyType) && value != null)
-            {
-                if (GUILayout.Button("Preview"))
-                {
-                    TextureViewer.CreateTextureViewer(refChain, (Texture) value);
-                }
-
-                if (GUILayout.Button("Dump .png"))
-                {
-                    Util.DumpTextureToPNG((Texture)value);
-                }
-            }
-            else if (TypeUtil.IsMeshType(property.PropertyType) && value != null)
-            {
-                if (GUILayout.Button("Preview"))
-                {
-                    MeshViewer.CreateMeshViewer(null, (Mesh)value, null);
-                }
-
-                if (GUILayout.Button("Dump .obj"))
-                {
-                    var outPath = refChain.ToString() + ".obj";
-                    outPath = outPath.Replace(' ', '_');
-                    Util.DumpMeshToOBJ(value as Mesh, outPath);
-                }
-            }
-            
+            SetupButtons(property.PropertyType, value, refChain);
             GUILayout.EndHorizontal();
 
             if (value != null && expandedObjects.ContainsKey(refChain))
@@ -566,7 +631,7 @@ namespace ModTools
                     var go = value as GameObject;
                     foreach (var component in go.GetComponents<Component>())
                     {
-                       OnSceneTreeComponent(refChain, component);
+                        OnSceneTreeComponent(refChain, component);
                     }
                 }
                 else if (value is Transform)
@@ -716,8 +781,8 @@ namespace ModTools
         private void OnSceneReflectUnityEngineMaterial(ReferenceChain refChain, UnityEngine.Material material)
         {
             if (!SceneTreeCheckDepth(refChain)) return;
-           
-            if(material == null)
+
+            if (material == null)
             {
                 OnSceneTreeMessage(refChain, "null");
                 return;
@@ -743,7 +808,7 @@ namespace ModTools
                 var type = value.GetType();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Space(treeIdentSpacing * (refChain.Ident+1));
+                GUILayout.Space(treeIdentSpacing * (refChain.Ident + 1));
 
                 GUI.contentColor = Color.white;
 
@@ -814,7 +879,7 @@ namespace ModTools
                 var type = value.GetType();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Space(treeIdentSpacing * (refChain.Ident+1));
+                GUILayout.Space(treeIdentSpacing * (refChain.Ident + 1));
 
                 GUI.contentColor = Color.white;
 
@@ -875,8 +940,8 @@ namespace ModTools
 
         private bool IsEnumerable(object myProperty)
         {
-            if (typeof (IEnumerable).IsAssignableFrom(myProperty.GetType())
-                || typeof (IEnumerable<>).IsAssignableFrom(myProperty.GetType()))
+            if (typeof(IEnumerable).IsAssignableFrom(myProperty.GetType())
+                || typeof(IEnumerable<>).IsAssignableFrom(myProperty.GetType()))
                 return true;
 
             return false;
@@ -1020,6 +1085,7 @@ namespace ModTools
                 GUI.contentColor = Color.white;
 
                 GUILayout.FlexibleSpace();
+                SetupButtons(type, list[i], refChain);
                 GUILayout.EndHorizontal();
 
                 if (TypeUtil.IsReflectableType(type) && expandedObjects.ContainsKey(refChain))
@@ -1302,13 +1368,13 @@ namespace ModTools
                     return;
                 }
 
-                if(IsList(obj))
+                if (IsList(obj))
                 {
                     OnSceneTreeReflectIList(refChain, obj);
                     return;
                 }
 
-                if(IsCollection(obj))
+                if (IsCollection(obj))
                 {
                     OnSceneTreeReflectICollection(refChain, obj);
                     return;
@@ -1419,7 +1485,7 @@ namespace ModTools
                     currentRefChain = null;
                 }
             }
-       
+
             GUILayout.Label(component.GetType().ToString());
 
             GUI.contentColor = Color.white;
@@ -1497,7 +1563,7 @@ namespace ModTools
                 {
                     expandedGameObjects.Add(refChain, true);
                 }
-                
+
                 GUI.contentColor = config.gameObjectColor;
                 GUILayout.Label(obj.name);
                 GUI.contentColor = Color.white;
@@ -1518,7 +1584,7 @@ namespace ModTools
                 DrawCompactHeader();
             }
 
-            headerArea.End();            
+            headerArea.End();
         }
 
         public void DrawCompactHeader()
@@ -1856,6 +1922,23 @@ namespace ModTools
             sceneTreeScrollPosition = Vector2.zero;
             currentRefChain = null;
             TypeUtil.ClearTypeCache();
+        }
+
+        public void StartPlopping(BuildingInfo buildingInfo)
+        {
+
+            var currentTool = Singleton<ToolManager>.instance.m_properties.CurrentTool;
+            if (currentTool == null || !currentTool.GetType().Name.Equals("DefaultTool"))
+                return;
+            if (buildingInfo == null)
+            {
+                return;
+            }
+            var buildingTool = FindObjectOfType<BuildingTool>();
+            Singleton<ToolManager>.instance.m_properties.CurrentTool = buildingTool;
+            buildingTool.m_prefab = buildingInfo;
+            buildingTool.m_relocate = 0;
+            _isPloppingBuilding = true;
         }
     }
 
