@@ -89,20 +89,23 @@ namespace ModTools
                 }
             }
 
-            var toolManager = Singleton<ToolManager>.instance;
-            if (toolManager == null || toolManager.m_properties == null)
+            if (_isPloppingBuilding)
             {
-                return;
-            }
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Singleton<ToolManager>.instance.m_properties.CurrentTool = defaultTool;
-                _isPloppingBuilding = false;
-            }
-            ToolBase currentTool = toolManager.m_properties.CurrentTool;
-            if (currentTool != null && currentTool.GetType().Name.Equals("BuildingTool"))
-            {
-                _isPloppingBuilding = false;
+                var toolManager = Singleton<ToolManager>.instance;
+                if (toolManager == null || toolManager.m_properties == null)
+                {
+                    return;
+                }
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    Singleton<ToolManager>.instance.m_properties.CurrentTool = defaultTool;
+                    _isPloppingBuilding = false;
+                }
+                ToolBase currentTool = toolManager.m_properties.CurrentTool;
+                if (currentTool != null && currentTool.GetType().Name.Equals("BuildingTool"))
+                {
+                    _isPloppingBuilding = false;
+                }
             }
         }
 

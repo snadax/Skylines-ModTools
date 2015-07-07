@@ -85,10 +85,6 @@ namespace ModTools
 
             RecalculateAreas();
 
-            vanillaPanel = UIView.library.Get<DebugOutputPanel>("DebugOutputPanel");
-            oldVanillaPanelParent = vanillaPanel.transform.parent;
-            vanillaPanel.transform.parent = transform;
-
             onUnityGUI = () => KeyboardCallback();
         }
 
@@ -136,10 +132,22 @@ namespace ModTools
         void HandleDestroy()
         {
             vanillaPanel.transform.parent = oldVanillaPanelParent;
+            vanillaPanel = null;
         }
 
         void Update()
         {
+            if (vanillaPanel == null)
+            {
+                var panel = UIView.library.Get<DebugOutputPanel>("DebugOutputPanel");
+                if (panel == null)
+                {
+                    return;
+                }
+                vanillaPanel = panel;
+                oldVanillaPanelParent = vanillaPanel.transform.parent;
+                vanillaPanel.transform.parent = transform;
+            }
         }
 
         public void AddMessage(string message, LogType type = LogType.Log, bool global = false, bool _internal = false)
