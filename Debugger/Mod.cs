@@ -15,6 +15,7 @@ namespace ModTools
 
         private static GameObject modToolsGameObject;
         private static ModTools modTools;
+        private static bool bootstrapped;
 
         public static bool IsModToolsActive()
         {
@@ -41,7 +42,10 @@ namespace ModTools
 
         public static void Bootstrap()
         {
-
+            if (bootstrapped)
+            {
+                return;
+            }
             try
             {
                 CODebugBase<LogChannel>.verbose = true;
@@ -56,6 +60,7 @@ namespace ModTools
                     new[] { typeof(SimulationManager.UpdateMode) });
 
                 RedirectionHelper.RedirectCalls(target, replacement);
+                bootstrapped = true;
             }
             catch (Exception ex)
             {
