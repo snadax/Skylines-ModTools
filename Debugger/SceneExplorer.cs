@@ -55,6 +55,8 @@ namespace ModTools
         private bool dtFound;
         private DefaultTool defaultTool;
 
+        private System.Object buffer = null;
+
         private Configuration config
         {
             get { return ModTools.Instance.config; }
@@ -370,7 +372,7 @@ namespace ModTools
                 ModTools.Instance.watches.AddWatch(refChain, field, obj);
             }
             SetupButtons(field.FieldType, value, refChain);
-
+            var doPaste = SetupPasteButon(field.FieldType);
             GUILayout.EndHorizontal();
             if (value != null && TypeUtil.IsReflectableType(field.FieldType) && expandedObjects.ContainsKey(refChain))
             {
@@ -391,6 +393,18 @@ namespace ModTools
                     OnSceneTreeReflect(refChain, value);
                 }
             }
+            if (doPaste)
+            {
+                try
+                {
+                    field.SetValue(obj, buffer);
+                }
+                catch (Exception e)
+                {
+                    Log.Warning(e.Message);
+                }
+            }
+
         }
 
         private void SetupButtons(Type type, object value, ReferenceChain refChain)
@@ -472,6 +486,19 @@ namespace ModTools
                     Util.DumpMeshToOBJ(value as Mesh, outPath);
                 }
             }
+            if (GUILayout.Button("Copy"))
+            {
+                buffer = value;
+            }
+        }
+
+        private bool SetupPasteButon(Type type)
+        {
+            if (buffer == null || buffer.GetType() == type)
+            {
+                return GUILayout.Button("Paste");
+            }
+            return false;
         }
 
         private void OnSceneTreeReflectProperty(ReferenceChain refChain, System.Object obj, PropertyInfo property)
@@ -625,6 +652,7 @@ namespace ModTools
                 ModTools.Instance.watches.AddWatch(refChain, property, obj);
             }
             SetupButtons(property.PropertyType, value, refChain);
+            var doPaste = SetupPasteButon(property.PropertyType);
             GUILayout.EndHorizontal();
 
             if (value != null && expandedObjects.ContainsKey(refChain))
@@ -644,6 +672,17 @@ namespace ModTools
                 else
                 {
                     OnSceneTreeReflect(refChain, value);
+                }
+            }
+            if (doPaste)
+            {
+                try
+                {
+                    property.SetValue(obj, buffer, null);
+                }
+                catch (Exception e)
+                {
+                    Log.Warning(e.Message);
                 }
             }
         }
