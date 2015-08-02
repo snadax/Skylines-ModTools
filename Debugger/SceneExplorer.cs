@@ -1043,6 +1043,16 @@ namespace ModTools
             GUIControls.IntField(oldRefChain.ToString() + ".arrayEnd", "End index", ref arrayEnd, 0.0f, true, true);
             GUILayout.Label("(32 items max)");
             GUILayout.FlexibleSpace();
+            if (GUILayout.Button("▼", GUILayout.ExpandWidth(false)))
+            {
+                arrayStart++;
+                arrayEnd++;
+            }
+            if (GUILayout.Button("▲", GUILayout.ExpandWidth(false)))
+            {
+                arrayStart--;
+                arrayEnd--;
+            }
             GUILayout.EndHorizontal();
 
             arrayStart = Mathf.Clamp(arrayStart, 0, collectionSize - 1);
@@ -1189,6 +1199,16 @@ namespace ModTools
             GUIControls.IntField(oldRefChain.ToString() + ".arrayEnd", "End index", ref arrayEnd, 0.0f, true, true);
             GUILayout.Label("(32 items max)");
             GUILayout.FlexibleSpace();
+            if (GUILayout.Button("▼", GUILayout.ExpandWidth(false)))
+            {
+                arrayStart++;
+                arrayEnd++;
+            }
+            if (GUILayout.Button("▲", GUILayout.ExpandWidth(false)))
+            {
+                arrayStart--;
+                arrayEnd--;
+            }
             GUILayout.EndHorizontal();
 
             arrayStart = Mathf.Clamp(arrayStart, 0, collectionSize - 1);
