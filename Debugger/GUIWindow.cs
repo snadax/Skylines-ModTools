@@ -121,8 +121,11 @@ namespace ModTools
                 return;
             }
 
-            clickCatcher.absolutePosition = rect.position;
-            clickCatcher.size = new Vector2(rect.width, rect.height);
+            //adjust rect from unity pixels to C:S pixels via GetUIView().ratio
+            var ratio = UIView.GetAView().ratio;
+
+            clickCatcher.absolutePosition = new Vector3(rect.position.x * ratio, rect.position.y * ratio);
+            clickCatcher.size = new Vector2(rect.width * ratio, rect.height * ratio);
             clickCatcher.isVisible = visible;
             clickCatcher.zOrder = int.MaxValue;
         }
