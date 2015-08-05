@@ -1018,56 +1018,12 @@ namespace ModTools
             }
 
             var oldRefChain = refChain;
-
-
             var collectionSize = list.Count;
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(treeIdentSpacing * refChain.Ident);
-            GUILayout.Label("Collection size: " + collectionSize);
+            int arrayStart;
+            int arrayEnd;
+            SetUpCollectionNavigation(refChain, oldRefChain, collectionSize, out arrayStart, out arrayEnd);
 
-            if (!selectedArrayStartIndices.ContainsKey(refChain))
-            {
-                selectedArrayStartIndices.Add(refChain, 0);
-            }
-
-            if (!selectedArrayEndIndices.ContainsKey(refChain))
-            {
-                selectedArrayEndIndices.Add(refChain, 32);
-            }
-
-            var arrayStart = selectedArrayStartIndices[refChain];
-            var arrayEnd = selectedArrayEndIndices[refChain];
-            GUIControls.IntField(oldRefChain.ToString() + ".arrayStart", "Start index", ref arrayStart, 0.0f, true, true);
-            GUIControls.IntField(oldRefChain.ToString() + ".arrayEnd", "End index", ref arrayEnd, 0.0f, true, true);
-            GUILayout.Label("(32 items max)");
-            if (GUILayout.Button("▼", GUILayout.ExpandWidth(false)))
-            {
-                arrayStart++;
-                arrayEnd++;
-            }
-            if (GUILayout.Button("▲", GUILayout.ExpandWidth(false)))
-            {
-                arrayStart--;
-                arrayEnd--;
-            }
-            arrayStart = Mathf.Clamp(arrayStart, 0, collectionSize - 1);
-            arrayEnd = Mathf.Clamp(arrayEnd, 0, collectionSize - 1);
-            if (arrayStart > arrayEnd)
-            {
-                arrayEnd = arrayStart;
-            }
-
-            if (arrayEnd - arrayStart > 32)
-            {
-                arrayEnd = arrayStart + 32;
-                arrayEnd = Mathf.Clamp(arrayEnd, 0, collectionSize - 1);
-            }
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            selectedArrayStartIndices[refChain] = arrayStart;
-            selectedArrayEndIndices[refChain] = arrayEnd;
 
             for (int i = arrayStart; i <= arrayEnd; i++)
             {
@@ -1160,23 +1116,11 @@ namespace ModTools
             }
         }
 
-        private void OnSceneTreeReflectICollection(ReferenceChain refChain, System.Object myProperty)
+        private void SetUpCollectionNavigation(ReferenceChain refChain, ReferenceChain oldRefChain, int collectionSize, out int arrayStart,
+            out int arrayEnd)
         {
-            if (!SceneTreeCheckDepth(refChain)) return;
-
-            var collection = myProperty as ICollection;
-            if (collection == null)
-            {
-                return;
-            }
-
-            var oldRefChain = refChain;
-
-
-            var collectionSize = collection.Count;
-
             GUILayout.BeginHorizontal();
-            GUILayout.Space(treeIdentSpacing * refChain.Ident);
+            GUILayout.Space(treeIdentSpacing*refChain.Ident);
             GUILayout.Label("Collection size: " + collectionSize);
 
             if (!selectedArrayStartIndices.ContainsKey(refChain))
@@ -1189,24 +1133,24 @@ namespace ModTools
                 selectedArrayEndIndices.Add(refChain, 32);
             }
 
-            var arrayStart = selectedArrayStartIndices[refChain];
-            var arrayEnd = selectedArrayEndIndices[refChain];
+            arrayStart = selectedArrayStartIndices[refChain];
+            arrayEnd = selectedArrayEndIndices[refChain];
             GUIControls.IntField(oldRefChain.ToString() + ".arrayStart", "Start index", ref arrayStart, 0.0f, true, true);
             GUIControls.IntField(oldRefChain.ToString() + ".arrayEnd", "End index", ref arrayEnd, 0.0f, true, true);
             GUILayout.Label("(32 items max)");
-            var pageSize = arrayEnd - arrayStart + 1;
-            if (GUILayout.Button("▼", GUILayout.ExpandWidth(false)))
-            {
-                arrayStart += pageSize;
-                arrayEnd += pageSize;
-            }
-            if (GUILayout.Button("▲", GUILayout.ExpandWidth(false)))
+            var pageSize = Mathf.Clamp(arrayEnd - arrayStart + 1, 1, Mathf.Min(32, collectionSize - arrayStart, arrayEnd + 1));
+            if (GUILayout.Button("◄", GUILayout.ExpandWidth(false)))
             {
                 arrayStart -= pageSize;
                 arrayEnd -= pageSize;
             }
-            arrayStart = Mathf.Clamp(arrayStart, 0, collectionSize - 1);
-            arrayEnd = Mathf.Clamp(arrayEnd, 0, collectionSize - 1);
+            if (GUILayout.Button("►", GUILayout.ExpandWidth(false)))
+            {
+                arrayStart += pageSize;
+                arrayEnd += pageSize;
+            }
+            arrayStart = Mathf.Clamp(arrayStart, 0, collectionSize - pageSize);
+            arrayEnd = Mathf.Clamp(arrayEnd, pageSize - 1, collectionSize - 1);
             if (arrayStart > arrayEnd)
             {
                 arrayEnd = arrayStart;
@@ -1215,15 +1159,30 @@ namespace ModTools
             if (arrayEnd - arrayStart > 32)
             {
                 arrayEnd = arrayStart + 32;
-                arrayEnd = Mathf.Clamp(arrayEnd, 0, collectionSize - 1);
+                arrayEnd = Mathf.Clamp(arrayEnd, 32, collectionSize - 1);
             }
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-
-
             selectedArrayStartIndices[refChain] = arrayStart;
             selectedArrayEndIndices[refChain] = arrayEnd;
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+        }
+
+        private void OnSceneTreeReflectICollection(ReferenceChain refChain, System.Object myProperty)
+        {
+            if (!SceneTreeCheckDepth(refChain)) return;
+
+            var collection = myProperty as ICollection;
+            if (collection == null)
+            {
+                return;
+            }
+
+            var oldRefChain = refChain;
+            var collectionSize = collection.Count;
+
+            int arrayStart;
+            int arrayEnd;
+            SetUpCollectionNavigation(refChain, oldRefChain, collectionSize, out arrayStart, out arrayEnd);
 
             int count = 0;
             foreach (var value in collection)
