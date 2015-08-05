@@ -494,7 +494,7 @@ namespace ModTools
 
         private bool SetupPasteButon(Type type)
         {
-            if (buffer == null || buffer.GetType() == type)
+            if (buffer == null || type.IsInstanceOfType(buffer))
             {
                 return GUILayout.Button("Paste");
             }
