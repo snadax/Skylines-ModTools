@@ -1038,6 +1038,9 @@ namespace ModTools
 
             var arrayStart = selectedArrayStartIndices[refChain];
             var arrayEnd = selectedArrayEndIndices[refChain];
+            GUIControls.IntField(oldRefChain.ToString() + ".arrayStart", "Start index", ref arrayStart, 0.0f, true, true);
+            GUIControls.IntField(oldRefChain.ToString() + ".arrayEnd", "End index", ref arrayEnd, 0.0f, true, true);
+            GUILayout.Label("(32 items max)");
             if (GUILayout.Button("▼", GUILayout.ExpandWidth(false)))
             {
                 arrayStart++;
@@ -1048,12 +1051,6 @@ namespace ModTools
                 arrayStart--;
                 arrayEnd--;
             }
-            GUIControls.IntField(oldRefChain.ToString() + ".arrayStart", "Start index", ref arrayStart, 0.0f, true, true);
-            GUIControls.IntField(oldRefChain.ToString() + ".arrayEnd", "End index", ref arrayEnd, 0.0f, true, true);
-            GUILayout.Label("(32 items max)");
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
             arrayStart = Mathf.Clamp(arrayStart, 0, collectionSize - 1);
             arrayEnd = Mathf.Clamp(arrayEnd, 0, collectionSize - 1);
             if (arrayStart > arrayEnd)
@@ -1066,6 +1063,8 @@ namespace ModTools
                 arrayEnd = arrayStart + 32;
                 arrayEnd = Mathf.Clamp(arrayEnd, 0, collectionSize - 1);
             }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
 
             selectedArrayStartIndices[refChain] = arrayStart;
             selectedArrayEndIndices[refChain] = arrayEnd;
@@ -1192,22 +1191,20 @@ namespace ModTools
 
             var arrayStart = selectedArrayStartIndices[refChain];
             var arrayEnd = selectedArrayEndIndices[refChain];
-            if (GUILayout.Button("▼", GUILayout.ExpandWidth(false)))
-            {
-                arrayStart++;
-                arrayEnd++;
-            }
-            if (GUILayout.Button("▲", GUILayout.ExpandWidth(false)))
-            {
-                arrayStart--;
-                arrayEnd--;
-            }
             GUIControls.IntField(oldRefChain.ToString() + ".arrayStart", "Start index", ref arrayStart, 0.0f, true, true);
             GUIControls.IntField(oldRefChain.ToString() + ".arrayEnd", "End index", ref arrayEnd, 0.0f, true, true);
             GUILayout.Label("(32 items max)");
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
+            var pageSize = arrayEnd - arrayStart + 1;
+            if (GUILayout.Button("▼", GUILayout.ExpandWidth(false)))
+            {
+                arrayStart += pageSize;
+                arrayEnd += pageSize;
+            }
+            if (GUILayout.Button("▲", GUILayout.ExpandWidth(false)))
+            {
+                arrayStart -= pageSize;
+                arrayEnd -= pageSize;
+            }
             arrayStart = Mathf.Clamp(arrayStart, 0, collectionSize - 1);
             arrayEnd = Mathf.Clamp(arrayEnd, 0, collectionSize - 1);
             if (arrayStart > arrayEnd)
@@ -1220,6 +1217,10 @@ namespace ModTools
                 arrayEnd = arrayStart + 32;
                 arrayEnd = Mathf.Clamp(arrayEnd, 0, collectionSize - 1);
             }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+
 
             selectedArrayStartIndices[refChain] = arrayStart;
             selectedArrayEndIndices[refChain] = arrayEnd;
