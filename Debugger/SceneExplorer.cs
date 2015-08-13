@@ -51,7 +51,7 @@ namespace ModTools
         private bool headerExpanded = false;
 
         private float sceneTreeWidth = 320.0f;
-        private bool _isPloppingBuilding = false;
+        private PrefabInfo ploppedPrefab;
         private bool dtFound;
         private DefaultTool defaultTool;
 
@@ -91,22 +91,34 @@ namespace ModTools
                 }
             }
 
-            if (_isPloppingBuilding)
+            if (ploppedPrefab == null)
             {
-                var toolManager = Singleton<ToolManager>.instance;
-                if (toolManager == null || toolManager.m_properties == null)
+                return;
+            }
+            var toolManager = Singleton<ToolManager>.instance;
+            if (toolManager == null || toolManager.m_properties == null)
+            {
+                return;
+            }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Singleton<ToolManager>.instance.m_properties.CurrentTool = defaultTool;
+                ploppedPrefab = null;
+                return;
+
+            }
+            var currentTool = toolManager.m_properties.CurrentTool;
+            if (currentTool == null)
+            {
+                return;
+            }
+            var prefabField = currentTool.GetType().GetField("m_prefab", BindingFlags.Instance | BindingFlags.Public);
+            if (prefabField != null)
+            {
+                var prefab = prefabField.GetValue(currentTool);
+                if ((PrefabInfo)prefab != ploppedPrefab)
                 {
-                    return;
-                }
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    Singleton<ToolManager>.instance.m_properties.CurrentTool = defaultTool;
-                    _isPloppingBuilding = false;
-                }
-                ToolBase currentTool = toolManager.m_properties.CurrentTool;
-                if (currentTool != null && currentTool.GetType().Name.Equals("BuildingTool"))
-                {
-                    _isPloppingBuilding = false;
+                    ploppedPrefab = null;
                 }
             }
         }
@@ -409,7 +421,15 @@ namespace ModTools
 
         private void SetupButtons(Type type, object value, ReferenceChain refChain)
         {
-            if (value is BuildingInfo)
+            if (value is NetInfo)
+            {
+                var info = (NetInfo)value;
+                if (GUILayout.Button("Plop"))
+                {
+                    StartPlopping(info);
+                }
+            }
+            else if (value is BuildingInfo)
             {
                 var info = (BuildingInfo)value;
                 if (GUILayout.Button("Plop"))
@@ -431,9 +451,13 @@ namespace ModTools
                     }
                 }
             }
-            if (value is PropInfo)
+            else if (value is PropInfo)
             {
                 var info = (PropInfo)value;
+                if (GUILayout.Button("Plop"))
+                {
+                    StartPlopping(info);
+                }
                 if (info.m_mesh != null)
                 {
                     if (GUILayout.Button("Preview"))
@@ -449,9 +473,13 @@ namespace ModTools
                     }
                 }
             }
-            if (value is TreeInfo)
+            else if (value is TreeInfo)
             {
                 var info = (TreeInfo)value;
+                if (GUILayout.Button("Plop"))
+                {
+                    StartPlopping(info);
+                }
                 if (info.m_mesh != null)
                 {
                     if (GUILayout.Button("Preview"))
@@ -460,7 +488,7 @@ namespace ModTools
                     }
                 }
             }
-            if (TypeUtil.IsTextureType(type) && value != null)
+            else if (TypeUtil.IsTextureType(type) && value != null)
             {
                 if (GUILayout.Button("Preview"))
                 {
@@ -1120,7 +1148,7 @@ namespace ModTools
             out int arrayEnd)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Space(treeIdentSpacing*refChain.Ident);
+            GUILayout.Space(treeIdentSpacing * refChain.Ident);
             GUILayout.Label("Collection size: " + collectionSize);
 
             if (!selectedArrayStartIndices.ContainsKey(refChain))
@@ -1944,21 +1972,89 @@ namespace ModTools
             TypeUtil.ClearTypeCache();
         }
 
-        public void StartPlopping(BuildingInfo buildingInfo)
+        public void StartPlopping(PrefabInfo prefabInfo)
         {
 
             var currentTool = Singleton<ToolManager>.instance.m_properties.CurrentTool;
-            if (currentTool == null || !currentTool.GetType().Name.Equals("DefaultTool"))
-                return;
-            if (buildingInfo == null)
+            if (currentTool == null)
             {
                 return;
             }
-            var buildingTool = FindObjectOfType<BuildingTool>();
-            Singleton<ToolManager>.instance.m_properties.CurrentTool = buildingTool;
-            buildingTool.m_prefab = buildingInfo;
-            buildingTool.m_relocate = 0;
-            _isPloppingBuilding = true;
+
+            Type toolType;
+            if (prefabInfo is BuildingInfo)
+            {
+                toolType = typeof(BuildingTool);
+            }
+            else if (prefabInfo is NetInfo)
+            {
+                toolType = typeof(NetTool);
+            }
+            else if (prefabInfo is PropInfo)
+            {
+                toolType = typeof(PropTool);
+            }
+            else if (prefabInfo is TreeInfo)
+            {
+                toolType = typeof(TreeTool);
+            }
+            else
+            {
+                toolType = null;
+            }
+            if (toolType == null || currentTool.GetType() != toolType)
+            {
+                return;
+            }
+            if (prefabInfo is BuildingInfo)
+            {
+                var buildingInfo = (BuildingInfo)prefabInfo;
+                var buildingTool = FindObjectOfType<BuildingTool>();
+                if (buildingTool == null)
+                {
+                    Log.Warning("BuildingTool not found!");
+                    return;
+                }
+                Singleton<ToolManager>.instance.m_properties.CurrentTool = buildingTool;
+                ploppedPrefab = buildingTool.m_prefab = buildingInfo;
+                buildingTool.m_relocate = 0;
+            }
+            else if (prefabInfo is NetInfo)
+            {
+                var netInfo = (NetInfo)prefabInfo;
+                var netTool = FindObjectOfType<NetTool>();
+                if (netTool == null)
+                {
+                    Log.Warning("NetTool not found!");
+                    return;
+                }
+                Singleton<ToolManager>.instance.m_properties.CurrentTool = netTool;
+                ploppedPrefab = netTool.m_prefab = netInfo;
+            }
+            else if (prefabInfo is PropInfo)
+            {
+                var propInfo = (PropInfo)prefabInfo;
+                var propTool = FindObjectOfType<PropTool>();
+                if (propTool == null)
+                {
+                    Log.Warning("PropTool not found!");
+                    return;
+                }
+                Singleton<ToolManager>.instance.m_properties.CurrentTool = propTool;
+                ploppedPrefab = propTool.m_prefab = propInfo;
+            }
+            else if (prefabInfo is TreeInfo)
+            {
+                var treeInfo = (TreeInfo)prefabInfo;
+                var treeTool = FindObjectOfType<TreeTool>();
+                if (treeTool == null)
+                {
+                    Log.Warning("TreeTool not found!");
+                    return;
+                }
+                Singleton<ToolManager>.instance.m_properties.CurrentTool = treeTool;
+                ploppedPrefab = treeTool.m_prefab = treeInfo;
+            }
         }
     }
 
