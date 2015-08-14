@@ -112,14 +112,27 @@ namespace ModTools
             {
                 return;
             }
-            var prefabField = currentTool.GetType().GetField("m_prefab", BindingFlags.Instance | BindingFlags.Public);
-            if (prefabField != null)
+            if (currentTool is BuildingTool || currentTool is NetTool || currentTool is TreeTool ||
+                currentTool is PropTool)
             {
-                var prefab = prefabField.GetValue(currentTool);
-                if ((PrefabInfo)prefab != ploppedPrefab)
+                var prefabField = currentTool.GetType()
+                    .GetField("m_prefab", BindingFlags.Instance | BindingFlags.Public);
+                if (prefabField != null)
+                {
+                    var prefab = prefabField.GetValue(currentTool);
+                    if ((PrefabInfo) prefab != ploppedPrefab)
+                    {
+                        ploppedPrefab = null;
+                    }
+                }
+                else
                 {
                     ploppedPrefab = null;
                 }
+            }
+            else
+            {
+                ploppedPrefab = null;
             }
         }
 
@@ -2002,7 +2015,7 @@ namespace ModTools
             {
                 toolType = null;
             }
-            if (toolType == null || currentTool.GetType() != toolType)
+            if (toolType == null || (currentTool.GetType() != toolType && !(currentTool is DefaultTool)))
             {
                 return;
             }
