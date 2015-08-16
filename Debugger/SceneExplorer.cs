@@ -434,7 +434,18 @@ namespace ModTools
 
         private void SetupButtons(Type type, object value, ReferenceChain refChain)
         {
-            if (value is NetInfo)
+            if (value is VehicleInfo)
+            {
+                var info = (VehicleInfo)value;
+                if (info.m_mesh != null)
+                {
+                    if (GUILayout.Button("Preview"))
+                    {
+                        MeshViewer.CreateMeshViewer(info.name, info.m_mesh, info.m_material);
+                    }
+                }
+            }
+            else if (value is NetInfo)
             {
                 var info = (NetInfo)value;
                 if (GUILayout.Button("Plop"))
