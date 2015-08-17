@@ -777,6 +777,13 @@ namespace ModTools
             GUILayout.Label(")");
 
             GUILayout.FlexibleSpace();
+            if (!method.IsStatic && !method.IsGenericMethod && method.GetParameters().Count() == 0)
+            {
+                if (GUILayout.Button("Invoke", GUILayout.ExpandWidth(false)))
+                {
+                    method.Invoke(obj, new object[] {});
+                }
+            }
             GUILayout.EndHorizontal();
         }
 

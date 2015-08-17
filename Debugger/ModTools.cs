@@ -19,6 +19,7 @@ namespace ModTools
 
         public Console console;
         public SceneExplorer sceneExplorer;
+        private DebugRenderer debugRenderer;
         public SceneExplorerColorConfig sceneExplorerColorConfig;
 
      //   public ScriptEditor scriptEditor;
@@ -164,6 +165,7 @@ namespace ModTools
             }
 
             sceneExplorer = gameObject.AddComponent<SceneExplorer>();
+            debugRenderer = GameObject.FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
             watches = gameObject.AddComponent<Watches>();
             colorPicker = gameObject.AddComponent<ColorPicker>();
 
@@ -207,6 +209,14 @@ namespace ModTools
                 if (sceneExplorer.visible)
                 {
                     sceneExplorer.Refresh();
+                }
+            }
+
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
+            {
+                if (debugRenderer != null)
+                {
+                    debugRenderer.drawDebugInfo = !debugRenderer.drawDebugInfo;
                 }
             }
 
@@ -307,6 +317,15 @@ namespace ModTools
             }
 
             GUILayout.BeginHorizontal();
+            if (debugRenderer != null)
+            {
+                GUILayout.Label("Debug Renderer (Ctrl+R)");
+                debugRenderer.drawDebugInfo = GUILayout.Toggle(debugRenderer.drawDebugInfo, "");
+            }
+            GUILayout.EndHorizontal();
+
+
+            GUILayout.BeginHorizontal();
             GUILayout.Label("Improved Workshop integration");
             var improvedWorkshopIntegration = GUILayout.Toggle(config.improvedWorkshopIntegration, "");
             GUILayout.EndHorizontal();
@@ -338,7 +357,7 @@ namespace ModTools
                     debugOutputPanel.GetComponent<UIPanel>().isVisible = true;
                 }
             }
-        
+
             if (GUILayout.Button("Watches (Ctrl+W)"))
             {
                 watches.visible = !watches.visible;
@@ -352,7 +371,7 @@ namespace ModTools
                     sceneExplorer.Refresh();
                 }
             }
-
+            
             if (GUILayout.Button("Throw exception!"))
             {
                 throw new Exception("Hello world!");

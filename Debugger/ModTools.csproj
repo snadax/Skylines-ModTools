@@ -59,6 +59,7 @@
     <Compile Include="Config.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="DateTimeUtil.cs" />
+    <Compile Include="DebugRenderer.cs" />
     <Compile Include="Detours.cs" />
     <Compile Include="ExtensionMethods\ArrayExt.cs" />
     <Compile Include="ExtensionMethods\MeshExtension.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="GUIComboBox.cs" />
     <Compile Include="GUIWindow.cs" />
     <Compile Include="HashCodeUtil.cs" />
+    <Compile Include="HashUtil.cs" />
     <Compile Include="IModEntryPoint.cs" />
     <Compile Include="ImprovedWorkshopIntegration.cs" />
     <Compile Include="MeshOBJTools\Int32Converter.cs" />
