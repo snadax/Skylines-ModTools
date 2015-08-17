@@ -28,18 +28,20 @@ namespace ModTools
                     {
                         return;
                     }
-                    var refChain = new ReferenceChain();
+
                     var current = hoveredLocal;
+
+                    var refChain = new ReferenceChain();
                     while (current != null)
                     {
                         refChain = refChain.Add(current);
                         refChain = refChain.Add(current.gameObject);
                         current = current.parent;
                     };
-
-                    var sceneExplorer = FindObjectOfType<SceneExplorer>();
                     refChain = refChain.Add(uiView);
                     refChain = refChain.Add(uiView.gameObject);
+
+                    var sceneExplorer = FindObjectOfType<SceneExplorer>();
                     sceneExplorer.ExpandFromRefChain(refChain.Reverse);
                     sceneExplorer.visible = true;
                 }

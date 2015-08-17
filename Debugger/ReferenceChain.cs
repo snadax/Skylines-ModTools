@@ -228,10 +228,15 @@ namespace ModTools
         {
             get
             {
-                ReferenceChain chain = Copy();
-                chain.chainObjects = chain.chainObjects.Reverse().ToArray();
-                chain.chainTypes = chain.chainTypes.Reverse().ToArray();
-                return chain;
+                var copy = new ReferenceChain();
+                copy.count = count;
+                copy.identOffset = identOffset;
+                for (var i = 0; i < count; i++)
+                {
+                    copy.chainObjects[count - i - 1] = chainObjects[i];
+                    copy.chainTypes[count - i - 1] = chainTypes[i];
+                }
+                return copy;
             }
         }
 
@@ -247,10 +252,10 @@ namespace ModTools
                         current = chainObjects[i];
                         break;
                     case ReferenceType.Field:
-                        current = ((FieldInfo) chainObjects[i]).GetValue(current);
+                        current = ((FieldInfo)chainObjects[i]).GetValue(current);
                         break;
                     case ReferenceType.Property:
-                        current = ((PropertyInfo) chainObjects[i]).GetValue(current, null);
+                        current = ((PropertyInfo)chainObjects[i]).GetValue(current, null);
                         break;
                     case ReferenceType.Method:
                         break;
