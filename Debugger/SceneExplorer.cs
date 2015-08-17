@@ -195,6 +195,11 @@ namespace ModTools
 
         public void ExpandFromRefChain(ReferenceChain refChain)
         {
+            if (refChain == null)
+            {
+                Log.Error("SceneExplorer: ExpandFromRefChain(): Null refChain");
+                return;
+            }
             if (refChain.Length == 0)
             {
                 Log.Error("SceneExplorer: ExpandFromRefChain(): Invalid refChain, expected Length >= 0");

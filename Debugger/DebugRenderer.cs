@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ColossalFramework.UI;
 using UnityEngine;
 
@@ -14,6 +15,36 @@ namespace ModTools
         private GUIStyle infoWindowStyle;
 
         private UIComponent hoveredComponent;
+
+        void Update()
+        {
+            var hoveredLocal = hoveredComponent;
+            if (drawDebugInfo && hoveredLocal != null)
+            {
+                if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F))
+                {
+                    var uiView = FindObjectOfType<UIView>();
+                    if (uiView == null)
+                    {
+                        return;
+                    }
+                    var refChain = new ReferenceChain();
+                    var current = hoveredLocal;
+                    while (current != null)
+                    {
+                        refChain = refChain.Add(current);
+                        refChain = refChain.Add(current.gameObject);
+                        current = current.parent;
+                    };
+
+                    var sceneExplorer = FindObjectOfType<SceneExplorer>();
+                    refChain = refChain.Add(uiView);
+                    refChain = refChain.Add(uiView.gameObject);
+                    sceneExplorer.ExpandFromRefChain(refChain.Reverse);
+                    sceneExplorer.visible = true;
+                }
+            }
+        }
 
         void OnGUI()
         {
