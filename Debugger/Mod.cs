@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using ColossalFramework;
 using ColossalFramework.Plugins;
-using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
 
@@ -53,13 +51,9 @@ namespace ModTools
 
                 InitModTools(SimulationManager.UpdateMode.Undefined);
 
-                var target = typeof(LoadingWrapper).GetMethod("OnLevelLoaded",
-                new[] { typeof(SimulationManager.UpdateMode) });
-
-                var replacement = typeof(ModToolsBootstrap).GetMethod("OnLevelLoaded",
-                    new[] { typeof(SimulationManager.UpdateMode) });
-
-                RedirectionHelper.RedirectCalls(target, replacement);
+                RedirectionHelper.RedirectCalls(
+                    typeof(LoadingWrapper).GetMethod("OnLevelLoaded", new[] { typeof(SimulationManager.UpdateMode) }),
+                    typeof(ModToolsBootstrap).GetMethod("OnLevelLoaded", new[] { typeof(SimulationManager.UpdateMode) }));
                 bootstrapped = true;
             }
             catch (Exception ex)
@@ -88,24 +82,7 @@ namespace ModTools
         public void OnLevelLoaded(SimulationManager.UpdateMode mode)
         {
             InitModTools(mode);
-
-            var loadingManager = LoadingManager.instance;
-            var wrapper = loadingManager.m_LoadingWrapper;
-
-            var loadingExtensions = Util.GetPrivate<List<ILoadingExtension>>(wrapper, "m_LoadingExtensions");
-
-            try
-            {
-                for (int i = 0; i < loadingExtensions.Count; i++)
-                {
-                    loadingExtensions[i].OnLevelLoaded((LoadMode)mode);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogException(ex);
-                UIView.ForwardException(new ModException("A Mod caused an error", ex));
-            }
+            IsolatedFailures.OnLevelLoaded((LoadMode)mode);
         }
 
     }

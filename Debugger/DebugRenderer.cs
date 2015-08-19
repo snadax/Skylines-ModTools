@@ -144,7 +144,7 @@ namespace ModTools
             {
                 var coords = mouse;
 
-                var size = new Vector2(300.0f, 180.0f);
+                var size = new Vector2(300.0f, 220.0f);
 
                 if (coords.x + size.x >= Screen.width)
                 {
@@ -173,6 +173,7 @@ namespace ModTools
 
         void DoInfoWindow(int i)
         {
+            GUILayout.Label("[Press Ctrl+F to open it in SceneExplorer]");
             GUILayout.Label(String.Format("name: {0}", hoveredComponent.name));
             GUILayout.Label(String.Format("type: {0}", hoveredComponent.GetType().Name));
 
@@ -184,6 +185,10 @@ namespace ModTools
             GUILayout.Label(String.Format("anchor: {0}", hoveredComponent.anchor));
             GUILayout.Label(String.Format("size: {0}", hoveredComponent.size));
             GUILayout.Label(String.Format("relativePosition: {0}", hoveredComponent.relativePosition));
+            if (hoveredComponent is UIInteractiveComponent)
+            {
+                GUILayout.Label(String.Format("atlas: {0}", ((UIInteractiveComponent)hoveredComponent).atlas.name));                
+            }
 
             var hash = HashUtil.HashRect(new Rect(hoveredComponent.relativePosition.x, hoveredComponent.relativePosition.y,
                    hoveredComponent.size.x, hoveredComponent.size.y));
