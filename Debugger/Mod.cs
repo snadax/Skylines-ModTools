@@ -13,7 +13,9 @@ namespace ModTools
 
         private static GameObject modToolsGameObject;
         private static ModTools modTools;
+        public static bool initialized;
         private static bool bootstrapped;
+        public static bool inMainMenu = true;
 
         public static bool IsModToolsActive()
         {
@@ -38,21 +40,26 @@ namespace ModTools
 
         public static void Bootstrap()
         {
-            if (bootstrapped)
+            if (initialized)
             {
                 return;
             }
             try
             {
-                CODebugBase<LogChannel>.verbose = true;
-                CODebugBase<LogChannel>.EnableChannels(LogChannel.All);
-
-                InitModTools(SimulationManager.UpdateMode.Undefined);
-
-                RedirectionHelper.RedirectCalls(
-                    typeof(LoadingWrapper).GetMethod("OnLevelLoaded", new[] { typeof(SimulationManager.UpdateMode) }),
-                    typeof(IsolatedFailures).GetMethod("OnLevelLoaded", new[] { typeof(SimulationManager.UpdateMode) }));
-                bootstrapped = true;
+                if (!bootstrapped)
+                {
+                    CODebugBase<LogChannel>.verbose = true;
+                    CODebugBase<LogChannel>.EnableChannels(LogChannel.All);
+                    RedirectionHelper.RedirectCalls(
+                        typeof(LoadingWrapper).GetMethod("OnLevelLoaded", new[] { typeof(SimulationManager.UpdateMode) }),
+                        typeof(IsolatedFailures).GetMethod("OnLevelLoaded", new[] { typeof(SimulationManager.UpdateMode) }));
+                    bootstrapped = true;
+                }
+                if (inMainMenu)
+                {
+                    InitModTools(SimulationManager.UpdateMode.Undefined);                    
+                }
+                initialized = true;
             }
             catch (Exception ex)
             {
@@ -94,7 +101,14 @@ namespace ModTools
 
         public override void OnLevelLoaded(LoadMode mode)
         {
+            ModToolsBootstrap.inMainMenu = false;
             ModToolsBootstrap.InitModTools((SimulationManager.UpdateMode)mode);
+        }
+
+        public override void OnLevelUnloading()
+        {
+            ModToolsBootstrap.initialized = false;
+            ModToolsBootstrap.inMainMenu = true;
         }
     }
 
