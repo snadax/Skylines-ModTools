@@ -8,23 +8,30 @@ namespace ModTools
 {
     public class IsolatedFailures
     {
-        public static void OnLevelLoaded(LoadMode mode)
+        public void OnLevelLoaded(SimulationManager.UpdateMode mode)
         {
-            Func<ILoadingExtension, LoadMode, Boolean> callback = (e, m) =>
+            Func<ILoadingExtension, SimulationManager.UpdateMode, Boolean> callback = (e, m) =>
             {
-                e.OnLevelLoaded(m);
+                e.OnLevelLoaded((LoadMode)m);
                 return true;
             };
             ProcessLoadingExtensions(mode, callback);
         }
 
-        private static void ProcessLoadingExtensions(LoadMode mode, Func<ILoadingExtension, LoadMode, bool> callback)
+
+        private static void ProcessLoadingExtensions(SimulationManager.UpdateMode mode, Func<ILoadingExtension, SimulationManager.UpdateMode, bool> callback)
         {
             var loadingExtensions = Util.GetPrivate<List<ILoadingExtension>>(LoadingManager.instance.m_LoadingWrapper,
                 "m_LoadingExtensions");
             var exceptions = new List<Exception>();
+            var modTools = loadingExtensions.Find((e) => e is Mod);
+            callback(modTools, mode);
             foreach (var loadingExtension in loadingExtensions)
             {
+                if (modTools == loadingExtension)
+                {
+                    continue;
+                }
                 try
                 {
                     callback(loadingExtension, mode);

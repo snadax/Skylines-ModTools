@@ -17,11 +17,9 @@ namespace ModTools
 
         public static bool IsModToolsActive()
         {
-
 #if MODTOOLS_DEBUG
             return true;
 #else
-
             var pluginManager = PluginManager.instance;
             var plugins = pluginManager.GetPluginsInfo();
 
@@ -53,7 +51,7 @@ namespace ModTools
 
                 RedirectionHelper.RedirectCalls(
                     typeof(LoadingWrapper).GetMethod("OnLevelLoaded", new[] { typeof(SimulationManager.UpdateMode) }),
-                    typeof(ModToolsBootstrap).GetMethod("OnLevelLoaded", new[] { typeof(SimulationManager.UpdateMode) }));
+                    typeof(IsolatedFailures).GetMethod("OnLevelLoaded", new[] { typeof(SimulationManager.UpdateMode) }));
                 bootstrapped = true;
             }
             catch (Exception ex)
@@ -62,7 +60,7 @@ namespace ModTools
             }
         }
 
-        private static void InitModTools(SimulationManager.UpdateMode mode)
+        public static void InitModTools(SimulationManager.UpdateMode mode)
         {
             if (!IsModToolsActive())
             {
@@ -79,15 +77,9 @@ namespace ModTools
             modTools.Initialize(mode);
         }
 
-        public void OnLevelLoaded(SimulationManager.UpdateMode mode)
-        {
-            InitModTools(mode);
-            IsolatedFailures.OnLevelLoaded((LoadMode)mode);
-        }
-
     }
 
-    public class Mod : IUserMod
+    public class Mod : LoadingExtensionBase, IUserMod
     {
 
         public string Name
@@ -100,6 +92,10 @@ namespace ModTools
             get { return "Debugging toolkit for modders"; }
         }
 
+        public override void OnLevelLoaded(LoadMode mode)
+        {
+            ModToolsBootstrap.InitModTools((SimulationManager.UpdateMode)mode);
+        }
     }
 
 }
