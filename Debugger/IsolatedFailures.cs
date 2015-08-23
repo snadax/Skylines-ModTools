@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ColossalFramework.UI;
 using ICities;
 using UnityEngine;
@@ -25,13 +26,20 @@ namespace ModTools
                 "m_LoadingExtensions");
             var exceptions = new List<Exception>();
             var modTools = loadingExtensions.Find((e) => e is Mod);
-            callback(modTools, mode);
-            foreach (var loadingExtension in loadingExtensions)
+            if (modTools != null)
             {
-                if (modTools == loadingExtension)
+                try
                 {
-                    continue;
+                    callback(modTools, mode);
                 }
+                catch (Exception ex)
+                {
+                    Debug.LogException(ex);
+                    exceptions.Add(ex);
+                }
+            }
+            foreach (var loadingExtension in loadingExtensions.Where(loadingExtension => modTools != loadingExtension))
+            {
                 try
                 {
                     callback(loadingExtension, mode);
