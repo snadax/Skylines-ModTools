@@ -448,6 +448,13 @@ namespace ModTools
                     {
                         MeshViewer.CreateMeshViewer(info.name, info.m_mesh, info.m_material);
                     }
+                    if (info.m_lodMesh != null)
+                    {
+                        if (GUILayout.Button("Preview LOD"))
+                        {
+                            MeshViewer.CreateMeshViewer(info.name + "_LOD", info.m_lodMesh, info.m_lodMaterial);
+                        }
+                    }
                 }
             }
             else if (value is NetInfo)
@@ -476,7 +483,7 @@ namespace ModTools
                 {
                     if (GUILayout.Button("Preview LOD"))
                     {
-                        MeshViewer.CreateMeshViewer(info + "_LOD", info.m_lodMesh, info.m_lodMaterial);
+                        MeshViewer.CreateMeshViewer(info.name + "_LOD", info.m_lodMesh, info.m_lodMaterial);
                     }
                 }
             }
@@ -498,7 +505,7 @@ namespace ModTools
                 {
                     if (GUILayout.Button("Preview LOD"))
                     {
-                        MeshViewer.CreateMeshViewer(info + "_LOD", info.m_lodMesh, info.m_lodMaterial);
+                        MeshViewer.CreateMeshViewer(info.name + "_LOD", info.m_lodMesh, info.m_lodMaterial);
                     }
                 }
             }
@@ -514,6 +521,36 @@ namespace ModTools
                     if (GUILayout.Button("Preview"))
                     {
                         MeshViewer.CreateMeshViewer(info.name, info.m_mesh, info.m_material);
+                    }
+                }
+            }
+            else if (value is NetInfo.Segment)
+            {
+                var info = (NetInfo.Segment)value;
+                if (info.m_mesh != null)
+                {
+                    if (GUILayout.Button("Preview"))
+                    {
+                        MeshViewer.CreateMeshViewer(null, info.m_mesh, info.m_material);
+                    }
+                    if (GUILayout.Button("Preview LOD"))
+                    {
+                        MeshViewer.CreateMeshViewer(null, info.m_lodMesh, info.m_lodMaterial);
+                    }
+                }
+            }
+            else if (value is NetInfo.Node)
+            {
+                var info = (NetInfo.Node)value;
+                if (info.m_mesh != null)
+                {
+                    if (GUILayout.Button("Preview"))
+                    {
+                        MeshViewer.CreateMeshViewer(null, info.m_mesh, info.m_material);
+                    }
+                    if (GUILayout.Button("Preview LOD"))
+                    {
+                        MeshViewer.CreateMeshViewer(null, info.m_lodMesh, info.m_lodMaterial);
                     }
                 }
             }
