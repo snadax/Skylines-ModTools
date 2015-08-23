@@ -8,6 +8,9 @@ namespace ModTools
     public class Watches : GUIWindow
     {
 
+        private Dictionary<ReferenceChain, KeyValuePair<FieldInfo, object>> fieldWatches = new Dictionary<ReferenceChain, KeyValuePair<FieldInfo, object>>();
+        private Dictionary<ReferenceChain, KeyValuePair<PropertyInfo, object>> propertyWatches = new Dictionary<ReferenceChain, KeyValuePair<PropertyInfo, object>>();
+
         private Configuration config
         {
             get { return ModTools.Instance.config; }
@@ -153,9 +156,6 @@ namespace ModTools
             return watches;
         }
 
-        private Dictionary<ReferenceChain, KeyValuePair<FieldInfo, object>> fieldWatches = new Dictionary<ReferenceChain, KeyValuePair<FieldInfo, object>>();
-        private Dictionary<ReferenceChain, KeyValuePair<PropertyInfo, object>> propertyWatches = new Dictionary<ReferenceChain, KeyValuePair<PropertyInfo, object>>();
-
         void DoWatchesWindow()
         {
             watchesScroll = GUILayout.BeginScrollView(watchesScroll);
@@ -206,6 +206,13 @@ namespace ModTools
                 GUI.enabled = true;
 
                 GUILayout.FlexibleSpace();
+
+                if (GUILayout.Button("Find in Scene Explorer"))
+                {
+                    var sceneExplorer = FindObjectOfType<SceneExplorer>();
+                    sceneExplorer.ExpandFromRefChain(watch);
+                    sceneExplorer.visible = true;
+                }
 
                 if (GUILayout.Button("x", GUILayout.Width(24)))
                 {
