@@ -990,16 +990,8 @@ namespace ModTools
                 GUI.contentColor = Color.white;
 
                 GUILayout.FlexibleSpace();
-
-                if (GUILayout.Button("Preview"))
-                {
-                    TextureViewer.CreateTextureViewer(refChain, value);
-                }
-
-                if (GUILayout.Button("Dump .png"))
-                {
-                    Util.DumpTextureToPNG((Texture)value);
-                }
+                SetupButtons(type, value, refChain);
+                var doPaste = SetupPasteButon(type);
                 GUILayout.EndHorizontal();
 
                 if (TypeUtil.IsReflectableType(type) && expandedObjects.ContainsKey(refChain))
@@ -1007,6 +999,10 @@ namespace ModTools
                     OnSceneTreeReflect(refChain, value);
                 }
 
+                if (doPaste)
+                {
+                    material.SetTexture(prop, (Texture) buffer);
+                }
             }
 
             foreach (string prop in colorProps)
@@ -1067,14 +1063,18 @@ namespace ModTools
                 }
 
                 GUI.contentColor = Color.white;
-
                 GUILayout.FlexibleSpace();
-
+                SetupButtons(type, value, refChain);
+                var doPaste = SetupPasteButon(type);
                 GUILayout.EndHorizontal();
 
                 if (TypeUtil.IsReflectableType(type) && expandedObjects.ContainsKey(refChain))
                 {
                     OnSceneTreeReflect(refChain, value);
+                }
+                if (doPaste)
+                {
+                    material.SetColor(prop, (Color)buffer);
                 }
             }
 
