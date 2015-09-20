@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using ColossalFramework.Plugins;
 using UnityEngine;
 
@@ -6,6 +7,10 @@ namespace ModTools
 {
     public static class UnityLoggingHook
     {
+        private static MethodInfo logMethod = typeof(UnityEngine.Debug).GetMethod("Internal_Log",
+            BindingFlags.NonPublic | BindingFlags.Static);
+        private static MethodInfo logExceptionMethod = typeof(UnityEngine.Debug).GetMethod("Internal_LogException",
+            BindingFlags.NonPublic | BindingFlags.Static);
 
         private static bool hookEnabled = false;
 
@@ -98,44 +103,32 @@ namespace ModTools
         {
             if (message == null)
             {
-                return;
+                message = "Null";
             }
-
+            logMethod.Invoke(null, new object[] { 0, message.ToString(), null });
             if (ModTools.Instance.console != null)
             {
                 try
                 {
                     ModTools.Instance.console.AddMessage(message.ToString(), LogType.Log);
-                } catch (Exception) {}
+                }
+                catch (Exception) { }
             }
         }
 
         public static void LogFormat(string format, params object[] args)
         {
-            if (format == null)
-            {
-                return;
-            }
-
-            if (ModTools.Instance.console != null)
-            {
-                try
-                {
-                    ModTools.Instance.console.AddMessage(String.Format(format, args), LogType.Log);
-                }
-                catch (Exception)
-                {
-                }
-            }
+            var message = string.Format(format, args);
+            Log(message);
         }
 
         public static void LogWarning(object message)
         {
             if (message == null)
             {
-                return;
+                message = "Null";
             }
-
+            logMethod.Invoke(null, new object[] { 1, message.ToString(), null });
             if (ModTools.Instance.console != null)
             {
                 try
@@ -150,29 +143,17 @@ namespace ModTools
 
         public static void LogWarningFormat(string format, params object[] args)
         {
-            if (format == null)
-            {
-                return;
-            }
-
-            if (ModTools.Instance.console != null)
-            {
-                try
-                {
-                    ModTools.Instance.console.AddMessage(String.Format(format, args), LogType.Warning);
-                }
-                catch (Exception)
-                {
-                }
-            }
+            var message = string.Format(format, args);
+            LogWarning(message);
         }
 
         public static void LogError(object message)
         {
             if (message == null)
             {
-                return;
+                message = "Null";
             }
+            logMethod.Invoke(null, new object[] { 2, message.ToString(), null });
 
             if (ModTools.Instance.console != null)
             {
@@ -188,35 +169,19 @@ namespace ModTools
 
         public static void LogErrorFormat(string format, params object[] args)
         {
-            if (format == null)
-            {
-                return;
-            }
-
-            if (ModTools.Instance.console != null)
-            {
-                try
-                {
-                    ModTools.Instance.console.AddMessage(String.Format(format, args), LogType.Error);
-                }
-                catch (Exception)
-                {
-                }
-            }
+            var message = string.Format(format, args);
+            LogError(message);
         }
 
         public static void LogException(Exception exception)
         {
-            if (exception == null)
-            {
-                return;
-            }
-
+            logExceptionMethod.Invoke(null, new object[] { exception, null });
             if (ModTools.Instance.console != null)
             {
                 try
                 {
-                    ModTools.Instance.console.AddMessage(exception.ToString(), LogType.Exception);
+                    var message = exception != null ? exception.ToString() : "Null exception";
+                    ModTools.Instance.console.AddMessage(message, LogType.Exception);
                 }
                 catch (Exception)
                 {
