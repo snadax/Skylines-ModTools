@@ -29,7 +29,7 @@ namespace ModTools
         private static MethodInfo reloadPreviewImage;
         private static MethodInfo startWatchingPath;
 
-        private static RedirectCallsState revertState;
+        private static RedirectCallsState _setAssetInternalState;
 
         private static GameObject thisGameObject;
 
@@ -47,38 +47,16 @@ namespace ModTools
             {
                 return;
             }
-
-            var go = GameObject.Find("(Library) WorkshopModUploadPanel");
-            if (go == null)
+            var updateHook = thisGameObject.AddComponent<UpdateHook>();
+            updateHook.once = false;
+            updateHook.onUnityUpdate = () =>
             {
-                return;
-            }
-
-            workshopModUploadPanel = go.GetComponent<WorkshopModUploadPanel>();
-
-            if (workshopModUploadPanel == null)
-            {
-                return;
-            }
-
-            UITabContainer categoryContainer = GameObject.Find("CategoryContainer").GetComponent<UITabContainer>();
-            var modsList = categoryContainer.Find("Mods").Find("Content");
-            if (modsList == null)
-            {
-                return;
-            }
-
-            m_StagingPath = Util.FindField(workshopModUploadPanel, "m_StagingPath");
-            m_PreviewPath = Util.FindField(workshopModUploadPanel, "m_PreviewPath");
-            m_ContentPath = Util.FindField(workshopModUploadPanel, "m_ContentPath");
-            m_CurrentHandle = Util.FindField(workshopModUploadPanel, "m_CurrentHandle");
-            m_ShareButton = Util.FindField(workshopModUploadPanel, "m_ShareButton");
-            m_TargetFolder = Util.FindField(workshopModUploadPanel, "m_TargetFolder");
-            m_ShareButton = Util.FindField(workshopModUploadPanel, "m_ShareButton");
-            m_Title = Util.FindField(workshopModUploadPanel, "m_Title");
-            m_Desc = Util.FindField(workshopModUploadPanel, "m_Desc");
-            m_ChangeNote = Util.FindField(workshopModUploadPanel, "m_ChangeNote");
-            m_DefaultModPreviewTexture = Util.FindField(workshopModUploadPanel, "m_DefaultModPreviewTexture");
+                if (!SetupUI())
+                {
+                    return;
+                }
+                updateHook.once = true;
+            };
 
             reloadPreviewImage = typeof(WorkshopModUploadPanel).GetMethod("ReloadPreviewImage",
                 BindingFlags.Instance | BindingFlags.NonPublic);
@@ -86,7 +64,7 @@ namespace ModTools
             startWatchingPath = typeof(WorkshopModUploadPanel).GetMethod("StartWatchingPath",
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
-            revertState = RedirectionHelper.RedirectCalls
+            _setAssetInternalState = RedirectionHelper.RedirectCalls
             (
                 typeof(WorkshopModUploadPanel).GetMethod("SetAssetInternal",
                     BindingFlags.Instance | BindingFlags.NonPublic),
@@ -111,8 +89,37 @@ namespace ModTools
             }
 
             RedirectionHelper.RevertRedirect(typeof(WorkshopModUploadPanel).GetMethod("SetAssetInternal",
-                    BindingFlags.Instance | BindingFlags.NonPublic), revertState);
+                    BindingFlags.Instance | BindingFlags.NonPublic), _setAssetInternalState);
             bootstrapped = false;
+        }
+
+        private static bool SetupUI()
+        {
+            var go = GameObject.Find("(Library) WorkshopModUploadPanel");
+            if (go == null)
+            {
+                return false;
+            }
+
+            workshopModUploadPanel = go.GetComponent<WorkshopModUploadPanel>();
+
+            if (workshopModUploadPanel == null)
+            {
+                return false;
+            }
+
+            m_StagingPath = Util.FindField(workshopModUploadPanel, "m_StagingPath");
+            m_PreviewPath = Util.FindField(workshopModUploadPanel, "m_PreviewPath");
+            m_ContentPath = Util.FindField(workshopModUploadPanel, "m_ContentPath");
+            m_CurrentHandle = Util.FindField(workshopModUploadPanel, "m_CurrentHandle");
+            m_ShareButton = Util.FindField(workshopModUploadPanel, "m_ShareButton");
+            m_TargetFolder = Util.FindField(workshopModUploadPanel, "m_TargetFolder");
+            m_ShareButton = Util.FindField(workshopModUploadPanel, "m_ShareButton");
+            m_Title = Util.FindField(workshopModUploadPanel, "m_Title");
+            m_Desc = Util.FindField(workshopModUploadPanel, "m_Desc");
+            m_ChangeNote = Util.FindField(workshopModUploadPanel, "m_ChangeNote");
+            m_DefaultModPreviewTexture = Util.FindField(workshopModUploadPanel, "m_DefaultModPreviewTexture");
+            return true;
         }
         
         private void SetAssetInternal(string folder)
@@ -127,14 +134,7 @@ namespace ModTools
 
             bool isUpdate = Util.GetFieldValue<UIButton>(m_ShareButton, workshopModUploadPanel).localeID == "WORKSHOP_UPDATE";
 
-            if (isUpdate)
-            {
-                Util.GetFieldValue<UITextField>(m_Title, workshopModUploadPanel).text = string.Empty;
-                Util.GetFieldValue<UITextField>(m_Desc, workshopModUploadPanel).text = string.Empty;
-                Util.GetFieldValue<UITextField>(m_Title, workshopModUploadPanel).readOnly = true;
-                Util.GetFieldValue<UITextField>(m_Desc, workshopModUploadPanel).readOnly = true;
-            }
-            else
+            if (!isUpdate)
             {
                 Util.GetFieldValue<UITextField>(m_Title, workshopModUploadPanel).text = "<YOUR MOD NAME>";
                 Util.GetFieldValue<UITextField>(m_Desc, workshopModUploadPanel).text = "<YOUR MOD DESCRIPTION>";
@@ -160,12 +160,12 @@ namespace ModTools
             Directory.CreateDirectory(stagingPath);
 
             var previewPath = Path.Combine(stagingPath, "PreviewImage.png");
-
             foreach (var previewImageFilename in previewImageFilenames)
             {
-                if (File.Exists(Path.Combine(folder, previewImageFilename)))
+                var sourceFileName = Path.Combine(folder, previewImageFilename);
+                if (File.Exists(sourceFileName))
                 {
-                    File.Copy(Path.Combine(folder, previewImageFilename), previewPath);
+                    File.Copy(sourceFileName, previewPath);
                     break;
                 }
             }

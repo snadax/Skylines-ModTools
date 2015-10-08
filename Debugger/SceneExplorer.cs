@@ -55,7 +55,7 @@ namespace ModTools
         private bool dtFound;
         private DefaultTool defaultTool;
 
-        private System.Object buffer = null;
+        private static System.Object _buffer = null;
 
         private Configuration config
         {
@@ -304,8 +304,9 @@ namespace ModTools
             {
                 value = field.GetValue(obj);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                UnityEngine.Debug.LogException(e);
             }
 
             if (value != null && TypeUtil.IsReflectableType(field.FieldType) && !IsEnumerable(obj))
@@ -427,7 +428,7 @@ namespace ModTools
             {
                 try
                 {
-                    field.SetValue(obj, buffer);
+                    field.SetValue(obj, _buffer);
                 }
                 catch (Exception e)
                 {
@@ -582,13 +583,13 @@ namespace ModTools
             }
             if (GUILayout.Button("Copy"))
             {
-                buffer = value;
+                _buffer = value;
             }
         }
 
         private bool SetupPasteButon(Type type)
         {
-            if (buffer == null || type.IsInstanceOfType(buffer))
+            if (_buffer == null || type.IsInstanceOfType(_buffer))
             {
                 return GUILayout.Button("Paste");
             }
@@ -620,8 +621,9 @@ namespace ModTools
                     value = property.GetValue(obj, null);
                     propertyWasEvaluated = true;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    UnityEngine.Debug.LogException(e);
                 }
 
                 if (value != null && TypeUtil.IsReflectableType(property.PropertyType) && !IsEnumerable(obj))
@@ -772,7 +774,7 @@ namespace ModTools
             {
                 try
                 {
-                    property.SetValue(obj, buffer, null);
+                    property.SetValue(obj, _buffer, null);
                 }
                 catch (Exception e)
                 {
@@ -1001,7 +1003,7 @@ namespace ModTools
 
                 if (doPaste)
                 {
-                    material.SetTexture(prop, (Texture) buffer);
+                    material.SetTexture(prop, (Texture) _buffer);
                 }
             }
 
@@ -1074,7 +1076,7 @@ namespace ModTools
                 }
                 if (doPaste)
                 {
-                    material.SetColor(prop, (Color)buffer);
+                    material.SetColor(prop, (Color)_buffer);
                 }
             }
 
@@ -1974,8 +1976,9 @@ namespace ModTools
                         return o.name.CompareTo(o1.name);
                     });
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    UnityEngine.Debug.LogException(e);
                 }
             }
 
@@ -2001,8 +2004,9 @@ namespace ModTools
                 {
                     OnSceneTreeReflect(currentRefChain, currentRefChain.Evaluate());
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    UnityEngine.Debug.LogException(e);
                     currentRefChain = null;
                     throw;
                 }
