@@ -40,33 +40,18 @@ namespace ModTools
 
         public static bool IsReflectableType(Type t)
         {
-            if (IsBuiltInType(t))
-            {
-                return false;
-            }
-
-            return true;
+            return !IsBuiltInType(t);
         }
 
         public static bool IsTextureType(Type t)
         {
-            if (t == typeof(UnityEngine.Texture) || t == typeof(UnityEngine.Texture2D) ||
-                t == typeof(UnityEngine.RenderTexture))
-            {
-                return true;
-            }
-
-            return false;
+            return t == typeof(UnityEngine.Texture) || t == typeof(UnityEngine.Texture2D) ||
+                   t == typeof(UnityEngine.RenderTexture) || t == typeof(UnityEngine.Texture3D);
         }
 
         public static bool IsMeshType(Type t)
         {
-            if (t == typeof(UnityEngine.Mesh))
-            {
-                return true;
-            }
-
-            return false;
+            return t == typeof(UnityEngine.Mesh);
         }
 
         public static MemberInfo[] GetAllMembers(Type type, bool recursive = false)

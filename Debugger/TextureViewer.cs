@@ -21,7 +21,7 @@ namespace ModTools
             go.transform.parent = ModTools.Instance.transform;
             var textureViewer = go.AddComponent<TextureViewer>();
             textureViewer.caller = refChain;
-            textureViewer.previewTexture = texture;
+            textureViewer.previewTexture = texture is Texture3D? Util.NormalizeTexture3D((Texture3D)texture) : texture;
             textureViewer.visible = true;
             return textureViewer;
         }

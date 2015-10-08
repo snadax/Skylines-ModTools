@@ -27,11 +27,66 @@ namespace ModTools
             RenderTexture.active = oldRT;
         }
 
+        public static void DumpTexture2D(Texture2D texture, string filename)
+        {
+            byte[] bytes = null;
+
+            try
+            {
+                bytes = texture.EncodeToPNG();
+            }
+            catch (UnityException)
+            {
+                Log.Warning(String.Format("Texture \"{0}\" is marked as read-only, running workaround..", texture.name));
+            }
+
+            if (bytes == null)
+            {
+                try
+                {
+                    var rt = RenderTexture.GetTemporary(texture.width, texture.height, 0);
+                    Graphics.Blit(texture, rt);
+                    Util.DumpRenderTexture(rt, filename);
+                    RenderTexture.ReleaseTemporary(rt);
+                    Log.Warning(String.Format("Texture dumped to \"{0}\"", filename));
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("There was an error while dumping the texture - " + ex.Message);
+                }
+
+                return;
+            }
+
+            File.WriteAllBytes(filename, bytes);
+            Log.Warning(String.Format("Texture dumped to \"{0}\"", filename));
+        }
+
+        public static Texture2D NormalizeTexture3D(Texture3D t3d)
+        {
+            var pixels = t3d.GetPixels();
+            var width = t3d.width;
+            var depth = t3d.depth;
+            var height = t3d.height;
+            var tex = new Texture2D(width * depth, height, TextureFormat.ARGB32, false);
+            for (int k = 0; k < depth; k++)
+            {
+                for (int i = 0; i < width; i++)
+                {
+                    for (int j = 0; j < height; j++)
+                    {
+                        tex.SetPixel(j * width + i, (height - k - 1), pixels[width * depth * j + k * depth + i]);
+                    }
+                }
+            }
+            tex.Apply();
+            return tex;
+        }
+
         public static void DumpTextureToPNG(Texture previewTexture, string filename = null)
         {
-            if (filename == null)
+            if (string.IsNullOrEmpty(filename))
             {
-                filename = "";
                 var filenamePrefix = String.Format("rt_dump_{0}", previewTexture.name);
                 if (!File.Exists(filenamePrefix + ".png"))
                 {
@@ -61,38 +116,12 @@ namespace ModTools
             }
             else if (previewTexture is Texture2D)
             {
-                var texture = previewTexture as Texture2D;
-                byte[] bytes = null;
+                DumpTexture2D(previewTexture as Texture2D, filename);
 
-                try
-                {
-                    bytes = texture.EncodeToPNG();
-                }
-                catch (UnityException)
-                {
-                    Log.Warning(String.Format("Texture \"{0}\" is marked as read-only, running workaround..", texture.name));
-                }
-
-                if (bytes == null)
-                {
-                    try
-                    {
-                        var rt = RenderTexture.GetTemporary(texture.width, texture.height, 0);
-                        Graphics.Blit(texture, rt);
-                        Util.DumpRenderTexture(rt, filename);
-                        RenderTexture.ReleaseTemporary(rt);
-                        Log.Warning(String.Format("Texture dumped to \"{0}\"", filename));
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error("There was an error while dumping the texture - " + ex.Message);
-                    }
-
-                    return;
-                }
-
-                File.WriteAllBytes(filename, bytes);
-                Log.Warning(String.Format("Texture dumped to \"{0}\"", filename));
+            }
+            else if (previewTexture is Texture3D)
+            {
+                DumpTexture2D(NormalizeTexture3D(previewTexture as Texture3D), filename);
             }
             else
             {

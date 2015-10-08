@@ -120,7 +120,7 @@ namespace ModTools
                 if (prefabField != null)
                 {
                     var prefab = prefabField.GetValue(currentTool);
-                    if ((PrefabInfo) prefab != ploppedPrefab)
+                    if ((PrefabInfo)prefab != ploppedPrefab)
                     {
                         ploppedPrefab = null;
                     }
@@ -557,14 +557,15 @@ namespace ModTools
             }
             else if (TypeUtil.IsTextureType(type) && value != null)
             {
+                var texture = (Texture)value;
                 if (GUILayout.Button("Preview"))
                 {
-                    TextureViewer.CreateTextureViewer(refChain, (Texture)value);
+                    TextureViewer.CreateTextureViewer(refChain, texture);
                 }
 
                 if (GUILayout.Button("Dump .png"))
                 {
-                    Util.DumpTextureToPNG((Texture)value);
+                    Util.DumpTextureToPNG(texture);
                 }
             }
             else if (TypeUtil.IsMeshType(type) && value != null)
@@ -825,7 +826,7 @@ namespace ModTools
             {
                 if (GUILayout.Button("Invoke", GUILayout.ExpandWidth(false)))
                 {
-                    method.Invoke(obj, new object[] {});
+                    method.Invoke(obj, new object[] { });
                 }
             }
             GUILayout.EndHorizontal();
@@ -1003,7 +1004,7 @@ namespace ModTools
 
                 if (doPaste)
                 {
-                    material.SetTexture(prop, (Texture) _buffer);
+                    material.SetTexture(prop, (Texture)_buffer);
                 }
             }
 
