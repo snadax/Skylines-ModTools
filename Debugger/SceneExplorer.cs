@@ -525,6 +525,17 @@ namespace ModTools
                     }
                 }
             }
+            else if (value is CitizenInfo)
+            {
+                var info = (CitizenInfo)value;
+                if (info.m_lodMesh != null)
+                {
+                    if (GUILayout.Button("Preview LOD"))
+                    {
+                        MeshViewer.CreateMeshViewer(info.name, info.m_lodMesh, info.m_lodMaterial);
+                    }
+                }
+            }
             else if (value is NetInfo.Segment)
             {
                 var info = (NetInfo.Segment)value;
@@ -695,8 +706,9 @@ namespace ModTools
                         value = property.GetValue(obj, null);
                         propertyWasEvaluated = true;
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
+                        UnityEngine.Debug.LogException(e);
                     }
                 }
 

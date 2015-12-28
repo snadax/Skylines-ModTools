@@ -45,6 +45,7 @@ namespace ModTools
             meshViewerCamera.nearClipPlane = 1.0f;
             meshViewerCamera.farClipPlane = 1000.0f;
             meshViewerCamera.enabled = false;
+            meshViewerCamera.hdr = true;
 
             targetRT = new RenderTexture(512, 512, 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
             meshViewerCamera.targetTexture = targetRT;

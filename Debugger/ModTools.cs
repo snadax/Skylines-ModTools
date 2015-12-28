@@ -9,7 +9,7 @@ namespace ModTools
     {
         public SimulationManager.UpdateMode updateMode = SimulationManager.UpdateMode.Undefined;
 
-#if MODTOOLS_DEBUG
+#if DEBUG
         public static readonly bool DEBUG_MODTOOLS = true;
 #else
         public static readonly bool DEBUG_MODTOOLS = false;

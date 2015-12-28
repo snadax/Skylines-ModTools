@@ -19,7 +19,7 @@ namespace ModTools
 
         public static bool IsModToolsActive()
         {
-#if MODTOOLS_DEBUG
+#if DEBUG
             return true;
 #else
             var pluginManager = PluginManager.instance;
