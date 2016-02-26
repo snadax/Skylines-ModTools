@@ -275,8 +275,8 @@ namespace ModTools
                 if (serviceBuildingInfoPanel != null)
                 {
                     AddBuildingPanelControls(serviceBuildingInfoPanel, out serviceBuildingAssetNameLabel,
-                        out serviceBuildingShowExplorerButton, new Vector3(-8.0f, 100.0f, 0.0f),
-                        out serviceBuildingDumpMeshTextureButton, new Vector3(-8.0f, 132.0f, 0.0f)
+                        out serviceBuildingShowExplorerButton, new Vector3(-8.0f, 175.0f, 0.0f),
+                        out serviceBuildingDumpMeshTextureButton, new Vector3(-8.0f, 200.0f, 0.0f)
                         );
                     initializedServiceBuildingsPanel = true;
                 }

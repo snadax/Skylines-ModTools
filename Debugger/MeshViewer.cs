@@ -78,12 +78,15 @@ namespace ModTools
                 return;
             }
 
-            float intensity = 1.0f;
+            float intensity = 0.0f;
+            Color color = Color.black;
 
             if (light != null)
             {
                 intensity = light.intensity;
-                light.intensity = 0.6f;
+                color = light.color;
+                light.intensity = 2.0f;
+                light.color = Color.white;
             }
 
             var pos = meshViewerCamera.transform.position + new Vector3(0.0f, -zoom, -zoom);
@@ -96,6 +99,7 @@ namespace ModTools
             if (light != null)
             {
                 light.intensity = intensity;
+                light.color = color;
             }
         }
 

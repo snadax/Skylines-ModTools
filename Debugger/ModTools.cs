@@ -121,7 +121,7 @@ namespace ModTools
             }
         }
 
-        public ModTools() : base("Mod Tools", new Rect(128, 128, 356, 260), skin)
+        public ModTools() : base("Mod Tools", new Rect(128, 128, 356, 290), skin)
         {
             onDraw = DoMainWindow;
             onUnityDestroy = OnUnityDestroyCallback;
@@ -301,26 +301,23 @@ namespace ModTools
                 SaveConfig();
             }
 
-            if ((updateMode == SimulationManager.UpdateMode.NewGame || updateMode == SimulationManager.UpdateMode.LoadGame))
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Game panel extensions");
+            var newExtendGamePanels = GUILayout.Toggle(extendGamePanels, "");
+            GUILayout.EndHorizontal();
+
+            if (newExtendGamePanels != extendGamePanels)
             {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Game panel extensions");
-                var newExtendGamePanels = GUILayout.Toggle(extendGamePanels, "");
-                GUILayout.EndHorizontal();
+                extendGamePanels = newExtendGamePanels;
+                SaveConfig();
 
-                if (newExtendGamePanels != extendGamePanels)
+                if (extendGamePanels)
                 {
-                    extendGamePanels = newExtendGamePanels;
-                    SaveConfig();
-
-                    if (extendGamePanels)
-                    {
-                        gameObject.AddComponent<GamePanelExtender>();
-                    }
-                    else
-                    {
-                        Destroy(gameObject.GetComponent<GamePanelExtender>());
-                    }
+                    gameObject.AddComponent<GamePanelExtender>();
+                }
+                else
+                {
+                    Destroy(gameObject.GetComponent<GamePanelExtender>());
                 }
             }
 

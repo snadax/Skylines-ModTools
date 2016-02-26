@@ -153,6 +153,9 @@ namespace ModTools
         void DrawHeader()
         {
             headerArea.Begin();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Scripts are stored in project workspace. To add a script create a new .cs file in workspace and click 'Reload'", GUILayout.ExpandWidth(false));
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Project workspace:", GUILayout.ExpandWidth(false));
