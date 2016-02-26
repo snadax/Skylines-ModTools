@@ -21,7 +21,7 @@ namespace ModTools
         public bool showConsoleOnError = true;
         public bool consoleAutoScrollToBottom = true;
 
-        public bool improvedWorkshopIntegration = true;
+        public bool customPrefabsObject = true;
 
         public Rect sceneExplorerRect = new Rect(128, 440, 800, 500);
         public bool sceneExplorerVisible = false;

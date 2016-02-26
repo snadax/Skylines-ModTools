@@ -50,8 +50,11 @@
     <Compile Include="ColorUtil.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Console.cs" />
+    <Compile Include="CustomPrefabs.cs" />
     <Compile Include="DateTimeUtil.cs" />
     <Compile Include="DebugRenderer.cs" />
+    <Compile Include="LoadingExtension.cs" />
+    <Compile Include="ModToolsBootstrap.cs" />
     <Compile Include="RedirectionHelper.cs" />
     <Compile Include="ExtensionMethods\ArrayExt.cs" />
     <Compile Include="ExtensionMethods\MeshExtension.cs" />
@@ -68,7 +71,6 @@
     <Compile Include="HashCodeUtil.cs" />
     <Compile Include="HashUtil.cs" />
     <Compile Include="IModEntryPoint.cs" />
-    <Compile Include="ImprovedWorkshopIntegration.cs" />
     <Compile Include="IsolatedFailures.cs" />
     <Compile Include="MeshOBJTools\Int32Converter.cs" />
     <Compile Include="MeshOBJTools\OBJData.cs" />

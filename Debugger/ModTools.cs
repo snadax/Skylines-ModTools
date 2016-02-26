@@ -50,7 +50,7 @@ namespace ModTools
             Destroy(panelExtender);
             Destroy(colorPicker);
 
-            ImprovedWorkshopIntegration.Revert();
+            CustomPrefabs.Revert();
 
             instance = null;
         }
@@ -143,7 +143,7 @@ namespace ModTools
 
                     if (Instance.console != null)
                     {
-                        Instance.console.AddMessage(String.Format("{0} ({1})", condition, trace), type, true);
+                        Instance.console.AddMessage($"{condition} ({trace})", type, true);
                         return;
                     }
 
@@ -188,9 +188,9 @@ namespace ModTools
                 UnityLoggingHook.EnableHook();
             }
 
-            if (updateMode == SimulationManager.UpdateMode.Undefined && config.improvedWorkshopIntegration)
+            if (updateMode != SimulationManager.UpdateMode.Undefined && config.customPrefabsObject)
             {
-                ImprovedWorkshopIntegration.Bootstrap();
+                CustomPrefabs.Bootstrap();
             }
         }
 
@@ -326,21 +326,20 @@ namespace ModTools
 
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Improved Workshop integration");
-            var improvedWorkshopIntegration = GUILayout.Toggle(config.improvedWorkshopIntegration, "");
+            GUILayout.Label("Custom Prefabs Object");
+            var customPrefabsObject = GUILayout.Toggle(config.customPrefabsObject, "");
             GUILayout.EndHorizontal();
-            if (improvedWorkshopIntegration != config.improvedWorkshopIntegration)
+            if (customPrefabsObject != config.customPrefabsObject)
             {
-                config.improvedWorkshopIntegration = improvedWorkshopIntegration;
-                if (config.improvedWorkshopIntegration && updateMode == SimulationManager.UpdateMode.Undefined)
+                config.customPrefabsObject = customPrefabsObject;
+                if (config.customPrefabsObject && updateMode != SimulationManager.UpdateMode.Undefined)
                 {
-                    ImprovedWorkshopIntegration.Bootstrap();
+                    CustomPrefabs.Bootstrap();
                 }
-                else if (updateMode == SimulationManager.UpdateMode.Undefined)
+                else if (updateMode != SimulationManager.UpdateMode.Undefined)
                 {
-                    ImprovedWorkshopIntegration.Revert();
+                    CustomPrefabs.Revert();
                 }
-
                 SaveConfig();
             }
 
