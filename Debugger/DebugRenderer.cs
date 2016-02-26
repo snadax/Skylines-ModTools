@@ -30,15 +30,13 @@ namespace ModTools
                     }
 
                     var current = hoveredLocal;
-
                     var refChain = new ReferenceChain();
+                    refChain = refChain.Add(current);
                     while (current != null)
                     {
-                        refChain = refChain.Add(current);
                         refChain = refChain.Add(current.gameObject);
                         current = current.parent;
                     };
-                    refChain = refChain.Add(uiView);
                     refChain = refChain.Add(uiView.gameObject);
 
                     var sceneExplorer = FindObjectOfType<SceneExplorer>();
