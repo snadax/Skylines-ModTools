@@ -22,7 +22,7 @@ namespace ModTools
         private DebugRenderer debugRenderer;
         public SceneExplorerColorConfig sceneExplorerColorConfig;
 
-     //   public ScriptEditor scriptEditor;
+        public ScriptEditor scriptEditor;
 
         public Watches watches;
         public ColorPicker colorPicker;
@@ -45,7 +45,7 @@ namespace ModTools
             Destroy(console);
             Destroy(sceneExplorer);
             Destroy(sceneExplorerColorConfig);
-         //   Destroy(scriptEditor);
+            Destroy(scriptEditor);
             Destroy(watches);
             Destroy(panelExtender);
             Destroy(colorPicker);
@@ -168,7 +168,8 @@ namespace ModTools
             debugRenderer = GameObject.FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
             watches = gameObject.AddComponent<Watches>();
             colorPicker = gameObject.AddComponent<ColorPicker>();
-
+            scriptEditor = gameObject.AddComponent<ScriptEditor>();
+            scriptEditor.visible = false;
             sceneExplorerColorConfig = gameObject.AddComponent<SceneExplorerColorConfig>();
 
             LoadConfig();
@@ -370,13 +371,12 @@ namespace ModTools
                     sceneExplorer.Refresh();
                 }
             }
-            
-            if (GUILayout.Button("Throw exception!"))
+
+            if (GUILayout.Button("Script editor"))
             {
-                throw new Exception("Hello world!");
+                scriptEditor.visible = !scriptEditor.visible;
             }
         }
-
     }
 
 }

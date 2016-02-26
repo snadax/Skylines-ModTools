@@ -99,7 +99,7 @@ namespace ModTools
                             modToolsHookFileExists = true;
                         }
 
-                        projectFiles.Add(new ScriptEditorFile() { path = file, source = File.ReadAllText(file) } );
+                        projectFiles.Add(new ScriptEditorFile() { path = file, source = File.ReadAllText(file) });
                     }
                 }
             }
@@ -160,7 +160,7 @@ namespace ModTools
             {
                 ReloadProjectWorkspace();
             }
-            
+
             GUILayout.EndHorizontal();
 
             projectFilesScrollPosition = GUILayout.BeginScrollView(projectFilesScrollPosition);
@@ -223,7 +223,7 @@ namespace ModTools
                 GUI.enabled = false;
             }
 
-           /* if (GUILayout.Button("Compile"))
+            if (GUILayout.Button("Compile"))
             {
                 string dllPath;
                 if (ScriptCompiler.CompileSource(projectFiles, out dllPath))
@@ -258,7 +258,7 @@ namespace ModTools
                     Log.Error("Failed to compile or run source, reason: " + errorMessage);
                 }
             }
-            */
+
             GUI.enabled = false;
             if (currentMod != null)
             {
@@ -332,33 +332,27 @@ namespace ModTools
         }
 
         private readonly string defaultSource = @"
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using System.IO;
+using System.Linq;
+using ColossalFramework.UI;
+using UnityEngine;
+        
 
-// This file contains a helper class that will tell ModTools how to load and unload your mod
-// Do not include this file in your Visual Studio/ MonoDevelop project, it's necessary only when you're running your mod though ModTools
-// Make sure to implement the OnModUnloaded() method properly so that your mod doesn't leave any stray components/ gameobjects
-
-namespace MyMod
+namespace ModTools
 {
-    class MyMod : ModTools.IModEntryPoint
+    class MyMod : IModEntryPoint
     {
-        private LoadingExtensionBase myLoadingExtensionBase;
-
         public void OnModLoaded()
         {
-            // initialize your mod here
-
-            ModTools.Log.Warning(""Hello World!"");
-            
-            // myLoadingExtensionBase = new MyLoadingExtensionBaseType();
-            // myLoadingExtensionBase.OnLevelLoaded(LoadType.NewMap);
+            throw new Exception(""Hello World!"");
         }
-
         public void OnModUnloaded()
         {
-            // deinitialize your mod here
-            // make sure to Destroy() all components and gameobjects created by your mod            
-            
-            // myLoadingExtensionBase.OnLevelUnloaded();
+            throw new Exception(""Goodbye Cruel World!"");
         }
     }
 }";
