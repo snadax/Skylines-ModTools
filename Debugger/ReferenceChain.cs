@@ -327,7 +327,11 @@ namespace ModTools
 
             if (LastItemType == ReferenceType.Property)
             {
-                ((PropertyInfo)LastItem).SetValue(current, value, null);
+                var propertyInfo = ((PropertyInfo)LastItem);
+                if (propertyInfo.CanWrite)
+                {
+                    propertyInfo.SetValue(current, value, null);
+                }
                 return true;
             }
 
