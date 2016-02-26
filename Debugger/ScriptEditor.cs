@@ -10,11 +10,9 @@ namespace ModTools
 
     public class ScriptEditorFile
     {
-
         public string source = "";
         public string path = "";
         public FileSystemWatcher filesystemWatcher = null;
-
     }
 
     public class ScriptEditor : GUIWindow
@@ -22,7 +20,7 @@ namespace ModTools
 
         private readonly string textAreaControlName = "ModToolsScriptEditorTextArea";
 
-        private readonly string modToolsHookFileName = "ModToolsHook.cs";
+        private const string ExampleScriptFileName = "ExampleScript.cs";
 
         private IModEntryPoint currentMod;
         private string lastError = "";
@@ -75,70 +73,74 @@ namespace ModTools
             footerArea.relativeSize.x = 1.0f;
         }
 
-        void ReloadProjectWorkspace()
+        public void ReloadProjectWorkspace()
         {
-            if (projectWorkspacePath.Trim().Length == 0)
+            projectWorkspacePath = ModTools.Instance.config.scriptEditorWorkspacePath;
+            if (projectWorkspacePath.Length == 0)
             {
                 lastError = "Invalid project workspace path";
                 return;
             }
 
-            bool modToolsHookFileExists = false;
+            bool exampleFileExists = false;
 
             projectFiles.Clear();
 
             try
             {
-                var files = FileUtil.ListFilesInDirectoryRecursively(projectWorkspacePath);
+                var files = FileUtil.ListFilesInDirectory(projectWorkspacePath);
                 foreach (var file in files)
                 {
                     if (Path.GetExtension(file) == ".cs")
                     {
-                        if (Path.GetFileName(file) == modToolsHookFileName)
+                        if (Path.GetFileName(file) == ExampleScriptFileName)
                         {
-                            modToolsHookFileExists = true;
+                            exampleFileExists = true;
                         }
 
                         projectFiles.Add(new ScriptEditorFile() { path = file, source = File.ReadAllText(file) });
                     }
                 }
+                if (!exampleFileExists)
+                {
+                    var exampleFile = new ScriptEditorFile()
+                    {
+                        path = Path.Combine(projectWorkspacePath, ExampleScriptFileName),
+                        source = defaultSource
+                    };
+
+                    projectFiles.Add(exampleFile);
+                    SaveProjectFile(exampleFile);
+                }
             }
             catch (Exception ex)
             {
                 lastError = ex.Message;
+                return;
             }
-
-            if (!modToolsHookFileExists)
-            {
-                var hookFile = new ScriptEditorFile()
-                {
-                    path = Path.Combine(projectWorkspacePath, modToolsHookFileName),
-                    source = defaultSource
-                };
-
-                projectFiles.Add(hookFile);
-                SaveProjectFile(hookFile);
-            }
+            lastError = "";
         }
 
         void SaveAllProjectFiles()
         {
-            foreach (var file in projectFiles)
-            {
-                SaveProjectFile(file);
-            }
-        }
-
-        void SaveProjectFile(ScriptEditorFile file)
-        {
             try
             {
-                File.WriteAllText(file.path, file.source);
+                foreach (var file in projectFiles)
+                {
+                    SaveProjectFile(file);
+                }
             }
             catch (Exception ex)
             {
                 lastError = ex.Message;
+                return;
             }
+            lastError = "";
+        }
+
+        void SaveProjectFile(ScriptEditorFile file)
+        {
+            File.WriteAllText(file.path, file.source);
         }
 
         void Update()
@@ -154,7 +156,13 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Project workspace:", GUILayout.ExpandWidth(false));
-            projectWorkspacePath = GUILayout.TextField(projectWorkspacePath, GUILayout.ExpandWidth(true));
+            var newProjectWorkspacePath = GUILayout.TextField(projectWorkspacePath, GUILayout.ExpandWidth(true));
+            if (!newProjectWorkspacePath.Equals(projectWorkspacePath))
+            {
+                projectWorkspacePath = newProjectWorkspacePath.Trim();
+                ModTools.Instance.config.scriptEditorWorkspacePath = projectWorkspacePath;
+                ModTools.Instance.SaveConfig();
+            }
 
             if (GUILayout.Button("Reload", GUILayout.Width(100)))
             {
@@ -249,7 +257,7 @@ namespace ModTools
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(String.Format("Exception while calling IModEntryPoint.OnModLoaded() - {0}", ex.Message));
+                        Log.Error($"Exception while calling IModEntryPoint.OnModLoaded() - {ex.Message}");
                     }
                 }
                 else
@@ -274,7 +282,7 @@ namespace ModTools
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(String.Format("Exception while calling IModEntryPoint.OnModUnloaded() - {0}", ex.Message));
+                    Log.Error($"Exception while calling IModEntryPoint.OnModUnloaded() - {ex.Message}");
                 }
 
                 currentMod = null;
@@ -293,7 +301,16 @@ namespace ModTools
 
             if (GUILayout.Button("Save"))
             {
-                SaveProjectFile(currentFile);
+                try
+                {
+                    SaveProjectFile(currentFile);
+                }
+                catch (Exception ex)
+                {
+                    lastError = ex.Message;
+                    return;
+                }
+                lastError = "";
             }
 
             GUI.enabled = true;
@@ -331,7 +348,7 @@ namespace ModTools
             visible = false;
         }
 
-        private readonly string defaultSource = @"
+        private readonly string defaultSource = @"//You can copy this script's file and use it for your own scripts
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -344,15 +361,15 @@ using UnityEngine;
 
 namespace ModTools
 {
-    class MyMod : IModEntryPoint
+    class ExampleScript : IModEntryPoint
     {
         public void OnModLoaded()
         {
-            throw new Exception(""Hello World!"");
+            throw new Exception(""Hello World!""); //replace this line with your script
         }
         public void OnModUnloaded()
         {
-            throw new Exception(""Goodbye Cruel World!"");
+            throw new Exception(""Goodbye Cruel World!""); //replace this line with your clean up script
         }
     }
 }";

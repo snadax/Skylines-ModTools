@@ -64,6 +64,8 @@ namespace ModTools
         public bool sceneExplorerEvaluatePropertiesAutomatically = true;
         public bool sceneExplorerSortAlphabetically = true;
 
+        public string scriptEditorWorkspacePath = "";
+
         public string fontName = "Courier New Bold";
         public int fontSize = 14;
 

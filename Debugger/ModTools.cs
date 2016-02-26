@@ -93,6 +93,8 @@ namespace ModTools
             {
                 sceneExplorer.Refresh();
             }
+
+            scriptEditor.ReloadProjectWorkspace();
         }
 
         public void SaveConfig()
@@ -229,6 +231,11 @@ namespace ModTools
             if (useModToolsConsole && Input.GetKeyDown(KeyCode.F7))
             {
                 console.visible = !console.visible;
+            }
+
+            if (Input.GetKeyDown(KeyCode.BackQuote))
+            {
+                scriptEditor.visible = !scriptEditor.visible;
             }
         }
 
@@ -372,7 +379,7 @@ namespace ModTools
                 }
             }
 
-            if (GUILayout.Button("Script editor"))
+            if (GUILayout.Button("Script editor (Ctrl+`)"))
             {
                 scriptEditor.visible = !scriptEditor.visible;
             }
