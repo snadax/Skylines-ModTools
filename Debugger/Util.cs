@@ -248,9 +248,11 @@ namespace ModTools
         {
             try
             {
-                var cameraController = GameObject.FindObjectOfType<CameraController>();
-                var mouseWheelZoom = GetPrivate<SavedBool>(cameraController, "m_mouseWheelZoom");
-                SetPrivate(mouseWheelZoom, "m_Value", isEnabled);
+                var mouseWheelZoom = GetPrivate<SavedBool>(ToolsModifierControl.cameraController, "m_mouseWheelZoom");
+                if (mouseWheelZoom.value != isEnabled)
+                {
+                    mouseWheelZoom.value = isEnabled;
+                }
             }
             catch (Exception)
             {

@@ -916,7 +916,14 @@ namespace ModTools
           "_UpTex",
           "_Tex",
           "_Cube",
-          "_APRMap"
+          "_APRMap",
+          "_RainNoise",
+          "_RainNoiseSum",
+          "areaTex",
+          "luminTex",
+          "searchTex",
+          "_SrcTex",
+          "_Blurred"
         };
 
         private static readonly string[] colorProps = new string[]
@@ -2099,7 +2106,7 @@ namespace ModTools
             if (prefabInfo is BuildingInfo)
             {
                 var buildingInfo = (BuildingInfo)prefabInfo;
-                var buildingTool = FindObjectOfType<BuildingTool>();
+                var buildingTool = ToolsModifierControl.GetTool<BuildingTool>();
                 if (buildingTool == null)
                 {
                     Log.Warning("BuildingTool not found!");
@@ -2112,7 +2119,7 @@ namespace ModTools
             else if (prefabInfo is NetInfo)
             {
                 var netInfo = (NetInfo)prefabInfo;
-                var netTool = FindObjectOfType<NetTool>();
+                var netTool = ToolsModifierControl.GetTool<NetTool>();
                 if (netTool == null)
                 {
                     Log.Warning("NetTool not found!");
@@ -2124,7 +2131,7 @@ namespace ModTools
             else if (prefabInfo is PropInfo)
             {
                 var propInfo = (PropInfo)prefabInfo;
-                var propTool = FindObjectOfType<PropTool>();
+                var propTool = ToolsModifierControl.GetTool<PropTool>();
                 if (propTool == null)
                 {
                     Log.Warning("PropTool not found!");
@@ -2136,7 +2143,7 @@ namespace ModTools
             else if (prefabInfo is TreeInfo)
             {
                 var treeInfo = (TreeInfo)prefabInfo;
-                var treeTool = FindObjectOfType<TreeTool>();
+                var treeTool = ToolsModifierControl.GetTool<TreeTool>();
                 if (treeTool == null)
                 {
                     Log.Warning("TreeTool not found!");

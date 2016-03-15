@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ColossalFramework.UI;
 using UnityEngine;
 
@@ -58,7 +59,6 @@ namespace ModTools
         public static Vector2 moveDragHandle = Vector2.zero;
 
         public static float uiScale = 1.0f;
-
         private bool _visible = false;
 
         public bool visible
@@ -110,7 +110,6 @@ namespace ModTools
                     clickCatcher.name = "_ModToolsInternal";
                 }
             }
-
             UpdateClickCatcher();
         }
 
@@ -155,18 +154,7 @@ namespace ModTools
         {
             var mouse = Input.mousePosition;
             mouse.y = Screen.height - mouse.y;
-
-            var mouseInsideGuiWindow = false;
-
-            foreach (var window in windows)
-            {
-                if (window.visible && window.rect.Contains(mouse))
-                {
-                    mouseInsideGuiWindow = true;
-                    break;
-                }
-            }
-
+            var mouseInsideGuiWindow = windows.Any(window => window.visible && window.rect.Contains(mouse));
             Util.SetMouseScrolling(!mouseInsideGuiWindow);
         }
 
