@@ -536,6 +536,15 @@ namespace ModTools
                     }
                 }
             }
+            else if (value is MilestoneInfo)
+            {
+                var info = (MilestoneInfo)value;
+                if (GUILayout.Button("Unlock"))
+                {
+                    var wrapper = new MilestonesWrapper(UnlockManager.instance);
+                    wrapper.UnlockMilestone(info.name);
+                }
+            }
             else if (value is NetInfo.Segment)
             {
                 var info = (NetInfo.Segment)value;

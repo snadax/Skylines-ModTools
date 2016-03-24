@@ -1,13 +1,8 @@
-﻿using System;
-using System.Linq;
-using ColossalFramework;
-using ColossalFramework.Plugins;
-using ICities;
-using UnityEngine;
+﻿using ICities;
 
 namespace ModTools
 {
-    public class Mod : LoadingExtensionBase, IUserMod
+    public class Mod : IUserMod
     {
 
         public string Name
@@ -15,10 +10,7 @@ namespace ModTools
             get { ModToolsBootstrap.Bootstrap(); return "ModTools"; }
         }
 
-        public string Description
-        {
-            get { return "Debugging toolkit for modders"; }
-        }
+        public string Description => "Debugging toolkit for modders";
     }
 
 }

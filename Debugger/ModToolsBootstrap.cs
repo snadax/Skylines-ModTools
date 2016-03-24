@@ -24,16 +24,9 @@ namespace ModTools
             var pluginManager = PluginManager.instance;
             var plugins = pluginManager.GetPluginsInfo();
 
-            foreach (var item in plugins)
-            {
-                var instances = item.GetInstances<IUserMod>();
-                if (instances.FirstOrDefault() is Mod)
-                {
-                    return item.isEnabled;
-                }
-            }
+            return (from item in plugins let instances = item.GetInstances<IUserMod>()
+                    where instances.FirstOrDefault() is Mod select item.isEnabled).FirstOrDefault();
 
-            return false;
 #endif
         }
 
@@ -49,9 +42,7 @@ namespace ModTools
                 {
                     CODebugBase<LogChannel>.verbose = true;
                     CODebugBase<LogChannel>.EnableChannels(LogChannel.All);
-                    RedirectionHelper.RedirectCalls(
-                        typeof(LoadingWrapper).GetMethod("OnLevelLoaded", new[] { typeof(SimulationManager.UpdateMode) }),
-                        typeof(IsolatedFailures).GetMethod("OnLevelLoaded", new[] { typeof(SimulationManager.UpdateMode) }));
+                    LoadingWrapperDetour.Deploy();
                     bootstrapped = true;
                 }
                 if (inMainMenu)

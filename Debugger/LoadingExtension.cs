@@ -9,7 +9,6 @@ namespace ModTools
         {
             ModToolsBootstrap.inMainMenu = false;
             ModToolsBootstrap.InitModTools((SimulationManager.UpdateMode)mode);
-            ToolsModifierControl.toolController.m_enableDevUI = true;
         }
 
         public override void OnLevelUnloading()

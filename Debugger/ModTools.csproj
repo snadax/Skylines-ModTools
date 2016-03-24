@@ -71,7 +71,7 @@
     <Compile Include="HashCodeUtil.cs" />
     <Compile Include="HashUtil.cs" />
     <Compile Include="IModEntryPoint.cs" />
-    <Compile Include="IsolatedFailures.cs" />
+    <Compile Include="LoadingWrapperDetour.cs" />
     <Compile Include="MeshOBJTools\Int32Converter.cs" />
     <Compile Include="MeshOBJTools\OBJData.cs" />
     <Compile Include="MeshOBJTools\OBJFace.cs" />
