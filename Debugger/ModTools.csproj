@@ -98,6 +98,10 @@
     <Compile Include="UpdateHook.cs" />
     <Compile Include="UserNotifications.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="Utils\DumpUtil.cs" />
+    <Compile Include="Utils\MeshUtil.cs" />
+    <Compile Include="Utils\ReflectionUtil.cs" />
+    <Compile Include="Utils\TextureUtil.cs" />
     <Compile Include="Watches.cs" />
   </ItemGroup>
   <ItemGroup>

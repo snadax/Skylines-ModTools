@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using ColossalFramework;
 using ColossalFramework.UI;
+using ModTools.Utils;
 using UnityEngine;
 
 namespace ModTools
@@ -585,7 +586,7 @@ namespace ModTools
 
                 if (GUILayout.Button("Dump .png"))
                 {
-                    Util.DumpTextureToPNG(texture);
+                    TextureUtil.DumpTextureToPNG(texture);
                 }
             }
             else if (TypeUtil.IsMeshType(type) && value != null)
@@ -599,7 +600,7 @@ namespace ModTools
                 {
                     var outPath = refChain.ToString() + ".obj";
                     outPath = outPath.Replace(' ', '_');
-                    Util.DumpMeshToOBJ(value as Mesh, outPath);
+                    MeshUtil.DumpMeshToOBJ(value as Mesh, outPath);
                 }
             }
             if (GUILayout.Button("Copy"))

@@ -1,4 +1,5 @@
 ﻿using System;
+using ModTools.Utils;
 using UnityEngine;
 
 namespace ModTools
@@ -21,7 +22,8 @@ namespace ModTools
             go.transform.parent = ModTools.Instance.transform;
             var textureViewer = go.AddComponent<TextureViewer>();
             textureViewer.caller = refChain;
-            textureViewer.previewTexture = texture is Texture3D? Util.NormalizeTexture3D((Texture3D)texture) : texture;
+            var texture3D = texture as Texture3D;
+            textureViewer.previewTexture = texture3D == null ? texture: texture3D.ToTexture2D();
             textureViewer.visible = true;
             return textureViewer;
         }
@@ -39,7 +41,7 @@ namespace ModTools
 
                 if (GUILayout.Button("Dump .png", GUILayout.Width(128)))
                 {
-                    Util.DumpTextureToPNG(previewTexture);
+                    TextureUtil.DumpTextureToPNG(previewTexture);
                 }
 
                 float aspect = (float)previewTexture.width / ((float)previewTexture.height + 60.0f);

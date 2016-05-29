@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using ColossalFramework.UI;
+using ModTools.Utils;
 using UnityEngine;
 using UnityExtension;
 
@@ -160,7 +161,7 @@ namespace ModTools
                 UIAlignAnchor.TopRight,
                 (component, param) =>
                 {
-                    InstanceID instance = Util.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     sceneExplorer.ExpandFromRefChain(buildingsBufferRefChain.Add(instance.Building));
                     sceneExplorer.visible = true;
                 }
@@ -168,18 +169,18 @@ namespace ModTools
 
             dumpMeshTextureButton = CreateButton
             (
-                "Preview", 160, 24,
+                "Dump to Import", 160, 24,
                 infoPanel.component,
                 dumpMeshTextureButtonOffset,
                 UIAlignAnchor.TopRight,
                 (component, param) =>
                 {
-                    InstanceID instance = Util.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     var building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
                     var material = building.Info.m_material;
                     var mesh = building.Info.m_mesh;
                     var assetName = building.Info.name;
-                    MeshViewer.CreateMeshViewer(assetName, mesh, material);
+                    DumpUtil.DumpAsset(assetName, mesh, material);
                 }
             );
         }
@@ -204,7 +205,7 @@ namespace ModTools
                 UIAlignAnchor.BottomRight,
                 (component, param) =>
                 {
-                    InstanceID instance = Util.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
 
                     if (instance.Vehicle == 0)
                     {
@@ -221,13 +222,13 @@ namespace ModTools
 
             dumpMeshTextureButton = CreateButton
             (
-                "Preview", 160, 24,
+                "Dump to Import", 160, 24,
                 infoPanel.component,
                 new Vector3(-8.0f, -25.0f, 0.0f),
                 UIAlignAnchor.BottomRight,
                 (component, param) =>
                 {
-                    InstanceID instance = Util.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     VehicleInfo vehicleInfo;
                     if (instance.Vehicle == 0)
                     {
@@ -240,7 +241,7 @@ namespace ModTools
                     var material = vehicleInfo.m_material;
                     var mesh = vehicleInfo.m_mesh;
                     var assetName = vehicleInfo.name;
-                    MeshViewer.CreateMeshViewer(assetName, mesh, material);
+                    DumpUtil.DumpAsset(assetName, mesh, material);
                 }
             );
         }
@@ -345,21 +346,21 @@ namespace ModTools
 
             if (zonedBuildingInfoPanel.component.isVisible)
             {
-                InstanceID instance = Util.GetPrivate<InstanceID>(zonedBuildingInfoPanel, "m_InstanceID");
+                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(zonedBuildingInfoPanel, "m_InstanceID");
                 var building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
                 zonedBuildingAssetNameLabel.text = "AssetName: " + building.Info.name;
             }
 
             if (serviceBuildingInfoPanel.component.isVisible)
             {
-                InstanceID instance = Util.GetPrivate<InstanceID>(serviceBuildingInfoPanel, "m_InstanceID");
+                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(serviceBuildingInfoPanel, "m_InstanceID");
                 var building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
                 serviceBuildingAssetNameLabel.text = "AssetName: " + building.Info.name;
             }
 
             if (citizenVehicleInfoPanel.component.isVisible)
             {
-                InstanceID instance = Util.GetPrivate<InstanceID>(citizenVehicleInfoPanel, "m_InstanceID");
+                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(citizenVehicleInfoPanel, "m_InstanceID");
 
                 if (instance.Vehicle == 0)
                 {
@@ -375,7 +376,7 @@ namespace ModTools
 
             if (cityServiceVehicleInfoPanel.component.isVisible)
             {
-                InstanceID instance = Util.GetPrivate<InstanceID>(cityServiceVehicleInfoPanel, "m_InstanceID");
+                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(cityServiceVehicleInfoPanel, "m_InstanceID");
 
                 if (instance.Vehicle == 0)
                 {
@@ -391,7 +392,7 @@ namespace ModTools
 
             if (publicTransportVehicleInfoPanel.component.isVisible)
             {
-                InstanceID instance = Util.GetPrivate<InstanceID>(publicTransportVehicleInfoPanel, "m_InstanceID");
+                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(publicTransportVehicleInfoPanel, "m_InstanceID");
 
                 if (instance.Vehicle == 0)
                 {

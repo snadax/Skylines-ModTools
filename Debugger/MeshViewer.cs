@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using ICities;
+using ModTools.Utils;
 using UnityEngine;
 
 namespace ModTools
@@ -115,14 +116,14 @@ namespace ModTools
                 {
                     if (GUILayout.Button("Dump mesh", GUILayout.Width(128)))
                     {
-                        Util.DumpMeshToOBJ(previewMesh, previewMesh.name + ".obj");
+                        MeshUtil.DumpMeshToOBJ(previewMesh, previewMesh.name + ".obj");
                     }
                 }
                 else
                 {
-                    if (GUILayout.Button("Dump mesh+texture", GUILayout.Width(160)))
+                    if (GUILayout.Button("Dump mesh+textures", GUILayout.Width(160)))
                     {
-                        Util.DumpAsset(assetName, previewMesh, material);
+                        DumpUtil.DumpAsset(assetName, previewMesh, material);
                     }
                 }
 
