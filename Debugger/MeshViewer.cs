@@ -108,7 +108,7 @@ namespace ModTools
         {
             if (previewMesh != null)
             {
-                title = String.Format("Previewing \"{0}\"", assetName ?? previewMesh.name);
+                title = $"Previewing \"{assetName ?? previewMesh.name}\"";
 
                 GUILayout.BeginHorizontal();
 
@@ -116,7 +116,7 @@ namespace ModTools
                 {
                     if (GUILayout.Button("Dump mesh", GUILayout.Width(128)))
                     {
-                        MeshUtil.DumpMeshToOBJ(previewMesh, previewMesh.name + ".obj");
+                        MeshUtil.DumpMeshToOBJ(previewMesh, $"{previewMesh.name}.obj");
                     }
                 }
                 else

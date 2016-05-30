@@ -1,17 +1,36 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using ColossalFramework.IO;
+using ColossalFramework.UI;
+using UnityEngine;
 
 namespace ModTools.Utils
 {
     public static class DumpUtil
     {
-        public static void DumpAsset(string assetName, Mesh mesh, Material material)
+        public static void DumpAsset(string assetName, Mesh mesh, Material material,
+            Mesh lodMesh = null, Material lodMaterial = null)
         {
-            Log.Warning($"Dumping asset \"{assetName}\" mesh+texture");
+            Log.Warning($"Dumping asset \"{assetName}\"...");
+            DumpMeshAndTextures(assetName, mesh, material);
+            DumpMeshAndTextures($"{assetName}_lod", lodMesh, lodMaterial);
+            Log.Warning($"Successfully dumped asset \"{assetName}\"");
+            var path = Path.Combine(DataLocation.addonsPath, "Import");
+            UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
+                "Asset dump completed",
+                $"Asset \"{assetName}\" was successfully dumped to:\n{path}",
+                false);
+        }
+
+        private static void DumpMeshAndTextures(string assetName, Mesh mesh, Material material)
+        {
+            if (mesh == null || material == null)
+            {
+                return;
+            }
             MeshUtil.DumpMeshToOBJ(mesh, $"{assetName}.obj");
-            DumpMainTex(assetName, (Texture2D)material.GetTexture("_MainTex"));
-            DumpACI(assetName, (Texture2D)material.GetTexture("_ACIMap"));
-            DumpXYS(assetName, (Texture2D)material.GetTexture("_XYSMap"));
-            Log.Warning("Done!");
+            DumpMainTex(assetName, (Texture2D) material.GetTexture("_MainTex"));
+            DumpACI(assetName, (Texture2D) material.GetTexture("_ACIMap"));
+            DumpXYS(assetName, (Texture2D) material.GetTexture("_XYSMap"));
         }
 
         private static void DumpMainTex(string assetName, Texture2D mainTex, bool extract = true)

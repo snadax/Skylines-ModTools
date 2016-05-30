@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using ColossalFramework.IO;
 using UnityEngine;
 using UnityExtension;
@@ -29,7 +30,9 @@ namespace ModTools.Utils
                     {
                         vertices = mesh.vertices,
                         colors = mesh.colors,
-                        triangles = mesh.triangles
+                        triangles = mesh.triangles,
+                        normals = mesh.normals,
+                        tangents = mesh.tangents
                     };
                     meshToDump.RecalculateBounds();
                     meshToDump.Optimize();

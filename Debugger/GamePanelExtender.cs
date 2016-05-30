@@ -169,18 +169,16 @@ namespace ModTools
 
             dumpMeshTextureButton = CreateButton
             (
-                "Dump to Import", 160, 24,
+                "Dump asset", 160, 24,
                 infoPanel.component,
                 dumpMeshTextureButtonOffset,
                 UIAlignAnchor.TopRight,
                 (component, param) =>
                 {
-                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     var building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
-                    var material = building.Info.m_material;
-                    var mesh = building.Info.m_mesh;
                     var assetName = building.Info.name;
-                    DumpUtil.DumpAsset(assetName, mesh, material);
+                    DumpUtil.DumpAsset(assetName, building.Info.m_mesh, building.Info.m_material, building.Info.m_lodMesh, building.Info.m_lodMaterial);
                 }
             );
         }
@@ -222,26 +220,16 @@ namespace ModTools
 
             dumpMeshTextureButton = CreateButton
             (
-                "Dump to Import", 160, 24,
+                "Dump asset", 160, 24,
                 infoPanel.component,
                 new Vector3(-8.0f, -25.0f, 0.0f),
                 UIAlignAnchor.BottomRight,
                 (component, param) =>
                 {
-                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
-                    VehicleInfo vehicleInfo;
-                    if (instance.Vehicle == 0)
-                    {
-                        vehicleInfo  = VehicleManager.instance.m_parkedVehicles.m_buffer[instance.ParkedVehicle].Info;
-                    }
-                    else
-                    {
-                        vehicleInfo = VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle].Info;
-                    }
-                    var material = vehicleInfo.m_material;
-                    var mesh = vehicleInfo.m_mesh;
+                    var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    var vehicleInfo = instance.Vehicle == 0 ? VehicleManager.instance.m_parkedVehicles.m_buffer[instance.ParkedVehicle].Info : VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle].Info;
                     var assetName = vehicleInfo.name;
-                    DumpUtil.DumpAsset(assetName, mesh, material);
+                    DumpUtil.DumpAsset(assetName, vehicleInfo.m_mesh, vehicleInfo.m_material, vehicleInfo.m_lodMesh, vehicleInfo.m_lodMaterial);
                 }
             );
         }
