@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using ColossalFramework.Plugins;
 using UnityEngine;
-using UnityExtension;
 using Random = UnityEngine.Random;
 
 namespace ModTools
@@ -115,8 +114,8 @@ namespace ModTools
 
             dllPath = Path.Combine(outputPath, Path.GetFileName(outputPath) + ".dll");
 
-            var modToolsAssembly = Util.ModToolsAssemblyPath;
-            var additionalAssemblies = gameAssemblies.Concatenate(new[]{modToolsAssembly});
+            var modToolsAssembly = FileUtil.FindPluginPath(typeof(Mod));
+            var additionalAssemblies = gameAssemblies.Concat(new[]{modToolsAssembly}).ToArray();
 
             PluginManager.CompileSourceInFolder(sourcePath, outputPath, additionalAssemblies);
             return File.Exists(dllPath);

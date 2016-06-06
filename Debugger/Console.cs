@@ -139,7 +139,7 @@ namespace ModTools
         {
             if (vanillaPanel == null)
             {
-                var panel = UIView.library.Get<DebugOutputPanel>("DebugOutputPanel");
+                var panel = UIView.library?.Get<DebugOutputPanel>("DebugOutputPanel");
                 if (panel == null)
                 {
                     return;
@@ -468,16 +468,10 @@ namespace ModTools
 
                 GUI.contentColor = Color.white;
 
-                if (item.trace != null)
+                var stackTrace = item.trace;
+                if (stackTrace != null)
                 {
-                    if (GUILayout.Button("Stack trace", GUILayout.ExpandWidth(false)))
-                    {
-                        var viewer = StackTraceViewer.CreateStackTraceViewer(item.trace);
-                        var mouse = Input.mousePosition;
-                        mouse.y = Screen.height - mouse.y;
-                        viewer.rect.position = mouse;
-                        viewer.visible = true;
-                    }
+                    GUIStackTrace.StackTraceButton(stackTrace);
                 }
 
                 GUILayout.EndHorizontal();

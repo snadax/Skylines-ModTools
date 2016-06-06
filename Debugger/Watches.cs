@@ -8,13 +8,9 @@ namespace ModTools
     public class Watches : GUIWindow
     {
 
-        private Dictionary<ReferenceChain, KeyValuePair<FieldInfo, object>> fieldWatches = new Dictionary<ReferenceChain, KeyValuePair<FieldInfo, object>>();
-        private Dictionary<ReferenceChain, KeyValuePair<PropertyInfo, object>> propertyWatches = new Dictionary<ReferenceChain, KeyValuePair<PropertyInfo, object>>();
+        private readonly List<ReferenceChain> watches = new List<ReferenceChain>();
 
-        private Configuration config
-        {
-            get { return ModTools.Instance.config; }
-        }
+        private Configuration config => ModTools.Instance.config;
 
         private Vector2 watchesScroll = Vector2.zero;
 
@@ -24,143 +20,37 @@ namespace ModTools
             onDraw = DoWatchesWindow;
         }
 
-        public void AddWatch(ReferenceChain refChain, FieldInfo field, object o)
+        public void AddWatch(ReferenceChain refChain)
         {
-            fieldWatches.Add(refChain, new KeyValuePair<FieldInfo, object>(field, o));
-            visible = true;
-        }
-
-        public void AddWatch(ReferenceChain refChain, PropertyInfo property, object o)
-        {
-            propertyWatches.Add(refChain, new KeyValuePair<PropertyInfo, object>(property, o));
+            watches.Add(refChain);
             visible = true;
         }
 
         public void RemoveWatch(ReferenceChain refChain)
         {
-            if (fieldWatches.ContainsKey(refChain))
+            if (watches.Contains(refChain))
             {
-                fieldWatches.Remove(refChain);
-            }
-
-            if (propertyWatches.ContainsKey(refChain))
-            {
-                propertyWatches.Remove(refChain);
+                watches.Remove(refChain);
             }
         }
 
         public Type GetWatchType(ReferenceChain refChain)
         {
             Type ret = null;
-
-            if (fieldWatches.ContainsKey(refChain))
+            if (watches.Contains(refChain))
             {
-                ret = fieldWatches[refChain].Key.FieldType;
+                var item = refChain.LastItem;
+                var info = item as FieldInfo;
+                ret = info?.FieldType ?? (item as PropertyInfo)?.PropertyType;
             }
-
-            if (propertyWatches.ContainsKey(refChain))
-            {
-                ret = propertyWatches[refChain].Key.PropertyType;
-            }
-
             return ret;
-        }
-
-        public object ReadWatch(ReferenceChain refChain)
-        {
-            object ret = null;
-
-            if (fieldWatches.ContainsKey(refChain))
-            {
-                try
-                {
-                    ret = fieldWatches[refChain].Key.GetValue(fieldWatches[refChain].Value);
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            }
-
-            if (propertyWatches.ContainsKey(refChain))
-            {
-                try
-                {
-                    ret = propertyWatches[refChain].Key.GetValue(propertyWatches[refChain].Value, null);
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            }
-
-            return ret;
-        }
-
-        public bool IsConstWatch(ReferenceChain refChain)
-        {
-            if (fieldWatches.ContainsKey(refChain))
-            {
-                return fieldWatches[refChain].Key.IsInitOnly;
-            }
-
-            if (propertyWatches.ContainsKey(refChain))
-            {
-                return !propertyWatches[refChain].Key.CanWrite;
-            }
-
-            return true;
-        }
-
-        public void WriteWatch(ReferenceChain refChain, object value)
-        {
-            if (fieldWatches.ContainsKey(refChain))
-            {
-                try
-                {
-                    fieldWatches[refChain].Key.SetValue(fieldWatches[refChain].Value, value);
-                }
-                catch (Exception)
-                {
-                    return;
-                }
-            }
-
-            if (propertyWatches.ContainsKey(refChain))
-            {
-                try
-                {
-                    propertyWatches[refChain].Key.SetValue(propertyWatches[refChain].Value, value, null);
-                }
-                catch (Exception)
-                {
-                    return;
-                }
-            }
-        }
-
-        public ReferenceChain[] GetWatches()
-        {
-            ReferenceChain[] watches = new ReferenceChain[fieldWatches.Count + propertyWatches.Count];
-            int i = 0;
-            foreach (var item in fieldWatches)
-            {
-                watches[i++] = item.Key;
-            }
-
-            foreach (var item in propertyWatches)
-            {
-                watches[i++] = item.Key;
-            }
-
-            return watches;
         }
 
         void DoWatchesWindow()
         {
             watchesScroll = GUILayout.BeginScrollView(watchesScroll);
 
-            foreach (var watch in GetWatches())
+            foreach (var watch in watches.ToArray())
             {
                 GUILayout.BeginHorizontal();
 
@@ -173,15 +63,12 @@ namespace ModTools
                 GUI.contentColor = Color.white;
                 GUILayout.Label(" = ");
 
-                if (IsConstWatch(watch))
-                {
-                    GUI.enabled = false;
-                }
+                GUI.enabled = false;
 
-                var value = ReadWatch(watch);
+                var value = watch.Evaluate();
                 GUI.contentColor = config.valueColor;
 
-                if (value == null || !TypeUtil.IsBuiltInType(type))
+                if (value == null || !TypeUtil.IsSpecialType(type))
                 {
                     GUILayout.Label(value == null ? "null" : value.ToString());
                 }
@@ -189,11 +76,7 @@ namespace ModTools
                 {
                     try
                     {
-                        var newValue = GUIControls.EditorValueField(watch, "watch."+watch, type, value);
-                        if (newValue != value)
-                        {
-                            WriteWatch(watch, newValue);
-                        }
+                        GUIControls.EditorValueField(watch, "watch." + watch, type, value);
                     }
                     catch (Exception)
                     {
@@ -210,7 +93,7 @@ namespace ModTools
                 if (GUILayout.Button("Find in Scene Explorer"))
                 {
                     var sceneExplorer = FindObjectOfType<SceneExplorer>();
-                    sceneExplorer.ExpandFromRefChain(watch);
+                    sceneExplorer.ExpandFromRefChain(watch.Trim(watch.Length - 1));
                     sceneExplorer.visible = true;
                 }
 

@@ -8,7 +8,6 @@ using ColossalFramework.Plugins;
 using ICities;
 using ModTools.Utils;
 using UnityEngine;
-using UnityExtension;
 
 namespace ModTools
 {
@@ -43,32 +42,7 @@ namespace ModTools
             return (bool)prop.GetValue(component, null);
         }
 
-        public static string ModToolsAssemblyPath
-        {
-            get
-            {
-                var pluginManager = PluginManager.instance;
-                var plugins = pluginManager.GetPluginsInfo();
 
-                foreach (var item in plugins)
-                {
-                    var instances = item.GetInstances<IUserMod>();
-                    if (!(instances.FirstOrDefault() is Mod))
-                    {
-                        continue;
-                    }
-                    foreach (var file in Directory.GetFiles(item.modPath))
-                    {
-                        if (Path.GetExtension(file) == ".dll")
-                        {
-                            return file;
-                        }
-                    }
-                }
-                throw new Exception("Failed to find ModTools assembly!");
-
-            }
-        }
     }
 
 }

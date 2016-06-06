@@ -4,11 +4,17 @@ namespace ModTools
 {
     public class LoadingExtension : LoadingExtensionBase
     {
+        private static ModToolsManager manager;
 
-        public override void OnLevelLoaded(LoadMode mode)
+        public override void OnCreated(ILoading loading)
         {
-            ModToolsBootstrap.inMainMenu = false;
-            ModToolsBootstrap.InitModTools((SimulationManager.UpdateMode)mode);
+            base.OnCreated(loading);
+            if (manager != null)
+            {
+                return;
+            }
+            manager = new ModToolsManager();
+            SimulationManager.RegisterSimulationManager(manager);
         }
 
         public override void OnLevelUnloading()

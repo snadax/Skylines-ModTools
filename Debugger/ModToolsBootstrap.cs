@@ -42,7 +42,6 @@ namespace ModTools
                 {
                     CODebugBase<LogChannel>.verbose = true;
                     CODebugBase<LogChannel>.EnableChannels(LogChannel.All);
-                    LoadingWrapperDetour.Deploy();
                     bootstrapped = true;
                 }
                 if (inMainMenu)

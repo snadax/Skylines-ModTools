@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,7 +10,7 @@ namespace ModTools
     public static class TypeUtil
     {
 
-        public static bool IsBuiltInType(Type t)
+        public static bool IsSpecialType(Type t)
         {
             if (t == typeof (System.Char)) return true;
             if (t == typeof (System.String)) return true;
@@ -36,11 +37,6 @@ namespace ModTools
         public static bool IsBitmaskEnum(Type t)
         {
             return t.IsDefined(typeof(FlagsAttribute), false);
-        }
-
-        public static bool IsReflectableType(Type t)
-        {
-            return !IsBuiltInType(t);
         }
 
         public static bool IsTextureType(Type t)
@@ -111,6 +107,32 @@ namespace ModTools
             }
         }
 
+        public static bool IsEnumerable(object myProperty)
+        {
+            if (typeof(IEnumerable).IsInstanceOfType(myProperty)
+                || typeof(IEnumerable<>).IsInstanceOfType(myProperty))
+                return true;
+
+            return false;
+        }
+
+        public static bool IsCollection(object myProperty)
+        {
+            if (typeof(ICollection).IsAssignableFrom(myProperty.GetType())
+                || typeof(ICollection<>).IsAssignableFrom(myProperty.GetType()))
+                return true;
+
+            return false;
+        }
+
+        public static bool IsList(object myProperty)
+        {
+            if (typeof(IList).IsAssignableFrom(myProperty.GetType())
+                || typeof(IList<>).IsAssignableFrom(myProperty.GetType()))
+                return true;
+
+            return false;
+        }
     }
 
 }

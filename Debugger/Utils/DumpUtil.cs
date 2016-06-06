@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using ColossalFramework.IO;
 using ColossalFramework.UI;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace ModTools.Utils
         public static void DumpAsset(string assetName, Mesh mesh, Material material,
             Mesh lodMesh = null, Material lodMaterial = null)
         {
+            assetName = assetName.Replace("_Data", "");
             Log.Warning($"Dumping asset \"{assetName}\"...");
             DumpMeshAndTextures(assetName, mesh, material);
             DumpMeshAndTextures($"{assetName}_lod", lodMesh, lodMaterial);

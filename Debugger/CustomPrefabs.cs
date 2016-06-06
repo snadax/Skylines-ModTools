@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ColossalFramework.UI;
 using UnityEngine;
 
@@ -10,11 +11,14 @@ namespace ModTools
         private static bool bootstrapped = false;
         private static GameObject thisGameObject;
 
-        private List<VehicleInfo> m_customVehicles;
-        private List<BuildingInfo> m_customBuildings;
-        private List<PropInfo> m_customProps;
-        private List<TreeInfo> m_customTrees;
-        
+        private VehicleInfo[] m_vehicles;
+        private BuildingInfo[] m_buildings;
+        private PropInfo[] m_props;
+        private TreeInfo[] m_trees;
+        private NetInfo[] m_nets;
+        private EventInfo[] m_events;
+        private TransportInfo[] m_transports;
+
         public static void Bootstrap()
         {
             if (thisGameObject == null)
@@ -47,34 +51,40 @@ namespace ModTools
 
         public void Awake()
         {
-            m_customVehicles = GetCustomPrefabs<VehicleInfo>();
-            m_customBuildings = GetCustomPrefabs<BuildingInfo>();
-            m_customProps = GetCustomPrefabs<PropInfo>();
-            m_customTrees = GetCustomPrefabs<TreeInfo>();
+            m_vehicles = GetCustomPrefabs<VehicleInfo>();
+            m_buildings = GetCustomPrefabs<BuildingInfo>();
+            m_props = GetCustomPrefabs<PropInfo>();
+            m_trees = GetCustomPrefabs<TreeInfo>();
+            m_nets = GetCustomPrefabs<NetInfo>();
+            m_events = GetCustomPrefabs<EventInfo>();
+            m_transports = GetCustomPrefabs<TransportInfo>();
         }
 
         public void OnDestroy()
         {
-            m_customVehicles = null;
-            m_customBuildings = null;
-            m_customProps = null;
-            m_customTrees = null;
+            m_vehicles = null;
+            m_buildings = null;
+            m_props = null;
+            m_trees = null;
+            m_nets = null;
+            m_events = null;
+            m_transports = null;
         }
 
-        private static List<T> GetCustomPrefabs<T>() where T: PrefabInfo
+        private static T[] GetCustomPrefabs<T>() where T: PrefabInfo
         {
             var result = new List<T>();
             var count = PrefabCollection<T>.LoadedCount();
             for (uint i = 0; i < count; i++)
             {
                 var prefab = PrefabCollection<T>.GetPrefab(i);
-                if(prefab?.name == null || !prefab.name.Contains("."))
+                if(prefab == null || !prefab.m_isCustomContent)
                 {
                     continue;
                 }
                 result.Add(prefab);
             }
-            return result;
+            return result.OrderBy(p => p.name).ToArray();
         } 
     }
 }

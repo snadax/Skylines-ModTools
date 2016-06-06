@@ -63,6 +63,9 @@ namespace ModTools
         public bool sceneExplorerShowInheritedMembers = false;
         public bool sceneExplorerEvaluatePropertiesAutomatically = true;
         public bool sceneExplorerSortAlphabetically = true;
+        public float sceneExplorerTreeIdentSpacing = 16.0f;
+        public int sceneExplorerMaxHierarchyDepth = 32;
+
 
         public string scriptEditorWorkspacePath = "";
 

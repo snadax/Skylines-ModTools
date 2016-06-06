@@ -4,7 +4,6 @@ using System.Linq;
 using ColossalFramework.UI;
 using ModTools.Utils;
 using UnityEngine;
-using UnityExtension;
 
 namespace ModTools
 {
@@ -25,13 +24,12 @@ namespace ModTools
         private UIButton serviceBuildingShowExplorerButton;
         private UIButton serviceBuildingDumpMeshTextureButton;
 
-        private UIView uiView;
-
         private SceneExplorer sceneExplorer;
 
         private ReferenceChain buildingsBufferRefChain;
         private ReferenceChain vehiclesBufferRefChain;
         private ReferenceChain vehiclesParkedBufferRefChain;
+        private ReferenceChain citizensBufferRefChain;
 
         private bool initializedCitizenVehiclePanel = false;
         private CitizenVehicleWorldInfoPanel citizenVehicleInfoPanel;
@@ -52,11 +50,11 @@ namespace ModTools
         private UIButton publicTransportVehicleShowExplorerButton;
         private UIButton publicTransportVehicleDumpTextureMeshButton;
 
-
-        void Awake()
-        {
-            uiView = FindObjectOfType<UIView>();
-        }
+        private bool initializedAnimalPanel = false;
+        private AnimalWorldInfoPanel animalInfoPanel;
+        private UILabel animalAssetNameLabel;
+        private UIButton animalShowExplorerButton;
+        private UIButton animalDumpTextureMeshButton;
 
         void OnDestroy()
         {
@@ -94,6 +92,12 @@ namespace ModTools
                 Destroy(publicTransportVehicleDumpTextureMeshButton.gameObject);
 
                 publicTransportVehicleInfoPanel.component.Find<UILabel>("Type").isVisible = true;
+
+                Destroy(animalAssetNameLabel.gameObject);
+                Destroy(animalShowExplorerButton.gameObject);
+                Destroy(animalDumpTextureMeshButton.gameObject);
+
+                publicTransportVehicleInfoPanel.component.Find<UILabel>("Type").isVisible = true;
             }
             catch (Exception)
             {
@@ -102,7 +106,7 @@ namespace ModTools
 
         UIButton CreateButton(string text, int width, int height, UIComponent parentComponent, Vector3 offset, UIAlignAnchor anchor, MouseEventHandler handler)
         {
-            var button = uiView.AddUIComponent(typeof(UIButton)) as UIButton;
+            var button = UIView.GetAView().AddUIComponent(typeof(UIButton)) as UIButton;
             button.name = "ModTools Button";
             button.text = text;
             button.textScale = 0.8f;
@@ -127,7 +131,7 @@ namespace ModTools
         UILabel CreateLabel(string text, int width, int height, UIComponent parentComponent, Vector3 offset,
             UIAlignAnchor anchor)
         {
-            var label = uiView.AddUIComponent(typeof(UILabel)) as UILabel;
+            var label = UIView.GetAView().AddUIComponent(typeof(UILabel)) as UILabel;
             label.text = text;
             label.name = "ModTools Label";
             label.width = width;
@@ -234,19 +238,69 @@ namespace ModTools
             );
         }
 
+        void AddCitizenPanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel,
+                out UIButton showExplorerButton, Vector3 showExplorerButtonOffset,
+                out UIButton dumpMeshTextureButton, Vector3 dumpMeshTextureButtonOffset)
+        {
+
+            assetNameLabel = CreateLabel
+            (
+                "AssetName: <>", 160, 24,
+                infoPanel.component,
+                new Vector3(8.0f, 48.0f, 0.0f),
+                UIAlignAnchor.TopLeft
+            );
+
+            showExplorerButton = CreateButton
+            (
+                "Find in SceneExplorer", 160, 24,
+                infoPanel.component,
+                showExplorerButtonOffset,
+                UIAlignAnchor.TopRight,
+                (component, param) =>
+                {
+                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    sceneExplorer.ExpandFromRefChain(citizensBufferRefChain.Add(instance.CitizenInstance));
+                    sceneExplorer.visible = true;
+                }
+            );
+
+            dumpMeshTextureButton = CreateButton
+            (
+                "Dump asset", 160, 24,
+                infoPanel.component,
+                dumpMeshTextureButtonOffset,
+                UIAlignAnchor.TopRight,
+                (component, param) =>
+                {
+                    var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    var citizen = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
+                    var assetName = citizen.Info.name;
+                    DumpUtil.DumpAsset(assetName, null, null, citizen.Info.m_lodMesh, citizen.Info.m_lodMaterial);
+                }
+            );
+        }
+
         void Update()
+        {
+            Initialize();
+            SetInstance();
+        }
+
+        private void Initialize()
         {
             if (!initializedZonedBuildingsPanel)
             {
                 sceneExplorer = FindObjectOfType<SceneExplorer>();
 
-                buildingsBufferRefChain = new ReferenceChain();
-                buildingsBufferRefChain = buildingsBufferRefChain.Add(BuildingManager.instance.gameObject);
-                buildingsBufferRefChain = buildingsBufferRefChain.Add(BuildingManager.instance);
-                buildingsBufferRefChain = buildingsBufferRefChain.Add(typeof(BuildingManager).GetField("m_buildings"));
-                buildingsBufferRefChain = buildingsBufferRefChain.Add(typeof(Array16<Building>).GetField("m_buffer"));
+                buildingsBufferRefChain = new ReferenceChain()
+                    .Add(BuildingManager.instance.gameObject)
+                    .Add(BuildingManager.instance)
+                    .Add(typeof(BuildingManager).GetField("m_buildings"))
+                    .Add(typeof(Array16<Building>).GetField("m_buffer"));
 
-                zonedBuildingInfoPanel = GameObject.Find("(Library) ZonedBuildingWorldInfoPanel").GetComponent<ZonedBuildingWorldInfoPanel>();
+                zonedBuildingInfoPanel =
+                    GameObject.Find("(Library) ZonedBuildingWorldInfoPanel").GetComponent<ZonedBuildingWorldInfoPanel>();
                 if (zonedBuildingInfoPanel != null)
                 {
                     AddBuildingPanelControls(zonedBuildingInfoPanel, out zonedBuildingAssetNameLabel,
@@ -260,7 +314,8 @@ namespace ModTools
             if (!initializedServiceBuildingsPanel)
             {
                 sceneExplorer = FindObjectOfType<SceneExplorer>();
-                serviceBuildingInfoPanel = GameObject.Find("(Library) CityServiceWorldInfoPanel").GetComponent<CityServiceWorldInfoPanel>();
+                serviceBuildingInfoPanel =
+                    GameObject.Find("(Library) CityServiceWorldInfoPanel").GetComponent<CityServiceWorldInfoPanel>();
                 if (serviceBuildingInfoPanel != null)
                 {
                     AddBuildingPanelControls(serviceBuildingInfoPanel, out serviceBuildingAssetNameLabel,
@@ -275,19 +330,20 @@ namespace ModTools
             {
                 sceneExplorer = FindObjectOfType<SceneExplorer>();
 
-                vehiclesBufferRefChain = new ReferenceChain();
-                vehiclesBufferRefChain = vehiclesBufferRefChain.Add(VehicleManager.instance.gameObject);
-                vehiclesBufferRefChain = vehiclesBufferRefChain.Add(VehicleManager.instance);
-                vehiclesBufferRefChain = vehiclesBufferRefChain.Add(typeof(VehicleManager).GetField("m_vehicles"));
-                vehiclesBufferRefChain = vehiclesBufferRefChain.Add(typeof(Array16<Vehicle>).GetField("m_buffer"));
+                vehiclesBufferRefChain = new ReferenceChain()
+                    .Add(VehicleManager.instance.gameObject)
+                    .Add(VehicleManager.instance)
+                    .Add(typeof(VehicleManager).GetField("m_vehicles"))
+                    .Add(typeof(Array16<Vehicle>).GetField("m_buffer"));
 
-                vehiclesParkedBufferRefChain = new ReferenceChain();
-                vehiclesParkedBufferRefChain = vehiclesParkedBufferRefChain.Add(VehicleManager.instance.gameObject);
-                vehiclesParkedBufferRefChain = vehiclesParkedBufferRefChain.Add(VehicleManager.instance);
-                vehiclesParkedBufferRefChain = vehiclesParkedBufferRefChain.Add(typeof(VehicleManager).GetField("m_parkedVehicles"));
-                vehiclesParkedBufferRefChain = vehiclesParkedBufferRefChain.Add(typeof(Array16<VehicleParked>).GetField("m_buffer"));
+                vehiclesParkedBufferRefChain = new ReferenceChain()
+                    .Add(VehicleManager.instance.gameObject)
+                    .Add(VehicleManager.instance)
+                    .Add(typeof(VehicleManager).GetField("m_parkedVehicles"))
+                    .Add(typeof(Array16<VehicleParked>).GetField("m_buffer"));
 
-                citizenVehicleInfoPanel = GameObject.Find("(Library) CitizenVehicleWorldInfoPanel").GetComponent<CitizenVehicleWorldInfoPanel>();
+                citizenVehicleInfoPanel =
+                    GameObject.Find("(Library) CitizenVehicleWorldInfoPanel").GetComponent<CitizenVehicleWorldInfoPanel>();
                 if (citizenVehicleInfoPanel != null)
                 {
                     AddVehiclePanelControls(
@@ -304,7 +360,9 @@ namespace ModTools
             {
                 sceneExplorer = FindObjectOfType<SceneExplorer>();
 
-                cityServiceVehicleInfoPanel = GameObject.Find("(Library) CityServiceVehicleWorldInfoPanel").GetComponent<CityServiceVehicleWorldInfoPanel>();
+                cityServiceVehicleInfoPanel =
+                    GameObject.Find("(Library) CityServiceVehicleWorldInfoPanel")
+                        .GetComponent<CityServiceVehicleWorldInfoPanel>();
                 if (cityServiceVehicleInfoPanel != null)
                 {
                     AddVehiclePanelControls(
@@ -320,7 +378,9 @@ namespace ModTools
             {
                 sceneExplorer = FindObjectOfType<SceneExplorer>();
 
-                publicTransportVehicleInfoPanel = GameObject.Find("(Library) PublicTransportVehicleWorldInfoPanel").GetComponent<PublicTransportVehicleWorldInfoPanel>();
+                publicTransportVehicleInfoPanel =
+                    GameObject.Find("(Library) PublicTransportVehicleWorldInfoPanel")
+                        .GetComponent<PublicTransportVehicleWorldInfoPanel>();
                 if (publicTransportVehicleInfoPanel != null)
                 {
                     AddVehiclePanelControls(
@@ -332,6 +392,29 @@ namespace ModTools
                 }
             }
 
+            if (!initializedAnimalPanel)
+            {
+                citizensBufferRefChain = new ReferenceChain()
+                    .Add(CitizenManager.instance.gameObject)
+                    .Add(CitizenManager.instance)
+                    .Add(typeof(CitizenManager).GetField("m_instances"))
+                    .Add(typeof(Array16<CitizenInstance>).GetField("m_buffer"));
+
+                sceneExplorer = FindObjectOfType<SceneExplorer>();
+                animalInfoPanel = GameObject.Find("(Library) AnimalWorldInfoPanel").GetComponent<AnimalWorldInfoPanel>();
+                if (animalInfoPanel != null)
+                {
+                    AddCitizenPanelControls(animalInfoPanel, out animalAssetNameLabel,
+                        out animalShowExplorerButton, new Vector3(-8.0f, 50.0f, 0.0f),
+                        out animalDumpTextureMeshButton, new Vector3(-8.0f, 75.0f, 0.0f)
+                        );
+                    initializedAnimalPanel = true;
+                }
+            }
+        }
+
+        private void SetInstance()
+        {
             if (zonedBuildingInfoPanel.component.isVisible)
             {
                 InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(zonedBuildingInfoPanel, "m_InstanceID");
@@ -392,6 +475,13 @@ namespace ModTools
                     var vehicle = VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle];
                     publicTransportVehicleAssetNameLabel.text = "AssetName: " + vehicle.Info.name;
                 }
+            }
+
+            if (animalInfoPanel.component.isVisible)
+            {
+                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(animalInfoPanel, "m_InstanceID");
+                var animal = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
+                animalAssetNameLabel.text = "AssetName: " + animal.Info.name;
             }
         }
     }

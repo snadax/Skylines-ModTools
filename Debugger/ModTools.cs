@@ -1,5 +1,7 @@
 ﻿using System;
 using ColossalFramework.UI;
+using ModTools.Detours;
+using ModTools.Redirection;
 using UnityEngine;
 
 namespace ModTools
@@ -40,7 +42,7 @@ namespace ModTools
 
         public void OnUnityDestroyCallback()
         {
-            UnityLoggingHook.DisableHook();
+            UnityEngineLogHook.Revert();
 
             Destroy(console);
             Destroy(sceneExplorer);
@@ -167,7 +169,6 @@ namespace ModTools
             }
 
             sceneExplorer = gameObject.AddComponent<SceneExplorer>();
-            debugRenderer = GameObject.FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
             watches = gameObject.AddComponent<Watches>();
             colorPicker = gameObject.AddComponent<ColorPicker>();
             scriptEditor = gameObject.AddComponent<ScriptEditor>();
@@ -188,7 +189,7 @@ namespace ModTools
 
             if (config.hookUnityLogging)
             {
-                UnityLoggingHook.EnableHook();
+                UnityEngineLogHook.Deploy();
             }
 
             if (updateMode != SimulationManager.UpdateMode.Undefined && config.customPrefabsObject)
@@ -217,10 +218,11 @@ namespace ModTools
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
             {
-                if (debugRenderer != null)
+                if (debugRenderer == null)
                 {
-                    debugRenderer.drawDebugInfo = !debugRenderer.drawDebugInfo;
+                    debugRenderer = GameObject.FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
                 }
+                debugRenderer.drawDebugInfo = !debugRenderer.drawDebugInfo;
             }
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.W))
@@ -257,7 +259,7 @@ namespace ModTools
                 else
                 {
                     config.hookUnityLogging = false;
-                    UnityLoggingHook.DisableHook();
+                    UnityEngineLogHook.Revert();
                     Destroy(console);
                     console = null;
                 }
@@ -282,11 +284,11 @@ namespace ModTools
 
                 if (config.hookUnityLogging)
                 {
-                    UnityLoggingHook.EnableHook();
+                    UnityEngineLogHook.Deploy();
                 }
                 else
                 {
-                    UnityLoggingHook.DisableHook();
+                    UnityEngineLogHook.Revert();
                 }
             }
 
@@ -322,11 +324,12 @@ namespace ModTools
             }
 
             GUILayout.BeginHorizontal();
-            if (debugRenderer != null)
+            if (debugRenderer == null)
             {
-                GUILayout.Label("Debug Renderer (Ctrl+R)");
-                debugRenderer.drawDebugInfo = GUILayout.Toggle(debugRenderer.drawDebugInfo, "");
+                debugRenderer = GameObject.FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
             }
+            GUILayout.Label("Debug Renderer (Ctrl+R)");
+            debugRenderer.drawDebugInfo = GUILayout.Toggle(debugRenderer.drawDebugInfo, "");
             GUILayout.EndHorizontal();
 
 

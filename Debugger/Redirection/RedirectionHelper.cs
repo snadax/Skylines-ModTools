@@ -1,18 +1,14 @@
 ﻿/*
 The MIT License (MIT)
-
 Copyright (c) 2015 Sebastian Sch�ner
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,9 +20,8 @@ THE SOFTWARE.
 
 using System;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
-namespace ModTools
+namespace ModTools.Redirection
 {
 
     public struct RedirectCallsState
@@ -57,7 +52,7 @@ namespace ModTools
         public static void RevertRedirect(MethodInfo from, RedirectCallsState state)
         {
             var fptr1 = from.MethodHandle.GetFunctionPointer();
-            RevertJumpTo(fptr1, state);            
+            RevertJumpTo(fptr1, state);
         }
 
         /// <summary>
@@ -79,8 +74,8 @@ namespace ModTools
                 state.c = *(sitePtr + 10);
                 state.d = *(sitePtr + 11);
                 state.e = *(sitePtr + 12);
-                state.f = *((ulong*) (sitePtr + 2));
-                
+                state.f = *((ulong*)(sitePtr + 2));
+
                 *sitePtr = 0x49; // mov r11, target
                 *(sitePtr + 1) = 0xBB;
                 *((ulong*)(sitePtr + 2)) = (ulong)target.ToInt64();
