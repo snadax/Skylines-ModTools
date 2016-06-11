@@ -29,6 +29,7 @@ namespace ModTools
         private ReferenceChain buildingsBufferRefChain;
         private ReferenceChain vehiclesBufferRefChain;
         private ReferenceChain vehiclesParkedBufferRefChain;
+        private ReferenceChain citizenInstancesBufferRefChain;
         private ReferenceChain citizensBufferRefChain;
 
         private bool initializedCitizenVehiclePanel = false;
@@ -55,6 +56,12 @@ namespace ModTools
         private UILabel animalAssetNameLabel;
         private UIButton animalShowExplorerButton;
         private UIButton animalDumpTextureMeshButton;
+
+        private bool initializedCitizenPanel = false;
+        private HumanWorldInfoPanel citizenInfoPanel;
+        private UILabel citizenAssetNameLabel;
+        private UIButton citizenShowExplorerButton;
+        private UIButton citizenDumpTextureMeshButton;
 
         void OnDestroy()
         {
@@ -260,7 +267,14 @@ namespace ModTools
                 (component, param) =>
                 {
                     InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
-                    sceneExplorer.ExpandFromRefChain(citizensBufferRefChain.Add(instance.CitizenInstance));
+                    if (instance.Type == InstanceType.CitizenInstance)
+                    {
+                        sceneExplorer.ExpandFromRefChain(citizenInstancesBufferRefChain.Add(instance.CitizenInstance));
+                    }
+                    else if (instance.Type == InstanceType.Citizen)
+                    {
+                        sceneExplorer.ExpandFromRefChain(citizensBufferRefChain.Add((int)instance.Citizen));
+                    }
                     sceneExplorer.visible = true;
                 }
             );
@@ -274,9 +288,12 @@ namespace ModTools
                 (component, param) =>
                 {
                     var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
-                    var citizen = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
-                    var assetName = citizen.Info.name;
-                    DumpUtil.DumpAsset(assetName, null, null, citizen.Info.m_lodMesh, citizen.Info.m_lodMaterial);
+                    if (instance.Type == InstanceType.CitizenInstance)
+                    {
+                        var citizen = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
+                        var assetName = citizen.Info.name;
+                        DumpUtil.DumpAsset(assetName, null, null, citizen.Info.m_lodMesh, citizen.Info.m_lodMaterial);
+                    }
                 }
             );
         }
@@ -394,7 +411,7 @@ namespace ModTools
 
             if (!initializedAnimalPanel)
             {
-                citizensBufferRefChain = new ReferenceChain()
+                citizenInstancesBufferRefChain = new ReferenceChain()
                     .Add(CitizenManager.instance.gameObject)
                     .Add(CitizenManager.instance)
                     .Add(typeof(CitizenManager).GetField("m_instances"))
@@ -409,6 +426,32 @@ namespace ModTools
                         out animalDumpTextureMeshButton, new Vector3(-8.0f, 75.0f, 0.0f)
                         );
                     initializedAnimalPanel = true;
+                }
+            }
+
+            if (!initializedCitizenPanel)
+            {
+                citizenInstancesBufferRefChain = new ReferenceChain()
+                    .Add(CitizenManager.instance.gameObject)
+                    .Add(CitizenManager.instance)
+                    .Add(typeof(CitizenManager).GetField("m_instances"))
+                    .Add(typeof(Array16<CitizenInstance>).GetField("m_buffer"));
+                citizensBufferRefChain = new ReferenceChain()
+                    .Add(CitizenManager.instance.gameObject)
+                    .Add(CitizenManager.instance)
+                    .Add(typeof(CitizenManager).GetField("m_citizens"))
+                    .Add(typeof(Array16<CitizenInstance>).GetField("m_buffer"));
+
+
+                sceneExplorer = FindObjectOfType<SceneExplorer>();
+                citizenInfoPanel = GameObject.Find("(Library) CitizenWorldInfoPanel").GetComponent<HumanWorldInfoPanel>();
+                if (citizenInfoPanel != null)
+                {
+                    AddCitizenPanelControls(citizenInfoPanel, out citizenAssetNameLabel,
+                        out citizenShowExplorerButton, new Vector3(-8.0f, 110.0f, 0.0f),
+                        out citizenDumpTextureMeshButton, new Vector3(-8.0f, 135.0f, 0.0f)
+                        );
+                    initializedCitizenPanel = true;
                 }
             }
         }
@@ -482,6 +525,21 @@ namespace ModTools
                 InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(animalInfoPanel, "m_InstanceID");
                 var animal = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
                 animalAssetNameLabel.text = "AssetName: " + animal.Info.name;
+            }
+
+            if (citizenInfoPanel.component.isVisible)
+            {
+                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(citizenInfoPanel, "m_InstanceID");
+                if (instance.Type == InstanceType.CitizenInstance)
+                {
+                    var citizen = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
+                    citizenAssetNameLabel.text = "AssetName: " + citizen.Info.name;
+                }
+                else if (instance.Type == InstanceType.Citizen)
+                {
+                    var citizen = CitizenManager.instance.m_citizens.m_buffer[instance.Citizen];
+                    citizenAssetNameLabel.text = "AssetName: ???";
+                }
             }
         }
     }
