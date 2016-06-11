@@ -46,7 +46,6 @@ namespace ModTools.Explorer
             GUILayout.Label(component.GetType().ToString());
 
             GUI.contentColor = Color.white;
-
             GUILayout.EndHorizontal();
         }
     }

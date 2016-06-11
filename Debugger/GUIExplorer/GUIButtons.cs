@@ -150,12 +150,13 @@ namespace ModTools.Explorer
                 {
                     MeshViewer.CreateMeshViewer(null, (Mesh)value, null);
                 }
-
-                if (GUILayout.Button("Dump .obj"))
+                if (((Mesh)value).isReadable)
                 {
-                    var outPath = refChain + ".obj";
-                    outPath = outPath.Replace(' ', '_');
-                    MeshUtil.DumpMeshToOBJ(value as Mesh, outPath);
+                    if (GUILayout.Button("Dump .obj"))
+                    {
+                        var outPath = refChain.ToString().Replace(' ', '_');
+                        DumpUtil.DumpMeshAndTextures(outPath, value as Mesh);
+                    }
                 }
             }
             if (GUILayout.Button("Copy"))

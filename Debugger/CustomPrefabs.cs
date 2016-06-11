@@ -18,6 +18,7 @@ namespace ModTools
         private NetInfo[] m_nets;
         private EventInfo[] m_events;
         private TransportInfo[] m_transports;
+        private CitizenInfo[] m_citizens;
 
         public static void Bootstrap()
         {
@@ -58,6 +59,7 @@ namespace ModTools
             m_nets = GetCustomPrefabs<NetInfo>();
             m_events = GetCustomPrefabs<EventInfo>();
             m_transports = GetCustomPrefabs<TransportInfo>();
+            m_citizens = GetCustomPrefabs<CitizenInfo>();
         }
 
         public void OnDestroy()
@@ -69,6 +71,7 @@ namespace ModTools
             m_nets = null;
             m_events = null;
             m_transports = null;
+            m_citizens = null;
         }
 
         private static T[] GetCustomPrefabs<T>() where T: PrefabInfo
@@ -78,7 +81,7 @@ namespace ModTools
             for (uint i = 0; i < count; i++)
             {
                 var prefab = PrefabCollection<T>.GetPrefab(i);
-                if(prefab == null || !prefab.m_isCustomContent)
+                if(prefab == null || (!prefab.m_isCustomContent && prefab.name != null && !prefab.name.Contains('.')))
                 {
                     continue;
                 }

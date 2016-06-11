@@ -11,7 +11,7 @@ namespace ModTools.Utils
         public static void DumpAsset(string assetName, Mesh mesh, Material material,
             Mesh lodMesh = null, Material lodMaterial = null)
         {
-            assetName = assetName.Replace("_Data", "");
+            assetName = assetName.Replace("_Data", "").LegalizeFileName();
             Log.Warning($"Dumping asset \"{assetName}\"...");
             DumpMeshAndTextures(assetName, mesh, material);
             DumpMeshAndTextures($"{assetName}_lod", lodMesh, lodMaterial);
@@ -23,16 +23,25 @@ namespace ModTools.Utils
                 false);
         }
 
-        private static void DumpMeshAndTextures(string assetName, Mesh mesh, Material material)
+        public static void DumpMeshAndTextures(string assetName, Mesh mesh, Material material = null)
         {
-            if (mesh == null || material == null)
+            if (mesh != null && mesh.isReadable)
             {
-                return;
+                MeshUtil.DumpMeshToOBJ(mesh, $"{assetName.LegalizeFileName()}.obj");
             }
-            MeshUtil.DumpMeshToOBJ(mesh, $"{assetName}.obj");
+            if (material != null)
+            {
+                DumpTextures(assetName, material);
+            }
+        }
+
+        public static void DumpTextures(string assetName, Material material)
+        {
+            assetName = assetName.LegalizeFileName();
             DumpMainTex(assetName, (Texture2D) material.GetTexture("_MainTex"));
             DumpACI(assetName, (Texture2D) material.GetTexture("_ACIMap"));
             DumpXYS(assetName, (Texture2D) material.GetTexture("_XYSMap"));
+            DumpXYCA(assetName, (Texture2D) material.GetTexture("_XYCAMap"));
         }
 
         private static void DumpMainTex(string assetName, Texture2D mainTex, bool extract = true)
@@ -74,7 +83,7 @@ namespace ModTools.Utils
             }
             else
             {
-                TextureUtil.DumpTextureToPNG(aciMap, $"{assetName}_aci");
+                TextureUtil.DumpTextureToPNG(aciMap, $"{assetName}_ACI");
             }
         }
 
@@ -95,7 +104,30 @@ namespace ModTools.Utils
             }
             else
             {
-                TextureUtil.DumpTextureToPNG(xysMap, $"{assetName}_xys");
+                TextureUtil.DumpTextureToPNG(xysMap, $"{assetName}_XYS");
+            }
+        }
+
+        private static void DumpXYCA(string assetName, Texture2D xycaMap, bool extract = true)
+        {
+            if (xycaMap == null)
+            {
+                return;
+            }
+            if (extract)
+            {
+                var length = xycaMap.width * xycaMap.height;
+                var r1 = new Color32[length].Invert();
+                var b1 = new Color32[length].Invert();
+                var a1 = new Color32[length].Invert();
+                xycaMap.ExtractChannels(r1, r1, b1, a1, false, false, true, false, false, true, true);
+                TextureUtil.DumpTextureToPNG(r1.ColorsToTexture(xycaMap.width, xycaMap.height), $"{assetName}_n");
+                TextureUtil.DumpTextureToPNG(b1.ColorsToTexture(xycaMap.width, xycaMap.height), $"{assetName}_c");
+                TextureUtil.DumpTextureToPNG(a1.ColorsToTexture(xycaMap.width, xycaMap.height), $"{assetName}_a");
+            }
+            else
+            {
+                TextureUtil.DumpTextureToPNG(xycaMap, $"{assetName}_XYCA");
             }
         }
     }

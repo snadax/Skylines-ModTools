@@ -112,28 +112,47 @@ namespace ModTools
 
                 GUILayout.BeginHorizontal();
 
-                if (!materialProvided)
+                if (materialProvided)
                 {
-                    if (GUILayout.Button("Dump mesh", GUILayout.Width(128)))
+                    if (previewMesh.isReadable)
                     {
-                        MeshUtil.DumpMeshToOBJ(previewMesh, $"{previewMesh.name}.obj");
+                        if (GUILayout.Button("Dump mesh+textures", GUILayout.Width(160)))
+                        {
+                            DumpUtil.DumpMeshAndTextures(assetName, previewMesh, material);
+                        }
+                    }
+                    else
+                    {
+                        if (GUILayout.Button("Dump textures", GUILayout.Width(160)))
+                        {
+                            DumpUtil.DumpTextures(assetName, material);
+                        }
                     }
                 }
                 else
                 {
-                    if (GUILayout.Button("Dump mesh+textures", GUILayout.Width(160)))
+                    if (previewMesh.isReadable)
                     {
-                        DumpUtil.DumpAsset(assetName, previewMesh, material);
+                        if (GUILayout.Button("Dump mesh", GUILayout.Width(160)))
+                        {
+                            DumpUtil.DumpMeshAndTextures($"{previewMesh.name}", previewMesh);
+                        }
                     }
                 }
-
                 if (previewMesh.isReadable)
                 {
-                    GUILayout.Label(String.Format("Triangles: {0}", previewMesh.triangles.Length / 3));
+                    GUILayout.Label($"Triangles: {previewMesh.triangles.Length / 3}");
+                }
+                else
+                {
+                    var oldColor = GUI.color;
+                    GUI.color = Color.yellow;
+                    GUILayout.Label("Mesh insn't readable!");
+                    GUI.color = oldColor;
                 }
                 if (materialProvided && material.mainTexture != null)
                 {
-                    GUILayout.Label(String.Format("Texture size: {0}x{1}", material.mainTexture.width, material.mainTexture.height));
+                    GUILayout.Label($"Texture size: {material.mainTexture.width}x{material.mainTexture.height}");
                 }
 
                 GUILayout.FlexibleSpace();
@@ -163,8 +182,5 @@ namespace ModTools
                 GUILayout.Label("Use the Scene Explorer to select a Mesh for preview");
             }
         }
-
-
-
     }
 }

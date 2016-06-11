@@ -57,6 +57,15 @@ namespace ModTools.Explorer
                     GUIMaterial.OnSceneReflectUnityEngineMaterial(state, refChain, (UnityEngine.Material)obj);
                     return;
                 }
+                if (type == typeof(Mesh))
+                {
+                    if (!((Mesh)obj).isReadable)
+                    {
+                        SceneExplorerCommon.OnSceneTreeMessage(refChain, "Mesh is not readable");
+                        return;
+                    }
+                }
+
             }
 
             var members = TypeUtil.GetAllMembers(type, ModTools.Instance.config.sceneExplorerShowInheritedMembers);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using ColossalFramework.Plugins;
 using ICities;
 
@@ -43,6 +44,13 @@ namespace ModTools
                 }
             }
             throw new Exception("Failed to find assembly!");
+        }
+
+        public static string LegalizeFileName(this string illegal)
+        {
+            var regexSearch = new string(Path.GetInvalidFileNameChars()/* + new string(Path.GetInvalidPathChars()*/);
+            var r = new Regex($"[{Regex.Escape(regexSearch)}]");
+            return r.Replace(illegal, "_");
         }
     }
 

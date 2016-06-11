@@ -55,10 +55,19 @@ namespace ModTools.Explorer
 
         private static readonly string[] vectorProps = new string[]
         {
-                    "_FloorParams",
-                    "_UvAnimation",
-                    "_WindAnimation",
-                    "_WindAnimationB"
+            "_FloorParams",
+            "_UvAnimation",
+            "_WindAnimation",
+            "_WindAnimationB",
+            "_TyreLocation0",
+            "_TyreLocation1",
+            "_TyreLocation2",
+            "_TyreLocation3",
+            "_TyreLocation4",
+            "_TyreLocation5",
+            "_TyreLocation6",
+            "_TyreLocation7",
+            "_TyreParams"
         };
 
 
