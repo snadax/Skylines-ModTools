@@ -181,7 +181,7 @@ namespace ModTools.Utils
                 if (r != null) if (ralpha) { r[index].r = rr; r[index].g = rr; r[index].b = rr; } else { r[index].r = rr; }
                 if (g != null) if (galpha) { g[index].r = gg; g[index].g = gg; g[index].b = gg; } else { g[index].g = gg; }
                 if (b != null) if (balpha) { b[index].r = bb; b[index].g = bb; b[index].b = bb; } else { b[index].b = bb; }
-                if (a != null) a[index].a = aa;
+                if (a != null) { a[index].r = aa; a[index].g = aa; a[index].b = aa;}
             }
         }
     }

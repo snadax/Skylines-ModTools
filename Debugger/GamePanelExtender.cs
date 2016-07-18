@@ -678,7 +678,7 @@ namespace ModTools
                 }
                 else if (instance.Type == InstanceType.Citizen)
                 {
-                    citizenAssetNameLabel.text = "AssetName: N/A. Instance: N/A";
+                    citizenAssetNameLabel.text = "AssetName: N/A";
                     foreach (var ci in CitizenManager.instance.m_instances.m_buffer)
                     {
                         if (ci.m_flags == CitizenInstance.Flags.None || ci.Info == null ||

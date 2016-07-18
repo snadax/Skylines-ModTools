@@ -73,11 +73,13 @@ namespace ModTools
                 hoveredRectStyle.active.background = bgTexture;
                 hoveredRectStyle.focused.background = bgTexture;
 
-                infoWindowStyle = new GUIStyle(GUI.skin.box);
-                infoWindowStyle.normal.background = null;
-                infoWindowStyle.hover.background = null;
-                infoWindowStyle.active.background = null;
-                infoWindowStyle.focused.background = null;
+                infoWindowStyle = new GUIStyle(GUI.skin.box)
+                {
+                    normal = {background = null},
+                    hover = {background = null},
+                    active = {background = null},
+                    focused = {background = null}
+                };
             }
 
             var uiView = FindObjectOfType<UIView>();
@@ -172,26 +174,27 @@ namespace ModTools
         void DoInfoWindow(int i)
         {
             GUILayout.Label("[Press Ctrl+F to open it in SceneExplorer]");
-            GUILayout.Label(String.Format("name: {0}", hoveredComponent.name));
-            GUILayout.Label(String.Format("type: {0}", hoveredComponent.GetType().Name));
+            GUILayout.Label($"name: {hoveredComponent.name}");
+            GUILayout.Label($"type: {hoveredComponent.GetType().Name}");
 
             if (hoveredComponent.parent != null)
             {
-                GUILayout.Label(String.Format("parent: {0}", hoveredComponent.parent.name));
+                GUILayout.Label($"parent: {hoveredComponent.parent.name}");
             }
 
-            GUILayout.Label(String.Format("anchor: {0}", hoveredComponent.anchor));
-            GUILayout.Label(String.Format("size: {0}", hoveredComponent.size));
-            GUILayout.Label(String.Format("relativePosition: {0}", hoveredComponent.relativePosition));
-            if (hoveredComponent is UIInteractiveComponent)
+            GUILayout.Label($"anchor: {hoveredComponent.anchor}");
+            GUILayout.Label($"size: {hoveredComponent.size}");
+            GUILayout.Label($"relativePosition: {hoveredComponent.relativePosition}");
+            var component = hoveredComponent as UIInteractiveComponent;
+            if (component != null)
             {
-                GUILayout.Label(String.Format("atlas: {0}", ((UIInteractiveComponent)hoveredComponent).atlas.name));                
+                GUILayout.Label($"atlas: {component.atlas.name}");                
             }
 
             var hash = HashUtil.HashRect(new Rect(hoveredComponent.relativePosition.x, hoveredComponent.relativePosition.y,
                    hoveredComponent.size.x, hoveredComponent.size.y));
-
-            GUILayout.Label(String.Format("hash: {0}", HashUtil.HashToString(hash)));
+            GUILayout.Label($"zOrder: {hoveredComponent.zOrder}");
+            GUILayout.Label($"hash: {HashUtil.HashToString(hash)}");
         }
 
         private int RenderSortFunc(UIComponent lhs, UIComponent rhs)

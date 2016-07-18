@@ -11,14 +11,14 @@ namespace ModTools
         private static bool bootstrapped = false;
         private static GameObject thisGameObject;
 
-        private VehicleInfo[] m_vehicles;
-        private BuildingInfo[] m_buildings;
-        private PropInfo[] m_props;
-        private TreeInfo[] m_trees;
-        private NetInfo[] m_nets;
-        private EventInfo[] m_events;
-        private TransportInfo[] m_transports;
-        private CitizenInfo[] m_citizens;
+        public VehicleInfo[] m_vehicles;
+        public BuildingInfo[] m_buildings;
+        public PropInfo[] m_props;
+        public TreeInfo[] m_trees;
+        public NetInfo[] m_nets;
+        public EventInfo[] m_events;
+        public TransportInfo[] m_transports;
+        public CitizenInfo[] m_citizens;
 
         public static void Bootstrap()
         {
