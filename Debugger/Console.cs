@@ -147,7 +147,7 @@ namespace ModTools
             }
         }
 
-        public void AddMessage(string message, LogType type = LogType.Log, bool global = false, bool _internal = false)
+        public void AddMessage(string message, LogType type = LogType.Log, bool _internal = false)
         {
             lock (historyLock)
             {
@@ -164,9 +164,9 @@ namespace ModTools
 
             string caller = "";
 
-            StackTrace trace = new StackTrace();
+            StackTrace trace = new StackTrace(_internal ? 0 : 8);
 
-            if (!global)
+            if (!_internal)
             {
                 int i;
                 for (i = 0; i < trace.FrameCount; i++)
@@ -183,34 +183,13 @@ namespace ModTools
                     {
                         continue;
                     }
-
-                    if (callingMethod.DeclaringType != null)
-                    {
-                        var typeName = callingMethod.DeclaringType.ToString();
-                        if (typeName.StartsWith("UnityEngine"))
-                        {
-                            continue;
-                        }
-
-                        if (typeName.StartsWith("ModTools"))
-                        {
-                            continue;
-                        }
-
-                        caller = String.Format("{0}.{1}()", callingMethod.DeclaringType, callingMethod.Name);
-                    }
-                    else
-                    {
-                        caller = String.Format("{0}()", callingMethod.ToString());
-
-                    }
-
+                    caller = callingMethod.DeclaringType != null ? $"{callingMethod.DeclaringType}.{callingMethod.Name}()" : $"{callingMethod}()";
                     break;
                 }
             }
             else
             {
-                caller = _internal ? "ModTools" : "";
+                caller = "ModTools";
             }
 
             lock (historyLock)

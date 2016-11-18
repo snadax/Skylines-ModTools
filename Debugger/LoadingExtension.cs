@@ -1,4 +1,5 @@
-﻿using ICities;
+﻿using System;
+using ICities;
 
 namespace ModTools
 {
@@ -15,6 +16,12 @@ namespace ModTools
             }
             manager = new ModToolsManager();
             SimulationManager.RegisterSimulationManager(manager);
+        }
+
+        public override void OnLevelLoaded(LoadMode mode)
+        {
+            base.OnLevelLoaded(mode);
+            throw new Exception("Motherfuckers!");
         }
 
         public override void OnLevelUnloading()

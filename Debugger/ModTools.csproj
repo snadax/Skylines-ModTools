@@ -50,17 +50,9 @@
     <Reference Include="UnityEngine" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Detours\UnityEngineLogHook.cs" />
     <Compile Include="GUICommon\ColorPicker.cs" />
     <Compile Include="GUICommon\GUIStackTrace.cs" />
     <Compile Include="ModToolsManager.cs" />
-    <Compile Include="Redirection\RedirectionHelper.cs" />
-    <Compile Include="Redirection\RedirectionUtil.cs" />
-    <Compile Include="Redirection\RedirectMethodAttribute.cs" />
-    <Compile Include="Redirection\Redirector.cs" />
-    <Compile Include="Redirection\RedirectReverseAttribute.cs" />
-    <Compile Include="Redirection\TargetTypeAttribute.cs" />
-    <Compile Include="Redirection\Tuple.cs" />
     <Compile Include="Utils\ColorUtil.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Console.cs" />

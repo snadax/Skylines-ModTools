@@ -1,7 +1,5 @@
 ﻿using System;
 using ColossalFramework.UI;
-using ModTools.Detours;
-using ModTools.Redirection;
 using UnityEngine;
 
 namespace ModTools
@@ -16,6 +14,7 @@ namespace ModTools
 #else
         public static readonly bool DEBUG_MODTOOLS = false;
 #endif
+        private static readonly object LoggingLock = new object();
 
         private Vector2 mainScroll = Vector2.zero;
 
@@ -31,10 +30,6 @@ namespace ModTools
 
         private GamePanelExtender panelExtender;
 
-        public static bool logExceptionsToConsole = true;
-        public static bool extendGamePanels = true;
-        public static bool useModToolsConsole = true;
-
         public Configuration config = new Configuration();
         public static readonly string configPath = "ModToolsConfig.xml";
 
@@ -42,7 +37,6 @@ namespace ModTools
 
         public void OnUnityDestroyCallback()
         {
-            UnityEngineLogHook.Revert();
 
             Destroy(console);
             Destroy(sceneExplorer);
@@ -75,10 +69,6 @@ namespace ModTools
                 SaveConfig();
             }
 
-            logExceptionsToConsole = config.logExceptionsToConsole;
-            extendGamePanels = config.extendGamePanels;
-            useModToolsConsole = config.useModToolsConsole;
-
             if (console != null)
             {
                 console.rect = config.consoleRect;
@@ -103,10 +93,6 @@ namespace ModTools
         {
             if (config != null)
             {
-                config.logExceptionsToConsole = logExceptionsToConsole;
-                config.extendGamePanels = extendGamePanels;
-                config.useModToolsConsole = useModToolsConsole;
-
                 if (console != null)
                 {
                     config.consoleRect = console.rect;
@@ -138,32 +124,7 @@ namespace ModTools
 
             if (!loggingInitialized)
             {
-                Application.logMessageReceived += (condition, trace, type) =>
-                {
-                    if (!logExceptionsToConsole)
-                    {
-                        return;
-                    }
-
-                    if (Instance.console != null)
-                    {
-                        Instance.console.AddMessage($"{condition} ({trace})", type, true);
-                        return;
-                    }
-
-                    if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert)
-                    {
-                        Log.Error(condition);
-                    }
-                    else if (type == LogType.Warning)
-                    {
-                        Log.Warning(condition);
-                    }
-                    else
-                    {
-                        Log.Message(condition);
-                    }
-                };
+                Application.logMessageReceivedThreaded += OnApplicationOnLogMessageReceived;
 
                 loggingInitialized = true;
             }
@@ -178,24 +139,54 @@ namespace ModTools
             LoadConfig();
 
             //TODO(earalov): replace numbers with enum values
-            if (extendGamePanels && (updateMode == (SimulationManager.UpdateMode)2 || updateMode == (SimulationManager.UpdateMode)11 || updateMode == SimulationManager.UpdateMode.LoadGame))
+            if (config.extendGamePanels && (updateMode == (SimulationManager.UpdateMode)2 || updateMode == (SimulationManager.UpdateMode)11 || updateMode == SimulationManager.UpdateMode.LoadGame))
             {
                 panelExtender = gameObject.AddComponent<GamePanelExtender>();
             }
 
-            if (useModToolsConsole)
+            if (config.useModToolsConsole)
             {
                 console = gameObject.AddComponent<Console>();
-            }
-
-            if (config.hookUnityLogging)
-            {
-                UnityEngineLogHook.Deploy();
             }
 
             if (updateMode != SimulationManager.UpdateMode.Undefined && config.customPrefabsObject)
             {
                 CustomPrefabs.Bootstrap();
+            }
+        }
+
+        private void OnApplicationOnLogMessageReceived(string condition, string trace, LogType type)
+        {
+            lock (LoggingLock)
+            {
+                if (!config.hookUnityLogging)
+                {
+                    return;
+                }
+                if (type == LogType.Exception)
+                {
+                    var message = condition;
+                    if (config.logExceptionsToConsole)
+                    {
+                        if (trace != null)
+                        {
+                            message = $"{message}\n\n{trace}";
+                        }
+                    }
+                    Log.Error(message);
+                }
+                else if (type == LogType.Error || type == LogType.Assert)
+                {
+                    Log.Error(condition);
+                }
+                else if (type == LogType.Warning)
+                {
+                    Log.Warning(condition);
+                }
+                else
+                {
+                    Log.Message(condition);
+                }
             }
         }
 
@@ -231,7 +222,7 @@ namespace ModTools
                 watches.visible = !watches.visible;
             }
 
-            if (useModToolsConsole && Input.GetKeyDown(KeyCode.F7))
+            if (config.useModToolsConsole && Input.GetKeyDown(KeyCode.F7))
             {
                 console.visible = !console.visible;
             }
@@ -246,21 +237,19 @@ namespace ModTools
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Use ModTools console");
-            var newUseConsole = GUILayout.Toggle(useModToolsConsole, "");
+            var newUseConsole = GUILayout.Toggle(config.useModToolsConsole, "");
             GUILayout.EndHorizontal();
 
-            if (newUseConsole != useModToolsConsole)
+            if (newUseConsole != config.useModToolsConsole)
             {
-                useModToolsConsole = newUseConsole;
+                config.useModToolsConsole = newUseConsole;
 
-                if (useModToolsConsole)
+                if (config.useModToolsConsole)
                 {
                     console = gameObject.AddComponent<Console>();
                 }
                 else
                 {
-                    config.hookUnityLogging = false;
-                    UnityEngineLogHook.Revert();
                     Destroy(console);
                     console = null;
                 }
@@ -282,39 +271,31 @@ namespace ModTools
             {
                 config.hookUnityLogging = newHookLogging;
                 SaveConfig();
-
-                if (config.hookUnityLogging)
-                {
-                    UnityEngineLogHook.Deploy();
-                }
-                else
-                {
-                    UnityEngineLogHook.Revert();
-                }
             }
 
             GUI.enabled = true;
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Log exceptions to console");
-            logExceptionsToConsole = GUILayout.Toggle(logExceptionsToConsole, "");
+            var newLogExceptionsToConsole = GUILayout.Toggle(config.logExceptionsToConsole, "");
             GUILayout.EndHorizontal();
-            if (logExceptionsToConsole != config.logExceptionsToConsole)
+            if (newLogExceptionsToConsole != config.logExceptionsToConsole)
             {
+                config.logExceptionsToConsole = newLogExceptionsToConsole;
                 SaveConfig();
             }
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Game panel extensions");
-            var newExtendGamePanels = GUILayout.Toggle(extendGamePanels, "");
+            var newExtendGamePanels = GUILayout.Toggle(config.extendGamePanels, "");
             GUILayout.EndHorizontal();
 
-            if (newExtendGamePanels != extendGamePanels)
+            if (newExtendGamePanels != config.extendGamePanels)
             {
-                extendGamePanels = newExtendGamePanels;
+                config.extendGamePanels = newExtendGamePanels;
                 SaveConfig();
 
-                if (extendGamePanels)
+                if (config.extendGamePanels)
                 {
                     gameObject.AddComponent<GamePanelExtender>();
                 }

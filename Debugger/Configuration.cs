@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Xml.Serialization;
 using UnityEngine;
 
@@ -103,12 +104,16 @@ namespace ModTools
             {
                 using (var reader = new StreamReader(filename))
                 {
-                    var config = (Configuration)serializer.Deserialize(reader);
+                    var config = (Configuration) serializer.Deserialize(reader);
                     config.OnPostDeserialize();
                     return config;
                 }
             }
-            catch { }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Error happened when deserializing config");
+                UnityEngine.Debug.LogException(e);
+            }
 
             return null;
         }
