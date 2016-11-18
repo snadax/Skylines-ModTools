@@ -98,7 +98,11 @@ namespace ModTools
                 // reset the position to the remembered one
                 setCommandLinePosition = false;
                 TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
+#if NEWVERSION
                 editor.cursorIndex = editor.selectIndex = commandLinePosition - 1;
+#else
+                editor.pos = editor.selectPos = commandLinePosition - 1;
+#endif
             }
             if (e.keyCode == KeyCode.Return)
             {
@@ -109,7 +113,11 @@ namespace ModTools
 
                 // event.Use() does not consume the event, work around the enter being inserted into the textbox by deleting the line break
                 TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
+#if NEWVERSION
                 int pos = editor.selectIndex;
+#else
+                int pos = editor.selectPos;
+#endif
                 String currentCommand = commandHistory[currentCommandHistoryIndex];
                 String fixedCommand = currentCommand.Substring(0, pos - 1) + currentCommand.Substring(pos, currentCommand.Length - pos);
                 commandHistory[currentCommandHistoryIndex] = fixedCommand;
