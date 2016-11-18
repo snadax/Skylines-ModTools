@@ -204,11 +204,11 @@ namespace ModTools
 
             if (GUIUtility.keyboardControl == editor.controlID && Event.current.Equals(Event.KeyboardEvent("tab")))
             {
-                if (text.Length > editor.pos)
+                if (text.Length > editor.cursorIndex)
                 {
-                    text = text.Insert(editor.pos, "\t");
-                    editor.pos++;
-                    editor.selectPos = editor.pos;
+                    text = text.Insert(editor.cursorIndex, "\t");
+                    editor.cursorIndex++;
+                    editor.selectIndex = editor.cursorIndex;
                 }
                 Event.current.Use();
             }

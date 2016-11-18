@@ -19,6 +19,10 @@ namespace ModTools
         {
         }
 
+        public void EarlyUpdateData()
+        {
+        }
+
         public void UpdateData(SimulationManager.UpdateMode mode)
         {
             ModToolsBootstrap.inMainMenu = false;

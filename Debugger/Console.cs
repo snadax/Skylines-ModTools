@@ -21,10 +21,7 @@ namespace ModTools
     public class Console : GUIWindow
     {
 
-        private static Configuration config
-        {
-            get { return ModTools.Instance.config; }
-        }
+        private static Configuration config => ModTools.Instance.config;
 
         private GUIArea headerArea;
         private GUIArea consoleArea;
@@ -101,7 +98,7 @@ namespace ModTools
                 // reset the position to the remembered one
                 setCommandLinePosition = false;
                 TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
-                editor.pos = editor.selectPos = commandLinePosition - 1;
+                editor.cursorIndex = editor.selectIndex = commandLinePosition - 1;
             }
             if (e.keyCode == KeyCode.Return)
             {
@@ -112,7 +109,7 @@ namespace ModTools
 
                 // event.Use() does not consume the event, work around the enter being inserted into the textbox by deleting the line break
                 TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
-                int pos = editor.selectPos;
+                int pos = editor.selectIndex;
                 String currentCommand = commandHistory[currentCommandHistoryIndex];
                 String fixedCommand = currentCommand.Substring(0, pos - 1) + currentCommand.Substring(pos, currentCommand.Length - pos);
                 commandHistory[currentCommandHistoryIndex] = fixedCommand;

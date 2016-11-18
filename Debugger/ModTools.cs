@@ -177,7 +177,8 @@ namespace ModTools
 
             LoadConfig();
 
-            if (extendGamePanels && (updateMode == SimulationManager.UpdateMode.NewGame || updateMode == SimulationManager.UpdateMode.LoadGame))
+            //TODO(earalov): replace numbers with enum values
+            if (extendGamePanels && (updateMode == (SimulationManager.UpdateMode)2 || updateMode == (SimulationManager.UpdateMode)11 || updateMode == SimulationManager.UpdateMode.LoadGame))
             {
                 panelExtender = gameObject.AddComponent<GamePanelExtender>();
             }
