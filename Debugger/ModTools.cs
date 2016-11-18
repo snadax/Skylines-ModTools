@@ -1,5 +1,6 @@
 ﻿using System;
 using ColossalFramework.UI;
+using ICities;
 using UnityEngine;
 
 namespace ModTools
@@ -7,7 +8,6 @@ namespace ModTools
 
     public class ModTools : GUIWindow
     {
-        public SimulationManager.UpdateMode updateMode = SimulationManager.UpdateMode.Undefined;
 
 #if DEBUG
         public static readonly bool DEBUG_MODTOOLS = true;
@@ -28,8 +28,6 @@ namespace ModTools
         public Watches watches;
         public ColorPicker colorPicker;
 
-        private GamePanelExtender panelExtender;
-
         public Configuration config = new Configuration();
         public static readonly string configPath = "ModToolsConfig.xml";
 
@@ -43,10 +41,7 @@ namespace ModTools
             Destroy(sceneExplorerColorConfig);
             Destroy(scriptEditor);
             Destroy(watches);
-            Destroy(panelExtender);
             Destroy(colorPicker);
-
-            CustomPrefabs.Revert();
 
             instance = null;
         }
@@ -118,9 +113,8 @@ namespace ModTools
 
         private static bool loggingInitialized = false;
 
-        public void Initialize(SimulationManager.UpdateMode _updateMode)
+        public void Initialize()
         {
-            updateMode = _updateMode;
 
             if (!loggingInitialized)
             {
@@ -138,21 +132,11 @@ namespace ModTools
 
             LoadConfig();
 
-            //TODO(earalov): replace numbers with enum values
-            if (config.extendGamePanels && (updateMode == (SimulationManager.UpdateMode)2 || updateMode == (SimulationManager.UpdateMode)11 || updateMode == SimulationManager.UpdateMode.LoadGame))
-            {
-                panelExtender = gameObject.AddComponent<GamePanelExtender>();
-            }
-
             if (config.useModToolsConsole)
             {
                 console = gameObject.AddComponent<Console>();
             }
 
-            if (updateMode != SimulationManager.UpdateMode.Undefined && config.customPrefabsObject)
-            {
-                CustomPrefabs.Bootstrap();
-            }
         }
 
         private void OnApplicationOnLogMessageReceived(string condition, string trace, LogType type)
@@ -322,11 +306,11 @@ namespace ModTools
             if (customPrefabsObject != config.customPrefabsObject)
             {
                 config.customPrefabsObject = customPrefabsObject;
-                if (config.customPrefabsObject && updateMode != SimulationManager.UpdateMode.Undefined)
+                if (config.customPrefabsObject)
                 {
                     CustomPrefabs.Bootstrap();
                 }
-                else if (updateMode != SimulationManager.UpdateMode.Undefined)
+                else
                 {
                     CustomPrefabs.Revert();
                 }

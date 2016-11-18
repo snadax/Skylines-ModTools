@@ -46,7 +46,7 @@ namespace ModTools
                 }
                 if (inMainMenu)
                 {
-                    InitModTools(SimulationManager.UpdateMode.Undefined);
+                    InitModTools();
                 }
                 initialized = true;
             }
@@ -56,7 +56,7 @@ namespace ModTools
             }
         }
 
-        public static void InitModTools(SimulationManager.UpdateMode mode)
+        public static void InitModTools()
         {
             if (!IsModToolsActive())
             {
@@ -70,7 +70,7 @@ namespace ModTools
 
             modToolsGameObject = new GameObject("ModTools");
             modTools = modToolsGameObject.AddComponent<ModTools>();
-            modTools.Initialize(mode);
+            modTools.Initialize();
         }
 
     }

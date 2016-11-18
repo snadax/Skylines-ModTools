@@ -1,33 +1,35 @@
 ﻿using System;
+using ColossalFramework;
 using ICities;
 
 namespace ModTools
 {
     public class LoadingExtension : LoadingExtensionBase
     {
-        private static ModToolsManager manager;
-
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
-            if (manager != null)
-            {
-                return;
-            }
-            manager = new ModToolsManager();
-            SimulationManager.RegisterSimulationManager(manager);
+            ModToolsBootstrap.inMainMenu = false;
+            ModToolsBootstrap.InitModTools();
         }
 
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
-            throw new Exception("Motherfuckers!");
+            CustomPrefabs.Bootstrap();
+            var appMode = Singleton<ToolManager>.instance.m_properties.m_mode;
+            if (ModTools.Instance.config.extendGamePanels && appMode == ItemClass.Availability.Game)
+            {
+                ModTools.Instance.gameObject.AddComponent<GamePanelExtender>();
+            }
         }
 
-        public override void OnLevelUnloading()
+        public override void OnReleased()
         {
-            ModToolsBootstrap.initialized = false;
+            base.OnReleased();
+            CustomPrefabs.Revert();
             ModToolsBootstrap.inMainMenu = true;
+            ModToolsBootstrap.initialized = false;
         }
     }
 }
