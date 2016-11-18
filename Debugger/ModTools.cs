@@ -15,6 +15,7 @@ namespace ModTools
         public static readonly bool DEBUG_MODTOOLS = false;
 #endif
         private static readonly object LoggingLock = new object();
+        private static readonly object InstanceLock = new object();
 
         private Vector2 mainScroll = Vector2.zero;
 
@@ -50,8 +51,11 @@ namespace ModTools
         {
             get
             {
-                instance = instance ?? FindObjectOfType<ModTools>();
-                return instance;
+                lock (InstanceLock)
+                {
+                    instance = instance ?? FindObjectOfType<ModTools>();
+                    return instance;
+                }
             }
         }
 

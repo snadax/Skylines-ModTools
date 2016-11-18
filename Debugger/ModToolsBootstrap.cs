@@ -9,9 +9,6 @@ namespace ModTools
 {
     public static class ModToolsBootstrap
     {
-
-        private static GameObject modToolsGameObject;
-        private static ModTools modTools;
         public static bool initialized;
         private static bool bootstrapped;
 
@@ -58,14 +55,14 @@ namespace ModTools
             {
                 return;
             }
-
+            var modToolsGameObject = GameObject.Find("ModTools");
             if (modToolsGameObject != null)
             {
                 return;
             }
 
             modToolsGameObject = new GameObject("ModTools");
-            modTools = modToolsGameObject.AddComponent<ModTools>();
+            var modTools = modToolsGameObject.AddComponent<ModTools>();
             modTools.Initialize();
         }
 
