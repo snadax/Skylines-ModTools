@@ -10,6 +10,7 @@ namespace ModTools
         {
             base.OnCreated(loading);
             ModToolsBootstrap.inMainMenu = false;
+            ModToolsBootstrap.initialized = false;
             ModToolsBootstrap.Bootstrap();
         }
 
