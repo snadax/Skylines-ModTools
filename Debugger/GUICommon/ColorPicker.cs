@@ -29,18 +29,18 @@ namespace ModTools
         private readonly int colorPickerSize = 142;
         private readonly int huesBarWidth = 26;
 
-        private Texture2D colorPicker;
-        private Texture2D huesBar;
+        private Texture2D colorPickerTexture;
+        private Texture2D huesBarTexture;
         private ColorUtil.HSV currentHSV;
         private float originalAlpha = 0.0f;
-        
+
         private OnColorChanged onColorChanged;
         private OnColor32Changed onColor32Changed;
 
         private Rect colorPickerRect;
         private Rect huesBarRect;
 
-        private Texture2D lineTex;
+        private Texture2D lineTexTexture;
         private static Color lineColor = Color.white;
 
         public ColorPicker() : base("ColorPicker", new Rect(16.0f, 16.0f, 188.0f, 156.0f), skin)
@@ -52,16 +52,16 @@ namespace ModTools
             onDraw = DrawWindow;
             onException = HandleException;
 
-            huesBar = DrawHuesBar(huesBarWidth, colorPickerSize);
-            lineTex = DrawLineTex();
-
-            colorPicker = new Texture2D(colorPickerSize, colorPickerSize);
-            RedrawPicker();
-
             colorPickerRect = new Rect(8.0f, 8.0f, colorPickerSize, colorPickerSize);
             huesBarRect = new Rect(colorPickerRect.x + colorPickerSize + 4.0f, colorPickerRect.y, huesBarWidth, colorPickerRect.height);
             visible = false;
         }
+
+        private Texture2D colorPicker => colorPickerTexture ?? (colorPickerTexture = new Texture2D(colorPickerSize, colorPickerSize));
+
+        private Texture2D huesBar => huesBarTexture ?? (huesBarTexture = DrawHuesBar(huesBarWidth, colorPickerSize));
+
+        private Texture2D lineTex => lineTexTexture ?? (lineTexTexture = DrawLineTex());
 
         public void SetColor(Color color, OnColorChanged _onColorChanged)
         {
@@ -74,7 +74,7 @@ namespace ModTools
 
         public void SetColor(Color32 color, OnColor32Changed _onColor32Changed)
         {
-            originalAlpha = color.a/255.0f;
+            originalAlpha = color.a / 255.0f;
             currentHSV = ColorUtil.HSV.RGB2HSV(color);
             currentHSV.h = 360.0f - currentHSV.h;
             onColor32Changed = _onColor32Changed;
@@ -97,8 +97,8 @@ namespace ModTools
             GUI.DrawTexture(colorPickerRect, colorPicker);
             GUI.DrawTexture(huesBarRect, huesBar);
 
-            float huesBarLineY = huesBarRect.y + (1.0f-((float)currentHSV.h / 360.0f)) * huesBarRect.height;
-            GUI.DrawTexture(new Rect(huesBarRect.x-2.0f, huesBarLineY, huesBarRect.width+4.0f, 2.0f), lineTex);
+            float huesBarLineY = huesBarRect.y + (1.0f - ((float)currentHSV.h / 360.0f)) * huesBarRect.height;
+            GUI.DrawTexture(new Rect(huesBarRect.x - 2.0f, huesBarLineY, huesBarRect.width + 4.0f, 2.0f), lineTex);
 
             float colorPickerLineY = colorPickerRect.x + (float)currentHSV.v * colorPickerRect.width;
             GUI.DrawTexture(new Rect(colorPickerRect.x - 1.0f, colorPickerLineY, colorPickerRect.width + 2.0f, 1.0f), lineTex);
@@ -139,7 +139,7 @@ namespace ModTools
             {
                 if (huesBarRect.Contains(mouse))
                 {
-                    currentHSV.h = (1.0f-Mathf.Clamp01((mouse.y - huesBarRect.y) / huesBarRect.height)) * 360.0f;
+                    currentHSV.h = (1.0f - Mathf.Clamp01((mouse.y - huesBarRect.y) / huesBarRect.height)) * 360.0f;
                     RedrawPicker();
 
                     InternalOnColorChanged(ColorUtil.HSV.HSV2RGB(currentHSV));
@@ -147,8 +147,8 @@ namespace ModTools
 
                 if (colorPickerRect.Contains(mouse))
                 {
-                    currentHSV.s = Mathf.Clamp01((mouse.x - colorPickerRect.x)/colorPickerRect.width);
-                    currentHSV.v = Mathf.Clamp01((mouse.y - colorPickerRect.y)/colorPickerRect.height);
+                    currentHSV.s = Mathf.Clamp01((mouse.x - colorPickerRect.x) / colorPickerRect.width);
+                    currentHSV.v = Mathf.Clamp01((mouse.y - colorPickerRect.y) / colorPickerRect.height);
 
                     InternalOnColorChanged(ColorUtil.HSV.HSV2RGB(currentHSV));
                 }
@@ -174,7 +174,7 @@ namespace ModTools
 
             for (int y = 0; y < height; y++)
             {
-                var color = GetColorAtT(((float)y/(float)height)*360.0f);
+                var color = GetColorAtT(((float)y / (float)height) * 360.0f);
 
                 for (int x = 0; x < width; x++)
                 {
@@ -196,12 +196,12 @@ namespace ModTools
 
         public static Color GetColorAtT(double hue)
         {
-            return ColorUtil.HSV.HSV2RGB(new ColorUtil.HSV {h = hue, s = 1.0f, v = 1.0f});
+            return ColorUtil.HSV.HSV2RGB(new ColorUtil.HSV { h = hue, s = 1.0f, v = 1.0f });
         }
 
         public static Color GetColorAtXY(double hue, float xT, float yT)
         {
-            return ColorUtil.HSV.HSV2RGB(new ColorUtil.HSV {h = hue, s = xT, v = yT});
+            return ColorUtil.HSV.HSV2RGB(new ColorUtil.HSV { h = hue, s = xT, v = yT });
         }
 
     }

@@ -47,7 +47,7 @@ namespace ModTools
                     currentHotControl = hash;
                     hotControlBuffer = value;
                 }
-                else if(currentHotControl == hash)
+                else if (currentHotControl == hash)
                 {
                     hotControlBuffer = newBuffer;
                 }
@@ -432,7 +432,7 @@ namespace ModTools
                 GUI.contentColor = config.typeColor;
                 GUILayout.Label("int");
             }
-           
+
             GUI.contentColor = config.nameColor;
 
             GUILayout.Label(name);
@@ -679,7 +679,7 @@ namespace ModTools
                 GUI.contentColor = config.typeColor;
                 GUILayout.Label("string");
             }
-           
+
             GUI.contentColor = config.nameColor;
             GUILayout.Label(name);
             if (!noSpace)
@@ -754,7 +754,7 @@ namespace ModTools
             GUILayout.Label(name);
 
             GUI.contentColor = config.valueColor;
-           
+
             if (!noSpace)
             {
                 GUILayout.FlexibleSpace();
@@ -852,8 +852,8 @@ namespace ModTools
                 GUILayout.FlexibleSpace();
             }
 
-            FloatField(hash+".x", "x", ref value.x, 0.0f, true, true);
-            FloatField(hash+".y", "y", ref value.y, 0.0f, true, true);
+            FloatField(hash + ".x", "x", ref value.x, 0.0f, true, true);
+            FloatField(hash + ".y", "y", ref value.y, 0.0f, true, true);
 
             if (watch != null)
             {
@@ -880,7 +880,7 @@ namespace ModTools
             if (!noTypeLabel)
             {
                 GUI.contentColor = config.typeColor;
-                GUILayout.Label("Vector3"); 
+                GUILayout.Label("Vector3");
             }
 
             GUI.contentColor = config.nameColor;
@@ -893,9 +893,9 @@ namespace ModTools
                 GUILayout.FlexibleSpace();
             }
 
-            FloatField(hash+".x", "x", ref value.x, 0.0f, true, true);
-            FloatField(hash+".y", "y", ref value.y, 0.0f, true, true);
-            FloatField(hash+".z", "z", ref value.z, 0.0f, true, true);
+            FloatField(hash + ".x", "x", ref value.x, 0.0f, true, true);
+            FloatField(hash + ".y", "y", ref value.y, 0.0f, true, true);
+            FloatField(hash + ".z", "z", ref value.z, 0.0f, true, true);
 
             if (watch != null)
             {
@@ -935,10 +935,10 @@ namespace ModTools
                 GUILayout.FlexibleSpace();
             }
 
-            FloatField(hash+".x", "x", ref value.x, 0.0f, true, true);
-            FloatField(hash+".y", "y", ref value.y, 0.0f, true, true);
-            FloatField(hash+".z", "z", ref value.z, 0.0f, true, true);
-            FloatField(hash+".w", "w", ref value.w, 0.0f, true, true);
+            FloatField(hash + ".x", "x", ref value.x, 0.0f, true, true);
+            FloatField(hash + ".y", "y", ref value.y, 0.0f, true, true);
+            FloatField(hash + ".z", "z", ref value.z, 0.0f, true, true);
+            FloatField(hash + ".w", "w", ref value.w, 0.0f, true, true);
 
             if (watch != null)
             {
@@ -980,9 +980,9 @@ namespace ModTools
 
             var euler = value.eulerAngles;
 
-            FloatField(hash+".x", "x", ref euler.x, 0.0f, true, true);
-            FloatField(hash+".y", "y", ref euler.y, 0.0f, true, true);
-            FloatField(hash+".z", "z", ref euler.z, 0.0f, true, true);
+            FloatField(hash + ".x", "x", ref euler.x, 0.0f, true, true);
+            FloatField(hash + ".y", "y", ref euler.y, 0.0f, true, true);
+            FloatField(hash + ".z", "z", ref euler.z, 0.0f, true, true);
 
             if (euler != value.eulerAngles)
             {
@@ -1052,13 +1052,17 @@ namespace ModTools
                 if (GUILayout.Button("", GUILayout.Width(72)))
                 {
                     var picker = ModTools.Instance.colorPicker;
-                    picker.SetColor(value, onColorChanged);
+                    if (picker != null)
+                    {
+                        picker.SetColor(value, onColorChanged);
 
-                    Vector2 mouse = Input.mousePosition;
-                    mouse.y = Screen.height - mouse.y;
+                        Vector2 mouse = Input.mousePosition;
+                        mouse.y = Screen.height - mouse.y;
 
-                    picker.rect.position = mouse;
-                    picker.visible = true;
+                        picker.rect.position = mouse;
+                        picker.visible = true;
+                    }
+
                 }
 
                 var lastRect = GUILayoutUtility.GetLastRect();
@@ -1068,7 +1072,7 @@ namespace ModTools
                 lastRect.height -= 8.0f;
                 GUI.DrawTexture(lastRect, ColorPicker.GetColorTexture(hash, value), ScaleMode.StretchToFill);
             }
-            
+
             if (watch != null)
             {
                 if (GUILayout.Button("Watch"))
@@ -1082,7 +1086,7 @@ namespace ModTools
             GUILayout.EndHorizontal();
         }
 
-        static public void Color32Field(string hash, string name, ref Color32 value, float ident = 0.0f, WatchButtonCallback watch = null, bool noSpace = false, bool noTypeLabel = false, ColorPicker.OnColor32Changed onColor32Changed = null)
+        public static void Color32Field(string hash, string name, ref Color32 value, float ident = 0.0f, WatchButtonCallback watch = null, bool noSpace = false, bool noTypeLabel = false, ColorPicker.OnColor32Changed onColor32Changed = null)
         {
             GUILayout.BeginHorizontal();
 
@@ -1107,23 +1111,27 @@ namespace ModTools
                 GUILayout.FlexibleSpace();
             }
 
-            ByteField(hash+".r", "r", ref value.r, 0.0f, true, true);
-            ByteField(hash+".g", "g", ref value.g, 0.0f, true, true);
-            ByteField(hash+".b", "b", ref value.b, 0.0f, true, true);
-            ByteField(hash+".a", "a", ref value.a, 0.0f, true, true);
+            ByteField(hash + ".r", "r", ref value.r, 0.0f, true, true);
+            ByteField(hash + ".g", "g", ref value.g, 0.0f, true, true);
+            ByteField(hash + ".b", "b", ref value.b, 0.0f, true, true);
+            ByteField(hash + ".a", "a", ref value.a, 0.0f, true, true);
 
             if (onColor32Changed != null)
             {
                 if (GUILayout.Button("", GUILayout.Width(72)))
                 {
                     var picker = ModTools.Instance.colorPicker;
-                    picker.SetColor(value, onColor32Changed);
+                    if (picker != null)
+                    {
+                        picker.SetColor(value, onColor32Changed);
 
-                    Vector2 mouse = Input.mousePosition;
-                    mouse.y = Screen.height - mouse.y;
+                        Vector2 mouse = Input.mousePosition;
+                        mouse.y = Screen.height - mouse.y;
 
-                    picker.rect.position = mouse;
-                    picker.visible = true;
+                        picker.rect.position = mouse;
+                        picker.visible = true;
+                    }
+
                 }
 
                 var lastRect = GUILayoutUtility.GetLastRect();
