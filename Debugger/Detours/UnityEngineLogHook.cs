@@ -19,22 +19,22 @@ namespace ModTools.Detours
 
         public static void Deploy()
         {
-            if (!Redirector<UnityEngineLogHook>.IsDeployed())
-            {
-                logState = RedirectionHelper.RedirectCalls(typeof(UnityEngineLogHook).GetMethod("Internal_Log", BindingFlags.NonPublic | BindingFlags.Static), logMethod);
-                logExceptionState = RedirectionHelper.RedirectCalls(typeof(UnityEngineLogHook).GetMethod("Internal_LogException", BindingFlags.NonPublic | BindingFlags.Static), logExceptionMethod);
-            }
-            Redirector<UnityEngineLogHook>.Deploy();
+//            if (!Redirector<UnityEngineLogHook>.IsDeployed())
+//            {
+//                logState = RedirectionHelper.RedirectCalls(typeof(UnityEngineLogHook).GetMethod("Internal_Log", BindingFlags.NonPublic | BindingFlags.Static), logMethod);
+//                logExceptionState = RedirectionHelper.RedirectCalls(typeof(UnityEngineLogHook).GetMethod("Internal_LogException", BindingFlags.NonPublic | BindingFlags.Static), logExceptionMethod);
+//            }
+//            Redirector<UnityEngineLogHook>.Deploy();
         }
 
         public static void Revert()
         {
-            if (Redirector<UnityEngineLogHook>.IsDeployed())
-            {
-                RedirectionHelper.RevertRedirect(typeof(UnityEngineLogHook).GetMethod("Internal_Log", BindingFlags.NonPublic | BindingFlags.Static), logState);
-                RedirectionHelper.RevertRedirect(typeof(UnityEngineLogHook).GetMethod("Internal_LogException", BindingFlags.NonPublic | BindingFlags.Static), logExceptionState);
-            }
-            Redirector<UnityEngineLogHook>.Revert();
+//            if (Redirector<UnityEngineLogHook>.IsDeployed())
+//            {
+//                RedirectionHelper.RevertRedirect(typeof(UnityEngineLogHook).GetMethod("Internal_Log", BindingFlags.NonPublic | BindingFlags.Static), logState);
+//                RedirectionHelper.RevertRedirect(typeof(UnityEngineLogHook).GetMethod("Internal_LogException", BindingFlags.NonPublic | BindingFlags.Static), logExceptionState);
+//            }
+//            Redirector<UnityEngineLogHook>.Revert();
         }
 
 
