@@ -10,7 +10,7 @@ namespace ModTools
         {
             base.OnCreated(loading);
             ModToolsBootstrap.inMainMenu = false;
-            ModToolsBootstrap.InitModTools();
+            ModToolsBootstrap.Bootstrap();
         }
 
         public override void OnLevelLoaded(LoadMode mode)

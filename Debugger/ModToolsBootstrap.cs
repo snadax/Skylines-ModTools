@@ -47,6 +47,7 @@ namespace ModTools
                 if (inMainMenu)
                 {
                     InitModTools();
+
                 }
                 initialized = true;
             }
@@ -56,7 +57,7 @@ namespace ModTools
             }
         }
 
-        public static void InitModTools()
+        private static void InitModTools()
         {
             if (!IsModToolsActive())
             {
