@@ -9,7 +9,6 @@ namespace ModTools
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
-            ModToolsBootstrap.inMainMenu = false;
             ModToolsBootstrap.initialized = false;
             ModToolsBootstrap.Bootstrap();
         }
@@ -29,7 +28,6 @@ namespace ModTools
         {
             base.OnReleased();
             CustomPrefabs.Revert();
-            ModToolsBootstrap.inMainMenu = true;
             ModToolsBootstrap.initialized = false;
         }
     }

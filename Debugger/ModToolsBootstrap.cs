@@ -14,7 +14,6 @@ namespace ModTools
         private static ModTools modTools;
         public static bool initialized;
         private static bool bootstrapped;
-        public static bool inMainMenu = true;
 
         public static bool IsModToolsActive()
         {
@@ -32,28 +31,24 @@ namespace ModTools
 
         public static void Bootstrap()
         {
+            if (!bootstrapped)
+            {
+                CODebugBase<LogChannel>.verbose = true;
+                CODebugBase<LogChannel>.EnableChannels(LogChannel.All);
+                bootstrapped = true;
+            }
             if (initialized)
             {
                 return;
             }
             try
             {
-                if (!bootstrapped)
-                {
-                    CODebugBase<LogChannel>.verbose = true;
-                    CODebugBase<LogChannel>.EnableChannels(LogChannel.All);
-                    bootstrapped = true;
-                }
-                if (inMainMenu)
-                {
-                    InitModTools();
-
-                }
+                InitModTools();
                 initialized = true;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                DebugOutputPanel.AddMessage(PluginManager.MessageType.Error, ex.Message);
+                DebugOutputPanel.AddMessage(PluginManager.MessageType.Error, e.Message);
             }
         }
 
