@@ -122,7 +122,7 @@ namespace ModTools
 
             if (!loggingInitialized)
             {
-                Application.logMessageReceivedThreaded += OnApplicationOnLogMessageReceived;
+                Application.logMessageReceivedThreaded += OnApplicationLogMessageReceivedThreaded;
 
                 loggingInitialized = true;
             }
@@ -143,8 +143,12 @@ namespace ModTools
 
         }
 
-        private void OnApplicationOnLogMessageReceived(string condition, string trace, LogType type)
+        private void OnApplicationLogMessageReceivedThreaded(string condition, string trace, LogType type)
         {
+            if (!ModToolsBootstrap.initialized)
+            {
+                return;
+            }
             lock (LoggingLock)
             {
                 if (!config.hookUnityLogging)

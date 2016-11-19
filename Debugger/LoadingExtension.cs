@@ -10,7 +10,9 @@ namespace ModTools
         {
             base.OnCreated(loading);
             ModToolsBootstrap.initialized = false;
+#if NEWVERSION
             ModToolsBootstrap.Bootstrap();
+#endif
         }
 
         public override void OnLevelLoaded(LoadMode mode)
