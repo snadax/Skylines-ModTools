@@ -36,7 +36,6 @@ namespace ModTools
 
         public void OnUnityDestroyCallback()
         {
-
             Destroy(console);
             Destroy(sceneExplorer);
             Destroy(sceneExplorerColorConfig);
@@ -45,6 +44,7 @@ namespace ModTools
             Destroy(colorPicker);
 
             instance = null;
+            ModToolsBootstrap.initialized = false;
         }
 
         public static ModTools Instance

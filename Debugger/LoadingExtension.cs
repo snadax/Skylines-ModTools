@@ -9,10 +9,7 @@ namespace ModTools
         public override void OnCreated(ILoading loading)
         {
             base.OnCreated(loading);
-            ModToolsBootstrap.initialized = false;
-#if NEWVERSION
             ModToolsBootstrap.Bootstrap();
-#endif
         }
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -20,9 +17,15 @@ namespace ModTools
             base.OnLevelLoaded(mode);
             CustomPrefabs.Bootstrap();
             var appMode = Singleton<ToolManager>.instance.m_properties.m_mode;
-            if (ModTools.Instance.config.extendGamePanels && appMode == ItemClass.Availability.Game)
+            var modTools = ModTools.Instance;
+            if (modTools == null)
             {
-                ModTools.Instance.gameObject.AddComponent<GamePanelExtender>();
+                UnityEngine.Debug.LogError("ModTools instance wasn't present");
+                return;
+            }
+            if (modTools.config.extendGamePanels && appMode == ItemClass.Availability.Game)
+            {
+                modTools.gameObject.AddComponent<GamePanelExtender>();
             }
         }
 
@@ -30,7 +33,6 @@ namespace ModTools
         {
             base.OnReleased();
             CustomPrefabs.Revert();
-            ModToolsBootstrap.initialized = false;
         }
     }
 }
