@@ -9,9 +9,9 @@ namespace ModTools
     public class MeshViewer : GUIWindow
     {
 
-        public Mesh previewMesh = null;
-        public bool materialProvided = false;
-        public String assetName = null;
+        private Mesh previewMesh = null;
+        private Material previewMaterial;
+        private String assetName = null;
 
         private RenderTexture targetRT;
 
@@ -23,7 +23,10 @@ namespace ModTools
         private Camera meshViewerCamera;
 
         private Material material;
+
         private Light light;
+
+        private bool useOriginalShader = true;
 
         private MeshViewer()
             : base("Mesh Viewer", new Rect(512, 128, 512, 512), skin)
@@ -59,14 +62,12 @@ namespace ModTools
             var meshViewer = go.AddComponent<MeshViewer>();
             meshViewer.assetName = assetName;
             meshViewer.previewMesh = mesh;
+            meshViewer.material = material;
+
+            meshViewer.previewMaterial = new Material(Shader.Find("Diffuse"));
             if (material != null)
             {
-                meshViewer.material = material;
-                meshViewer.materialProvided = true;
-            }
-            else
-            {
-                meshViewer.material = new Material(Shader.Find("Diffuse")); ;
+                meshViewer.previewMaterial.mainTexture = material.mainTexture;
             }
             meshViewer.visible = true;
             return meshViewer;
@@ -81,26 +82,31 @@ namespace ModTools
 
             float intensity = 0.0f;
             Color color = Color.black;
+            bool enabled = false;
 
             if (light != null)
             {
                 intensity = light.intensity;
                 color = light.color;
+                enabled = light.enabled;
                 light.intensity = 2.0f;
                 light.color = Color.white;
+                light.enabled = true;
             }
 
             var pos = meshViewerCamera.transform.position + new Vector3(0.0f, -zoom, -zoom);
             var trs = Matrix4x4.TRS(pos, rotation, new Vector3(1.0f, 1.0f, 1.0f));
             meshViewerCamera.transform.LookAt(pos, Vector3.up);
 
-            Graphics.DrawMesh(previewMesh, trs, material, 0, meshViewerCamera, 0, null, false, false);
-            meshViewerCamera.RenderWithShader(material.shader, "");
+            var material1 = (useOriginalShader && material != null) ? material : previewMaterial;
+            Graphics.DrawMesh(previewMesh, trs, material1, 0, meshViewerCamera, 0, null, false, false);
+            meshViewerCamera.RenderWithShader(material1.shader, "");
 
             if (light != null)
             {
                 light.intensity = intensity;
                 light.color = color;
+                light.enabled = enabled;
             }
         }
 
@@ -112,8 +118,9 @@ namespace ModTools
 
                 GUILayout.BeginHorizontal();
 
-                if (materialProvided)
+                if (material != null)
                 {
+                    useOriginalShader = GUILayout.Toggle(useOriginalShader, "Original Shader");
                     if (previewMesh.isReadable)
                     {
                         if (GUILayout.Button("Dump mesh+textures", GUILayout.Width(160)))
@@ -131,6 +138,7 @@ namespace ModTools
                 }
                 else
                 {
+                    useOriginalShader = false;
                     if (previewMesh.isReadable)
                     {
                         if (GUILayout.Button("Dump mesh", GUILayout.Width(160)))
@@ -150,7 +158,7 @@ namespace ModTools
                     GUILayout.Label("Mesh insn't readable!");
                     GUI.color = oldColor;
                 }
-                if (materialProvided && material.mainTexture != null)
+                if (material?.mainTexture != null)
                 {
                     GUILayout.Label($"Texture size: {material.mainTexture.width}x{material.mainTexture.height}");
                 }
