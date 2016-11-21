@@ -965,7 +965,7 @@ namespace ModTools
             if (!noTypeLabel)
             {
                 GUI.contentColor = config.typeColor;
-                GUILayout.Label("Vector4");
+                GUILayout.Label("Quaternion (euler)");
             }
 
             GUI.contentColor = config.nameColor;

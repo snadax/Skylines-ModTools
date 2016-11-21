@@ -71,7 +71,6 @@
     <Compile Include="GUIExplorer\GUIRecursiveTree.cs" />
     <Compile Include="GUIExplorer\GUIReflect.cs" />
     <Compile Include="GUIExplorer\GUITransform.cs" />
-    <Compile Include="GUIExplorer\GUIVector3.cs" />
     <Compile Include="GUIExplorer\SceneExplorerCommon.cs" />
     <Compile Include="Plopper.cs" />
     <Compile Include="LoadingExtension.cs" />
