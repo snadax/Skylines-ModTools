@@ -34,7 +34,6 @@ namespace ModTools.Utils
                         tangents = mesh.tangents
                     };
                     meshToDump.RecalculateBounds();
-                    meshToDump.Optimize();
                 }
                 catch (Exception ex)
                 {
