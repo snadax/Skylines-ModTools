@@ -66,7 +66,7 @@ namespace ModTools
 
             GUILayout.Label("Font size");
 
-            var newFontSize = (int)GUILayout.HorizontalSlider((float) config.fontSize, 13.0f, 17.0f, GUILayout.Width(256));
+            var newFontSize = (int)GUILayout.HorizontalSlider((float) config.fontSize, 13.0f, 39.0f, GUILayout.Width(256));
 
             if (newFontSize != config.fontSize)
             {
