@@ -33,7 +33,11 @@ namespace ModTools
             : base("Mesh Viewer", new Rect(512, 128, 512, 512), skin)
         {
             onDraw = DrawWindow;
-            onClose = () => { Destroy(this); };
+            onClose = () =>
+            {
+                SetCitizenInfoObjects(true);
+                Destroy(this);
+            };
             onUnityDestroy = () =>
             {
                 Destroy(meshViewerCamera);
@@ -78,6 +82,7 @@ namespace ModTools
             }
             meshViewer.Setup(calculateBounds);
             meshViewer.visible = true;
+            meshViewer.SetCitizenInfoObjects(false);
             return meshViewer;
         }
 
@@ -247,6 +252,15 @@ namespace ModTools
                 this.bounds = new Bounds(new Vector3(0, 0, 0), new Vector3(3, 3, 3));
             }
             this.m_Distance = 4f;
+        }
+
+        public void SetCitizenInfoObjects(bool enabled)
+        {
+            CitizenInfo[] info = Resources.FindObjectsOfTypeAll<CitizenInfo>();
+            foreach (CitizenInfo i in info)
+            {
+                i.gameObject.SetActive(enabled);
+            }
         }
     }
 }
