@@ -62,7 +62,7 @@ namespace ModTools
             meshViewerCamera.targetTexture = targetRT;
         }
 
-        public static MeshViewer CreateMeshViewer(String assetName, Mesh mesh, Material material)
+        public static MeshViewer CreateMeshViewer(String assetName, Mesh mesh, Material material, bool calculateBounds = true)
         {
             var go = new GameObject("MeshViewer");
             go.transform.parent = ModTools.Instance.transform;
@@ -76,7 +76,7 @@ namespace ModTools
             {
                 meshViewer.previewMaterial.mainTexture = material.mainTexture;
             }
-            meshViewer.Setup();
+            meshViewer.Setup(calculateBounds);
             meshViewer.visible = true;
             return meshViewer;
         }
@@ -210,13 +210,13 @@ namespace ModTools
                     {
                         if (lastRightMousePos != Vector2.zero)
                         {
-                            Vector2 moveDelta1 = (pos - lastRightMousePos) * 2.0f;
+                            Vector2 moveDelta1 = pos - lastRightMousePos;
                             this.m_Distance += (float) ((double) moveDelta1.y / (double) this.targetRT.height *
                                                         (double) UIView.GetAView().ratio * 40.0);
                             float num1 = 6f;
                             float magnitude = bounds.extents.magnitude;
                             float num2 = magnitude + 16f;
-                            this.m_Distance = Mathf.Min(this.m_Distance, 0.1f, num1 * (num2 / magnitude));
+                            this.m_Distance = Mathf.Min(this.m_Distance, 4f, num1 * (num2 / magnitude));
                         }
                         lastRightMousePos = pos;
                     }
@@ -232,17 +232,17 @@ namespace ModTools
             }
         }
 
-        public void Setup()
+        public void Setup(bool calculateBounds)
         {
             if (!((UnityEngine.Object) this.previewMesh != (UnityEngine.Object) null))
                 return;
-            this.bounds = new Bounds(Vector3.zero, Vector3.zero);
-            if (previewMesh.isReadable)
+            if (calculateBounds && previewMesh.isReadable)
             {
+                this.bounds = new Bounds(Vector3.zero, Vector3.zero);
                 foreach (Vector3 vertex in this.previewMesh.vertices)
                     this.bounds.Encapsulate(vertex);
             }
-            if (this.bounds.extents.x < 1 && this.bounds.extents.y < 1 && this.bounds.extents.z < 1)
+            else
             {
                 this.bounds = new Bounds(new Vector3(0, 0, 0), new Vector3(3, 3, 3));
             }
