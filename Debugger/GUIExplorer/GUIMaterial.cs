@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ModTools.Explorer
@@ -193,6 +194,27 @@ namespace ModTools.Explorer
                     material.SetColor(prop, (Color)paste);
                 }
             }
+//            GUILayout.BeginHorizontal();
+//            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * (refChain.Ident + 1));
+//            GUI.contentColor = ModTools.Instance.config.typeColor;
+//
+//            GUILayout.Label("Shader:");
+//
+//            GUI.contentColor = ModTools.Instance.config.nameColor;
+//
+//            var shaders = Resources.FindObjectsOfTypeAll<Shader>();
+//            Array.Sort(shaders, (a, b) => string.Compare(a.name, b.name, StringComparison.Ordinal));
+//            var availableShaders = shaders.Select(s => s.name).ToArray();
+//            var currentShader = material.shader;
+//            var selectedShader = Array.IndexOf(shaders, currentShader);
+//
+//            var newSelectedShader = GUIComboBox.Box(selectedShader, availableShaders, "SceneExplorerShadersComboBox");
+//            if (newSelectedShader != selectedShader)
+//            {
+//                material.shader = shaders[newSelectedShader];
+//            }
+//            GUILayout.FlexibleSpace();
+//            GUILayout.EndHorizontal();
 
             GUIReflect.OnSceneTreeReflect(state, refChain, material, true);
         }
