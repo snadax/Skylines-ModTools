@@ -9,7 +9,6 @@ namespace ModTools
 {
     public class MeshViewer : GUIWindow
     {
-
         private Mesh previewMesh = null;
         private Material previewMaterial;
         private String assetName = null;
@@ -19,7 +18,8 @@ namespace ModTools
         private float m_Distance = 4f;
         private Vector2 m_PreviewDir = new Vector2(120f, -20f);
         private Bounds bounds;
-        private Vector2 lastMousePos = Vector2.zero;
+        private Vector2 lastLeftMousePos = Vector2.zero;
+        private Vector2 lastRightMousePos = Vector2.zero;
 
         private Camera meshViewerCamera;
 
@@ -33,10 +33,7 @@ namespace ModTools
             : base("Mesh Viewer", new Rect(512, 128, 512, 512), skin)
         {
             onDraw = DrawWindow;
-            onClose = () =>
-            {
-                Destroy(this);
-            };
+            onClose = () => { Destroy(this); };
             onUnityDestroy = () =>
             {
                 Destroy(meshViewerCamera);
@@ -112,7 +109,8 @@ namespace ModTools
             this.meshViewerCamera.transform.rotation = Quaternion.identity;
             this.meshViewerCamera.nearClipPlane = Mathf.Max(num2 - num1 * 1.5f, 0.01f);
             this.meshViewerCamera.farClipPlane = num2 + num1 * 1.5f;
-            Quaternion q = Quaternion.Euler(this.m_PreviewDir.y, 0.0f, 0.0f) * Quaternion.Euler(0.0f, this.m_PreviewDir.x, 0.0f);
+            Quaternion q = Quaternion.Euler(this.m_PreviewDir.y, 0.0f, 0.0f) *
+                           Quaternion.Euler(0.0f, this.m_PreviewDir.x, 0.0f);
             var trs = Matrix4x4.TRS(q * -bounds.center, q, Vector3.one);
 
             var material1 = (useOriginalShader && material != null) ? material : previewMaterial;
@@ -185,22 +183,47 @@ namespace ModTools
 
                 if (Event.current.type == EventType.MouseDown)
                 {
-                    lastMousePos = Event.current.mousePosition;
+                    if (Event.current.button == 0 || Event.current.button == 2)
+                    {
+                        lastLeftMousePos = Event.current.mousePosition;
+                    }
+                    else
+                    {
+                        lastRightMousePos = Event.current.mousePosition;
+                    }
                 }
                 else if (Event.current.type == EventType.MouseDrag)
                 {
                     var pos = Event.current.mousePosition;
-                    if (lastMousePos != Vector2.zero)
+                    if (Event.current.button == 0 || Event.current.button == 2)
                     {
-                        Vector2 moveDelta = pos - lastMousePos;
-                        moveDelta.y = -moveDelta.y;
-                        this.m_PreviewDir -= moveDelta / Mathf.Min(this.targetRT.width, this.targetRT.height) * UIView.GetAView().ratio * 140f;
-                        this.m_PreviewDir.y = Mathf.Clamp(this.m_PreviewDir.y, -90f, 90f);
+                        if (lastLeftMousePos != Vector2.zero)
+                        {
+                            Vector2 moveDelta = (pos - lastLeftMousePos) * 2.0f;
+                            this.m_PreviewDir -= moveDelta / Mathf.Min(this.targetRT.width, this.targetRT.height) *
+                                                 UIView.GetAView().ratio * 140f;
+                            this.m_PreviewDir.y = Mathf.Clamp(this.m_PreviewDir.y, -90f, 90f);
+                        }
+                        lastLeftMousePos = pos;
                     }
-                    lastMousePos = pos;
+                    else
+                    {
+                        if (lastRightMousePos != Vector2.zero)
+                        {
+                            Vector2 moveDelta1 = (pos - lastRightMousePos) * 2.0f;
+                            this.m_Distance += (float) ((double) moveDelta1.y / (double) this.targetRT.height *
+                                                        (double) UIView.GetAView().ratio * 40.0);
+                            float num1 = 6f;
+                            float magnitude = bounds.extents.magnitude;
+                            float num2 = magnitude + 16f;
+                            this.m_Distance = Mathf.Min(this.m_Distance, 0.1f, num1 * (num2 / magnitude));
+                        }
+                        lastRightMousePos = pos;
+                    }
                 }
 
-                GUI.DrawTexture(new Rect(0.0f, 64.0f, rect.width, rect.height - 64.0f), targetRT, ScaleMode.StretchToFill, false);
+                GUI.DrawTexture(new Rect(0.0f, 64.0f, rect.width, rect.height - 64.0f), targetRT,
+                    ScaleMode.StretchToFill, false);
             }
             else
             {
@@ -211,11 +234,18 @@ namespace ModTools
 
         public void Setup()
         {
-            this.bounds = new Bounds(Vector3.zero, Vector3.zero);
-            if (!((UnityEngine.Object)this.previewMesh != (UnityEngine.Object)null))
+            if (!((UnityEngine.Object) this.previewMesh != (UnityEngine.Object) null))
                 return;
-            foreach (Vector3 vertex in this.previewMesh.vertices)
-                this.bounds.Encapsulate(vertex);
+            this.bounds = new Bounds(Vector3.zero, Vector3.zero);
+            if (previewMesh.isReadable)
+            {
+                foreach (Vector3 vertex in this.previewMesh.vertices)
+                    this.bounds.Encapsulate(vertex);
+            }
+            if (this.bounds.extents.x < 1 && this.bounds.extents.y < 1 && this.bounds.extents.z < 1)
+            {
+                this.bounds = new Bounds(new Vector3(0, 0, 0), new Vector3(3, 3, 3));
+            }
             this.m_Distance = 4f;
         }
     }

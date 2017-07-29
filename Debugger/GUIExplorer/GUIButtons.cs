@@ -89,7 +89,7 @@ namespace ModTools.Explorer
                 {
                     if (GUILayout.Button("Preview"))
                     {
-                        MeshViewer.CreateMeshViewer(info.name, info.m_skinRenderer?.sharedMesh, info.m_skinRenderer?.sharedMaterial);
+                        MeshViewer.CreateMeshViewer(info.name, info.m_skinRenderer?.sharedMesh, info.m_skinRenderer?.material);
                     }
                 }
                 if (info.m_lodMesh != null)
