@@ -27,7 +27,7 @@ namespace ModTools
 
         private Light light;
 
-        private bool useOriginalShader = true;
+        private bool useOriginalShader = false;
 
         private MeshViewer()
             : base("Mesh Viewer", new Rect(512, 128, 512, 512), skin)
@@ -60,7 +60,7 @@ namespace ModTools
             meshViewerCamera.nearClipPlane = 1.0f;
             meshViewerCamera.farClipPlane = 1000.0f;
             meshViewerCamera.enabled = false;
-            meshViewerCamera.hdr = true;
+            meshViewerCamera.allowHDR = true;
 
             targetRT = new RenderTexture(512, 512, 24, RenderTextureFormat.ARGBHalf, RenderTextureReadWrite.Linear);
             meshViewerCamera.targetTexture = targetRT;
