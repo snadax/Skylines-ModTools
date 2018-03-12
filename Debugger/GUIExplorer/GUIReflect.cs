@@ -20,13 +20,16 @@ namespace ModTools.Explorer
 
             if (!rawReflection)
             {
-                if (state.preventCircularReferences.ContainsKey(obj.GetHashCode()))
+                if (!type.IsValueType)
                 {
-                    SceneExplorerCommon.OnSceneTreeMessage(refChain, "Circular reference detected");
-                    return;
+                    if (state.preventCircularReferences.Contains(obj))
+                    {
+                        SceneExplorerCommon.OnSceneTreeMessage(refChain, "Circular reference detected");
+                        return;
+                    }
                 }
 
-                state.preventCircularReferences.Add(obj.GetHashCode(), true);
+                state.preventCircularReferences.Add(obj);
 
                 if (type == typeof(UnityEngine.Transform))
                 {

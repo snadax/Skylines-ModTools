@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace ModTools
 {
@@ -10,7 +11,7 @@ namespace ModTools
         public Dictionary<ReferenceChain, bool> evaluatedProperties = new Dictionary<ReferenceChain, bool>();
         public Dictionary<ReferenceChain, int> selectedArrayStartIndices = new Dictionary<ReferenceChain, int>();
         public Dictionary<ReferenceChain, int> selectedArrayEndIndices = new Dictionary<ReferenceChain, int>();
-        public Dictionary<int, bool> preventCircularReferences = new Dictionary<int, bool>();
+        public List<object> preventCircularReferences = new List<object>();
         public ReferenceChain currentRefChain = null;
     }
 }
