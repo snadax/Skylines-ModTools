@@ -256,7 +256,7 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Console log level");
-            var newLogLevel = GUILayout.SelectionGrid(config.logLevel, new[]{"None", "D", "W","E"}, 4);
+            var newLogLevel = GUILayout.SelectionGrid(config.logLevel, new[]{"None", "Log", "Warn","Err"}, 4);
             GUILayout.EndHorizontal();
 
             if (newLogLevel != config.logLevel)
