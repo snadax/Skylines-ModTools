@@ -24,7 +24,15 @@ namespace ModTools.Explorer
                 {
                     if (state.preventCircularReferences.Contains(obj))
                     {
-                        SceneExplorerCommon.OnSceneTreeMessage(refChain, "Circular reference detected");
+                        try
+                        {
+                            GUI.contentColor = Color.yellow;
+                            SceneExplorerCommon.OnSceneTreeMessage(refChain, "Circular reference detected");
+                        }
+                        finally
+                        {
+                            GUI.contentColor = Color.white;
+                        }
                         return;
                     }
                 }
