@@ -151,7 +151,7 @@ namespace ModTools
             }
             lock (LoggingLock)
             {
-                if (!config.hookUnityLogging)
+                if (config.logLevel < 1)
                 {
                     return;
                 }
@@ -171,11 +171,11 @@ namespace ModTools
                 {
                     Log.Error(condition);
                 }
-                else if (type == LogType.Warning)
+                else if (type == LogType.Warning && config.logLevel < 3)
                 {
                     Log.Warning(condition);
                 }
-                else
+                else if (config.logLevel < 2)
                 {
                     Log.Message(condition);
                 }
@@ -255,13 +255,13 @@ namespace ModTools
             }
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Hook Unity's logging");
-            var newHookLogging = GUILayout.Toggle(config.hookUnityLogging, "");
+            GUILayout.Label("Console log level");
+            var newLogLevel = GUILayout.SelectionGrid(config.logLevel, new[]{"None", "D", "W","E"}, 4);
             GUILayout.EndHorizontal();
 
-            if (newHookLogging != config.hookUnityLogging)
+            if (newLogLevel != config.logLevel)
             {
-                config.hookUnityLogging = newHookLogging;
+                config.logLevel = newLogLevel;
                 SaveConfig();
             }
 

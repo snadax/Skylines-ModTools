@@ -34,7 +34,6 @@ namespace ModTools
         public bool evaluatePropertiesAutomatically = true;
         public bool extendGamePanels = true;
         public bool useModToolsConsole = true;
-        public bool hookUnityLogging = true;
 
         public Color backgroundColor = new Color(0.321f, 0.321f, 0.321f, 1.0f);
         public Color titlebarColor = new Color(0.247f, 0.282f, 0.364f, 1.0f);
@@ -74,6 +73,7 @@ namespace ModTools
         public int fontSize = 14;
 
         public int hiddenNotifications = 0;
+        public int logLevel = 1;
 
         public void OnPreSerialize()
         {
