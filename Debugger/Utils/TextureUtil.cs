@@ -74,6 +74,31 @@ namespace ModTools.Utils
             return tex;
         }
 
+        public static Texture2D ToTexture2D(this Cubemap cubemap)
+        {
+            var texture = new Texture2D(cubemap.width * 4, cubemap.height * 3);
+            SetCubemapFace(texture, CubemapFace.PositiveX, cubemap, 1, 2);
+            SetCubemapFace(texture, CubemapFace.PositiveY, cubemap, 0, 1);
+            SetCubemapFace(texture, CubemapFace.PositiveZ, cubemap, 1, 1);
+            SetCubemapFace(texture, CubemapFace.NegativeX, cubemap, 1, 0);
+            SetCubemapFace(texture, CubemapFace.NegativeY, cubemap, 2, 1);
+            SetCubemapFace(texture, CubemapFace.NegativeZ, cubemap, 1, 3);
+            texture.Apply();
+            return texture;
+        }
+
+        private static void SetCubemapFace(Texture2D texture, CubemapFace face, Cubemap cubemap, int positionY, int positionX)
+        {
+            for (var x = 0; x < cubemap.height; x++)
+            {
+                for (var y = 0; y < cubemap.width; y++)
+                {
+                    var color = cubemap.GetPixel(face, x, y);
+                    texture.SetPixel(positionX * cubemap.width + x, positionY * cubemap.height + y, color);
+                }
+            }
+        }
+
         public static void DumpTextureToPNG(Texture previewTexture, string filename = null)
         {
             if (string.IsNullOrEmpty(filename))
@@ -119,6 +144,10 @@ namespace ModTools.Utils
             else if (previewTexture is Texture3D)
             {
                 DumpTexture2D(((Texture3D)previewTexture).ToTexture2D(), filename);
+            }
+            else if (previewTexture is Cubemap)
+            {
+                DumpTexture2D(((Cubemap)previewTexture).ToTexture2D(), filename);
             }
             else
             {

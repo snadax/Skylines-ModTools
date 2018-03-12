@@ -42,7 +42,7 @@ namespace ModTools
         public static bool IsTextureType(Type t)
         {
             return t == typeof(UnityEngine.Texture) || t == typeof(UnityEngine.Texture2D) ||
-                   t == typeof(UnityEngine.RenderTexture) || t == typeof(UnityEngine.Texture3D);
+                   t == typeof(UnityEngine.RenderTexture) || t == typeof(UnityEngine.Texture3D) || t == typeof(UnityEngine.Cubemap);
         }
 
         public static bool IsMeshType(Type t)
