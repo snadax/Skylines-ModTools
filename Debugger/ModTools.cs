@@ -268,7 +268,7 @@ namespace ModTools
             GUI.enabled = true;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Log exceptions to console");
+            GUILayout.Label("Log stack traces to console");
             var newLogExceptionsToConsole = GUILayout.Toggle(config.logExceptionsToConsole, "");
             GUILayout.EndHorizontal();
             if (newLogExceptionsToConsole != config.logExceptionsToConsole)
