@@ -48,6 +48,10 @@ namespace ModTools
 
         public static string LegalizeFileName(this string illegal)
         {
+            if (string.IsNullOrEmpty(illegal))
+            {
+                return DateTime.Now.ToString("yyyyMMddhhmmss");
+            }
             var regexSearch = new string(Path.GetInvalidFileNameChars()/* + new string(Path.GetInvalidPathChars()*/);
             var r = new Regex($"[{Regex.Escape(regexSearch)}]");
             return r.Replace(illegal, "_");
