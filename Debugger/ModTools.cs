@@ -151,7 +151,7 @@ namespace ModTools
             }
             lock (LoggingLock)
             {
-                if (config.logLevel < 1)
+                if (config.logLevel > 2)
                 {
                     return;
                 }
@@ -171,11 +171,11 @@ namespace ModTools
                 {
                     Log.Error(condition);
                 }
-                else if (type == LogType.Warning && config.logLevel < 3)
+                else if (type == LogType.Warning && config.logLevel < 2)
                 {
                     Log.Warning(condition);
                 }
-                else if (config.logLevel < 2)
+                else if (config.logLevel == 0)
                 {
                     Log.Message(condition);
                 }
@@ -256,7 +256,7 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Console log level");
-            var newLogLevel = GUILayout.SelectionGrid(config.logLevel, new[]{"None", "Log", "Warn","Err"}, 4);
+            var newLogLevel = GUILayout.SelectionGrid(config.logLevel, new[]{"Log", "Warn","Err", "None" }, 4);
             GUILayout.EndHorizontal();
 
             if (newLogLevel != config.logLevel)

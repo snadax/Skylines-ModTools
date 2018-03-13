@@ -73,7 +73,7 @@ namespace ModTools
         public int fontSize = 14;
 
         public int hiddenNotifications = 0;
-        public int logLevel = 1;
+        public int logLevel = 0;
 
         public void OnPreSerialize()
         {
