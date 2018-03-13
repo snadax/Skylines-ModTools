@@ -249,11 +249,6 @@ namespace ModTools
                 SaveConfig();
             }
 
-            if (!config.useModToolsConsole)
-            {
-                GUI.enabled = false;
-            }
-
             GUILayout.BeginHorizontal();
             GUILayout.Label("Console log level");
             var newLogLevel = GUILayout.SelectionGrid(config.logLevel, new[]{"Log", "Warn","Err", "None" }, 4);
@@ -264,8 +259,6 @@ namespace ModTools
                 config.logLevel = newLogLevel;
                 SaveConfig();
             }
-
-            GUI.enabled = true;
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Log stack traces to console");
