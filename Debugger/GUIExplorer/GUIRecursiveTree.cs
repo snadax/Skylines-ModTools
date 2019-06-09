@@ -30,7 +30,7 @@ namespace ModTools.Explorer
                 try
                 {
                     GUILayout.BeginHorizontal();
-                    GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident);
+                    SceneExplorerCommon.InsertIndent(refChain.Ident);
 
                     if (GUILayout.Button("-", GUILayout.ExpandWidth(false)))
                     {
@@ -69,7 +69,7 @@ namespace ModTools.Explorer
             else
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident);
+                SceneExplorerCommon.InsertIndent(refChain.Ident);
 
                 if (GUILayout.Button("+", GUILayout.ExpandWidth(false)))
                 {

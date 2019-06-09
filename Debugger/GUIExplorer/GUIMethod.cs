@@ -17,7 +17,7 @@ namespace ModTools.Explorer
             }
 
             GUILayout.BeginHorizontal();
-            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident);
+            SceneExplorerCommon.InsertIndent(refChain.Ident);
 
             GUI.contentColor = ModTools.Instance.config.memberTypeColor;
             GUILayout.Label("method ");

@@ -1,13 +1,17 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Text;
+using UnityEngine;
 
 namespace ModTools.Explorer
 {
     public class SceneExplorerCommon
     {
+        private static Dictionary<int, string> indentStrings = new Dictionary<int, string>();
+
         internal static void OnSceneTreeMessage(ReferenceChain refChain, string message)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident);
+            SceneExplorerCommon.InsertIndent(refChain.Ident);
             GUILayout.Label(message);
             GUILayout.EndHorizontal();
         }
@@ -21,6 +25,22 @@ namespace ModTools.Explorer
             }
 
             return true;
+        }
+
+        internal static void InsertIndent(int indent)
+        {
+            if (indent <= 0)
+            {
+                return;
+            }
+
+            if (!indentStrings.TryGetValue(indent, out string indentString))
+            {
+                indentString = new StringBuilder().Insert(0, "· ", indent).ToString();
+                indentStrings.Add(indent, indentString);
+            }
+
+            GUILayout.Label(indentString, GUILayout.Width(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * indent));
         }
     }
 }

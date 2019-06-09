@@ -47,7 +47,7 @@ namespace ModTools.Explorer
                 var type = value.GetType();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident);
+                SceneExplorerCommon.InsertIndent(refChain.Ident);
 
                 GUIExpander.ExpanderControls(state, refChain, type);
 

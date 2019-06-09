@@ -9,7 +9,8 @@ namespace ModTools.Explorer
     out int arrayEnd)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident);
+            SceneExplorerCommon.InsertIndent(refChain.Ident);
+
             GUILayout.Label($"{collectionLabel} size: {collectionSize}");
 
             if (!state.selectedArrayStartIndices.ContainsKey(refChain))

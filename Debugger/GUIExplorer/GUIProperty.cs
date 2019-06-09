@@ -21,7 +21,7 @@ namespace ModTools.Explorer
             var hash = refChain.GetHashCode().ToString();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident);
+            SceneExplorerCommon.InsertIndent(refChain.Ident);
 
             bool propertyWasEvaluated = false;
             object value = null;

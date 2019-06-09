@@ -15,7 +15,7 @@ namespace ModTools.Explorer
             }
 
             GUILayout.BeginHorizontal();
-            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident);
+            SceneExplorerCommon.InsertIndent(refChain.Ident);
 
             if (Util.ComponentIsEnabled(component))
             {
