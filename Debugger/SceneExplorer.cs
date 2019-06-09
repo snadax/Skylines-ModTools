@@ -244,6 +244,14 @@ namespace ModTools
             }
             GUILayout.Label("Fields");
 
+            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing);
+            var showConsts = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowConsts, "");
+            if (ModTools.Instance.config.sceneExplorerShowConsts != showConsts)
+            {
+                ModTools.Instance.config.sceneExplorerShowConsts = showConsts;
+                ModTools.Instance.SaveConfig();
+            }
+            GUILayout.Label("Constants");
 
             GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing);            
             var showProperties = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowProperties, "");

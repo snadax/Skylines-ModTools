@@ -92,6 +92,11 @@ namespace ModTools.Explorer
                 {
                     var field = (FieldInfo)member;
 
+                    if (field.IsLiteral && !field.IsInitOnly && !ModTools.Instance.config.sceneExplorerShowConsts)
+                    {
+                        continue;
+                    }
+
                     try
                     {
                         GUIField.OnSceneTreeReflectField(state, refChain.Add(field), obj, field);

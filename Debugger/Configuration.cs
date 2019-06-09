@@ -57,6 +57,7 @@ namespace ModTools
         public Color consoleExceptionColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
 
         public bool sceneExplorerShowFields = true;
+        public bool sceneExplorerShowConsts = false;
         public bool sceneExplorerShowProperties = true;
         public bool sceneExplorerShowMethods = false;
         public bool sceneExplorerShowModifiers = false;
