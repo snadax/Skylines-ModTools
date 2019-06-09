@@ -236,29 +236,32 @@ namespace ModTools
             GUILayout.Label("Show:", GUILayout.ExpandWidth(false));
             GUI.contentColor = Color.white;
 
-            GUILayout.Label("Fields");
             var showFields = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowFields, "");
             if (ModTools.Instance.config.sceneExplorerShowFields != showFields)
             {
                 ModTools.Instance.config.sceneExplorerShowFields = showFields;
                 ModTools.Instance.SaveConfig();
             }
+            GUILayout.Label("Fields");
 
-            GUILayout.Label("Properties");
+
+            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing);            
             var showProperties = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowProperties, "");
             if (ModTools.Instance.config.sceneExplorerShowProperties != showProperties)
             {
                 ModTools.Instance.config.sceneExplorerShowProperties = showProperties;
                 ModTools.Instance.SaveConfig();
             }
+            GUILayout.Label("Properties");
 
-            GUILayout.Label("Methods");
+            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing);
             var showMethods = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowMethods, "");
             if (ModTools.Instance.config.sceneExplorerShowMethods != showMethods)
             {
                 ModTools.Instance.config.sceneExplorerShowMethods = showMethods;
                 ModTools.Instance.SaveConfig();
             }
+            GUILayout.Label("Methods");
 
             GUILayout.FlexibleSpace();
 
