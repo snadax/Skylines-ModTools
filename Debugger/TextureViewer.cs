@@ -32,7 +32,7 @@ namespace ModTools
         {
             if (previewTexture != null)
             {
-                title = string.Format("Previewing \"{0}\"", previewTexture.name);
+                title = $"Previewing \"{previewTexture.name}\"";
 
                 if (GUILayout.Button("Dump .png", GUILayout.Width(128)))
                 {

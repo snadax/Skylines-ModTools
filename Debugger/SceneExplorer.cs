@@ -122,7 +122,7 @@ namespace ModTools
 
             sceneRoots.Clear();
             ClearExpanded();
-            searchDisplayString = string.Format("Showing results for \"{0}\"", refChain.ToString());
+            searchDisplayString = $"Showing results for \"{refChain}\"";
 
             var rootGameObject = (GameObject)refChain.GetChainItem(0);
             sceneRoots.Add(rootGameObject, true);
@@ -372,7 +372,7 @@ namespace ModTools
                     state.ExpandedGameObjects.Add(new ReferenceChain().Add(go).UniqueId);
                     sceneRoots.Add(go, true);
                     sceneTreeScrollPosition = Vector2.zero;
-                    searchDisplayString = string.Format("Showing results for GameObject.Find(\"{0}\")", findGameObjectFilter);
+                    searchDisplayString = $"Showing results for GameObject.Find(\"{findGameObjectFilter}\")";
                 }
             }
 
@@ -413,7 +413,7 @@ namespace ModTools
                     }
                     sceneRoots.Add(item.Key, true);
                     sceneTreeScrollPosition = Vector2.zero;
-                    searchDisplayString = string.Format("Showing results for GameObject.FindObjectsOfType({0})", findObjectTypeFilter);
+                    searchDisplayString = $"Showing results for GameObject.FindObjectsOfType({findObjectTypeFilter})";
                 }
             }
 

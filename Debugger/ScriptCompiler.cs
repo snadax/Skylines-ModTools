@@ -90,7 +90,7 @@ namespace ModTools
 
         public static bool CompileSource(List<ScriptEditorFile> sources, out string dllPath)
         {
-            string name = string.Format("tmp_{0}", Random.Range(0, int.MaxValue));
+            string name = $"tmp_{Random.Range(0, int.MaxValue)}";
 
             string sourcePath = Path.Combine(sourcesPath, name);
 
