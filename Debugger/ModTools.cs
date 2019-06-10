@@ -13,8 +13,6 @@ namespace ModTools
         private static readonly object LoggingLock = new object();
         private static readonly object InstanceLock = new object();
 
-        private Vector2 mainScroll = Vector2.zero;
-
         public Console console;
         public SceneExplorer sceneExplorer;
         private DebugRenderer debugRenderer;
@@ -28,7 +26,7 @@ namespace ModTools
         public Configuration config = new Configuration();
         public static readonly string configPath = "ModToolsConfig.xml";
 
-        private static ModTools instance = null;
+        private static ModTools instance;
 
         public void OnUnityDestroyCallback()
         {
@@ -111,7 +109,7 @@ namespace ModTools
             resizable = false;
         }
 
-        private static bool loggingInitialized = false;
+        private static bool loggingInitialized;
 
         public void Initialize()
         {
@@ -176,7 +174,7 @@ namespace ModTools
             }
         }
 
-        private void Update()
+        public void Update()
         {
             UpdateMouseScrolling();
 

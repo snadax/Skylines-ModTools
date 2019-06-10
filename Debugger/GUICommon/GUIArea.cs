@@ -17,23 +17,10 @@ namespace ModTools
         }
 
         public Vector2 Position
-        {
-            get
-            {
-                return absolutePosition +
-                       new Vector2(relativePosition.x * window.rect.width, relativePosition.y * window.rect.height) +
-                       margin;
-            }
-        }
+            => absolutePosition + new Vector2(relativePosition.x * window.rect.width, relativePosition.y * window.rect.height) + margin;
 
         public Vector2 Size
-        {
-            get
-            {
-                return absoluteSize + new Vector2(relativeSize.x * window.rect.width, relativeSize.y * window.rect.height) -
-                       margin * 2.0f;
-            }
-        }
+            => absoluteSize + new Vector2(relativeSize.x * window.rect.width, relativeSize.y * window.rect.height) - margin * 2.0f;
 
         public void Begin()
         {
@@ -42,9 +29,6 @@ namespace ModTools
             GUILayout.BeginArea(new Rect(position.x, position.y, size.x, size.y));
         }
 
-        public void End()
-        {
-            GUILayout.EndArea();
-        }
+        public void End() => GUILayout.EndArea();
     }
 }

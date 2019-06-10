@@ -64,9 +64,9 @@ namespace ModTools.Explorer
                             GUIComponent.OnSceneTreeComponent(state, refChain, component);
                         }
                     }
-                    else if (value is Transform)
+                    else if (value is Transform transform)
                     {
-                        GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, (Transform)value);
+                        GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, transform);
                     }
                     else
                     {

@@ -8,7 +8,7 @@ namespace ModTools
 {
     public class DebugRenderer : MonoBehaviour
     {
-        public bool drawDebugInfo = false;
+        public bool drawDebugInfo;
 
         private GUIStyle normalRectStyle;
         private GUIStyle hoveredRectStyle;
@@ -18,7 +18,7 @@ namespace ModTools
         private readonly List<UIComponent> hoveredComponents = new List<UIComponent>();
         private long previousHash = 0;
 
-        private void Update()
+        public void Update()
         {
             UIComponent hoveredLocal = hoveredComponent;
             if (drawDebugInfo && hoveredLocal != null)
@@ -39,7 +39,7 @@ namespace ModTools
                         refChain = refChain.Add(current.gameObject);
                         current = current.parent;
                     }
-                    ;
+
                     refChain = refChain.Add(uiView.gameObject);
 
                     SceneExplorer sceneExplorer = FindObjectOfType<SceneExplorer>();
@@ -58,7 +58,7 @@ namespace ModTools
             }
         }
 
-        private void OnGUI()
+        public void OnGUI()
         {
             if (!drawDebugInfo)
             {
@@ -144,7 +144,7 @@ namespace ModTools
             }
             if (hoveredComponent == null && hoveredComponents.Count > 0)
             {
-                hoveredComponent = hoveredComponents.First();
+                hoveredComponent = hoveredComponents[0];
             }
 
             foreach (UIComponent component in components)
@@ -242,9 +242,6 @@ namespace ModTools
                 c.size.x, c.size.y));
         }
 
-        private int RenderSortFunc(UIComponent lhs, UIComponent rhs)
-        {
-            return lhs.renderOrder.CompareTo(rhs.renderOrder);
-        }
+        private int RenderSortFunc(UIComponent lhs, UIComponent rhs) => lhs.renderOrder.CompareTo(rhs.renderOrder);
     }
 }

@@ -10,7 +10,7 @@ namespace ModTools
     {
         public string source = "";
         public string path = "";
-        public FileSystemWatcher filesystemWatcher = null;
+        public FileSystemWatcher filesystemWatcher;
     }
 
     public class ScriptEditor : GUIWindow
@@ -37,7 +37,7 @@ namespace ModTools
 
         private string projectWorkspacePath = "";
         private readonly List<ScriptEditorFile> projectFiles = new List<ScriptEditorFile>();
-        private ScriptEditorFile currentFile = null;
+        private ScriptEditorFile currentFile;
 
         public ScriptEditor() : base("Script Editor", new Rect(16.0f, 16.0f, 640.0f, 480.0f), skin)
         {
@@ -135,12 +135,9 @@ namespace ModTools
             lastError = "";
         }
 
-        private void SaveProjectFile(ScriptEditorFile file)
-        {
-            File.WriteAllText(file.path, file.source);
-        }
+        private void SaveProjectFile(ScriptEditorFile file) => File.WriteAllText(file.path, file.source);
 
-        private void Update()
+        public void Update()
         {
             if (GUI.GetNameOfFocusedControl() == textAreaControlName)
             {
@@ -336,7 +333,7 @@ namespace ModTools
         {
             DrawHeader();
 
-            if (projectFiles.Any())
+            if (projectFiles.Count > 0)
             {
                 DrawEditor();
                 DrawFooter();

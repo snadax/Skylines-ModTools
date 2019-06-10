@@ -4,7 +4,8 @@ namespace ModTools.Explorer
 {
     public static class GUIMaterial
     {
-        private static readonly string[] textureProps = {
+        private static readonly string[] textureProps =
+        {
             "_BackTex",
             "_BumpMap",
             "_BumpSpecMap",
@@ -43,7 +44,8 @@ namespace ModTools.Explorer
             "_Blurred"
         };
 
-        private static readonly string[] colorProps = {
+        private static readonly string[] colorProps =
+        {
             "_Color",
             "_ColorV0",
             "_ColorV1",
@@ -51,7 +53,7 @@ namespace ModTools.Explorer
             "_ColorV3"
         };
 
-        private static readonly string[] vectorProps = new string[]
+        private static readonly string[] vectorProps =
         {
             "_FloorParams",
             "_UvAnimation",
@@ -170,7 +172,7 @@ namespace ModTools.Explorer
                 GUI.contentColor = ModTools.Instance.config.valueColor;
 
                 string propertyCopy = prop;
-                GUIControls.ColorField(refChain.ToString(), "", ref f, 0.0f, null, true, true, color => { material.SetColor(propertyCopy, color); });
+                GUIControls.ColorField(refChain.ToString(), "", ref f, 0.0f, null, true, true, color => material.SetColor(propertyCopy, color));
                 if (f != value)
                 {
                     material.SetColor(prop, f);

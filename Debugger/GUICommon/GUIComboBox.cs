@@ -15,7 +15,7 @@ namespace ModTools
 
         // Position of the popuprect
         private static Rect rect;
-        private static bool hasScrollbars = false;
+        private static bool hasScrollbars;
         // Identifier of the caller of the popup, null if nobody is waiting for a value
         private static string popupOwner;
         private static string[] entries;
@@ -169,8 +169,8 @@ namespace ModTools
                 Vector2 mousePos = Input.mousePosition;
                 mousePos.y = Screen.height - mousePos.y;
                 Vector2 clippedMousePos = Event.current.mousePosition;
-                rect.x = (rect.x + mousePos.x) - clippedMousePos.x;
-                rect.y = (rect.y + mousePos.y) - clippedMousePos.y;
+                rect.x = rect.x + mousePos.x - clippedMousePos.x;
+                rect.y = rect.y + mousePos.y - clippedMousePos.y;
                 float targetHeight = rect.height * entries.Length;
                 hasScrollbars = targetHeight >= 400.0f;
                 rect.height = Mathf.Min(targetHeight, 400.0f);

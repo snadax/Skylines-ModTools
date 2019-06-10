@@ -29,7 +29,7 @@ namespace ModTools.Explorer
                 GUI.contentColor = ModTools.Instance.config.disabledComponentColor;
             }
 
-            if (state.CurrentRefChain == null || !state.CurrentRefChain.Equals(refChain.Add(component)))
+            if (state.CurrentRefChain?.Equals(refChain.Add(component)) != true)
             {
                 if (GUILayout.Button(">", GUILayout.ExpandWidth(false)))
                 {

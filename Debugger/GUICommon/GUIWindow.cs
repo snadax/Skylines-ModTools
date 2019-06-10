@@ -8,10 +8,7 @@ namespace ModTools
 {
     public class GUIWindow : MonoBehaviour
     {
-        private static Configuration config
-        {
-            get { return ModTools.Instance.config; }
-        }
+        private static Configuration config => ModTools.Instance.config;
 
         public delegate void OnDraw();
 
@@ -29,40 +26,40 @@ namespace ModTools
 
         public delegate void OnUnityDestroy();
 
-        public OnDraw onDraw = null;
-        public OnException onException = null;
-        public OnUnityGUI onUnityGUI = null;
-        public OnOpen onOpen = null;
-        public OnClose onClose = null;
-        public OnResize onResize = null;
-        public OnMove onMove = null;
-        public OnUnityDestroy onUnityDestroy = null;
+        public OnDraw onDraw;
+        public OnException onException;
+        public OnUnityGUI onUnityGUI;
+        public OnOpen onOpen;
+        public OnClose onClose;
+        public OnResize onResize;
+        public OnMove onMove;
+        public OnUnityDestroy onUnityDestroy;
 
         public Rect rect = new Rect(0, 0, 64, 64);
 
-        public static GUISkin skin = null;
-        public static Texture2D bgTexture = null;
-        public static Texture2D resizeNormalTexture = null;
-        public static Texture2D resizeHoverTexture = null;
+        public static GUISkin skin;
+        public static Texture2D bgTexture;
+        public static Texture2D resizeNormalTexture;
+        public static Texture2D resizeHoverTexture;
 
-        public static Texture2D closeNormalTexture = null;
-        public static Texture2D closeHoverTexture = null;
+        public static Texture2D closeNormalTexture;
+        public static Texture2D closeHoverTexture;
 
-        public static Texture2D moveNormalTexture = null;
-        public static Texture2D moveHoverTexture = null;
+        public static Texture2D moveNormalTexture;
+        public static Texture2D moveHoverTexture;
 
-        public static GUIWindow resizingWindow = null;
+        public static GUIWindow resizingWindow;
         public static Vector2 resizeDragHandle = Vector2.zero;
 
-        public static GUIWindow movingWindow = null;
+        public static GUIWindow movingWindow;
         public static Vector2 moveDragHandle = Vector2.zero;
 
         public static float uiScale = 1.0f;
-        private bool _visible = false;
+        private bool _visible;
 
         public bool visible
         {
-            get { return _visible; }
+            get => _visible;
 
             set
             {
@@ -83,7 +80,7 @@ namespace ModTools
 
         public string title = "Window";
 
-        private readonly int id = 0;
+        private readonly int id;
 
         private Vector2 minSize = Vector2.zero;
 
@@ -128,7 +125,7 @@ namespace ModTools
             clickCatcher.zOrder = int.MaxValue;
         }
 
-        private void OnDestroy()
+        public void OnDestroy()
         {
             onUnityDestroy?.Invoke();
 
@@ -154,7 +151,7 @@ namespace ModTools
             Util.SetMouseScrolling(!mouseInsideGuiWindow);
         }
 
-        private void OnGUI()
+        public void OnGUI()
         {
             if (skin == null)
             {

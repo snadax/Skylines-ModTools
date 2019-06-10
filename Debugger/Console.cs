@@ -24,14 +24,14 @@ namespace ModTools
         private readonly GUIArea headerArea;
         private readonly GUIArea consoleArea;
         private readonly GUIArea commandLineArea;
-        private bool focusCommandLineArea = false;
+        private bool focusCommandLineArea;
         private bool emptyCommandLineArea = true;
-        private bool setCommandLinePosition = false;
+        private bool setCommandLinePosition;
         private int commandLinePosition;
 
         private readonly float headerHeightCompact = 0.5f;
         private readonly float headerHeightExpanded = 8.0f;
-        private bool headerExpanded = false;
+        private bool headerExpanded;
 
         private readonly float commandLineAreaHeightCompact = 45.0f;
         private readonly float commandLineAreaHeightExpanded = 120.0f;
@@ -41,24 +41,14 @@ namespace ModTools
             get
             {
                 string command = commandHistory[currentCommandHistoryIndex];
-                if (command.Length == 0)
-                {
-                    return false;
-                }
-
-                if (command.Contains('\n'))
-                {
-                    return true;
-                }
-
-                return command.Length >= 64;
+                return command.Length == 0 ? false : command.Contains('\n') || command.Length >= 64;
             }
         }
 
         private readonly object historyLock = new object();
         private readonly List<ConsoleMessage> history = new List<ConsoleMessage>();
         private readonly List<string> commandHistory = new List<string>() { "" };
-        private int currentCommandHistoryIndex = 0;
+        private int currentCommandHistoryIndex;
 
         private Vector2 consoleScrollPosition = Vector2.zero;
         private Vector2 commandLineScrollPosition = Vector2.zero;
@@ -139,7 +129,7 @@ namespace ModTools
             vanillaPanel = null;
         }
 
-        private void Update()
+        public void Update()
         {
             if (vanillaPanel == null)
             {
@@ -253,10 +243,7 @@ namespace ModTools
             commandLineArea.absoluteSize.y = commandLineAreaHeight;
         }
 
-        private void HandleException(Exception ex)
-        {
-            AddMessage("Exception in ModTools Console - " + ex.Message, LogType.Exception);
-        }
+        private void HandleException(Exception ex) => AddMessage("Exception in ModTools Console - " + ex.Message, LogType.Exception);
 
         private void DrawCompactHeader()
         {
@@ -551,7 +538,7 @@ namespace ModTools
 
             string source = string.Format(defaultSource, commandLine);
             var file = new ScriptEditorFile() { path = "ModToolsCommandLineScript.cs", source = source };
-            if (!ScriptCompiler.RunSource(new List<ScriptEditorFile>() { file }, out string errorMessage, out IModEntryPoint instance))
+            if (!ScriptCompiler.RunSource(new List<ScriptEditorFile>() { file }, out _, out IModEntryPoint instance))
             {
                 Log.Error("Failed to compile command-line!");
             }
@@ -567,7 +554,6 @@ namespace ModTools
                     Log.Error("Error executing command-line..");
                 }
             }
-            commandLine = "";
             focusCommandLineArea = true;
         }
 

@@ -27,7 +27,7 @@ namespace ModTools
 
         private readonly float headerHeightCompact = 1.65f;
         private readonly float headerHeightExpanded = 17.0f;
-        private bool headerExpanded = false;
+        private bool headerExpanded;
 
         private readonly float sceneTreeWidth = 320.0f;
 
@@ -46,15 +46,9 @@ namespace ModTools
             RecalculateAreas();
         }
 
-        public void Awake()
-        {
-            Plopper.Reset();
-        }
+        public void Awake() => Plopper.Reset();
 
-        public void Update()
-        {
-            Plopper.Update();
-        }
+        public void Update() => Plopper.Update();
 
         public void RecalculateAreas()
         {
@@ -82,7 +76,7 @@ namespace ModTools
                 componentArea.absoluteSize.x = -sceneTreeWidth;
             }
 
-            float headerHeight = (headerExpanded ? headerHeightExpanded : headerHeightCompact);
+            float headerHeight = headerExpanded ? headerHeightExpanded : headerHeightCompact;
             headerHeight *= ModTools.Instance.config.fontSize;
             headerHeight += 32.0f;
 

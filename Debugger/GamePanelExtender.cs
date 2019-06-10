@@ -7,18 +7,6 @@ namespace ModTools
 {
     internal class GamePanelExtender : MonoBehaviour
     {
-        private bool initializedZonedBuildingsPanel = false;
-        private ZonedBuildingWorldInfoPanel zonedBuildingInfoPanel;
-        private UILabel zonedBuildingAssetNameLabel;
-        private UIButton zonedBuildingShowExplorerButton;
-        private UIButton zonedBuildingDumpMeshTextureButton;
-
-        private bool initializedServiceBuildingsPanel = false;
-        private CityServiceWorldInfoPanel serviceBuildingInfoPanel;
-        private UILabel serviceBuildingAssetNameLabel;
-        private UIButton serviceBuildingShowExplorerButton;
-        private UIButton serviceBuildingDumpMeshTextureButton;
-
         private SceneExplorer sceneExplorer;
 
         private ReferenceChain buildingsBufferRefChain;
@@ -28,39 +16,51 @@ namespace ModTools
         private ReferenceChain citizensBufferRefChain;
         private ReferenceChain citizensUnitsBufferRefChain;
 
-        private bool initializedCitizenVehiclePanel = false;
+        private bool initializedZonedBuildingsPanel;
+        private ZonedBuildingWorldInfoPanel zonedBuildingInfoPanel;
+        private UILabel zonedBuildingAssetNameLabel;
+        private UIButton zonedBuildingShowExplorerButton;
+        private UIButton zonedBuildingDumpMeshTextureButton;
+
+        private bool initializedServiceBuildingsPanel;
+        private CityServiceWorldInfoPanel serviceBuildingInfoPanel;
+        private UILabel serviceBuildingAssetNameLabel;
+        private UIButton serviceBuildingShowExplorerButton;
+        private UIButton serviceBuildingDumpMeshTextureButton;
+
+        private bool initializedCitizenVehiclePanel;
         private CitizenVehicleWorldInfoPanel citizenVehicleInfoPanel;
         private UILabel citizenVehicleAssetNameLabel;
         private UIButton citizenVehicleShowExplorerButton;
         private UIButton citizenVehicleDumpTextureMeshButton;
 
-        private bool initializedCityServiceVehiclePanel = false;
+        private bool initializedCityServiceVehiclePanel;
         private CityServiceVehicleWorldInfoPanel cityServiceVehicleInfoPanel;
         private UILabel cityServiceVehicleAssetNameLabel;
         private UIButton cityServiceVehicleShowExplorerButton;
         private UIButton cityServiceVehicleDumpTextureMeshButton;
 
-        private bool initializedPublicTransportVehiclePanel = false;
+        private bool initializedPublicTransportVehiclePanel;
         private PublicTransportVehicleWorldInfoPanel publicTransportVehicleInfoPanel;
         private UILabel publicTransportVehicleAssetNameLabel;
         private UIButton publicTransportVehicleShowExplorerButton;
         private UIButton publicTransportVehicleDumpTextureMeshButton;
 
-        private bool initializedAnimalPanel = false;
+        private bool initializedAnimalPanel;
         private AnimalWorldInfoPanel animalInfoPanel;
         private UILabel animalAssetNameLabel;
         private UIButton animalShowExplorerButton;
         private UIButton animalShowInstanceButton;
         private UIButton animalShowUnitButton;
 
-        private bool initializedCitizenPanel = false;
+        private bool initializedCitizenPanel;
         private HumanWorldInfoPanel citizenInfoPanel;
         private UILabel citizenAssetNameLabel;
         private UIButton citizenShowExplorerButton;
         private UIButton citizenShowInstanceButton;
         private UIButton citizenShowUnitButton;
 
-        private void OnDestroy()
+        public void OnDestroy()
         {
             try
             {
@@ -99,8 +99,12 @@ namespace ModTools
                 Destroy(animalAssetNameLabel.gameObject);
                 Destroy(animalShowExplorerButton.gameObject);
                 Destroy(animalShowInstanceButton.gameObject);
+                Destroy(animalShowUnitButton.gameObject);
 
-                publicTransportVehicleInfoPanel.component.Find<UILabel>("Type").isVisible = true;
+                Destroy(citizenAssetNameLabel.gameObject);
+                Destroy(citizenShowExplorerButton.gameObject);
+                Destroy(citizenShowInstanceButton.gameObject);
+                Destroy(citizenShowUnitButton.gameObject);
             }
             catch (Exception ex)
             {
@@ -415,7 +419,7 @@ namespace ModTools
             );
         }
 
-        private void Update()
+        public void Update()
         {
             Initialize();
             SetInstance();
@@ -673,8 +677,8 @@ namespace ModTools
                     citizenAssetNameLabel.text = "AssetName: N/A";
                     foreach (CitizenInstance ci in CitizenManager.instance.m_instances.m_buffer)
                     {
-                        if (ci.m_flags == CitizenInstance.Flags.None || ci.Info == null ||
-                            ci.m_citizen != instance.Citizen)
+                        if (ci.m_flags == CitizenInstance.Flags.None || ci.Info == null
+                            || ci.m_citizen != instance.Citizen)
                         {
                             continue;
                         }

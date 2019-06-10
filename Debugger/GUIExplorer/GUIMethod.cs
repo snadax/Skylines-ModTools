@@ -49,15 +49,15 @@ namespace ModTools.Explorer
             GUILayout.FlexibleSpace();
             if (!method.IsGenericMethod)
             {
-                if (!method.GetParameters().Any())
+                if (method.GetParameters().Length == 0)
                 {
                     if (GUILayout.Button("Invoke", GUILayout.ExpandWidth(false)))
                     {
                         method.Invoke(method.IsStatic ? null : obj, new object[] { });
                     }
                 }
-                else if (method.GetParameters().Length == 1 &&
-                         method.GetParameters()[0].ParameterType.IsInstanceOfType(obj))
+                else if (method.GetParameters().Length == 1
+                         && method.GetParameters()[0].ParameterType.IsInstanceOfType(obj))
                 {
                     if (GUILayout.Button("Invoke", GUILayout.ExpandWidth(false)))
                     {

@@ -5,11 +5,11 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public class MeshViewer : GUIWindow
+    public sealed class MeshViewer : GUIWindow
     {
-        private Mesh previewMesh = null;
+        private Mesh previewMesh;
         private Material previewMaterial;
-        private string assetName = null;
+        private string assetName;
 
         private readonly RenderTexture targetRT;
 
@@ -25,7 +25,7 @@ namespace ModTools
 
         private readonly Light light;
 
-        private bool useOriginalShader = false;
+        private bool useOriginalShader;
 
         private MeshViewer()
             : base("Mesh Viewer", new Rect(512, 128, 512, 512), skin)
@@ -84,7 +84,7 @@ namespace ModTools
             return meshViewer;
         }
 
-        private void Update()
+        public void Update()
         {
             if (previewMesh == null)
             {
@@ -112,8 +112,8 @@ namespace ModTools
             meshViewerCamera.transform.rotation = Quaternion.identity;
             meshViewerCamera.nearClipPlane = Mathf.Max(num2 - num1 * 1.5f, 0.01f);
             meshViewerCamera.farClipPlane = num2 + num1 * 1.5f;
-            Quaternion q = Quaternion.Euler(m_PreviewDir.y, 0.0f, 0.0f) *
-                           Quaternion.Euler(0.0f, m_PreviewDir.x, 0.0f);
+            Quaternion q = Quaternion.Euler(m_PreviewDir.y, 0.0f, 0.0f)
+                           * Quaternion.Euler(0.0f, m_PreviewDir.x, 0.0f);
             var trs = Matrix4x4.TRS(q * -bounds.center, q, Vector3.one);
 
             Material material1 = (useOriginalShader && material != null) ? material : previewMaterial;
@@ -173,7 +173,7 @@ namespace ModTools
                 {
                     Color oldColor = GUI.color;
                     GUI.color = Color.yellow;
-                    GUILayout.Label("Mesh insn't readable!");
+                    GUILayout.Label("Mesh isn't readable!");
                     GUI.color = oldColor;
                 }
                 if (material?.mainTexture != null)
@@ -203,8 +203,8 @@ namespace ModTools
                         if (lastLeftMousePos != Vector2.zero)
                         {
                             Vector2 moveDelta = (pos - lastLeftMousePos) * 2.0f;
-                            m_PreviewDir -= moveDelta / Mathf.Min(targetRT.width, targetRT.height) *
-                                                 UIView.GetAView().ratio * 140f;
+                            m_PreviewDir -= moveDelta / Mathf.Min(targetRT.width, targetRT.height)
+                                                 * UIView.GetAView().ratio * 140f;
                             m_PreviewDir.y = Mathf.Clamp(m_PreviewDir.y, -90f, 90f);
                         }
                         lastLeftMousePos = pos;
@@ -214,9 +214,9 @@ namespace ModTools
                         if (lastRightMousePos != Vector2.zero)
                         {
                             Vector2 moveDelta1 = pos - lastRightMousePos;
-                            m_Distance += (float)(moveDelta1.y / (double)targetRT.height *
-                                                         UIView.GetAView().ratio * 40.0);
-                            float num1 = 6f;
+                            m_Distance += (float)(moveDelta1.y / (double)targetRT.height
+                                                         * UIView.GetAView().ratio * 40.0);
+                            const float num1 = 6f;
                             float magnitude = bounds.extents.magnitude;
                             float num2 = magnitude + 16f;
                             m_Distance = Mathf.Min(m_Distance, 4f, num1 * (num2 / magnitude));
@@ -237,7 +237,7 @@ namespace ModTools
 
         public void Setup(bool calculateBounds)
         {
-            if (!(previewMesh != null))
+            if (previewMesh == null)
             {
                 return;
             }

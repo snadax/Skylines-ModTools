@@ -42,9 +42,9 @@ namespace ModTools.Explorer
 
                 state.PreventCircularReferences.Add(obj);
 
-                if (type == typeof(UnityEngine.Transform))
+                if (type == typeof(Transform))
                 {
-                    GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, (UnityEngine.Transform)obj);
+                    GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, (Transform)obj);
                     return;
                 }
 
@@ -68,7 +68,7 @@ namespace ModTools.Explorer
 
                 if (type == typeof(Material))
                 {
-                    GUIMaterial.OnSceneReflectUnityEngineMaterial(state, refChain, (UnityEngine.Material)obj);
+                    GUIMaterial.OnSceneReflectUnityEngineMaterial(state, refChain, (Material)obj);
                     return;
                 }
                 if (type == typeof(Mesh))
@@ -85,7 +85,7 @@ namespace ModTools.Explorer
 
             if (ModTools.Instance.config.sceneExplorerSortAlphabetically)
             {
-                Array.Sort(members, (info, info1) => string.Compare(info.Name, info1.Name, StringComparison.Ordinal));
+                Array.Sort(members, (info, info1) => string.CompareOrdinal(info.Name, info1.Name));
             }
 
             foreach (MemberInfo member in members)

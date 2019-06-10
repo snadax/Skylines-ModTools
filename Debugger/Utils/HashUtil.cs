@@ -15,10 +15,7 @@ namespace ModTools
             return state;
         }
 
-        public static string HashToString(long hash)
-        {
-            return string.Format("{0:X}", hash);
-        }
+        public static string HashToString(long hash) => string.Format("{0:X}", hash);
 
         private static readonly long[] largePrimes = new[]
         {
@@ -30,9 +27,6 @@ namespace ModTools
             32452681L
         };
 
-        private static void Accumulate(ref long state, float value, int index)
-        {
-            state ^= ((long)value) * largePrimes[index];
-        }
+        private static void Accumulate(ref long state, float value, int index) => state ^= (long)value * largePrimes[index];
     }
 }

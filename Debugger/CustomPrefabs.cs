@@ -7,7 +7,7 @@ namespace ModTools
 {
     public class CustomPrefabs : MonoBehaviour
     {
-        private static bool bootstrapped = false;
+        private static bool bootstrapped;
         private static GameObject thisGameObject;
 
         public VehicleInfo[] m_vehicles;
@@ -79,7 +79,7 @@ namespace ModTools
             for (uint i = 0; i < count; i++)
             {
                 T prefab = PrefabCollection<T>.GetPrefab(i);
-                if (prefab == null || (!prefab.m_isCustomContent && prefab.name != null && !prefab.name.Contains('.')))
+                if (prefab == null || !prefab.m_isCustomContent && prefab.name?.Contains('.') == false)
                 {
                     continue;
                 }

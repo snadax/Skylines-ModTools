@@ -64,7 +64,7 @@ namespace ModTools.Utils
                 {
                     for (int j = 0; j < height; j++)
                     {
-                        tex.SetPixel(j * width + i, (height - k - 1), pixels[width * depth * j + k * depth + i]);
+                        tex.SetPixel(j * width + i, height - k - 1, pixels[width * depth * j + k * depth + i]);
                     }
                 }
             }
@@ -130,22 +130,22 @@ namespace ModTools.Utils
             {
                 File.Delete(filename);
             }
-            if (previewTexture is Texture2D)
+            if (previewTexture is Texture2D texture2D)
             {
-                DumpTexture2D((Texture2D)previewTexture, filename);
+                DumpTexture2D(texture2D, filename);
             }
-            else if (previewTexture is RenderTexture)
+            else if (previewTexture is RenderTexture renderTexture)
             {
-                DumpTexture2D(((RenderTexture)previewTexture).ToTexture2D(), filename);
+                DumpTexture2D(renderTexture.ToTexture2D(), filename);
                 Log.Warning($"Texture dumped to \"{filename}\"");
             }
-            else if (previewTexture is Texture3D)
+            else if (previewTexture is Texture3D texture3D)
             {
-                DumpTexture2D(((Texture3D)previewTexture).ToTexture2D(), filename);
+                DumpTexture2D(texture3D.ToTexture2D(), filename);
             }
-            else if (previewTexture is Cubemap)
+            else if (previewTexture is Cubemap cubemap)
             {
-                DumpTexture2D(((Cubemap)previewTexture).ToTexture2D(), filename);
+                DumpTexture2D(cubemap.ToTexture2D(), filename);
             }
             else
             {

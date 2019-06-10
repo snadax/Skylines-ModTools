@@ -6,7 +6,7 @@ namespace ModTools.Explorer
 {
     public static class GUIButtons
     {
-        private static object _buffer = null;
+        private static object _buffer;
 
         public static void SetupButtons(Type type, object value, ReferenceChain refChain)
         {

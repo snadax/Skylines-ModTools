@@ -19,31 +19,31 @@ namespace ModTools.Explorer
             }
 
             Vector3 position = transform.position;
-            OnSceneTreeReflectUnityEngineVector3(refChain.Add("position"), transform, "position", ref position);
+            OnSceneTreeReflectUnityEngineVector3(refChain.Add("position"), "position", ref position);
             transform.position = position;
 
             Vector3 localPosition = transform.localPosition;
-            OnSceneTreeReflectUnityEngineVector3(refChain.Add("localPosition"), transform, "localPosition", ref localPosition);
+            OnSceneTreeReflectUnityEngineVector3(refChain.Add("localPosition"), "localPosition", ref localPosition);
             transform.localPosition = localPosition;
 
             Vector3 localEulerAngles = transform.localEulerAngles;
-            OnSceneTreeReflectUnityEngineVector3(refChain.Add("localEulerAngles"), transform, "localEulerAngles", ref localEulerAngles);
+            OnSceneTreeReflectUnityEngineVector3(refChain.Add("localEulerAngles"), "localEulerAngles", ref localEulerAngles);
             transform.localEulerAngles = localEulerAngles;
 
             Quaternion rotation = transform.rotation;
-            OnSceneTreeReflectUnityEngineQuaternion(refChain.Add("rotation"), transform, "rotation", ref rotation);
+            OnSceneTreeReflectUnityEngineQuaternion(refChain.Add("rotation"), "rotation", ref rotation);
             transform.rotation = rotation;
 
             Quaternion localRotation = transform.localRotation;
-            OnSceneTreeReflectUnityEngineQuaternion(refChain.Add("localRotation"), transform, "localRotation", ref localRotation);
+            OnSceneTreeReflectUnityEngineQuaternion(refChain.Add("localRotation"), "localRotation", ref localRotation);
             transform.localRotation = localRotation;
 
             Vector3 localScale = transform.localScale;
-            OnSceneTreeReflectUnityEngineVector3(refChain.Add("localScale"), transform, "localScale", ref localScale);
+            OnSceneTreeReflectUnityEngineVector3(refChain.Add("localScale"), "localScale", ref localScale);
             transform.localScale = localScale;
         }
 
-        private static void OnSceneTreeReflectUnityEngineQuaternion<T>(ReferenceChain refChain, T obj, string name, ref Quaternion vec)
+        private static void OnSceneTreeReflectUnityEngineQuaternion(ReferenceChain refChain, string name, ref Quaternion vec)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {
@@ -63,7 +63,7 @@ namespace ModTools.Explorer
             });
         }
 
-        private static void OnSceneTreeReflectUnityEngineVector3<T>(ReferenceChain refChain, T obj, string name, ref UnityEngine.Vector3 vec)
+        private static void OnSceneTreeReflectUnityEngineVector3(ReferenceChain refChain, string name, ref Vector3 vec)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {

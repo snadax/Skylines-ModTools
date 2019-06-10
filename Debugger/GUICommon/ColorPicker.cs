@@ -31,7 +31,7 @@ namespace ModTools
         private Texture2D colorPickerTexture;
         private Texture2D huesBarTexture;
         private ColorUtil.HSV currentHSV;
-        private float originalAlpha = 0.0f;
+        private float originalAlpha;
 
         private OnColorChanged onColorChanged;
         private OnColor32Changed onColor32Changed;
@@ -80,10 +80,7 @@ namespace ModTools
             RedrawPicker();
         }
 
-        private void RedrawPicker()
-        {
-            DrawColorPicker(colorPicker, currentHSV.h);
-        }
+        private void RedrawPicker() => DrawColorPicker(colorPicker, currentHSV.h);
 
         private void HandleException(Exception ex)
         {
@@ -96,7 +93,7 @@ namespace ModTools
             GUI.DrawTexture(colorPickerRect, colorPicker);
             GUI.DrawTexture(huesBarRect, huesBar);
 
-            float huesBarLineY = huesBarRect.y + (1.0f - ((float)currentHSV.h / 360.0f)) * huesBarRect.height;
+            float huesBarLineY = huesBarRect.y + (1.0f - (float)currentHSV.h / 360.0f) * huesBarRect.height;
             GUI.DrawTexture(new Rect(huesBarRect.x - 2.0f, huesBarLineY, huesBarRect.width + 4.0f, 2.0f), lineTex);
 
             float colorPickerLineY = colorPickerRect.x + (float)currentHSV.v * colorPickerRect.width;
@@ -115,7 +112,7 @@ namespace ModTools
             onColor32Changed?.Invoke(color);
         }
 
-        private void Update()
+        public void Update()
         {
             Vector2 mouse = Input.mousePosition;
             mouse.y = Screen.height - mouse.y;
@@ -167,7 +164,7 @@ namespace ModTools
 
             for (int y = 0; y < height; y++)
             {
-                Color color = GetColorAtT((y / (float)height) * 360.0f);
+                Color color = GetColorAtT(y / (float)height * 360.0f);
 
                 for (int x = 0; x < width; x++)
                 {
@@ -188,13 +185,9 @@ namespace ModTools
         }
 
         public static Color GetColorAtT(double hue)
-        {
-            return ColorUtil.HSV.HSV2RGB(new ColorUtil.HSV { h = hue, s = 1.0f, v = 1.0f });
-        }
+            => ColorUtil.HSV.HSV2RGB(new ColorUtil.HSV { h = hue, s = 1.0f, v = 1.0f });
 
         public static Color GetColorAtXY(double hue, float xT, float yT)
-        {
-            return ColorUtil.HSV.HSV2RGB(new ColorUtil.HSV { h = hue, s = xT, v = yT });
-        }
+            => ColorUtil.HSV.HSV2RGB(new ColorUtil.HSV { h = hue, s = xT, v = yT });
     }
 }

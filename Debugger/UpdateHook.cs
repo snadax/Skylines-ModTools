@@ -6,10 +6,10 @@ namespace ModTools
     {
         public delegate void OnUnityUpdate();
 
-        public OnUnityUpdate onUnityUpdate = null;
+        public OnUnityUpdate onUnityUpdate;
         public bool once = true;
 
-        private void Update()
+        public void Update()
         {
             if (onUnityUpdate != null)
             {

@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public class TextureViewer : GUIWindow
+    public sealed class TextureViewer : GUIWindow
     {
-        public Texture previewTexture = null;
-        public ReferenceChain caller = null;
+        public Texture previewTexture;
+        public ReferenceChain caller;
 
         private TextureViewer() : base("Texture Viewer", new Rect(512, 128, 512, 512), skin)
         {
@@ -27,10 +27,7 @@ namespace ModTools
             return textureViewer;
         }
 
-        private void HandleClose()
-        {
-            Destroy(this);
-        }
+        private void HandleClose() => Destroy(this);
 
         private void DrawWindow()
         {

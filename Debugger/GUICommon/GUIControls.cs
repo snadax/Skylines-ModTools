@@ -6,10 +6,7 @@ namespace ModTools
 {
     internal static class GUIControls
     {
-        private static Configuration config
-        {
-            get { return ModTools.Instance.config; }
-        }
+        private static Configuration config => ModTools.Instance.config;
 
         public static float numberFieldSize = 100;
         public static float stringFieldSize = 200;
@@ -171,7 +168,7 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(UnityEngine.Vector2))
+            if (type == typeof(Vector2))
             {
                 var f = (Vector2)value;
                 Vector2Field(id, "", ref f, 0.0f, null, true, true);
@@ -183,7 +180,7 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(UnityEngine.Vector3))
+            if (type == typeof(Vector3))
             {
                 var f = (Vector3)value;
                 Vector3Field(id, "", ref f, 0.0f, null, true, true);
@@ -195,7 +192,7 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(UnityEngine.Vector4))
+            if (type == typeof(Vector4))
             {
                 var f = (Vector4)value;
                 Vector4Field(id, "", ref f, 0.0f, null, true, true);
@@ -207,7 +204,7 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(UnityEngine.Quaternion))
+            if (type == typeof(Quaternion))
             {
                 var f = (Quaternion)value;
                 QuaternionField(id, "", ref f, 0.0f, null, true, true);
@@ -219,10 +216,10 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(UnityEngine.Color))
+            if (type == typeof(Color))
             {
                 var f = (Color)value;
-                ColorField(id, "", ref f, 0.0f, null, true, true, color => { refChain.SetValue(color); });
+                ColorField(id, "", ref f, 0.0f, null, true, true, color => refChain.SetValue(color));
                 if (f != (Color)value)
                 {
                     return f;
@@ -231,10 +228,10 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(UnityEngine.Color32))
+            if (type == typeof(Color32))
             {
                 var f = (Color32)value;
-                Color32Field(id, "", ref f, 0.0f, null, true, true, color => { refChain.SetValue(color); });
+                Color32Field(id, "", ref f, 0.0f, null, true, true, color => refChain.SetValue(color));
                 var v = (Color32)value;
                 if (f.r != v.r || f.g != v.g || f.b != v.b || f.a != v.a)
                 {
@@ -360,8 +357,6 @@ namespace ModTools
             {
                 GUILayout.FlexibleSpace();
             }
-
-            byte oldValue = value;
 
             GUI.contentColor = config.valueColor;
             string result = BufferedTextField(id, value.ToString(), byteFieldSize);
@@ -561,8 +556,6 @@ namespace ModTools
                 GUILayout.FlexibleSpace();
             }
 
-            short oldValue = value;
-
             GUI.contentColor = config.valueColor;
 
             string result = BufferedTextField(id, value.ToString(), numberFieldSize);
@@ -643,7 +636,7 @@ namespace ModTools
 
             GUI.contentColor = config.valueColor;
 
-            string result = BufferedTextField(id, value.ToString(), stringFieldSize);
+            string result = BufferedTextField(id, value, stringFieldSize);
             if (result != null)
             {
                 value = result;
@@ -981,10 +974,10 @@ namespace ModTools
                 GUILayout.FlexibleSpace();
             }
 
-            byte r = (byte)(Mathf.Clamp(value.r * 255.0f, byte.MinValue, byte.MaxValue));
-            byte g = (byte)(Mathf.Clamp(value.g * 255.0f, byte.MinValue, byte.MaxValue));
-            byte b = (byte)(Mathf.Clamp(value.b * 255.0f, byte.MinValue, byte.MaxValue));
-            byte a = (byte)(Mathf.Clamp(value.a * 255.0f, byte.MinValue, byte.MaxValue));
+            byte r = (byte)Mathf.Clamp(value.r * 255.0f, byte.MinValue, byte.MaxValue);
+            byte g = (byte)Mathf.Clamp(value.g * 255.0f, byte.MinValue, byte.MaxValue);
+            byte b = (byte)Mathf.Clamp(value.b * 255.0f, byte.MinValue, byte.MaxValue);
+            byte a = (byte)Mathf.Clamp(value.a * 255.0f, byte.MinValue, byte.MaxValue);
 
             ByteField(id + ".r", "r", ref r, 0.0f, true, true);
             ByteField(id + ".g", "g", ref g, 0.0f, true, true);

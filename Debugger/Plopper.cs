@@ -9,10 +9,7 @@ namespace ModTools.Explorer
     {
         private static PrefabInfo ploppedPrefab;
 
-        public static void Reset()
-        {
-            ploppedPrefab = null;
-        }
+        public static void Reset() => ploppedPrefab = null;
 
         public static void Update()
         {
@@ -36,8 +33,8 @@ namespace ModTools.Explorer
             {
                 return;
             }
-            if (currentTool is BuildingTool || currentTool is NetTool || currentTool is TreeTool ||
-                currentTool is PropTool)
+            if (currentTool is BuildingTool || currentTool is NetTool || currentTool is TreeTool
+                || currentTool is PropTool)
             {
                 FieldInfo prefabField = currentTool.GetType()
                     .GetField("m_prefab", BindingFlags.Instance | BindingFlags.Public);
@@ -89,7 +86,7 @@ namespace ModTools.Explorer
             {
                 toolType = null;
             }
-            if (toolType == null || (currentTool.GetType() != toolType && !(currentTool is DefaultTool)))
+            if (toolType == null || currentTool.GetType() != toolType && !(currentTool is DefaultTool))
             {
                 return;
             }

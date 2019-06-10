@@ -75,10 +75,7 @@ namespace ModTools
             return clone;
         }
 
-        public bool CheckDepth()
-        {
-            return Length >= ModTools.Instance.config.sceneExplorerMaxHierarchyDepth;
-        }
+        public bool CheckDepth() => Length >= ModTools.Instance.config.sceneExplorerMaxHierarchyDepth;
 
         public ReferenceChain Add(GameObject go)
         {
@@ -150,15 +147,10 @@ namespace ModTools
             return copy;
         }
 
-        public object GetChainItem(int index)
-        {
-            return index >= 0 && index < Length ? chainObjects[index] : null;
-        }
+        public object GetChainItem(int index) => index >= 0 && index < Length ? chainObjects[index] : null;
 
         public ReferenceType GetChainItemType(int index)
-        {
-            return index >= 0 && index < Length ? chainTypes[index] : ReferenceType.None;
-        }
+            => index >= 0 && index < Length ? chainTypes[index] : ReferenceType.None;
 
         private string ItemToString(int i)
         {
@@ -314,7 +306,7 @@ namespace ModTools
 
             if (LastItemType == ReferenceType.Property)
             {
-                var propertyInfo = ((PropertyInfo)LastItem);
+                var propertyInfo = (PropertyInfo)LastItem;
                 if (propertyInfo.CanWrite)
                 {
                     propertyInfo.SetValue(current, value, null);

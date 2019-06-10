@@ -5,10 +5,7 @@ namespace ModTools
 {
     public class SceneExplorerColorConfig : GUIWindow
     {
-        private static Configuration config
-        {
-            get { return ModTools.Instance.config; }
-        }
+        private static Configuration config => ModTools.Instance.config;
 
         private readonly string[] availableFonts;
         private int selectedFont;
@@ -92,10 +89,7 @@ namespace ModTools
                 moveHoverTexture.Apply();
             });
 
-            DrawColorControl("Titlebar text", ref config.titlebarTextColor, color =>
-            {
-                config.titlebarTextColor = color;
-            });
+            DrawColorControl("Titlebar text", ref config.titlebarTextColor, color => config.titlebarTextColor = color);
 
             DrawColorControl("GameObject", ref config.gameObjectColor, color => config.gameObjectColor = color);
             DrawColorControl("Component (enabled)", ref config.enabledComponentColor, color => config.enabledComponentColor = color);

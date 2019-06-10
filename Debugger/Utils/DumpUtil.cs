@@ -26,7 +26,7 @@ namespace ModTools.Utils
         {
             assetName = assetName.Replace("_Data", "").LegalizeFileName();
 
-            if (mesh != null && mesh.isReadable)
+            if (mesh?.isReadable == true)
             {
                 MeshUtil.DumpMeshToOBJ(mesh, $"{assetName}.obj");
             }

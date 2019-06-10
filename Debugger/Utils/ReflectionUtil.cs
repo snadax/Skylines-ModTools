@@ -1,33 +1,16 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace ModTools.Utils
 {
     public static class ReflectionUtil
     {
-        public static FieldInfo FindField<T>(T o, string fieldName)
-        {
-            FieldInfo[] fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        public static FieldInfo FindField<T>(string fieldName)
+            => Array.Find(typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance), f => f.Name == fieldName);
 
-            foreach (FieldInfo f in fields)
-            {
-                if (f.Name == fieldName)
-                {
-                    return f;
-                }
-            }
+        public static T GetFieldValue<T>(FieldInfo field, object o) => (T)field.GetValue(o);
 
-            return null;
-        }
-
-        public static T GetFieldValue<T>(FieldInfo field, object o)
-        {
-            return (T)field.GetValue(o);
-        }
-
-        public static void SetFieldValue(FieldInfo field, object o, object value)
-        {
-            field.SetValue(o, value);
-        }
+        public static void SetFieldValue(FieldInfo field, object o, object value) => field.SetValue(o, value);
 
         public static Q GetPrivate<Q>(object o, string fieldName)
         {

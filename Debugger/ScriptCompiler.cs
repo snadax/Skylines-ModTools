@@ -39,11 +39,6 @@ namespace ModTools
 
             dllsPath = Path.Combine(workspacePath, "dll");
             Directory.CreateDirectory(dllsPath);
-
-            PluginManager.eventLogMessage += (type, message) =>
-            {
-                //       Log.Error(String.Format("PluginManager error ({0}) - {1}", type, message));
-            };
         }
 
         public static bool RunSource(List<ScriptEditorFile> sources, out string errorMessage, out IModEntryPoint modInstance)

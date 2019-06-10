@@ -4,12 +4,9 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public class StackTraceViewer : GUIWindow
+    public sealed class StackTraceViewer : GUIWindow
     {
-        private static Configuration config
-        {
-            get { return ModTools.Instance.config; }
-        }
+        private static Configuration config => ModTools.Instance.config;
 
         private StackTrace trace;
 
@@ -31,15 +28,9 @@ namespace ModTools
             onClose = HandleClosed;
         }
 
-        private void HandleClosed()
-        {
-            Destroy(this);
-        }
+        private void HandleClosed() => Destroy(this);
 
-        private void HandleException(Exception ex)
-        {
-            Log.Error("Exception in StackTraceViewer - " + ex.Message);
-        }
+        private void HandleException(Exception ex) => Log.Error("Exception in StackTraceViewer - " + ex.Message);
 
         private void DrawWindow()
         {

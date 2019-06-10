@@ -8,25 +8,25 @@ namespace ModTools
     public class Configuration
     {
         public Rect mainWindowRect = new Rect(128, 128, 356, 300);
-        public bool mainWindowVisible = false;
+        public bool mainWindowVisible;
 
         public Rect consoleRect = new Rect(16.0f, 16.0f, 512.0f, 256.0f);
-        public bool consoleVisible = false;
+        public bool consoleVisible;
 
         public int consoleMaxHistoryLength = 1024;
         public string consoleFormatString = "[{{type}}] {{caller}}: {{message}}";
-        public bool showConsoleOnMessage = false;
-        public bool showConsoleOnWarning = false;
+        public bool showConsoleOnMessage;
+        public bool showConsoleOnWarning;
         public bool showConsoleOnError = true;
         public bool consoleAutoScrollToBottom = true;
 
         public bool customPrefabsObject = true;
 
         public Rect sceneExplorerRect = new Rect(128, 440, 800, 500);
-        public bool sceneExplorerVisible = false;
+        public bool sceneExplorerVisible;
 
         public Rect watchesRect = new Rect(504, 128, 800, 300);
-        public bool watchesVisible = false;
+        public bool watchesVisible;
 
         public bool logExceptionsToConsole = true;
         public bool evaluatePropertiesAutomatically = true;
@@ -55,11 +55,11 @@ namespace ModTools
         public Color consoleExceptionColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
 
         public bool sceneExplorerShowFields = true;
-        public bool sceneExplorerShowConsts = false;
+        public bool sceneExplorerShowConsts;
         public bool sceneExplorerShowProperties = true;
-        public bool sceneExplorerShowMethods = false;
-        public bool sceneExplorerShowModifiers = false;
-        public bool sceneExplorerShowInheritedMembers = false;
+        public bool sceneExplorerShowMethods;
+        public bool sceneExplorerShowModifiers;
+        public bool sceneExplorerShowInheritedMembers;
         public bool sceneExplorerEvaluatePropertiesAutomatically = true;
         public bool sceneExplorerSortAlphabetically = true;
         public float sceneExplorerTreeIdentSpacing = 16.0f;
@@ -70,8 +70,8 @@ namespace ModTools
         public string fontName = "Courier New Bold";
         public int fontSize = 14;
 
-        public int hiddenNotifications = 0;
-        public int logLevel = 0;
+        public int hiddenNotifications;
+        public int logLevel;
 
         public void OnPreSerialize()
         {
