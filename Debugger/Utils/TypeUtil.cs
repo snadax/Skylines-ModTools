@@ -12,26 +12,15 @@ namespace ModTools
 
         public static bool IsSpecialType(Type t)
         {
-            if (t == typeof (System.Char)) return true;
-            if (t == typeof (System.String)) return true;
-            if (t == typeof (System.Boolean)) return true;
-            if (t == typeof (System.Single)) return true;
-            if (t == typeof (System.Double)) return true;
-            if (t == typeof (System.Byte)) return true;
-            if (t == typeof (System.Int32)) return true;
-            if (t == typeof (System.UInt32)) return true;
-            if (t == typeof (System.Int64)) return true;
-            if (t == typeof (System.UInt64)) return true;
-            if (t == typeof (System.Int16)) return true;
-            if (t == typeof (System.UInt16)) return true;
-            if (t == typeof (UnityEngine.Vector2)) return true;
-            if (t == typeof (UnityEngine.Vector3)) return true;
-            if (t == typeof (UnityEngine.Vector4)) return true;
-            if (t == typeof (UnityEngine.Quaternion)) return true;
-            if (t == typeof (UnityEngine.Color)) return true;
-            if (t == typeof (UnityEngine.Color32)) return true;
-            if (t.IsEnum) return true;
-            return false;
+            return t.IsPrimitive
+                || t.IsEnum
+                || t == typeof(string)
+                || t == typeof(UnityEngine.Vector2)
+                || t == typeof(UnityEngine.Vector3)
+                || t == typeof(UnityEngine.Vector4)
+                || t == typeof(UnityEngine.Quaternion)
+                || t == typeof(UnityEngine.Color)
+                || t == typeof(UnityEngine.Color32);
         }
 
         public static bool IsBitmaskEnum(Type t)
