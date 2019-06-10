@@ -6,10 +6,8 @@ using System.Reflection;
 
 namespace ModTools
 {
-
     public static class TypeUtil
     {
-
         public static bool IsSpecialType(Type t)
         {
             return t.IsPrimitive
@@ -59,7 +57,7 @@ namespace ModTools
             _typeCache = new Dictionary<Type, MemberInfo[]>();
         }
 
-        private static Dictionary<Type, MemberInfo[]> _typeCache = new Dictionary<Type, MemberInfo[]>(); 
+        private static Dictionary<Type, MemberInfo[]> _typeCache = new Dictionary<Type, MemberInfo[]>();
 
         private static MemberInfo[] GetMembersInternal(Type type, bool recursive, BindingFlags bindingFlags)
         {
@@ -123,5 +121,4 @@ namespace ModTools
             return false;
         }
     }
-
 }

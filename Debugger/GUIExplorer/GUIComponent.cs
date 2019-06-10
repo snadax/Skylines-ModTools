@@ -6,7 +6,8 @@ namespace ModTools.Explorer
     {
         public static void OnSceneTreeComponent(SceneExplorerState state, ReferenceChain refChain, Component component)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             if (component == null)
             {

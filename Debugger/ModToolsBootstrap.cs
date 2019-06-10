@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using ColossalFramework;
 using ColossalFramework.Plugins;
-using ICities;
 using UnityEngine;
 
 namespace ModTools
@@ -65,6 +63,5 @@ namespace ModTools
             var modTools = modToolsGameObject.AddComponent<ModTools>();
             modTools.Initialize();
         }
-
     }
 }

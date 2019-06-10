@@ -8,7 +8,6 @@ namespace ModTools
 {
     public class GUIWindow : MonoBehaviour
     {
-
         private static Configuration config
         {
             get { return ModTools.Instance.config; }
@@ -65,9 +64,9 @@ namespace ModTools
         {
             get { return _visible; }
 
-            set 
-            { 
-                _visible = value; 
+            set
+            {
+                _visible = value;
                 GUI.BringWindowToFront(id);
                 UpdateClickCatcher();
 
@@ -84,13 +83,13 @@ namespace ModTools
 
         public string title = "Window";
 
-        private int id = 0;
+        private readonly int id = 0;
 
         private Vector2 minSize = Vector2.zero;
 
-        private static List<GUIWindow> windows = new List<GUIWindow>();
+        private static readonly List<GUIWindow> windows = new List<GUIWindow>();
 
-        private UIPanel clickCatcher;
+        private readonly UIPanel clickCatcher;
 
         public GUIWindow(string _title, Rect _rect, GUISkin _skin)
         {
@@ -113,7 +112,7 @@ namespace ModTools
             UpdateClickCatcher();
         }
 
-        void UpdateClickCatcher()
+        private void UpdateClickCatcher()
         {
             if (clickCatcher == null)
             {
@@ -129,7 +128,7 @@ namespace ModTools
             clickCatcher.zOrder = int.MaxValue;
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
             if (onUnityDestroy != null)
             {
@@ -158,7 +157,7 @@ namespace ModTools
             Util.SetMouseScrolling(!mouseInsideGuiWindow);
         }
 
-        void OnGUI()
+        private void OnGUI()
         {
             if (skin == null)
             {
@@ -382,7 +381,7 @@ namespace ModTools
                     ModTools.Instance.SaveConfig();
 
                     UpdateClickCatcher();
-                    
+
                     if (onClose != null)
                     {
                         onClose();
@@ -457,7 +456,5 @@ namespace ModTools
 
             GUI.DrawTexture(new Rect(rect.width - 16.0f, rect.height - 8.0f, 16.0f, 8.0f), resizeTex, ScaleMode.StretchToFill);
         }
-
     }
-
 }

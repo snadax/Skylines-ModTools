@@ -1,14 +1,10 @@
-﻿using System;
-using ColossalFramework.UI;
-using ICities;
+﻿using ColossalFramework.UI;
 using UnityEngine;
 
 namespace ModTools
 {
-
     public class ModTools : GUIWindow
     {
-
 #if DEBUG
         public static readonly bool DEBUG_MODTOOLS = true;
 #else
@@ -119,7 +115,6 @@ namespace ModTools
 
         public void Initialize()
         {
-
             if (!loggingInitialized)
             {
                 Application.logMessageReceivedThreaded += OnApplicationLogMessageReceivedThreaded;
@@ -140,7 +135,6 @@ namespace ModTools
             {
                 console = gameObject.AddComponent<Console>();
             }
-
         }
 
         private void OnApplicationLogMessageReceivedThreaded(string condition, string trace, LogType type)
@@ -182,7 +176,7 @@ namespace ModTools
             }
         }
 
-        void Update()
+        private void Update()
         {
             UpdateMouseScrolling();
 
@@ -225,7 +219,7 @@ namespace ModTools
             }
         }
 
-        void DoMainWindow()
+        private void DoMainWindow()
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Use ModTools console");
@@ -251,7 +245,7 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Console log level");
-            var newLogLevel = GUILayout.SelectionGrid(config.logLevel, new[]{"Log", "Warn","Err", "None" }, 4);
+            var newLogLevel = GUILayout.SelectionGrid(config.logLevel, new[] { "Log", "Warn", "Err", "None" }, 4);
             GUILayout.EndHorizontal();
 
             if (newLogLevel != config.logLevel)
@@ -298,7 +292,6 @@ namespace ModTools
             GUILayout.Label("Debug Renderer (Ctrl+R)");
             debugRenderer.drawDebugInfo = GUILayout.Toggle(debugRenderer.drawDebugInfo, "");
             GUILayout.EndHorizontal();
-
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Custom Prefabs Object");
@@ -352,5 +345,4 @@ namespace ModTools
             }
         }
     }
-
 }

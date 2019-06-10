@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ModTools.Explorer
 {
@@ -71,10 +68,10 @@ namespace ModTools.Explorer
             "_TyreParams"
         };
 
-
         public static void OnSceneReflectUnityEngineMaterial(SceneExplorerState state, ReferenceChain refChain, Material material)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             if (material == null)
             {
@@ -124,8 +121,7 @@ namespace ModTools.Explorer
 
                 GUILayout.FlexibleSpace();
                 GUIButtons.SetupButtons(type, value, refChain);
-                object paste;
-                var doPaste = GUIButtons.SetupPasteButon(type, out paste);
+                var doPaste = GUIButtons.SetupPasteButon(type, out object paste);
                 GUILayout.EndHorizontal();
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
@@ -181,8 +177,7 @@ namespace ModTools.Explorer
                 GUI.contentColor = Color.white;
                 GUILayout.FlexibleSpace();
                 GUIButtons.SetupButtons(type, value, refChain);
-                object paste;
-                var doPaste = GUIButtons.SetupPasteButon(type, out paste);
+                var doPaste = GUIButtons.SetupPasteButon(type, out object paste);
                 GUILayout.EndHorizontal();
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
@@ -194,31 +189,30 @@ namespace ModTools.Explorer
                     material.SetColor(prop, (Color)paste);
                 }
             }
-//            GUILayout.BeginHorizontal();
-//            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * (refChain.Ident + 1));
-//            GUI.contentColor = ModTools.Instance.config.typeColor;
-//
-//            GUILayout.Label("Shader:");
-//
-//            GUI.contentColor = ModTools.Instance.config.nameColor;
-//
-//            var shaders = Resources.FindObjectsOfTypeAll<Shader>();
-//            Array.Sort(shaders, (a, b) => string.Compare(a.name, b.name, StringComparison.Ordinal));
-//            var availableShaders = shaders.Select(s => s.name).ToArray();
-//            var currentShader = material.shader;
-//            var selectedShader = Array.IndexOf(shaders, currentShader);
-//
-//            var newSelectedShader = GUIComboBox.Box(selectedShader, availableShaders, "SceneExplorerShadersComboBox");
-//            if (newSelectedShader != selectedShader)
-//            {
-//                material.shader = shaders[newSelectedShader];
-//            }
-//            GUILayout.FlexibleSpace();
-//            GUILayout.EndHorizontal();
+            //            GUILayout.BeginHorizontal();
+            //            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * (refChain.Ident + 1));
+            //            GUI.contentColor = ModTools.Instance.config.typeColor;
+            //
+            //            GUILayout.Label("Shader:");
+            //
+            //            GUI.contentColor = ModTools.Instance.config.nameColor;
+            //
+            //            var shaders = Resources.FindObjectsOfTypeAll<Shader>();
+            //            Array.Sort(shaders, (a, b) => string.Compare(a.name, b.name, StringComparison.Ordinal));
+            //            var availableShaders = shaders.Select(s => s.name).ToArray();
+            //            var currentShader = material.shader;
+            //            var selectedShader = Array.IndexOf(shaders, currentShader);
+            //
+            //            var newSelectedShader = GUIComboBox.Box(selectedShader, availableShaders, "SceneExplorerShadersComboBox");
+            //            if (newSelectedShader != selectedShader)
+            //            {
+            //                material.shader = shaders[newSelectedShader];
+            //            }
+            //            GUILayout.FlexibleSpace();
+            //            GUILayout.EndHorizontal();
 
             GUIReflect.OnSceneTreeReflect(state, refChain, material, true);
         }
-
 
     }
 }

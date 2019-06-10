@@ -8,7 +8,6 @@ namespace ModTools
 {
     public class DebugRenderer : MonoBehaviour
     {
-
         public bool drawDebugInfo = false;
 
         private GUIStyle normalRectStyle;
@@ -19,7 +18,7 @@ namespace ModTools
         private readonly List<UIComponent> hoveredComponents = new List<UIComponent>();
         private long previousHash = 0;
 
-        void Update()
+        private void Update()
         {
             var hoveredLocal = hoveredComponent;
             if (drawDebugInfo && hoveredLocal != null)
@@ -59,7 +58,7 @@ namespace ModTools
             }
         }
 
-        void OnGUI()
+        private void OnGUI()
         {
             if (!drawDebugInfo)
             {
@@ -148,7 +147,6 @@ namespace ModTools
                 hoveredComponent = hoveredComponents.First();
             }
 
-
             foreach (var component in components)
             {
                 if (!component.isVisible)
@@ -183,7 +181,7 @@ namespace ModTools
             }
         }
 
-        Rect CalculateRealComponentRect(Vector3 absolutePosition, Vector2 size)
+        private Rect CalculateRealComponentRect(Vector3 absolutePosition, Vector2 size)
         {
             var dx = Screen.width / 1920.0f;
             var dy = Screen.height / 1080.0f;
@@ -194,7 +192,7 @@ namespace ModTools
             return new Rect(absolutePosition.x, absolutePosition.y, size.x, size.y);
         }
 
-        void DoInfoWindow(int i)
+        private void DoInfoWindow(int i)
         {
             if (hoveredComponent == null)
             {
@@ -248,6 +246,5 @@ namespace ModTools
         {
             return lhs.renderOrder.CompareTo(rhs.renderOrder);
         }
-
     }
 }

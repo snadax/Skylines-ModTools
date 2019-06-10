@@ -8,7 +8,8 @@ namespace ModTools.Explorer
     {
         public static void OnSceneTreeReflect(SceneExplorerState state, ReferenceChain refChain, System.Object obj, bool rawReflection = false)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             if (obj == null)
             {
@@ -76,7 +77,6 @@ namespace ModTools.Explorer
                         return;
                     }
                 }
-
             }
 
             var members = TypeUtil.GetAllMembers(type, ModTools.Instance.config.sceneExplorerShowInheritedMembers);

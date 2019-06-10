@@ -22,7 +22,6 @@ namespace ModTools
         private Vector2 componentScrollPosition = Vector2.zero;
         private SceneExplorerState state;
 
-
         private readonly float windowTopMargin = 16.0f;
         private readonly float windowBottomMargin = 8.0f;
 
@@ -541,5 +540,4 @@ namespace ModTools
             TypeUtil.ClearTypeCache();
         }
     }
-
 }

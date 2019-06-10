@@ -1,16 +1,12 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using ColossalFramework.UI;
 using ModTools.Utils;
 using UnityEngine;
 
 namespace ModTools
 {
-
-    class GamePanelExtender : MonoBehaviour
+    internal class GamePanelExtender : MonoBehaviour
     {
-
 
         private bool initializedZonedBuildingsPanel = false;
         private ZonedBuildingWorldInfoPanel zonedBuildingInfoPanel;
@@ -45,7 +41,6 @@ namespace ModTools
         private UIButton cityServiceVehicleShowExplorerButton;
         private UIButton cityServiceVehicleDumpTextureMeshButton;
 
-
         private bool initializedPublicTransportVehiclePanel = false;
         private PublicTransportVehicleWorldInfoPanel publicTransportVehicleInfoPanel;
         private UILabel publicTransportVehicleAssetNameLabel;
@@ -66,7 +61,7 @@ namespace ModTools
         private UIButton citizenShowInstanceButton;
         private UIButton citizenShowUnitButton;
 
-        void OnDestroy()
+        private void OnDestroy()
         {
             try
             {
@@ -77,7 +72,6 @@ namespace ModTools
                 Destroy(serviceBuildingAssetNameLabel.gameObject);
                 Destroy(serviceBuildingShowExplorerButton.gameObject);
                 Destroy(serviceBuildingDumpMeshTextureButton.gameObject);
-
 
                 zonedBuildingInfoPanel.component.Find<UILabel>("AllGood").isVisible = true;
                 zonedBuildingInfoPanel.component.Find<UIPanel>("ProblemsPanel").isVisible = true;
@@ -114,7 +108,7 @@ namespace ModTools
             }
         }
 
-        UIButton CreateButton(string text, int width, int height, UIComponent parentComponent, Vector3 offset, UIAlignAnchor anchor, MouseEventHandler handler)
+        private UIButton CreateButton(string text, int width, int height, UIComponent parentComponent, Vector3 offset, UIAlignAnchor anchor, MouseEventHandler handler)
         {
             var button = UIView.GetAView().AddUIComponent(typeof(UIButton)) as UIButton;
             button.name = "ModTools Button";
@@ -138,7 +132,7 @@ namespace ModTools
             return button;
         }
 
-        UILabel CreateLabel(string text, int width, int height, UIComponent parentComponent, Vector3 offset,
+        private UILabel CreateLabel(string text, int width, int height, UIComponent parentComponent, Vector3 offset,
             UIAlignAnchor anchor)
         {
             var label = UIView.GetAView().AddUIComponent(typeof(UILabel)) as UILabel;
@@ -152,7 +146,7 @@ namespace ModTools
             return label;
         }
 
-        void AddBuildingPanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel,
+        private void AddBuildingPanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel,
             out UIButton showExplorerButton, Vector3 showExplorerButtonOffset,
             out UIButton dumpMeshTextureButton, Vector3 dumpMeshTextureButtonOffset)
         {
@@ -197,7 +191,7 @@ namespace ModTools
             );
         }
 
-        void AddVehiclePanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel, out UIButton showExplorerButton, out UIButton dumpMeshTextureButton)
+        private void AddVehiclePanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel, out UIButton showExplorerButton, out UIButton dumpMeshTextureButton)
         {
             infoPanel.component.Find<UILabel>("Type").isVisible = false;
 
@@ -248,13 +242,12 @@ namespace ModTools
             );
         }
 
-        void AddCitizenPanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel,
+        private void AddCitizenPanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel,
                 out UIButton showExplorerButton, Vector3 showExplorerButtonOffset,
                 out UIButton showInstanceButton, Vector3 showInstanceButtonOffset,
                 out UIButton showUnitButton, Vector3 showUniteButtonOffset
                 )
         {
-
             assetNameLabel = CreateLabel
             (
                 "AssetName: <>", 160, 24,
@@ -422,7 +415,7 @@ namespace ModTools
             );
         }
 
-        void Update()
+        private void Update()
         {
             Initialize();
             SetInstance();
@@ -581,7 +574,6 @@ namespace ModTools
                     .Add(CitizenManager.instance)
                     .Add(typeof(CitizenManager).GetField("m_units"))
                     .Add(typeof(Array32<CitizenUnit>).GetField("m_buffer"));
-
 
                 sceneExplorer = FindObjectOfType<SceneExplorer>();
                 citizenInfoPanel = GameObject.Find("(Library) CitizenWorldInfoPanel").GetComponent<HumanWorldInfoPanel>();

@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace ModTools
 {
-
     public class ConsoleMessage
     {
         public string caller;
@@ -20,25 +19,24 @@ namespace ModTools
 
     public class Console : GUIWindow
     {
-
         private static Configuration config => ModTools.Instance.config;
 
-        private GUIArea headerArea;
-        private GUIArea consoleArea;
-        private GUIArea commandLineArea;
+        private readonly GUIArea headerArea;
+        private readonly GUIArea consoleArea;
+        private readonly GUIArea commandLineArea;
         private bool focusCommandLineArea = false;
         private bool emptyCommandLineArea = true;
         private bool setCommandLinePosition = false;
         private int commandLinePosition;
 
-        private float headerHeightCompact = 0.5f;
-        private float headerHeightExpanded = 8.0f;
+        private readonly float headerHeightCompact = 0.5f;
+        private readonly float headerHeightExpanded = 8.0f;
         private bool headerExpanded = false;
 
-        private float commandLineAreaHeightCompact = 45.0f;
-        private float commandLineAreaHeightExpanded = 120.0f;
+        private readonly float commandLineAreaHeightCompact = 45.0f;
+        private readonly float commandLineAreaHeightExpanded = 120.0f;
 
-        private bool commandLineAreaExpanded 
+        private bool commandLineAreaExpanded
         {
             get
             {
@@ -57,9 +55,9 @@ namespace ModTools
             }
         }
 
-        private object historyLock = new object();
-        private List<ConsoleMessage> history = new List<ConsoleMessage>();
-        private List<string> commandHistory = new List<string>() { "" };
+        private readonly object historyLock = new object();
+        private readonly List<ConsoleMessage> history = new List<ConsoleMessage>();
+        private readonly List<string> commandHistory = new List<string>() { "" };
         private int currentCommandHistoryIndex = 0;
 
         private Vector2 consoleScrollPosition = Vector2.zero;
@@ -68,7 +66,7 @@ namespace ModTools
         private DebugOutputPanel vanillaPanel;
         private Transform oldVanillaPanelParent;
 
-        private List<KeyValuePair<int, string>> userNotifications; 
+        private List<KeyValuePair<int, string>> userNotifications;
 
         public Console() : base("Debug console", config.consoleRect, skin)
         {
@@ -85,7 +83,7 @@ namespace ModTools
             onUnityGUI = () => KeyboardCallback();
         }
 
-        void KeyboardCallback()
+        private void KeyboardCallback()
         {
             Event e = Event.current;
             if (e.type != EventType.KeyUp || GUI.GetNameOfFocusedControl() != "ModToolsConsoleCommandLine")
@@ -134,13 +132,14 @@ namespace ModTools
                 RunCommandLine();
             }
         }
-        void HandleDestroy()
+
+        private void HandleDestroy()
         {
             vanillaPanel.transform.parent = oldVanillaPanelParent;
             vanillaPanel = null;
         }
 
-        void Update()
+        private void Update()
         {
             if (vanillaPanel == null)
             {
@@ -229,7 +228,7 @@ namespace ModTools
             }
         }
 
-        void RecalculateAreas()
+        private void RecalculateAreas()
         {
             float headerHeight = headerExpanded ? headerHeightExpanded : headerHeightCompact;
             headerHeight *= config.fontSize;
@@ -254,12 +253,12 @@ namespace ModTools
             commandLineArea.absoluteSize.y = commandLineAreaHeight;
         }
 
-        void HandleException(Exception ex)
+        private void HandleException(Exception ex)
         {
             AddMessage("Exception in ModTools Console - " + ex.Message, LogType.Exception);
         }
 
-        void DrawCompactHeader()
+        private void DrawCompactHeader()
         {
             GUILayout.BeginHorizontal();
 
@@ -284,7 +283,7 @@ namespace ModTools
             GUILayout.EndHorizontal();
         }
 
-        void DrawExpandedHeader()
+        private void DrawExpandedHeader()
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Log message format:", GUILayout.ExpandWidth(false));
@@ -307,10 +306,10 @@ namespace ModTools
             GUILayout.FlexibleSpace();
             GUILayout.Label("Error", GUILayout.ExpandWidth(false));
             config.showConsoleOnError = GUILayout.Toggle(config.showConsoleOnError, "", GUILayout.ExpandWidth(false));
-            
+
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            
+
             GUILayout.BeginHorizontal();
             GUILayout.Label("Auto-scroll on new messages:");
             config.consoleAutoScrollToBottom = GUILayout.Toggle(config.consoleAutoScrollToBottom, "");
@@ -375,7 +374,7 @@ namespace ModTools
 
         private Color orangeColor = new Color(1.0f, 0.647f, 0.0f, 1.0f);
 
-        void DrawConsole()
+        private void DrawConsole()
         {
             userNotifications = UserNotifications.GetNotifications();
 
@@ -466,7 +465,7 @@ namespace ModTools
             consoleArea.End();
         }
 
-        void DrawCommandLineArea()
+        private void DrawCommandLineArea()
         {
             commandLineArea.Begin();
 
@@ -522,7 +521,6 @@ namespace ModTools
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
 
-
             commandLineArea.End();
 
             // refocus the command line area after enter has been pressed
@@ -533,7 +531,7 @@ namespace ModTools
             }
         }
 
-        void RunCommandLine()
+        private void RunCommandLine()
         {
             var commandLine = commandHistory[currentCommandHistoryIndex];
 
@@ -553,9 +551,7 @@ namespace ModTools
 
             var source = String.Format(defaultSource, commandLine);
             var file = new ScriptEditorFile() { path = "ModToolsCommandLineScript.cs", source = source };
-            string errorMessage;
-            IModEntryPoint instance;
-            if (!ScriptCompiler.RunSource(new List<ScriptEditorFile>() { file }, out errorMessage, out instance))
+            if (!ScriptCompiler.RunSource(new List<ScriptEditorFile>() { file }, out string errorMessage, out IModEntryPoint instance))
             {
                 Log.Error("Failed to compile command-line!");
             }
@@ -575,7 +571,7 @@ namespace ModTools
             focusCommandLineArea = true;
         }
 
-        void DrawWindow()
+        private void DrawWindow()
         {
             RecalculateAreas();
             DrawHeader();
@@ -607,6 +603,5 @@ namespace ModTools
         }}
     }}
 }}";
-
     }
 }

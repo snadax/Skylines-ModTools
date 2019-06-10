@@ -1,5 +1,4 @@
-﻿using System;
-using ColossalFramework;
+﻿using ColossalFramework;
 using ICities;
 
 namespace ModTools

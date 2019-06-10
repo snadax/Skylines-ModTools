@@ -7,7 +7,6 @@ namespace ModTools
 {
     public class CustomPrefabs : MonoBehaviour
     {
-
         private static bool bootstrapped = false;
         private static GameObject thisGameObject;
 
@@ -49,7 +48,6 @@ namespace ModTools
             bootstrapped = false;
         }
 
-
         public void Awake()
         {
             m_vehicles = GetCustomPrefabs<VehicleInfo>();
@@ -74,20 +72,20 @@ namespace ModTools
             m_citizens = null;
         }
 
-        private static T[] GetCustomPrefabs<T>() where T: PrefabInfo
+        private static T[] GetCustomPrefabs<T>() where T : PrefabInfo
         {
             var result = new List<T>();
             var count = PrefabCollection<T>.LoadedCount();
             for (uint i = 0; i < count; i++)
             {
                 var prefab = PrefabCollection<T>.GetPrefab(i);
-                if(prefab == null || (!prefab.m_isCustomContent && prefab.name != null && !prefab.name.Contains('.')))
+                if (prefab == null || (!prefab.m_isCustomContent && prefab.name != null && !prefab.name.Contains('.')))
                 {
                     continue;
                 }
                 result.Add(prefab);
             }
             return result.OrderBy(p => p.name).ToArray();
-        } 
+        }
     }
 }

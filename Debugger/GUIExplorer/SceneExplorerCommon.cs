@@ -6,7 +6,7 @@ namespace ModTools.Explorer
 {
     public class SceneExplorerCommon
     {
-        private static Dictionary<int, string> indentStrings = new Dictionary<int, string>();
+        private static readonly Dictionary<int, string> indentStrings = new Dictionary<int, string>();
 
         internal static void OnSceneTreeMessage(ReferenceChain refChain, string message)
         {

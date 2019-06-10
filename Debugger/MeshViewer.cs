@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Reflection;
 using ColossalFramework.UI;
-using ICities;
 using ModTools.Utils;
 using UnityEngine;
 
@@ -13,7 +11,7 @@ namespace ModTools
         private Material previewMaterial;
         private String assetName = null;
 
-        private RenderTexture targetRT;
+        private readonly RenderTexture targetRT;
 
         private float m_Distance = 4f;
         private Vector2 m_PreviewDir = new Vector2(120f, -20f);
@@ -21,11 +19,11 @@ namespace ModTools
         private Vector2 lastLeftMousePos = Vector2.zero;
         private Vector2 lastRightMousePos = Vector2.zero;
 
-        private Camera meshViewerCamera;
+        private readonly Camera meshViewerCamera;
 
         private Material material;
 
-        private Light light;
+        private readonly Light light;
 
         private bool useOriginalShader = false;
 
@@ -86,7 +84,7 @@ namespace ModTools
             return meshViewer;
         }
 
-        void Update()
+        private void Update()
         {
             if (previewMesh == null)
             {
@@ -130,7 +128,7 @@ namespace ModTools
             }
         }
 
-        void DrawWindow()
+        private void DrawWindow()
         {
             if (previewMesh != null)
             {
@@ -216,8 +214,8 @@ namespace ModTools
                         if (lastRightMousePos != Vector2.zero)
                         {
                             Vector2 moveDelta1 = pos - lastRightMousePos;
-                            this.m_Distance += (float) ((double) moveDelta1.y / (double) this.targetRT.height *
-                                                        (double) UIView.GetAView().ratio * 40.0);
+                            this.m_Distance += (float)(moveDelta1.y / (double)this.targetRT.height *
+                                                         UIView.GetAView().ratio * 40.0);
                             float num1 = 6f;
                             float magnitude = bounds.extents.magnitude;
                             float num2 = magnitude + 16f;
@@ -239,7 +237,7 @@ namespace ModTools
 
         public void Setup(bool calculateBounds)
         {
-            if (!((UnityEngine.Object) this.previewMesh != (UnityEngine.Object) null))
+            if (!(previewMesh != null))
                 return;
             if (calculateBounds && previewMesh.isReadable)
             {

@@ -7,7 +7,6 @@ namespace ModTools.Utils
 {
     public static class TextureUtil
     {
-
         public static void DumpTexture2D(Texture2D texture, string filename)
         {
             byte[] bytes;
@@ -51,7 +50,6 @@ namespace ModTools.Utils
             RenderTexture.active = oldRt;
             return tex;
         }
-
 
         public static Texture2D ToTexture2D(this Texture3D t3d)
         {
@@ -182,7 +180,7 @@ namespace ModTools.Utils
             var result = new Color32[colors.Length];
             for (var i = 0; i < colors.Length; i++)
             {
-                result[i].r = (byte) (byte.MaxValue - colors[i].r);
+                result[i].r = (byte)(byte.MaxValue - colors[i].r);
                 result[i].g = (byte)(byte.MaxValue - colors[i].g);
                 result[i].b = (byte)(byte.MaxValue - colors[i].b);
                 result[i].a = (byte)(byte.MaxValue - colors[i].a);
@@ -207,10 +205,23 @@ namespace ModTools.Utils
                     bb = (byte)(byte.MaxValue - bb);
                 if (ainvert)
                     aa = (byte)(byte.MaxValue - aa);
-                if (r != null) if (ralpha) { r[index].r = rr; r[index].g = rr; r[index].b = rr; } else { r[index].r = rr; }
-                if (g != null) if (galpha) { g[index].r = gg; g[index].g = gg; g[index].b = gg; } else { g[index].g = gg; }
-                if (b != null) if (balpha) { b[index].r = bb; b[index].g = bb; b[index].b = bb; } else { b[index].b = bb; }
-                if (a != null) { a[index].r = aa; a[index].g = aa; a[index].b = aa;}
+                if (r != null)
+                    if (ralpha)
+                    { r[index].r = rr; r[index].g = rr; r[index].b = rr; }
+                    else
+                    { r[index].r = rr; }
+                if (g != null)
+                    if (galpha)
+                    { g[index].r = gg; g[index].g = gg; g[index].b = gg; }
+                    else
+                    { g[index].g = gg; }
+                if (b != null)
+                    if (balpha)
+                    { b[index].r = bb; b[index].g = bb; b[index].b = bb; }
+                    else
+                    { b[index].b = bb; }
+                if (a != null)
+                { a[index].r = aa; a[index].g = aa; a[index].b = aa; }
             }
         }
     }

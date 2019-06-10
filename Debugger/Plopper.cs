@@ -2,7 +2,6 @@
 using System.Reflection;
 using ColossalFramework;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace ModTools.Explorer
 {
@@ -31,7 +30,6 @@ namespace ModTools.Explorer
                 Singleton<ToolManager>.instance.m_properties.CurrentTool = ToolsModifierControl.GetTool<DefaultTool>();
                 ploppedPrefab = null;
                 return;
-
             }
             var currentTool = toolManager.m_properties.CurrentTool;
             if (currentTool == null)

@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Linq;
 using ColossalFramework.IO;
 using ColossalFramework.UI;
 using UnityEngine;
@@ -40,10 +39,10 @@ namespace ModTools.Utils
         public static void DumpTextures(string assetName, Material material)
         {
             assetName = assetName.Replace("_Data", "").LegalizeFileName();
-            DumpMainTex(assetName, (Texture2D) material.GetTexture("_MainTex"));
-            DumpACI(assetName, (Texture2D) material.GetTexture("_ACIMap"));
-            DumpXYS(assetName, (Texture2D) material.GetTexture("_XYSMap"));
-            DumpXYCA(assetName, (Texture2D) material.GetTexture("_XYCAMap"));
+            DumpMainTex(assetName, (Texture2D)material.GetTexture("_MainTex"));
+            DumpACI(assetName, (Texture2D)material.GetTexture("_ACIMap"));
+            DumpXYS(assetName, (Texture2D)material.GetTexture("_XYSMap"));
+            DumpXYCA(assetName, (Texture2D)material.GetTexture("_XYCAMap"));
         }
 
         private static void DumpMainTex(string assetName, Texture2D mainTex, bool extract = true)
@@ -63,7 +62,6 @@ namespace ModTools.Utils
             {
                 TextureUtil.DumpTextureToPNG(mainTex, $"{assetName}_MainTex");
             }
-
         }
 
         private static void DumpACI(string assetName, Texture2D aciMap, bool extract = true)

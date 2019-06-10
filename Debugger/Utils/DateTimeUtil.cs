@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 
 namespace ModTools
 {
     public static class DateTimeUtil
     {
-
         private static readonly float secondsInMinute = 60.0f;
         private static readonly float secondsInHour = secondsInMinute * 60.0f;
         private static readonly float secondsInDay = secondsInHour * 24.0f;
@@ -59,7 +54,5 @@ namespace ModTools
 
             return s + "s";
         }
-
     }
-
 }

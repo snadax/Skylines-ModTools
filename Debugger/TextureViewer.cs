@@ -6,7 +6,6 @@ namespace ModTools
 {
     public class TextureViewer : GUIWindow
     {
-
         public Texture previewTexture = null;
         public ReferenceChain caller = null;
 
@@ -23,17 +22,17 @@ namespace ModTools
             var textureViewer = go.AddComponent<TextureViewer>();
             textureViewer.caller = refChain;
             var texture3D = texture as Texture3D;
-            textureViewer.previewTexture = texture3D == null ? texture: texture3D.ToTexture2D();
+            textureViewer.previewTexture = texture3D == null ? texture : texture3D.ToTexture2D();
             textureViewer.visible = true;
             return textureViewer;
         }
 
-        void HandleClose()
+        private void HandleClose()
         {
             Destroy(this);
         }
 
-        void DrawWindow()
+        private void DrawWindow()
         {
             if (previewTexture != null)
             {
@@ -44,7 +43,7 @@ namespace ModTools
                     TextureUtil.DumpTextureToPNG(previewTexture);
                 }
 
-                float aspect = (float)previewTexture.width / ((float)previewTexture.height + 60.0f);
+                float aspect = previewTexture.width / (previewTexture.height + 60.0f);
                 rect.width = rect.height * aspect;
                 GUI.DrawTexture(new Rect(0.0f, 60.0f, rect.width, rect.height - 60.0f), previewTexture, ScaleMode.ScaleToFit, false);
             }
@@ -54,6 +53,5 @@ namespace ModTools
                 GUILayout.Label("Use the Scene Explorer to select a Texture for preview");
             }
         }
-
     }
 }

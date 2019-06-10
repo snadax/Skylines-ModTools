@@ -5,13 +5,12 @@ namespace ModTools
 {
     public class SceneExplorerColorConfig : GUIWindow
     {
-
         private static Configuration config
         {
             get { return ModTools.Instance.config; }
         }
 
-        private string[] availableFonts;
+        private readonly string[] availableFonts;
         private int selectedFont;
 
         public SceneExplorerColorConfig() : base("Font/ color configuration", new Rect(16.0f, 16.0f, 600.0f, 490.0f), skin)
@@ -37,7 +36,7 @@ namespace ModTools
             }
         }
 
-        void DrawColorControl(string name, ref Color value, ColorPicker.OnColorChanged onColorChanged)
+        private void DrawColorControl(string name, ref Color value, ColorPicker.OnColorChanged onColorChanged)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(name);
@@ -46,7 +45,7 @@ namespace ModTools
             GUILayout.EndHorizontal();
         }
 
-        void DrawWindow()
+        private void DrawWindow()
         {
             var config = ModTools.Instance.config;
 
@@ -66,7 +65,7 @@ namespace ModTools
 
             GUILayout.Label("Font size");
 
-            var newFontSize = (int)GUILayout.HorizontalSlider((float) config.fontSize, 13.0f, 39.0f, GUILayout.Width(256));
+            var newFontSize = (int)GUILayout.HorizontalSlider(config.fontSize, 13.0f, 39.0f, GUILayout.Width(256));
 
             if (newFontSize != config.fontSize)
             {
@@ -75,7 +74,7 @@ namespace ModTools
             }
 
             GUILayout.EndHorizontal();
-            
+
             DrawColorControl("Background", ref config.backgroundColor, color =>
             {
                 config.backgroundColor = color;
@@ -153,11 +152,10 @@ namespace ModTools
             GUILayout.EndHorizontal();
         }
 
-        void HandleException(Exception ex)
+        private void HandleException(Exception ex)
         {
             Log.Error("Exception in SceneExplorerColorConfig - " + ex.Message);
             visible = false;
         }
-
     }
 }

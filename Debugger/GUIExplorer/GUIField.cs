@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
@@ -9,7 +8,8 @@ namespace ModTools.Explorer
     {
         public static void OnSceneTreeReflectField(SceneExplorerState state, ReferenceChain refChain, object obj, FieldInfo field)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             if (obj == null || field == null)
             {
@@ -150,7 +150,6 @@ namespace ModTools.Explorer
                     Log.Warning(e.Message);
                 }
             }
-
         }
     }
 }

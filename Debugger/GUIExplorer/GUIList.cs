@@ -79,7 +79,7 @@ namespace ModTools.Explorer
                 {
                     GUIButtons.SetupButtons(type, value, refChain);
                 }
-                
+
                 GUILayout.EndHorizontal();
 
                 if (!isNullOrEmpty && !TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))

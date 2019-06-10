@@ -12,7 +12,8 @@ namespace ModTools.Explorer
                 return;
             }
 
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             if (obj == null)
             {

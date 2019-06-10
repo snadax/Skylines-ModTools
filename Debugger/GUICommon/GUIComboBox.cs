@@ -30,8 +30,10 @@ namespace ModTools
 
         static GUIComboBox()
         {
-            var background = new Texture2D(16, 16, TextureFormat.RGBA32, false);
-            background.wrapMode = TextureWrapMode.Clamp;
+            var background = new Texture2D(16, 16, TextureFormat.RGBA32, false)
+            {
+                wrapMode = TextureWrapMode.Clamp
+            };
 
             for (var x = 0; x < background.width; x++)
                 for (var y = 0; y < background.height; y++)
@@ -83,9 +85,9 @@ namespace ModTools
                 {
                     comboBoxScroll = GUILayout.BeginScrollView(comboBoxScroll, false, false);
                 }
-                
+
                 selectedItem = GUILayout.SelectionGrid(-1, entries, 1, yellowOnHover);
-                
+
                 if (hasScrollbars)
                 {
                     GUILayout.EndScrollView();
@@ -154,7 +156,7 @@ namespace ModTools
                 var clippedMousePos = Event.current.mousePosition;
                 rect.x = (rect.x + mousePos.x) - clippedMousePos.x;
                 rect.y = (rect.y + mousePos.y) - clippedMousePos.y;
-                var targetHeight = rect.height*entries.Length;
+                var targetHeight = rect.height * entries.Length;
                 hasScrollbars = targetHeight >= 400.0f;
                 rect.height = Mathf.Min(targetHeight, 400.0f);
                 comboBoxScroll = Vector2.zero;

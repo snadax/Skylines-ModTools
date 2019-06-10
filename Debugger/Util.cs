@@ -1,20 +1,12 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using ColossalFramework;
-using ColossalFramework.IO;
-using ColossalFramework.Plugins;
-using ICities;
 using ModTools.Utils;
 using UnityEngine;
 
 namespace ModTools
 {
-
     public static class Util
     {
-
 
         public static void SetMouseScrolling(bool isEnabled)
         {
@@ -42,7 +34,5 @@ namespace ModTools
             return (bool)prop.GetValue(component, null);
         }
 
-
     }
-
 }

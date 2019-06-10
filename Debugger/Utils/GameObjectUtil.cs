@@ -5,7 +5,6 @@ namespace ModTools
 {
     public static class GameObjectUtil
     {
-
         public static Dictionary<GameObject, bool> FindSceneRoots()
         {
             Dictionary<GameObject, bool> roots = new Dictionary<GameObject, bool>();
@@ -51,7 +50,7 @@ namespace ModTools
         {
             string outResult = gameObject.name;
             WhereIsInternal(gameObject, ref outResult);
-            
+
             if (logToConsole)
             {
                 Debug.LogWarning(outResult);
@@ -68,7 +67,5 @@ namespace ModTools
                 WhereIsInternal(gameObject.transform.parent.gameObject, ref outResult);
             }
         }
-
     }
-
 }

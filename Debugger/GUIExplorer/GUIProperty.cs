@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using UnityEngine;
@@ -10,7 +9,8 @@ namespace ModTools.Explorer
     {
         public static void OnSceneTreeReflectProperty(SceneExplorerState state, ReferenceChain refChain, System.Object obj, PropertyInfo property)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             if (obj == null || property == null)
             {
@@ -111,7 +111,6 @@ namespace ModTools.Explorer
                     return;
                 }
 
-
                 if (value == null || !TypeUtil.IsSpecialType(property.PropertyType))
                 {
                     if (property.CanRead)
@@ -200,6 +199,5 @@ namespace ModTools.Explorer
                 }
             }
         }
-
     }
 }

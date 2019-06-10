@@ -5,7 +5,6 @@ namespace ModTools
 {
     public static class HashUtil
     {
-
         public static long HashRect(Rect rect)
         {
             long state = 18021301;
@@ -21,7 +20,7 @@ namespace ModTools
             return String.Format("{0:X}", hash);
         }
 
-        private static long[] largePrimes = new[]
+        private static readonly long[] largePrimes = new[]
         {
             8100529L,
             12474907L,
@@ -35,7 +34,5 @@ namespace ModTools
         {
             state ^= ((long)value) * largePrimes[index];
         }
-
     }
-
 }

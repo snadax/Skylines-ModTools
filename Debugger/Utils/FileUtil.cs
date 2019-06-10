@@ -10,7 +10,6 @@ namespace ModTools
 {
     public static class FileUtil
     {
-
         public static List<string> ListFilesInDirectory(string path, List<string> _filesMustBeNull = null)
         {
             _filesMustBeNull = _filesMustBeNull ?? new List<string>();
@@ -57,5 +56,4 @@ namespace ModTools
             return r.Replace(illegal, "_");
         }
     }
-
 }

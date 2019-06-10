@@ -7,7 +7,6 @@ namespace ModTools
 {
     public class Watches : GUIWindow
     {
-
         private readonly List<ReferenceChain> watches = new List<ReferenceChain>();
 
         private Configuration config => ModTools.Instance.config;
@@ -46,7 +45,7 @@ namespace ModTools
             return ret;
         }
 
-        void DoWatchesWindow()
+        private void DoWatchesWindow()
         {
             watchesScroll = GUILayout.BeginScrollView(watchesScroll);
 
@@ -107,7 +106,5 @@ namespace ModTools
 
             GUILayout.EndScrollView();
         }
-
     }
-
 }

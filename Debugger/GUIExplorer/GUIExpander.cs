@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ModTools.Explorer
@@ -9,7 +8,7 @@ namespace ModTools.Explorer
         public static void ExpanderControls(SceneExplorerState state, ReferenceChain refChain, Type type, object o = null)
         {
             GUI.contentColor = Color.white;
-            if (TypeUtil.IsSpecialType(type) || (o!=null && TypeUtil.IsEnumerable(o)))
+            if (TypeUtil.IsSpecialType(type) || (o != null && TypeUtil.IsEnumerable(o)))
             {
                 return;
             }

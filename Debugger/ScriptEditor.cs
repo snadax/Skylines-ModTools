@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ICities;
 using UnityEngine;
 
 namespace ModTools
 {
-
     public class ScriptEditorFile
     {
         public string source = "";
@@ -17,7 +15,6 @@ namespace ModTools
 
     public class ScriptEditor : GUIWindow
     {
-
         private readonly string textAreaControlName = "ModToolsScriptEditorTextArea";
 
         private const string ExampleScriptFileName = "ExampleScript.cs";
@@ -25,21 +22,21 @@ namespace ModTools
         private IModEntryPoint currentMod;
         private string lastError = "";
 
-        private float compactHeaderHeight = 50.0f;
-        private float expandedHeaderHeight = 120.0f;
-        private float footerHeight = 60.0f;
+        private readonly float compactHeaderHeight = 50.0f;
+        private readonly float expandedHeaderHeight = 120.0f;
+        private readonly float footerHeight = 60.0f;
 
-        private bool headerExpanded = true;
+        private readonly bool headerExpanded = true;
 
-        private GUIArea headerArea;
-        private GUIArea editorArea;
-        private GUIArea footerArea;
+        private readonly GUIArea headerArea;
+        private readonly GUIArea editorArea;
+        private readonly GUIArea footerArea;
 
         private Vector2 editorScrollPosition = Vector2.zero;
         private Vector2 projectFilesScrollPosition = Vector2.zero;
 
         private string projectWorkspacePath = "";
-        private List<ScriptEditorFile> projectFiles = new List<ScriptEditorFile>();
+        private readonly List<ScriptEditorFile> projectFiles = new List<ScriptEditorFile>();
         private ScriptEditorFile currentFile = null;
 
         public ScriptEditor() : base("Script Editor", new Rect(16.0f, 16.0f, 640.0f, 480.0f), skin)
@@ -54,7 +51,7 @@ namespace ModTools
             RecalculateAreas();
         }
 
-        void RecalculateAreas()
+        private void RecalculateAreas()
         {
             float headerHeight = headerExpanded ? expandedHeaderHeight : compactHeaderHeight;
 
@@ -121,7 +118,7 @@ namespace ModTools
             lastError = "";
         }
 
-        void SaveAllProjectFiles()
+        private void SaveAllProjectFiles()
         {
             try
             {
@@ -138,19 +135,19 @@ namespace ModTools
             lastError = "";
         }
 
-        void SaveProjectFile(ScriptEditorFile file)
+        private void SaveProjectFile(ScriptEditorFile file)
         {
             File.WriteAllText(file.path, file.source);
         }
 
-        void Update()
+        private void Update()
         {
             if (GUI.GetNameOfFocusedControl() == textAreaControlName)
             {
             }
         }
 
-        void DrawHeader()
+        private void DrawHeader()
         {
             headerArea.Begin();
             GUILayout.BeginHorizontal();
@@ -191,7 +188,7 @@ namespace ModTools
             headerArea.End();
         }
 
-        void DrawEditor()
+        private void DrawEditor()
         {
             editorArea.Begin();
 
@@ -232,7 +229,7 @@ namespace ModTools
             editorArea.End();
         }
 
-        void DrawFooter()
+        private void DrawFooter()
         {
             footerArea.Begin();
 
@@ -245,8 +242,7 @@ namespace ModTools
 
             if (GUILayout.Button("Compile"))
             {
-                string dllPath;
-                if (ScriptCompiler.CompileSource(projectFiles, out dllPath))
+                if (ScriptCompiler.CompileSource(projectFiles, out string dllPath))
                 {
                     Log.Message("Source compiled to \"" + dllPath + "\"");
                 }
@@ -258,8 +254,7 @@ namespace ModTools
 
             if (GUILayout.Button("Run"))
             {
-                string errorMessage;
-                if (ScriptCompiler.RunSource(projectFiles, out errorMessage, out currentMod))
+                if (ScriptCompiler.RunSource(projectFiles, out string errorMessage, out currentMod))
                 {
                     Log.Message("Running IModEntryPoint.OnModLoaded()");
 
@@ -337,7 +332,7 @@ namespace ModTools
             footerArea.End();
         }
 
-        void DrawWindow()
+        private void DrawWindow()
         {
             DrawHeader();
 
@@ -354,7 +349,7 @@ namespace ModTools
             }
         }
 
-        void HandleException(Exception ex)
+        private void HandleException(Exception ex)
         {
             Log.Error("Exception in ScriptEditor - " + ex.Message);
             visible = false;
@@ -385,7 +380,5 @@ namespace ModTools
         }
     }
 }";
-
     }
-
 }

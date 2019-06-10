@@ -21,7 +21,7 @@ namespace ModTools
             get
             {
                 return absolutePosition +
-                       new Vector2(relativePosition.x*window.rect.width, relativePosition.y*window.rect.height) +
+                       new Vector2(relativePosition.x * window.rect.width, relativePosition.y * window.rect.height) +
                        margin;
             }
         }
@@ -30,7 +30,7 @@ namespace ModTools
         {
             get
             {
-                return absoluteSize + new Vector2(relativeSize.x*window.rect.width, relativeSize.y*window.rect.height) -
+                return absoluteSize + new Vector2(relativeSize.x * window.rect.width, relativeSize.y * window.rect.height) -
                        margin * 2.0f;
             }
         }

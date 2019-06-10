@@ -9,7 +9,7 @@ namespace ModTools
         public OnUnityUpdate onUnityUpdate = null;
         public bool once = true;
 
-        void Update()
+        private void Update()
         {
             if (onUnityUpdate != null)
             {
@@ -20,6 +20,5 @@ namespace ModTools
                 }
             }
         }
-
     }
 }

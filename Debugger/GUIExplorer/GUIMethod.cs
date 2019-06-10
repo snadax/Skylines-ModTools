@@ -8,7 +8,8 @@ namespace ModTools.Explorer
     {
         public static void OnSceneTreeReflectMethod(ReferenceChain refChain, System.Object obj, MethodInfo method)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             if (obj == null || method == null)
             {
@@ -61,7 +62,6 @@ namespace ModTools.Explorer
                         method.Invoke(method.IsStatic ? null : obj, new[] { obj });
                     }
                 }
-
             }
             GUILayout.EndHorizontal();
         }

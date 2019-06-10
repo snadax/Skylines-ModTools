@@ -11,10 +11,9 @@ namespace ModTools
 {
     public static class ScriptCompiler
     {
-
-        private static string workspacePath;
-        private static string sourcesPath;
-        private static string dllsPath;
+        private static readonly string workspacePath;
+        private static readonly string sourcesPath;
+        private static readonly string dllsPath;
 
         private static readonly string[] gameAssemblies =
         {
@@ -51,8 +50,7 @@ namespace ModTools
         {
             modInstance = null;
 
-            string dllPath;
-            if (CompileSource(sources, out dllPath))
+            if (CompileSource(sources, out string dllPath))
             {
                 var assembly = Assembly.LoadFile(dllPath);
 
@@ -115,7 +113,7 @@ namespace ModTools
             dllPath = Path.Combine(outputPath, Path.GetFileName(outputPath) + ".dll");
 
             var modToolsAssembly = FileUtil.FindPluginPath(typeof(Mod));
-            var additionalAssemblies = gameAssemblies.Concat(new[]{modToolsAssembly}).ToArray();
+            var additionalAssemblies = gameAssemblies.Concat(new[] { modToolsAssembly }).ToArray();
 
             PluginManager.CompileSourceInFolder(sourcePath, outputPath, additionalAssemblies);
             return File.Exists(dllPath);
@@ -136,7 +134,5 @@ namespace ModTools
                 dir.Delete();
             }
         }
-
     }
-
 }

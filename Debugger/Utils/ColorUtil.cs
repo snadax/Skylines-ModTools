@@ -5,7 +5,6 @@ namespace ModTools
 {
     public static class ColorUtil
     {
-
         public struct HSV
         {
             public double h;
@@ -24,7 +23,6 @@ namespace ModTools
 
             public static HSV RGB2HSV(double r, double b, double g)
             {
-
                 double delta, min;
                 double h = 0, s, v;
 
@@ -35,14 +33,12 @@ namespace ModTools
                 if (v == 0.0)
                 {
                     s = 0;
-
                 }
                 else
                     s = delta / v;
 
                 if (s == 0)
                     h = 0.0f;
-
                 else
                 {
                     if (r == v)
@@ -55,16 +51,16 @@ namespace ModTools
                     h *= 60;
                     if (h < 0.0)
                         h = h + 360;
-
                 }
 
-                HSV hsvColor = new HSV();
-                hsvColor.h = h;
-                hsvColor.s = s;
-                hsvColor.v = v / 255;
+                HSV hsvColor = new HSV
+                {
+                    h = h,
+                    s = s,
+                    v = v / 255
+                };
 
                 return hsvColor;
-
             }
 
             public static Color HSV2RGB(HSV color)
@@ -74,7 +70,6 @@ namespace ModTools
 
             public static Color HSV2RGB(double h, double s, double v)
             {
-
                 double r = 0, g = 0, b = 0;
 
                 if (s == 0)
@@ -87,7 +82,6 @@ namespace ModTools
                 {
                     int i;
                     double f, p, q, t;
-
 
                     if (h == 360)
                         h = 0;
@@ -139,12 +133,10 @@ namespace ModTools
                             b = q;
                             break;
                     }
-
                 }
 
                 return new Color((float)r, (float)g, (float)b, 1);
             }
         }
-
     }
 }

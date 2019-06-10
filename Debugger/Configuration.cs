@@ -5,10 +5,8 @@ using UnityEngine;
 
 namespace ModTools
 {
-
     public class Configuration
     {
-
         public Rect mainWindowRect = new Rect(128, 128, 356, 300);
         public bool mainWindowVisible = false;
 
@@ -67,7 +65,6 @@ namespace ModTools
         public float sceneExplorerTreeIdentSpacing = 16.0f;
         public int sceneExplorerMaxHierarchyDepth = 32;
 
-
         public string scriptEditorWorkspacePath = "";
 
         public string fontName = "Courier New Bold";
@@ -78,12 +75,10 @@ namespace ModTools
 
         public void OnPreSerialize()
         {
-
         }
 
         public void OnPostDeserialize()
         {
-
         }
 
         public static void Serialize(string filename, Configuration config)
@@ -105,7 +100,7 @@ namespace ModTools
             {
                 using (var reader = new StreamReader(filename))
                 {
-                    var config = (Configuration) serializer.Deserialize(reader);
+                    var config = (Configuration)serializer.Deserialize(reader);
                     config.OnPostDeserialize();
                     return config;
                 }
@@ -119,5 +114,4 @@ namespace ModTools
             return null;
         }
     }
-
 }

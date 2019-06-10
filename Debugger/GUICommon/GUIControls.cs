@@ -1016,7 +1016,6 @@ namespace ModTools
                         picker.rect.position = mouse;
                         picker.visible = true;
                     }
-
                 }
 
                 var lastRect = GUILayoutUtility.GetLastRect();
@@ -1085,7 +1084,6 @@ namespace ModTools
                         picker.rect.position = mouse;
                         picker.visible = true;
                     }
-
                 }
 
                 var lastRect = GUILayoutUtility.GetLastRect();
@@ -1109,5 +1107,4 @@ namespace ModTools
             GUILayout.EndHorizontal();
         }
     }
-
 }

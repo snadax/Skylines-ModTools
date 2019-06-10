@@ -6,7 +6,6 @@ namespace ModTools
 {
     public class StackTraceViewer : GUIWindow
     {
-
         private static Configuration config
         {
             get { return ModTools.Instance.config; }
@@ -32,17 +31,17 @@ namespace ModTools
             onClose = HandleClosed;
         }
 
-        void HandleClosed()
+        private void HandleClosed()
         {
             Destroy(this);
         }
 
-        void HandleException(Exception ex)
+        private void HandleException(Exception ex)
         {
             Log.Error("Exception in StackTraceViewer - " + ex.Message);
         }
 
-        void DrawWindow()
+        private void DrawWindow()
         {
             if (trace == null)
             {
@@ -64,7 +63,7 @@ namespace ModTools
                 var method = frame.GetMethod();
 
                 GUILayout.Label(count.ToString(), GUILayout.ExpandWidth(false));
-                
+
                 GUI.contentColor = config.nameColor;
 
                 GUILayout.Label(method.ToString(), GUILayout.ExpandWidth(false));
@@ -84,7 +83,5 @@ namespace ModTools
 
             GUILayout.EndScrollView();
         }
-
     }
-
 }

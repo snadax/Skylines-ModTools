@@ -175,7 +175,7 @@ namespace ModTools
                 case ReferenceType.Method:
                     return ((MethodInfo)chainObjects[i]).Name;
                 case ReferenceType.EnumerableItem:
-                    return "[" + chainObjects[i] +"]";
+                    return "[" + chainObjects[i] + "]";
                 case ReferenceType.SpecialNamedProperty:
                     return (string)chainObjects[i];
             }
@@ -353,5 +353,4 @@ namespace ModTools
             return true;
         }
     }
-
 }

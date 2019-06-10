@@ -7,11 +7,12 @@ namespace ModTools.Explorer
     {
         public static void OnSceneTreeReflectUnityEngineTransform(ReferenceChain refChain, Transform transform)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             if (transform == null)
             {
-                SceneExplorerCommon.OnSceneTreeMessage(refChain, (string) "null");
+                SceneExplorerCommon.OnSceneTreeMessage(refChain, "null");
                 return;
             }
 
@@ -42,7 +43,8 @@ namespace ModTools.Explorer
 
         private static void OnSceneTreeReflectUnityEngineQuaternion<T>(ReferenceChain refChain, T obj, string name, ref Quaternion vec)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             GUIControls.QuaternionField(refChain.ToString(), name, ref vec, ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident, () =>
             {
@@ -59,7 +61,8 @@ namespace ModTools.Explorer
 
         private static void OnSceneTreeReflectUnityEngineVector3<T>(ReferenceChain refChain, T obj, string name, ref UnityEngine.Vector3 vec)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             GUIControls.Vector3Field(refChain.ToString(), name, ref vec, ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident, () =>
             {
