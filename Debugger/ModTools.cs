@@ -196,7 +196,7 @@ namespace ModTools
             {
                 if (debugRenderer == null)
                 {
-                    debugRenderer = GameObject.FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
+                    debugRenderer = FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
                 }
                 debugRenderer.drawDebugInfo = !debugRenderer.drawDebugInfo;
             }
@@ -285,7 +285,7 @@ namespace ModTools
             GUILayout.BeginHorizontal();
             if (debugRenderer == null)
             {
-                debugRenderer = GameObject.FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
+                debugRenderer = FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
             }
             GUILayout.Label("Debug Renderer (Ctrl+R)");
             debugRenderer.drawDebugInfo = GUILayout.Toggle(debugRenderer.drawDebugInfo, "");

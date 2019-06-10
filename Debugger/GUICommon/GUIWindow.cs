@@ -116,7 +116,7 @@ namespace ModTools
                 return;
             }
 
-            //adjust rect from unity pixels to C:S pixels via GetUIView().ratio
+            // adjust rect from unity pixels to C:S pixels via GetUIView().ratio
             float ratio = UIView.GetAView().ratio;
 
             clickCatcher.absolutePosition = new Vector3(rect.position.x * ratio, rect.position.y * ratio);

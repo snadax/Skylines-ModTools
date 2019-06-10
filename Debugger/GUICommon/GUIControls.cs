@@ -28,204 +28,119 @@ namespace ModTools
             {
                 float f = (float)value;
                 FloatField(id, "", ref f, 0.0f, true, true);
-                if (f != (float)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (float)value ? f : value;
             }
 
             if (type == typeof(double))
             {
                 double f = (double)value;
                 DoubleField(id, "", ref f, 0.0f, true, true);
-                if (f != (double)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (double)value ? f : value;
             }
 
             if (type == typeof(byte))
             {
                 byte f = (byte)value;
                 ByteField(id, "", ref f, 0.0f, true, true);
-                if (f != (byte)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (byte)value ? f : value;
             }
 
             if (type == typeof(int))
             {
                 int f = (int)value;
                 IntField(id, "", ref f, 0.0f, true, true);
-                if (f != (int)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (int)value ? f : value;
             }
 
             if (type == typeof(uint))
             {
                 uint f = (uint)value;
                 UIntField(id, "", ref f, 0.0f, true, true);
-                if (f != (uint)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (uint)value ? f : value;
             }
 
             if (type == typeof(long))
             {
                 long f = (long)value;
                 Int64Field(id, "", ref f, 0.0f, true, true);
-                if (f != (long)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (long)value ? f : value;
             }
 
             if (type == typeof(ulong))
             {
                 ulong f = (ulong)value;
                 UInt64Field(id, "", ref f, 0.0f, true, true);
-                if (f != (ulong)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (ulong)value ? f : value;
             }
 
             if (type == typeof(short))
             {
                 short f = (short)value;
                 Int16Field(id, "", ref f, 0.0f, true, true);
-                if (f != (short)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (short)value ? f : value;
             }
 
             if (type == typeof(ushort))
             {
                 ushort f = (ushort)value;
                 UInt16Field(id, "", ref f, 0.0f, true, true);
-                if (f != (ushort)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (ushort)value ? f : value;
             }
 
             if (type == typeof(bool))
             {
                 bool f = (bool)value;
                 BoolField("", ref f, 0.0f, true, true);
-                if (f != (bool)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (bool)value ? f : value;
             }
 
             if (type == typeof(string))
             {
                 string f = (string)value;
                 StringField(id, "", ref f, 0.0f, true, true);
-                if (f != (string)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (string)value ? f : value;
             }
 
             if (type == typeof(char))
             {
                 char f = (char)value;
                 CharField(id, "", ref f, 0.0f, true, true);
-                if (f != (char)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (char)value ? f : value;
             }
 
             if (type == typeof(Vector2))
             {
                 var f = (Vector2)value;
                 Vector2Field(id, "", ref f, 0.0f, null, true, true);
-                if (f != (Vector2)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (Vector2)value ? f : value;
             }
 
             if (type == typeof(Vector3))
             {
                 var f = (Vector3)value;
                 Vector3Field(id, "", ref f, 0.0f, null, true, true);
-                if (f != (Vector3)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (Vector3)value ? f : value;
             }
 
             if (type == typeof(Vector4))
             {
                 var f = (Vector4)value;
                 Vector4Field(id, "", ref f, 0.0f, null, true, true);
-                if (f != (Vector4)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (Vector4)value ? f : value;
             }
 
             if (type == typeof(Quaternion))
             {
                 var f = (Quaternion)value;
                 QuaternionField(id, "", ref f, 0.0f, null, true, true);
-                if (f != (Quaternion)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (Quaternion)value ? f : value;
             }
 
             if (type == typeof(Color))
             {
                 var f = (Color)value;
                 ColorField(id, "", ref f, 0.0f, null, true, true, color => refChain.SetValue(color));
-                if (f != (Color)value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != (Color)value ? f : value;
             }
 
             if (type == typeof(Color32))
@@ -233,24 +148,14 @@ namespace ModTools
                 var f = (Color32)value;
                 Color32Field(id, "", ref f, 0.0f, null, true, true, color => refChain.SetValue(color));
                 var v = (Color32)value;
-                if (f.r != v.r || f.g != v.g || f.b != v.b || f.a != v.a)
-                {
-                    return f;
-                }
-
-                return value;
+                return f.r != v.r || f.g != v.g || f.b != v.b || f.a != v.a ? f : value;
             }
 
             if (type.IsEnum)
             {
                 object f = value;
                 EnumField(id, "", ref f, 0.0f, true, true);
-                if (f != value)
-                {
-                    return f;
-                }
-
-                return value;
+                return f != value ? f : value;
             }
 
             return value;

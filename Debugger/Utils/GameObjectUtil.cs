@@ -9,8 +9,7 @@ namespace ModTools
         {
             var roots = new Dictionary<GameObject, bool>();
 
-            GameObject[] objects = GameObject.FindObjectsOfType<GameObject>();
-            foreach (GameObject obj in objects)
+            foreach (GameObject obj in Object.FindObjectsOfType<GameObject>())
             {
                 if (!roots.ContainsKey(obj.transform.root.gameObject))
                 {

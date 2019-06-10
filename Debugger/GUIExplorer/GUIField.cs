@@ -32,7 +32,7 @@ namespace ModTools.Explorer
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogException(e);
+                Debug.LogException(e);
             }
 
             if (value != null)

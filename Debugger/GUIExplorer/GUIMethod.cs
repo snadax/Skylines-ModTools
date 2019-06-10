@@ -28,8 +28,7 @@ namespace ModTools.Explorer
             GUI.contentColor = ModTools.Instance.config.nameColor;
 
             bool first = true;
-            ParameterInfo[] parameters = method.GetParameters();
-            foreach (ParameterInfo param in parameters)
+            foreach (ParameterInfo param in method.GetParameters())
             {
                 if (!first)
                 {

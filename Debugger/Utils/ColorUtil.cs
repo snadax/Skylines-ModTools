@@ -24,14 +24,7 @@ namespace ModTools
                 v = Math.Max(Math.Max(r, g), b);
                 delta = v - min;
 
-                if (v == 0.0)
-                {
-                    s = 0;
-                }
-                else
-                {
-                    s = delta / v;
-                }
+                s = v == 0.0 ? 0 : delta / v;
 
                 if (s == 0)
                 {

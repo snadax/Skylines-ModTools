@@ -7,8 +7,12 @@ namespace ModTools.Utils
 {
     public static class DumpUtil
     {
-        public static void DumpAsset(string assetName, Mesh mesh, Material material,
-            Mesh lodMesh = null, Material lodMaterial = null)
+        public static void DumpAsset(
+            string assetName,
+            Mesh mesh,
+            Material material,
+            Mesh lodMesh = null,
+            Material lodMaterial = null)
         {
             assetName = assetName.Replace("_Data", "");
             Log.Warning($"Dumping asset \"{assetName}\"...");

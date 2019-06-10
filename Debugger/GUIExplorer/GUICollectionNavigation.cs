@@ -4,8 +4,14 @@ namespace ModTools.Explorer
 {
     public static class GUICollectionNavigation
     {
-        public static void SetUpCollectionNavigation(string collectionLabel, SceneExplorerState state, ReferenceChain refChain, ReferenceChain oldRefChain, int collectionSize, out int arrayStart,
-    out int arrayEnd)
+        public static void SetUpCollectionNavigation(
+            string collectionLabel,
+            SceneExplorerState state,
+            ReferenceChain refChain,
+            ReferenceChain oldRefChain,
+            int collectionSize,
+            out int arrayStart,
+            out int arrayEnd)
         {
             GUILayout.BeginHorizontal();
             SceneExplorerCommon.InsertIndent(refChain.Ident);

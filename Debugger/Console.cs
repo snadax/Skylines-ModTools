@@ -86,12 +86,9 @@ namespace ModTools
                 // reset the position to the remembered one
                 setCommandLinePosition = false;
                 var editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
-#if OLDVERSION
-                editor.pos = editor.selectPos = commandLinePosition - 1;
-#else
                 editor.cursorIndex = editor.selectIndex = commandLinePosition - 1;
-#endif
             }
+
             if (e.keyCode == KeyCode.Return)
             {
                 if (e.shift)
@@ -102,14 +99,10 @@ namespace ModTools
                 // event.Use() does not consume the event, work around the enter being inserted into the textbox by
                 // deleting the line break
                 var editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
-#if OLDVERSION
-                int pos = editor.selectPos;
-#else
                 int pos = editor.selectIndex;
-#endif
                 string currentCommand = commandHistory[currentCommandHistoryIndex];
-                string fixedCommand = currentCommand.Substring(0, pos - 1) + currentCommand.Substring(pos, currentCommand.Length - pos);
-                commandHistory[currentCommandHistoryIndex] = fixedCommand;
+                commandHistory[currentCommandHistoryIndex]
+                    = currentCommand.Substring(0, pos - 1) + currentCommand.Substring(pos, currentCommand.Length - pos);
 
                 // if control is pressed when hitting return, do not empty the command line area
                 // remember the currently selected position and reset it after the next redraw

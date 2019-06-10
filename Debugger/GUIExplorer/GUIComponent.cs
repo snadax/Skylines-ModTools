@@ -20,14 +20,9 @@ namespace ModTools.Explorer
             GUILayout.BeginHorizontal();
             SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-            if (Util.ComponentIsEnabled(component))
-            {
-                GUI.contentColor = ModTools.Instance.config.enabledComponentColor;
-            }
-            else
-            {
-                GUI.contentColor = ModTools.Instance.config.disabledComponentColor;
-            }
+            GUI.contentColor = Util.ComponentIsEnabled(component)
+                ? ModTools.Instance.config.enabledComponentColor
+                : ModTools.Instance.config.disabledComponentColor;
 
             if (state.CurrentRefChain?.Equals(refChain.Add(component)) != true)
             {

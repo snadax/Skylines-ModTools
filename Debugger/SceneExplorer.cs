@@ -450,24 +450,11 @@ namespace ModTools
             {
                 try
                 {
-                    Array.Sort(gameObjects, (o, o1) =>
-                    {
-                        if (o.name == null)
-                        {
-                            return 1;
-                        }
-
-                        if (o1.name == null)
-                        {
-                            return -1;
-                        }
-
-                        return o.name.CompareTo(o1.name);
-                    });
+                    Array.Sort(gameObjects, (o, o1) => o.name == null ? 1 : o1.name == null ? -1 : o.name.CompareTo(o1.name));
                 }
                 catch (Exception e)
                 {
-                    UnityEngine.Debug.LogException(e);
+                    Debug.LogException(e);
                 }
             }
 
@@ -495,7 +482,7 @@ namespace ModTools
                 }
                 catch (Exception e)
                 {
-                    UnityEngine.Debug.LogException(e);
+                    Debug.LogException(e);
                     state.CurrentRefChain = null;
                     throw;
                 }

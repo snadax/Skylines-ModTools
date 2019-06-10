@@ -3,7 +3,7 @@ using ICities;
 
 namespace ModTools
 {
-    public class LoadingExtension : LoadingExtensionBase
+    public sealed class LoadingExtension : LoadingExtensionBase
     {
         public override void OnCreated(ILoading loading)
         {

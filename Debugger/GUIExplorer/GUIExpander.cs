@@ -12,6 +12,7 @@ namespace ModTools.Explorer
             {
                 return;
             }
+
             if (state.ExpandedObjects.Contains(refChain.UniqueId))
             {
                 if (GUILayout.Button("-", GUILayout.ExpandWidth(false)))

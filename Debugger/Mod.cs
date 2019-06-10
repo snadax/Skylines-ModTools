@@ -2,12 +2,14 @@
 
 namespace ModTools
 {
-    public class Mod : IUserMod
+    public sealed class Mod : IUserMod
     {
-        public string Name
+        public Mod()
         {
-            get { ModToolsBootstrap.Bootstrap(); return "ModTools"; }
+            ModToolsBootstrap.Bootstrap();
         }
+
+        public string Name => "ModTools";
 
         public string Description => "Debugging toolkit for modders";
     }

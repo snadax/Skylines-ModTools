@@ -23,21 +23,18 @@ namespace ModTools.Explorer
 
             if (!rawReflection)
             {
-                if (!type.IsValueType)
+                if (!type.IsValueType && state.PreventCircularReferences.Contains(obj))
                 {
-                    if (state.PreventCircularReferences.Contains(obj))
+                    try
                     {
-                        try
-                        {
-                            GUI.contentColor = Color.yellow;
-                            SceneExplorerCommon.OnSceneTreeMessage(refChain, "Circular reference detected");
-                        }
-                        finally
-                        {
-                            GUI.contentColor = Color.white;
-                        }
-                        return;
+                        GUI.contentColor = Color.yellow;
+                        SceneExplorerCommon.OnSceneTreeMessage(refChain, "Circular reference detected");
                     }
+                    finally
+                    {
+                        GUI.contentColor = Color.white;
+                    }
+                    return;
                 }
 
                 state.PreventCircularReferences.Add(obj);
@@ -71,13 +68,10 @@ namespace ModTools.Explorer
                     GUIMaterial.OnSceneReflectUnityEngineMaterial(state, refChain, (Material)obj);
                     return;
                 }
-                if (type == typeof(Mesh))
+                if (type == typeof(Mesh) && !((Mesh)obj).isReadable)
                 {
-                    if (!((Mesh)obj).isReadable)
-                    {
-                        SceneExplorerCommon.OnSceneTreeMessage(refChain, "Mesh is not readable");
-                        return;
-                    }
+                    SceneExplorerCommon.OnSceneTreeMessage(refChain, "Mesh is not readable");
+                    return;
                 }
             }
 

@@ -73,21 +73,12 @@ namespace ModTools
         public int hiddenNotifications;
         public int logLevel;
 
-        public void OnPreSerialize()
-        {
-        }
-
-        public void OnPostDeserialize()
-        {
-        }
-
         public static void Serialize(string filename, Configuration config)
         {
             var serializer = new XmlSerializer(typeof(Configuration));
 
             using (var writer = new StreamWriter(filename))
             {
-                config.OnPreSerialize();
                 serializer.Serialize(writer, config);
             }
         }
@@ -100,15 +91,13 @@ namespace ModTools
             {
                 using (var reader = new StreamReader(filename))
                 {
-                    var config = (Configuration)serializer.Deserialize(reader);
-                    config.OnPostDeserialize();
-                    return config;
+                    return (Configuration)serializer.Deserialize(reader);
                 }
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError("Error happened when deserializing config");
-                UnityEngine.Debug.LogException(e);
+                Debug.LogError("Error happened when deserializing config");
+                Debug.LogException(e);
             }
 
             return null;
