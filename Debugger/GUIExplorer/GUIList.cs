@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace ModTools.Explorer
@@ -30,6 +31,8 @@ namespace ModTools.Explorer
             }
 
             var listItemType = list.GetType().GetElementType();
+            var flagsField = listItemType?.GetField("m_flags");
+            bool flagIsEnum = flagsField?.FieldType.IsEnum == true && Type.GetTypeCode(flagsField.FieldType) == TypeCode.Int32;
 
             GUICollectionNavigation.SetUpCollectionNavigation("List", state, refChain, oldRefChain, collectionSize, out int arrayStart, out int arrayEnd);
             for (int i = arrayStart; i <= arrayEnd; i++)
@@ -43,9 +46,10 @@ namespace ModTools.Explorer
 
                 var value = list[i];
                 var type = value?.GetType() ?? listItemType;
+                bool isNullOrEmpty = value == null || flagIsEnum && Convert.ToInt32(flagsField.GetValue(value)) == 0;
                 if (type != null)
                 {
-                    if (value != null)
+                    if (!isNullOrEmpty)
                     {
                         GUIExpander.ExpanderControls(state, refChain, type);
                     }
@@ -65,20 +69,20 @@ namespace ModTools.Explorer
 
                 GUI.contentColor = ModTools.Instance.config.valueColor;
 
-                GUILayout.Label(value == null ? "null" : value.ToString());
+                GUILayout.Label(value == null ? "null" : isNullOrEmpty ? "empty" : value.ToString());
 
                 GUI.contentColor = Color.white;
 
                 GUILayout.FlexibleSpace();
 
-                if (value != null)
+                if (!isNullOrEmpty)
                 {
                     GUIButtons.SetupButtons(type, value, refChain);
                 }
                 
                 GUILayout.EndHorizontal();
 
-                if (value != null && !TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
+                if (!isNullOrEmpty && !TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
                 {
                     if (value is GameObject)
                     {
