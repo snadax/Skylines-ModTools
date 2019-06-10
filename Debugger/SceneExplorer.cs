@@ -139,21 +139,25 @@ namespace ModTools
                         expandedRefChain = expandedRefChain.Add(go);
                         state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
                         break;
+
                     case ReferenceChain.ReferenceType.Component:
                         var component = (Component)refChain.GetChainItem(i);
                         expandedRefChain = expandedRefChain.Add(component);
                         state.ExpandedComponents.Add(expandedRefChain.UniqueId);
                         break;
+
                     case ReferenceChain.ReferenceType.Field:
                         var field = (FieldInfo)refChain.GetChainItem(i);
                         expandedRefChain = expandedRefChain.Add(field);
                         state.ExpandedObjects.Add(expandedRefChain.UniqueId);
                         break;
+
                     case ReferenceChain.ReferenceType.Property:
                         var property = (PropertyInfo)refChain.GetChainItem(i);
                         expandedRefChain = expandedRefChain.Add(property);
                         state.ExpandedObjects.Add(expandedRefChain.UniqueId);
                         break;
+
                     case ReferenceChain.ReferenceType.EnumerableItem:
                         int index = (int)refChain.GetChainItem(i);
                         state.SelectedArrayStartIndices[expandedRefChain.UniqueId] = index;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 
 namespace ModTools
@@ -361,7 +360,6 @@ using System.IO;
 using System.Linq;
 using ColossalFramework.UI;
 using UnityEngine;
-        
 
 namespace ModTools
 {

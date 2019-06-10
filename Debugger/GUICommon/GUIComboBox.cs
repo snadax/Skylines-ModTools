@@ -15,17 +15,24 @@ namespace ModTools
 
         // Position of the popuprect
         private static Rect rect;
+
         private static bool hasScrollbars;
+
         // Identifier of the caller of the popup, null if nobody is waiting for a value
         private static string popupOwner;
+
         private static string[] entries;
         private static bool popupActive;
+
         // Result to be returned to the owner
         private static int selectedItem;
+
         // Unity identifier of the window, just needs to be unique
         private static readonly int id = GUIUtility.GetControlID(FocusType.Passive);
+
         // ComboBox GUI Style
         private static readonly GUIStyle style;
+
         private static GUIStyle _yellowOnHover;
 
         static GUIComboBox()
@@ -83,10 +90,6 @@ namespace ModTools
                 return;
             }
 
-            // Make sure the rectangle is fully on screen
-            //  rect.x = Math.Max(0, Math.Min(rect.x, rect.width));
-            //  rect.y = Math.Max(0, Math.Min(rect.y, rect.height));
-
             rect = GUILayout.Window(id, rect, identifier =>
             {
                 if (hasScrollbars)
@@ -107,7 +110,7 @@ namespace ModTools
                 }
             }, "", style);
 
-            //Cancel the popup if we click outside
+            // Cancel the popup if we click outside
             if (Event.current.type == EventType.MouseDown && !rect.Contains(Event.current.mousePosition))
             {
                 popupOwner = null;

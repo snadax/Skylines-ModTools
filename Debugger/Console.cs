@@ -99,7 +99,8 @@ namespace ModTools
                     return;
                 }
 
-                // event.Use() does not consume the event, work around the enter being inserted into the textbox by deleting the line break
+                // event.Use() does not consume the event, work around the enter being inserted into the textbox by
+                // deleting the line break
                 var editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
 #if OLDVERSION
                 int pos = editor.selectPos;
@@ -405,12 +406,15 @@ namespace ModTools
                     case LogType.Log:
                         GUI.contentColor = config.consoleMessageColor;
                         break;
+
                     case LogType.Warning:
                         GUI.contentColor = config.consoleWarningColor;
                         break;
+
                     case LogType.Error:
                         GUI.contentColor = config.consoleErrorColor;
                         break;
+
                     case LogType.Assert:
                     case LogType.Exception:
                         GUI.contentColor = config.consoleExceptionColor;

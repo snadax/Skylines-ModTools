@@ -158,16 +158,22 @@ namespace ModTools
             {
                 case ReferenceType.GameObject:
                     return ((GameObject)chainObjects[i]).name;
+
                 case ReferenceType.Component:
                     return ((Component)chainObjects[i]).name;
+
                 case ReferenceType.Field:
                     return ((FieldInfo)chainObjects[i]).Name;
+
                 case ReferenceType.Property:
                     return ((PropertyInfo)chainObjects[i]).Name;
+
                 case ReferenceType.Method:
                     return ((MethodInfo)chainObjects[i]).Name;
+
                 case ReferenceType.EnumerableItem:
                     return "[" + chainObjects[i] + "]";
+
                 case ReferenceType.SpecialNamedProperty:
                     return (string)chainObjects[i];
             }
@@ -230,14 +236,18 @@ namespace ModTools
                     case ReferenceType.Component:
                         current = chainObjects[i];
                         break;
+
                     case ReferenceType.Field:
                         current = ((FieldInfo)chainObjects[i]).GetValue(current);
                         break;
+
                     case ReferenceType.Property:
                         current = ((PropertyInfo)chainObjects[i]).GetValue(current, null);
                         break;
+
                     case ReferenceType.Method:
                         break;
+
                     case ReferenceType.EnumerableItem:
                         var collection = current as IEnumerable;
                         int itemCount = 0;
@@ -252,6 +262,7 @@ namespace ModTools
                             itemCount++;
                         }
                         break;
+
                     case ReferenceType.SpecialNamedProperty:
                         break;
                 }
@@ -271,14 +282,18 @@ namespace ModTools
                     case ReferenceType.Component:
                         current = chainObjects[i];
                         break;
+
                     case ReferenceType.Field:
                         current = ((FieldInfo)chainObjects[i]).GetValue(current);
                         break;
+
                     case ReferenceType.Property:
                         current = ((PropertyInfo)chainObjects[i]).GetValue(current, null);
                         break;
+
                     case ReferenceType.Method:
                         break;
+
                     case ReferenceType.EnumerableItem:
                         var collection = current as IEnumerable;
                         int itemCount = 0;
@@ -293,6 +308,7 @@ namespace ModTools
                             itemCount++;
                         }
                         break;
+
                     case ReferenceType.SpecialNamedProperty:
                         break;
                 }

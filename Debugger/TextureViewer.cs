@@ -1,5 +1,4 @@
-﻿using System;
-using ModTools.Utils;
+﻿using ModTools.Utils;
 using UnityEngine;
 
 namespace ModTools

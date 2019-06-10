@@ -3,6 +3,11 @@ using ColossalFramework;
 using ColossalFramework.Plugins;
 using UnityEngine;
 
+#if !DEBUG
+using System.Linq;
+using ICities;
+#endif
+
 namespace ModTools
 {
     public static class ModToolsBootstrap
@@ -15,12 +20,10 @@ namespace ModTools
 #if DEBUG
             return true;
 #else
-            var pluginManager = PluginManager.instance;
-            var plugins = pluginManager.GetPluginsInfo();
-
-            return (from item in plugins let instances = item.GetInstances<IUserMod>()
-                    where instances.FirstOrDefault() is Mod select item.isEnabled).FirstOrDefault();
-
+            return (from item in PluginManager.instance.GetPluginsInfo()
+                    let instances = item.GetInstances<IUserMod>()
+                    where instances.FirstOrDefault() is Mod
+                    select item.isEnabled).FirstOrDefault();
 #endif
         }
 

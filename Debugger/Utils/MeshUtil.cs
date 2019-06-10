@@ -24,7 +24,7 @@ namespace ModTools.Utils
 
                 try
                 {
-                    // copy the relevant data to the temporary mesh 
+                    // copy the relevant data to the temporary mesh
                     meshToDump = new Mesh
                     {
                         vertices = mesh.vertices,
