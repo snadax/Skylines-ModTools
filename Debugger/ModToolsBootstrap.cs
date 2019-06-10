@@ -60,7 +60,7 @@ namespace ModTools
             }
 
             modToolsGameObject = new GameObject("ModTools");
-            var modTools = modToolsGameObject.AddComponent<ModTools>();
+            ModTools modTools = modToolsGameObject.AddComponent<ModTools>();
             modTools.Initialize();
         }
     }

@@ -40,7 +40,7 @@ namespace ModTools
         {
             get
             {
-                var command = commandHistory[currentCommandHistoryIndex];
+                string command = commandHistory[currentCommandHistoryIndex];
                 if (command.Length == 0)
                 {
                     return false;
@@ -95,7 +95,7 @@ namespace ModTools
                 // return has been hit with control pressed in previous GUI event
                 // reset the position to the remembered one
                 setCommandLinePosition = false;
-                TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
+                var editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
 #if OLDVERSION
                 editor.pos = editor.selectPos = commandLinePosition - 1;
 #else
@@ -110,14 +110,14 @@ namespace ModTools
                 }
 
                 // event.Use() does not consume the event, work around the enter being inserted into the textbox by deleting the line break
-                TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
+                var editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
 #if OLDVERSION
                 int pos = editor.selectPos;
 #else
                 int pos = editor.selectIndex;
 #endif
-                String currentCommand = commandHistory[currentCommandHistoryIndex];
-                String fixedCommand = currentCommand.Substring(0, pos - 1) + currentCommand.Substring(pos, currentCommand.Length - pos);
+                string currentCommand = commandHistory[currentCommandHistoryIndex];
+                string fixedCommand = currentCommand.Substring(0, pos - 1) + currentCommand.Substring(pos, currentCommand.Length - pos);
                 commandHistory[currentCommandHistoryIndex] = fixedCommand;
 
                 // if control is pressed when hitting return, do not empty the command line area
@@ -143,7 +143,7 @@ namespace ModTools
         {
             if (vanillaPanel == null)
             {
-                var panel = UIView.library?.Get<DebugOutputPanel>("DebugOutputPanel");
+                DebugOutputPanel panel = UIView.library?.Get<DebugOutputPanel>("DebugOutputPanel");
                 if (panel == null)
                 {
                     return;
@@ -160,7 +160,7 @@ namespace ModTools
             {
                 if (history.Count > 0)
                 {
-                    var last = history.Last();
+                    ConsoleMessage last = history.Last();
                     if (message == last.message && type == last.type)
                     {
                         last.count++;
@@ -171,7 +171,7 @@ namespace ModTools
 
             string caller = "";
 
-            StackTrace trace = new StackTrace(_internal ? 0 : 8);
+            var trace = new StackTrace(_internal ? 0 : 8);
 
             if (!_internal)
             {
@@ -180,7 +180,7 @@ namespace ModTools
                 {
                     MethodBase callingMethod = null;
 
-                    var frame = trace.GetFrame(i);
+                    StackFrame frame = trace.GetFrame(i);
                     if (frame != null)
                     {
                         callingMethod = frame.GetMethod();
@@ -238,7 +238,7 @@ namespace ModTools
             headerArea.absolutePosition.y = 16.0f;
             headerArea.absoluteSize.y = headerHeight;
 
-            var commandLineAreaHeight = commandLineAreaExpanded
+            float commandLineAreaHeight = commandLineAreaExpanded
                 ? commandLineAreaHeightExpanded
                 : commandLineAreaHeightCompact;
 
@@ -382,7 +382,7 @@ namespace ModTools
 
             consoleScrollPosition = GUILayout.BeginScrollView(consoleScrollPosition);
 
-            foreach (var item in userNotifications)
+            foreach (KeyValuePair<int, string> item in userNotifications)
             {
                 GUILayout.BeginHorizontal(skin.box);
 
@@ -451,7 +451,7 @@ namespace ModTools
 
                 GUI.contentColor = Color.white;
 
-                var stackTrace = item.trace;
+                StackTrace stackTrace = item.trace;
                 if (stackTrace != null)
                 {
                     GUIStackTrace.StackTraceButton(stackTrace);
@@ -533,7 +533,7 @@ namespace ModTools
 
         private void RunCommandLine()
         {
-            var commandLine = commandHistory[currentCommandHistoryIndex];
+            string commandLine = commandHistory[currentCommandHistoryIndex];
 
             if (emptyCommandLineArea)
             {
@@ -549,7 +549,7 @@ namespace ModTools
             }
             emptyCommandLineArea = true;
 
-            var source = String.Format(defaultSource, commandLine);
+            string source = string.Format(defaultSource, commandLine);
             var file = new ScriptEditorFile() { path = "ModToolsCommandLineScript.cs", source = source };
             if (!ScriptCompiler.RunSource(new List<ScriptEditorFile>() { file }, out string errorMessage, out IModEntryPoint instance))
             {

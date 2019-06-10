@@ -85,8 +85,8 @@ namespace ModTools
 
             try
             {
-                var files = FileUtil.ListFilesInDirectory(projectWorkspacePath);
-                foreach (var file in files)
+                List<string> files = FileUtil.ListFilesInDirectory(projectWorkspacePath);
+                foreach (string file in files)
                 {
                     if (Path.GetExtension(file) == ".cs")
                     {
@@ -122,7 +122,7 @@ namespace ModTools
         {
             try
             {
-                foreach (var file in projectFiles)
+                foreach (ScriptEditorFile file in projectFiles)
                 {
                     SaveProjectFile(file);
                 }
@@ -156,7 +156,7 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Project workspace:", GUILayout.ExpandWidth(false));
-            var newProjectWorkspacePath = GUILayout.TextField(projectWorkspacePath, GUILayout.ExpandWidth(true));
+            string newProjectWorkspacePath = GUILayout.TextField(projectWorkspacePath, GUILayout.ExpandWidth(true));
             if (!newProjectWorkspacePath.Equals(projectWorkspacePath))
             {
                 projectWorkspacePath = newProjectWorkspacePath.Trim();
@@ -174,7 +174,7 @@ namespace ModTools
             projectFilesScrollPosition = GUILayout.BeginScrollView(projectFilesScrollPosition);
             GUILayout.BeginHorizontal();
 
-            foreach (var file in projectFiles)
+            foreach (ScriptEditorFile file in projectFiles)
             {
                 if (GUILayout.Button(Path.GetFileName(file.path), GUILayout.ExpandWidth(false)))
                 {
@@ -197,7 +197,7 @@ namespace ModTools
             GUI.SetNextControlName(textAreaControlName);
 
             string text = GUILayout.TextArea(currentFile != null ? currentFile.source : "No file loaded..", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-            TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
+            var editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
 
             if (GUIUtility.keyboardControl == editor.controlID && Event.current.Equals(Event.KeyboardEvent("tab")))
             {

@@ -25,7 +25,7 @@ namespace ModTools
 
         static ScriptCompiler()
         {
-            var tempPath = Application.temporaryCachePath;
+            string tempPath = Application.temporaryCachePath;
             workspacePath = Path.Combine(tempPath, "ModTools");
             if (!Directory.Exists(workspacePath))
             {
@@ -95,25 +95,25 @@ namespace ModTools
 
         public static bool CompileSource(List<ScriptEditorFile> sources, out string dllPath)
         {
-            var name = String.Format("tmp_{0}", Random.Range(0, int.MaxValue));
+            string name = string.Format("tmp_{0}", Random.Range(0, int.MaxValue));
 
-            var sourcePath = Path.Combine(sourcesPath, name);
+            string sourcePath = Path.Combine(sourcesPath, name);
 
             Directory.CreateDirectory(sourcePath);
 
-            var outputPath = Path.Combine(dllsPath, name);
+            string outputPath = Path.Combine(dllsPath, name);
             Directory.CreateDirectory(outputPath);
 
-            foreach (var file in sources)
+            foreach (ScriptEditorFile file in sources)
             {
-                var sourceFilePath = Path.Combine(sourcePath, Path.GetFileName(file.path));
+                string sourceFilePath = Path.Combine(sourcePath, Path.GetFileName(file.path));
                 File.WriteAllText(sourceFilePath, file.source);
             }
 
             dllPath = Path.Combine(outputPath, Path.GetFileName(outputPath) + ".dll");
 
-            var modToolsAssembly = FileUtil.FindPluginPath(typeof(Mod));
-            var additionalAssemblies = gameAssemblies.Concat(new[] { modToolsAssembly }).ToArray();
+            string modToolsAssembly = FileUtil.FindPluginPath(typeof(Mod));
+            string[] additionalAssemblies = gameAssemblies.Concat(new[] { modToolsAssembly }).ToArray();
 
             PluginManager.CompileSourceInFolder(sourcePath, outputPath, additionalAssemblies);
             return File.Exists(dllPath);
@@ -121,7 +121,7 @@ namespace ModTools
 
         private static void ClearFolder(string path)
         {
-            DirectoryInfo directory = new DirectoryInfo(path);
+            var directory = new DirectoryInfo(path);
 
             foreach (FileInfo file in directory.GetFiles())
             {

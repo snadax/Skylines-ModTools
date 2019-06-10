@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public class SceneExplorerCommon
+    public static class SceneExplorerCommon
     {
         private static readonly Dictionary<int, string> indentStrings = new Dictionary<int, string>();
 

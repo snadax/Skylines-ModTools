@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    internal class GUIControls
+    internal static class GUIControls
     {
         private static Configuration config
         {
@@ -27,9 +27,9 @@ namespace ModTools
 
         public static object EditorValueField(ReferenceChain refChain, string id, Type type, object value)
         {
-            if (type == typeof(System.Single))
+            if (type == typeof(float))
             {
-                var f = (float)value;
+                float f = (float)value;
                 FloatField(id, "", ref f, 0.0f, true, true);
                 if (f != (float)value)
                 {
@@ -39,9 +39,9 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(System.Double))
+            if (type == typeof(double))
             {
-                var f = (double)value;
+                double f = (double)value;
                 DoubleField(id, "", ref f, 0.0f, true, true);
                 if (f != (double)value)
                 {
@@ -51,9 +51,9 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(System.Byte))
+            if (type == typeof(byte))
             {
-                var f = (byte)value;
+                byte f = (byte)value;
                 ByteField(id, "", ref f, 0.0f, true, true);
                 if (f != (byte)value)
                 {
@@ -63,9 +63,9 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(System.Int32))
+            if (type == typeof(int))
             {
-                var f = (int)value;
+                int f = (int)value;
                 IntField(id, "", ref f, 0.0f, true, true);
                 if (f != (int)value)
                 {
@@ -75,9 +75,9 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(System.UInt32))
+            if (type == typeof(uint))
             {
-                var f = (uint)value;
+                uint f = (uint)value;
                 UIntField(id, "", ref f, 0.0f, true, true);
                 if (f != (uint)value)
                 {
@@ -87,11 +87,11 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(System.Int64))
+            if (type == typeof(long))
             {
-                var f = (Int64)value;
+                long f = (long)value;
                 Int64Field(id, "", ref f, 0.0f, true, true);
-                if (f != (Int64)value)
+                if (f != (long)value)
                 {
                     return f;
                 }
@@ -99,11 +99,11 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(System.UInt64))
+            if (type == typeof(ulong))
             {
-                var f = (UInt64)value;
+                ulong f = (ulong)value;
                 UInt64Field(id, "", ref f, 0.0f, true, true);
-                if (f != (UInt64)value)
+                if (f != (ulong)value)
                 {
                     return f;
                 }
@@ -111,11 +111,11 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(System.Int16))
+            if (type == typeof(short))
             {
-                var f = (Int16)value;
+                short f = (short)value;
                 Int16Field(id, "", ref f, 0.0f, true, true);
-                if (f != (Int16)value)
+                if (f != (short)value)
                 {
                     return f;
                 }
@@ -123,11 +123,11 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(System.UInt16))
+            if (type == typeof(ushort))
             {
-                var f = (UInt16)value;
+                ushort f = (ushort)value;
                 UInt16Field(id, "", ref f, 0.0f, true, true);
-                if (f != (UInt16)value)
+                if (f != (ushort)value)
                 {
                     return f;
                 }
@@ -135,9 +135,9 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(System.Boolean))
+            if (type == typeof(bool))
             {
-                var f = (bool)value;
+                bool f = (bool)value;
                 BoolField("", ref f, 0.0f, true, true);
                 if (f != (bool)value)
                 {
@@ -147,9 +147,9 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(System.String))
+            if (type == typeof(string))
             {
-                var f = (string)value;
+                string f = (string)value;
                 StringField(id, "", ref f, 0.0f, true, true);
                 if (f != (string)value)
                 {
@@ -159,9 +159,9 @@ namespace ModTools
                 return value;
             }
 
-            if (type == typeof(System.Char))
+            if (type == typeof(char))
             {
-                var f = (char)value;
+                char f = (char)value;
                 CharField(id, "", ref f, 0.0f, true, true);
                 if (f != (char)value)
                 {
@@ -246,7 +246,7 @@ namespace ModTools
 
             if (type.IsEnum)
             {
-                var f = value;
+                object f = value;
                 EnumField(id, "", ref f, 0.0f, true, true);
                 if (f != value)
                 {
@@ -287,7 +287,7 @@ namespace ModTools
             string result = BufferedTextField(id, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                if (Single.TryParse(result, out float newValue))
+                if (float.TryParse(result, out float newValue))
                 {
                     value = newValue;
                 }
@@ -326,7 +326,7 @@ namespace ModTools
             string result = BufferedTextField(id, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                if (Double.TryParse(result, out double newValue))
+                if (double.TryParse(result, out double newValue))
                 {
                     value = newValue;
                 }
@@ -367,7 +367,7 @@ namespace ModTools
             string result = BufferedTextField(id, value.ToString(), byteFieldSize);
             if (result != null)
             {
-                if (Byte.TryParse(result, out byte newValue))
+                if (byte.TryParse(result, out byte newValue))
                 {
                     value = newValue;
                 }
@@ -407,7 +407,7 @@ namespace ModTools
             string result = BufferedTextField(id, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                if (Int32.TryParse(result, out int newValue))
+                if (int.TryParse(result, out int newValue))
                 {
                     value = newValue;
                 }
@@ -446,7 +446,7 @@ namespace ModTools
             string result = BufferedTextField(id, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                if (UInt32.TryParse(result, out uint newValue))
+                if (uint.TryParse(result, out uint newValue))
                 {
                     value = newValue;
                 }
@@ -457,7 +457,7 @@ namespace ModTools
             GUILayout.EndHorizontal();
         }
 
-        public static void Int64Field(string id, string name, ref Int64 value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
+        public static void Int64Field(string id, string name, ref long value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
         {
             GUILayout.BeginHorizontal();
 
@@ -486,7 +486,7 @@ namespace ModTools
             string result = BufferedTextField(id, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                if (Int64.TryParse(result, out long newValue))
+                if (long.TryParse(result, out long newValue))
                 {
                     value = newValue;
                 }
@@ -497,7 +497,7 @@ namespace ModTools
             GUILayout.EndHorizontal();
         }
 
-        public static void UInt64Field(string id, string name, ref UInt64 value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
+        public static void UInt64Field(string id, string name, ref ulong value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
         {
             GUILayout.BeginHorizontal();
 
@@ -526,7 +526,7 @@ namespace ModTools
             string result = BufferedTextField(id, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                if (UInt64.TryParse(result, out ulong newValue))
+                if (ulong.TryParse(result, out ulong newValue))
                 {
                     value = newValue;
                 }
@@ -537,7 +537,7 @@ namespace ModTools
             GUILayout.EndHorizontal();
         }
 
-        public static void Int16Field(string id, string name, ref Int16 value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
+        public static void Int16Field(string id, string name, ref short value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
         {
             GUILayout.BeginHorizontal();
 
@@ -561,14 +561,14 @@ namespace ModTools
                 GUILayout.FlexibleSpace();
             }
 
-            Int16 oldValue = value;
+            short oldValue = value;
 
             GUI.contentColor = config.valueColor;
 
             string result = BufferedTextField(id, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                if (Int16.TryParse(result, out short newValue))
+                if (short.TryParse(result, out short newValue))
                 {
                     value = newValue;
                 }
@@ -579,7 +579,7 @@ namespace ModTools
             GUILayout.EndHorizontal();
         }
 
-        public static void UInt16Field(string id, string name, ref UInt16 value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
+        public static void UInt16Field(string id, string name, ref ushort value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
         {
             GUILayout.BeginHorizontal();
 
@@ -608,7 +608,7 @@ namespace ModTools
             string result = BufferedTextField(id, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                if (UInt16.TryParse(result, out ushort newValue))
+                if (ushort.TryParse(result, out ushort newValue))
                 {
                     value = newValue;
                 }
@@ -732,7 +732,7 @@ namespace ModTools
                     GUILayout.Space(ident);
                 }
 
-                var enumType = value.GetType();
+                Type enumType = value.GetType();
 
                 if (!noTypeLabel)
                 {
@@ -749,7 +749,7 @@ namespace ModTools
                     GUILayout.FlexibleSpace();
                 }
 
-                var enumNames = Enum.GetNames(enumType).ToArray();
+                string[] enumNames = Enum.GetNames(enumType).ToArray();
 
                 if (TypeUtil.IsBitmaskEnum(enumType))
                 {
@@ -932,7 +932,7 @@ namespace ModTools
                 GUILayout.FlexibleSpace();
             }
 
-            var euler = value.eulerAngles;
+            Vector3 euler = value.eulerAngles;
 
             FloatField(id + ".x", "x", ref euler.x, 0.0f, true, true);
             FloatField(id + ".y", "y", ref euler.y, 0.0f, true, true);
@@ -981,10 +981,10 @@ namespace ModTools
                 GUILayout.FlexibleSpace();
             }
 
-            var r = (byte)(Mathf.Clamp(value.r * 255.0f, Byte.MinValue, Byte.MaxValue));
-            var g = (byte)(Mathf.Clamp(value.g * 255.0f, Byte.MinValue, Byte.MaxValue));
-            var b = (byte)(Mathf.Clamp(value.b * 255.0f, Byte.MinValue, Byte.MaxValue));
-            var a = (byte)(Mathf.Clamp(value.a * 255.0f, Byte.MinValue, Byte.MaxValue));
+            byte r = (byte)(Mathf.Clamp(value.r * 255.0f, byte.MinValue, byte.MaxValue));
+            byte g = (byte)(Mathf.Clamp(value.g * 255.0f, byte.MinValue, byte.MaxValue));
+            byte b = (byte)(Mathf.Clamp(value.b * 255.0f, byte.MinValue, byte.MaxValue));
+            byte a = (byte)(Mathf.Clamp(value.a * 255.0f, byte.MinValue, byte.MaxValue));
 
             ByteField(id + ".r", "r", ref r, 0.0f, true, true);
             ByteField(id + ".g", "g", ref g, 0.0f, true, true);
@@ -1005,7 +1005,7 @@ namespace ModTools
 
                 if (GUILayout.Button("", GUILayout.Width(72)))
                 {
-                    var picker = ModTools.Instance.colorPicker;
+                    ColorPicker picker = ModTools.Instance.colorPicker;
                     if (picker != null)
                     {
                         picker.SetColor(value, onColorChanged);
@@ -1018,7 +1018,7 @@ namespace ModTools
                     }
                 }
 
-                var lastRect = GUILayoutUtility.GetLastRect();
+                Rect lastRect = GUILayoutUtility.GetLastRect();
                 lastRect.x += 4.0f;
                 lastRect.y += 4.0f;
                 lastRect.width -= 8.0f;
@@ -1073,7 +1073,7 @@ namespace ModTools
             {
                 if (GUILayout.Button("", GUILayout.Width(72)))
                 {
-                    var picker = ModTools.Instance.colorPicker;
+                    ColorPicker picker = ModTools.Instance.colorPicker;
                     if (picker != null)
                     {
                         picker.SetColor(value, onColor32Changed);
@@ -1086,7 +1086,7 @@ namespace ModTools
                     }
                 }
 
-                var lastRect = GUILayoutUtility.GetLastRect();
+                Rect lastRect = GUILayoutUtility.GetLastRect();
                 lastRect.x += 4.0f;
                 lastRect.y += 4.0f;
                 lastRect.width -= 8.0f;

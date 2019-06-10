@@ -75,10 +75,10 @@ namespace ModTools
         private static T[] GetCustomPrefabs<T>() where T : PrefabInfo
         {
             var result = new List<T>();
-            var count = PrefabCollection<T>.LoadedCount();
+            int count = PrefabCollection<T>.LoadedCount();
             for (uint i = 0; i < count; i++)
             {
-                var prefab = PrefabCollection<T>.GetPrefab(i);
+                T prefab = PrefabCollection<T>.GetPrefab(i);
                 if (prefab == null || (!prefab.m_isCustomContent && prefab.name != null && !prefab.name.Contains('.')))
                 {
                     continue;

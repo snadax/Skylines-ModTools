@@ -1,5 +1,4 @@
-﻿using System;
-using ColossalFramework;
+﻿using ColossalFramework;
 using ModTools.Utils;
 using UnityEngine;
 
@@ -7,32 +6,25 @@ namespace ModTools
 {
     public static class Util
     {
-
         public static void SetMouseScrolling(bool isEnabled)
         {
             try
             {
-                var mouseWheelZoom = ReflectionUtil.GetPrivate<SavedBool>(ToolsModifierControl.cameraController, "m_mouseWheelZoom");
+                SavedBool mouseWheelZoom = ReflectionUtil.GetPrivate<SavedBool>(ToolsModifierControl.cameraController, "m_mouseWheelZoom");
                 if (mouseWheelZoom.value != isEnabled)
                 {
                     mouseWheelZoom.value = isEnabled;
                 }
             }
-            catch (Exception)
+            catch
             {
             }
         }
 
         public static bool ComponentIsEnabled(Component component)
         {
-            var prop = component.GetType().GetProperty("enabled");
-            if (prop == null)
-            {
-                return true;
-            }
-
-            return (bool)prop.GetValue(component, null);
+            System.Reflection.PropertyInfo prop = component.GetType().GetProperty("enabled");
+            return prop == null || (bool)prop.GetValue(component, null);
         }
-
     }
 }

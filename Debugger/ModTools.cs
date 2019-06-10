@@ -151,7 +151,7 @@ namespace ModTools
                 }
                 if (type == LogType.Exception)
                 {
-                    var message = condition;
+                    string message = condition;
                     if (config.logExceptionsToConsole)
                     {
                         if (trace != null)
@@ -223,7 +223,7 @@ namespace ModTools
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Use ModTools console");
-            var newUseConsole = GUILayout.Toggle(config.useModToolsConsole, "");
+            bool newUseConsole = GUILayout.Toggle(config.useModToolsConsole, "");
             GUILayout.EndHorizontal();
 
             if (newUseConsole != config.useModToolsConsole)
@@ -245,7 +245,7 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Console log level");
-            var newLogLevel = GUILayout.SelectionGrid(config.logLevel, new[] { "Log", "Warn", "Err", "None" }, 4);
+            int newLogLevel = GUILayout.SelectionGrid(config.logLevel, new[] { "Log", "Warn", "Err", "None" }, 4);
             GUILayout.EndHorizontal();
 
             if (newLogLevel != config.logLevel)
@@ -256,7 +256,7 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Log stack traces to console");
-            var newLogExceptionsToConsole = GUILayout.Toggle(config.logExceptionsToConsole, "");
+            bool newLogExceptionsToConsole = GUILayout.Toggle(config.logExceptionsToConsole, "");
             GUILayout.EndHorizontal();
             if (newLogExceptionsToConsole != config.logExceptionsToConsole)
             {
@@ -266,7 +266,7 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Game panel extensions");
-            var newExtendGamePanels = GUILayout.Toggle(config.extendGamePanels, "");
+            bool newExtendGamePanels = GUILayout.Toggle(config.extendGamePanels, "");
             GUILayout.EndHorizontal();
 
             if (newExtendGamePanels != config.extendGamePanels)
@@ -295,7 +295,7 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Custom Prefabs Object");
-            var customPrefabsObject = GUILayout.Toggle(config.customPrefabsObject, "");
+            bool customPrefabsObject = GUILayout.Toggle(config.customPrefabsObject, "");
             GUILayout.EndHorizontal();
             if (customPrefabsObject != config.customPrefabsObject)
             {
@@ -319,7 +319,7 @@ namespace ModTools
                 }
                 else
                 {
-                    var debugOutputPanel = GameObject.Find("(Library) DebugOutputPanel").GetComponent<DebugOutputPanel>();
+                    DebugOutputPanel debugOutputPanel = GameObject.Find("(Library) DebugOutputPanel").GetComponent<DebugOutputPanel>();
                     debugOutputPanel.enabled = true;
                     debugOutputPanel.GetComponent<UIPanel>().isVisible = true;
                 }

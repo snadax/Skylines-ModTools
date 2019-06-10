@@ -8,25 +8,26 @@ namespace ModTools.Explorer
         public static void OnSceneTreeReflectIEnumerable(SceneExplorerState state, ReferenceChain refChain, object myProperty)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
                 return;
+            }
 
-            var enumerable = myProperty as IEnumerable;
-            if (enumerable == null)
+            if (!(myProperty is IEnumerable enumerable))
             {
                 return;
             }
 
             int count = 0;
-            var oldRefChain = refChain;
+            ReferenceChain oldRefChain = refChain;
 
-            foreach (var value in enumerable)
+            foreach (object value in enumerable)
             {
                 refChain = oldRefChain.Add(count);
 
                 GUILayout.BeginHorizontal();
                 SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-                var type = value?.GetType();
+                System.Type type = value?.GetType();
                 if (type != null)
                 {
                     GUIExpander.ExpanderControls(state, refChain, type);
@@ -58,7 +59,7 @@ namespace ModTools.Explorer
                     if (value is GameObject)
                     {
                         var go = value as GameObject;
-                        foreach (var component in go.GetComponents<Component>())
+                        foreach (Component component in go.GetComponents<Component>())
                         {
                             GUIComponent.OnSceneTreeComponent(state, refChain, component);
                         }

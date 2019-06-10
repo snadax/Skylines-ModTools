@@ -6,10 +6,12 @@ namespace ModTools.Explorer
 {
     public static class GUIReflect
     {
-        public static void OnSceneTreeReflect(SceneExplorerState state, ReferenceChain refChain, System.Object obj, bool rawReflection = false)
+        public static void OnSceneTreeReflect(SceneExplorerState state, ReferenceChain refChain, object obj, bool rawReflection = false)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
                 return;
+            }
 
             if (obj == null)
             {
@@ -79,7 +81,7 @@ namespace ModTools.Explorer
                 }
             }
 
-            var members = TypeUtil.GetAllMembers(type, ModTools.Instance.config.sceneExplorerShowInheritedMembers);
+            MemberInfo[] members = TypeUtil.GetAllMembers(type, ModTools.Instance.config.sceneExplorerShowInheritedMembers);
 
             if (ModTools.Instance.config.sceneExplorerSortAlphabetically)
             {

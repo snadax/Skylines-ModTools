@@ -26,7 +26,7 @@ namespace ModTools.Explorer
             GUIControls.IntField($"{oldRefChain}.arrayStart", "Start index", ref arrayStart, 0.0f, true, true);
             GUIControls.IntField($"{oldRefChain}.arrayEnd", "End index", ref arrayEnd, 0.0f, true, true);
             GUILayout.Label("(32 items max)");
-            var pageSize = Mathf.Clamp(arrayEnd - arrayStart + 1, 1, Mathf.Min(32, collectionSize - arrayStart, arrayEnd + 1));
+            int pageSize = Mathf.Clamp(arrayEnd - arrayStart + 1, 1, Mathf.Min(32, collectionSize - arrayStart, arrayEnd + 1));
             if (GUILayout.Button("◄", GUILayout.ExpandWidth(false)))
             {
                 arrayStart -= pageSize;

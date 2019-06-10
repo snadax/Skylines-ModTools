@@ -82,7 +82,7 @@ namespace ModTools
 
         public ReferenceChain Add(GameObject go)
         {
-            var copy = Clone();
+            ReferenceChain copy = Clone();
             copy.chainObjects[Length] = go;
             copy.chainTypes[Length] = ReferenceType.GameObject;
             copy.Length++;
@@ -91,7 +91,7 @@ namespace ModTools
 
         public ReferenceChain Add(Component component)
         {
-            var copy = Clone();
+            ReferenceChain copy = Clone();
             copy.chainObjects[Length] = component;
             copy.chainTypes[Length] = ReferenceType.Component;
             copy.Length++;
@@ -100,7 +100,7 @@ namespace ModTools
 
         public ReferenceChain Add(FieldInfo fieldInfo)
         {
-            var copy = Clone();
+            ReferenceChain copy = Clone();
             copy.chainObjects[Length] = fieldInfo;
             copy.chainTypes[Length] = ReferenceType.Field;
             copy.Length++;
@@ -109,7 +109,7 @@ namespace ModTools
 
         public ReferenceChain Add(PropertyInfo propertyInfo)
         {
-            var copy = Clone();
+            ReferenceChain copy = Clone();
             copy.chainObjects[Length] = propertyInfo;
             copy.chainTypes[Length] = ReferenceType.Property;
             copy.Length++;
@@ -118,7 +118,7 @@ namespace ModTools
 
         public ReferenceChain Add(MethodInfo methodInfo)
         {
-            var copy = Clone();
+            ReferenceChain copy = Clone();
             copy.chainObjects[Length] = methodInfo;
             copy.chainTypes[Length] = ReferenceType.Method;
             copy.Length++;
@@ -127,7 +127,7 @@ namespace ModTools
 
         public ReferenceChain Add(int index)
         {
-            var copy = Clone();
+            ReferenceChain copy = Clone();
             copy.chainObjects[Length] = index;
             copy.chainTypes[Length] = ReferenceType.EnumerableItem;
             copy.Length++;
@@ -136,7 +136,7 @@ namespace ModTools
 
         public ReferenceChain Add(string namedProperty)
         {
-            var copy = Clone();
+            ReferenceChain copy = Clone();
             copy.chainObjects[Length] = namedProperty;
             copy.chainTypes[Length] = ReferenceType.SpecialNamedProperty;
             copy.Length++;
@@ -145,7 +145,7 @@ namespace ModTools
 
         public ReferenceChain Trim(int num)
         {
-            var copy = Clone();
+            ReferenceChain copy = Clone();
             copy.Length = Mathf.Min(num, Length);
             return copy;
         }
@@ -249,7 +249,7 @@ namespace ModTools
                     case ReferenceType.EnumerableItem:
                         var collection = current as IEnumerable;
                         int itemCount = 0;
-                        foreach (var item in collection)
+                        foreach (object item in collection)
                         {
                             if (itemCount == (int)chainObjects[i])
                             {
@@ -290,7 +290,7 @@ namespace ModTools
                     case ReferenceType.EnumerableItem:
                         var collection = current as IEnumerable;
                         int itemCount = 0;
-                        foreach (var item in collection)
+                        foreach (object item in collection)
                         {
                             if (itemCount == (int)chainObjects[i])
                             {

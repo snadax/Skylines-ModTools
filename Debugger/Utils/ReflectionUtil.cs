@@ -6,9 +6,9 @@ namespace ModTools.Utils
     {
         public static FieldInfo FindField<T>(T o, string fieldName)
         {
-            var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo[] fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-            foreach (var f in fields)
+            foreach (FieldInfo f in fields)
             {
                 if (f.Name == fieldName)
                 {
@@ -31,10 +31,10 @@ namespace ModTools.Utils
 
         public static Q GetPrivate<Q>(object o, string fieldName)
         {
-            var fields = o.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo[] fields = o.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             FieldInfo field = null;
 
-            foreach (var f in fields)
+            foreach (FieldInfo f in fields)
             {
                 if (f.Name == fieldName)
                 {
@@ -48,10 +48,10 @@ namespace ModTools.Utils
 
         public static void SetPrivate(object o, string fieldName, object value)
         {
-            var fields = o.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo[] fields = o.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             FieldInfo field = null;
 
-            foreach (var f in fields)
+            foreach (FieldInfo f in fields)
             {
                 if (f.Name == fieldName)
                 {

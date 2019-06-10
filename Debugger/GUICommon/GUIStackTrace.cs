@@ -10,7 +10,7 @@ namespace ModTools
             if (GUILayout.Button("Stack trace", GUILayout.ExpandWidth(false)))
             {
                 var viewer = StackTraceViewer.CreateStackTraceViewer(stackTrace);
-                var mouse = Input.mousePosition;
+                Vector3 mouse = Input.mousePosition;
                 mouse.y = Screen.height - mouse.y;
                 viewer.rect.position = mouse;
                 viewer.visible = true;

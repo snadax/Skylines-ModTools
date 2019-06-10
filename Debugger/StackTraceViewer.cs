@@ -19,7 +19,7 @@ namespace ModTools
         {
             var go = new GameObject("StackTraceViewer");
             go.transform.parent = ModTools.Instance.transform;
-            var viewer = go.AddComponent<StackTraceViewer>();
+            StackTraceViewer viewer = go.AddComponent<StackTraceViewer>();
             viewer.trace = trace;
             return viewer;
         }
@@ -48,7 +48,7 @@ namespace ModTools
                 return;
             }
 
-            var stackFrames = trace.GetFrames();
+            StackFrame[] stackFrames = trace.GetFrames();
             if (stackFrames == null)
             {
                 return;
@@ -57,10 +57,10 @@ namespace ModTools
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             int count = 0;
-            foreach (var frame in stackFrames)
+            foreach (StackFrame frame in stackFrames)
             {
                 GUILayout.BeginHorizontal(skin.box);
-                var method = frame.GetMethod();
+                System.Reflection.MethodBase method = frame.GetMethod();
 
                 GUILayout.Label(count.ToString(), GUILayout.ExpandWidth(false));
 

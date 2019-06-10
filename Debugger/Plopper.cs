@@ -20,7 +20,7 @@ namespace ModTools.Explorer
             {
                 return;
             }
-            var toolManager = Singleton<ToolManager>.instance;
+            ToolManager toolManager = Singleton<ToolManager>.instance;
             if (toolManager?.m_properties == null)
             {
                 return;
@@ -31,7 +31,7 @@ namespace ModTools.Explorer
                 ploppedPrefab = null;
                 return;
             }
-            var currentTool = toolManager.m_properties.CurrentTool;
+            ToolBase currentTool = toolManager.m_properties.CurrentTool;
             if (currentTool == null)
             {
                 return;
@@ -39,11 +39,11 @@ namespace ModTools.Explorer
             if (currentTool is BuildingTool || currentTool is NetTool || currentTool is TreeTool ||
                 currentTool is PropTool)
             {
-                var prefabField = currentTool.GetType()
+                FieldInfo prefabField = currentTool.GetType()
                     .GetField("m_prefab", BindingFlags.Instance | BindingFlags.Public);
                 if (prefabField != null)
                 {
-                    var prefab = prefabField.GetValue(currentTool);
+                    object prefab = prefabField.GetValue(currentTool);
                     if ((PrefabInfo)prefab != ploppedPrefab)
                     {
                         ploppedPrefab = null;
@@ -62,7 +62,7 @@ namespace ModTools.Explorer
 
         public static void StartPlopping(PrefabInfo prefabInfo)
         {
-            var currentTool = Singleton<ToolManager>.instance.m_properties.CurrentTool;
+            ToolBase currentTool = Singleton<ToolManager>.instance.m_properties.CurrentTool;
             if (currentTool == null)
             {
                 return;
@@ -93,10 +93,9 @@ namespace ModTools.Explorer
             {
                 return;
             }
-            if (prefabInfo is BuildingInfo)
+            if (prefabInfo is BuildingInfo buildingInfo)
             {
-                var buildingInfo = (BuildingInfo)prefabInfo;
-                var buildingTool = ToolsModifierControl.GetTool<BuildingTool>();
+                BuildingTool buildingTool = ToolsModifierControl.GetTool<BuildingTool>();
                 if (buildingTool == null)
                 {
                     Log.Warning("BuildingTool not found!");
@@ -106,10 +105,9 @@ namespace ModTools.Explorer
                 ploppedPrefab = buildingTool.m_prefab = buildingInfo;
                 buildingTool.m_relocate = 0;
             }
-            else if (prefabInfo is NetInfo)
+            else if (prefabInfo is NetInfo netInfo)
             {
-                var netInfo = (NetInfo)prefabInfo;
-                var netTool = ToolsModifierControl.GetTool<NetTool>();
+                NetTool netTool = ToolsModifierControl.GetTool<NetTool>();
                 if (netTool == null)
                 {
                     Log.Warning("NetTool not found!");
@@ -118,10 +116,9 @@ namespace ModTools.Explorer
                 Singleton<ToolManager>.instance.m_properties.CurrentTool = netTool;
                 ploppedPrefab = netTool.m_prefab = netInfo;
             }
-            else if (prefabInfo is PropInfo)
+            else if (prefabInfo is PropInfo propInfo)
             {
-                var propInfo = (PropInfo)prefabInfo;
-                var propTool = ToolsModifierControl.GetTool<PropTool>();
+                PropTool propTool = ToolsModifierControl.GetTool<PropTool>();
                 if (propTool == null)
                 {
                     Log.Warning("PropTool not found!");
@@ -130,10 +127,9 @@ namespace ModTools.Explorer
                 Singleton<ToolManager>.instance.m_properties.CurrentTool = propTool;
                 ploppedPrefab = propTool.m_prefab = propInfo;
             }
-            else if (prefabInfo is TreeInfo)
+            else if (prefabInfo is TreeInfo treeInfo)
             {
-                var treeInfo = (TreeInfo)prefabInfo;
-                var treeTool = ToolsModifierControl.GetTool<TreeTool>();
+                TreeTool treeTool = ToolsModifierControl.GetTool<TreeTool>();
                 if (treeTool == null)
                 {
                     Log.Warning("TreeTool not found!");

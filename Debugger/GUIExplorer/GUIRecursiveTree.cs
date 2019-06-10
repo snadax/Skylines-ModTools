@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public class GUIRecursiveTree
+    public static class GUIRecursiveTree
     {
         public static void OnSceneTreeRecursive(GameObject modToolsGo, SceneExplorerState state, ReferenceChain refChain, GameObject obj)
         {
@@ -13,7 +13,9 @@ namespace ModTools.Explorer
             }
 
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
                 return;
+            }
 
             if (obj == null)
             {
@@ -44,14 +46,14 @@ namespace ModTools.Explorer
 
                     GUILayout.EndHorizontal();
 
-                    var components = obj.GetComponents(typeof(Component));
+                    Component[] components = obj.GetComponents(typeof(Component));
 
                     if (ModTools.Instance.config.sceneExplorerSortAlphabetically)
                     {
                         Array.Sort(components, (component, component1) => component.GetType().ToString().CompareTo(component1.GetType().ToString()));
                     }
 
-                    foreach (var component in components)
+                    foreach (Component component in components)
                     {
                         GUIComponent.OnSceneTreeComponent(state, refChain.Add(component), component);
                     }

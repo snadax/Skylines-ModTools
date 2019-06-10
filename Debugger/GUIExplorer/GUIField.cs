@@ -9,7 +9,9 @@ namespace ModTools.Explorer
         public static void OnSceneTreeReflectField(SceneExplorerState state, ReferenceChain refChain, object obj, FieldInfo field)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
                 return;
+            }
 
             if (obj == null || field == null)
             {
@@ -92,7 +94,7 @@ namespace ModTools.Explorer
             {
                 try
                 {
-                    var newValue = GUIControls.EditorValueField(refChain, refChain.UniqueId, field.FieldType, value);
+                    object newValue = GUIControls.EditorValueField(refChain, refChain.UniqueId, field.FieldType, value);
                     if (newValue != value)
                     {
                         field.SetValue(obj, newValue);
@@ -114,7 +116,7 @@ namespace ModTools.Explorer
             }
             GUIButtons.SetupButtons(field.FieldType, value, refChain);
             object paste = null;
-            var doPaste = !field.IsLiteral && !field.IsInitOnly;
+            bool doPaste = !field.IsLiteral && !field.IsInitOnly;
             if (doPaste)
             {
                 doPaste = GUIButtons.SetupPasteButon(field.FieldType, out paste);
@@ -125,7 +127,7 @@ namespace ModTools.Explorer
                 if (value is GameObject)
                 {
                     var go = value as GameObject;
-                    foreach (var component in go.GetComponents<Component>())
+                    foreach (Component component in go.GetComponents<Component>())
                     {
                         GUIComponent.OnSceneTreeComponent(state, refChain, component);
                     }

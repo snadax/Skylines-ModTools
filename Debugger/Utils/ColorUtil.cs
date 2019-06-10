@@ -13,7 +13,7 @@ namespace ModTools
 
             public override string ToString()
             {
-                return String.Format("H: {0}, S: {1}, V:{2}", h.ToString("0.00"), s.ToString("0.00"), v.ToString("0.00"));
+                return string.Format("H: {0}, S: {1}, V:{2}", h.ToString("0.00"), s.ToString("0.00"), v.ToString("0.00"));
             }
 
             public static HSV RGB2HSV(Color color)
@@ -35,25 +35,37 @@ namespace ModTools
                     s = 0;
                 }
                 else
+                {
                     s = delta / v;
+                }
 
                 if (s == 0)
+                {
                     h = 0.0f;
+                }
                 else
                 {
                     if (r == v)
+                    {
                         h = (g - b) / delta;
+                    }
                     else if (g == v)
+                    {
                         h = 2 + (b - r) / delta;
+                    }
                     else if (b == v)
+                    {
                         h = 4 + (r - g) / delta;
+                    }
 
                     h *= 60;
                     if (h < 0.0)
+                    {
                         h = h + 360;
+                    }
                 }
 
-                HSV hsvColor = new HSV
+                var hsvColor = new HSV
                 {
                     h = h,
                     s = s,
@@ -84,9 +96,13 @@ namespace ModTools
                     double f, p, q, t;
 
                     if (h == 360)
+                    {
                         h = 0;
+                    }
                     else
+                    {
                         h = h / 60;
+                    }
 
                     i = (int)(h);
                     f = h - i;

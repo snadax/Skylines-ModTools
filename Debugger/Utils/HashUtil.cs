@@ -17,7 +17,7 @@ namespace ModTools
 
         public static string HashToString(long hash)
         {
-            return String.Format("{0:X}", hash);
+            return string.Format("{0:X}", hash);
         }
 
         private static readonly long[] largePrimes = new[]

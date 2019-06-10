@@ -4,27 +4,26 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public class GUIButtons
+    public static class GUIButtons
     {
-        private static System.Object _buffer = null;
+        private static object _buffer = null;
 
         public static void SetupButtons(Type type, object value, ReferenceChain refChain)
         {
-            if (value is VehicleInfo)
+            if (value is VehicleInfo vehicleInfo)
             {
-                var info = (VehicleInfo)value;
-                if (info.m_mesh != null)
+                if (vehicleInfo.m_mesh != null)
                 {
                     if (GUILayout.Button("Preview"))
                     {
-                        MeshViewer.CreateMeshViewer(info.name, info.m_mesh, info.m_material);
+                        MeshViewer.CreateMeshViewer(vehicleInfo.name, vehicleInfo.m_mesh, vehicleInfo.m_material);
                     }
                 }
-                if (info.m_lodMesh != null)
+                if (vehicleInfo.m_lodMesh != null)
                 {
                     if (GUILayout.Button("Preview LOD"))
                     {
-                        MeshViewer.CreateMeshViewer(info.name + "_LOD", info.m_lodMesh, info.m_lodMaterial);
+                        MeshViewer.CreateMeshViewer(vehicleInfo.name + "_LOD", vehicleInfo.m_lodMesh, vehicleInfo.m_lodMaterial);
                     }
                 }
             }
@@ -32,110 +31,103 @@ namespace ModTools.Explorer
             {
                 SetupPlopButton(value);
             }
-            else if (value is BuildingInfo)
+            else if (value is BuildingInfo buildingInfo)
             {
-                var info = (BuildingInfo)value;
                 SetupPlopButton(value);
-                if (info.m_mesh != null)
+                if (buildingInfo.m_mesh != null)
                 {
                     if (GUILayout.Button("Preview"))
                     {
-                        MeshViewer.CreateMeshViewer(info.name, info.m_mesh, info.m_material);
+                        MeshViewer.CreateMeshViewer(buildingInfo.name, buildingInfo.m_mesh, buildingInfo.m_material);
                     }
                 }
-                if (info.m_lodMesh != null)
+                if (buildingInfo.m_lodMesh != null)
                 {
                     if (GUILayout.Button("Preview LOD"))
                     {
-                        MeshViewer.CreateMeshViewer(info.name + "_LOD", info.m_lodMesh, info.m_lodMaterial);
+                        MeshViewer.CreateMeshViewer(buildingInfo.name + "_LOD", buildingInfo.m_lodMesh, buildingInfo.m_lodMaterial);
                     }
                 }
             }
-            else if (value is PropInfo)
+            else if (value is PropInfo propInfo)
             {
-                var info = (PropInfo)value;
                 SetupPlopButton(value);
-                if (info.m_mesh != null)
+                if (propInfo.m_mesh != null)
                 {
                     if (GUILayout.Button("Preview"))
                     {
-                        MeshViewer.CreateMeshViewer(info.name, info.m_mesh, info.m_material);
+                        MeshViewer.CreateMeshViewer(propInfo.name, propInfo.m_mesh, propInfo.m_material);
                     }
                 }
-                if (info.m_lodMesh != null)
+                if (propInfo.m_lodMesh != null)
                 {
                     if (GUILayout.Button("Preview LOD"))
                     {
-                        MeshViewer.CreateMeshViewer(info.name + "_LOD", info.m_lodMesh, info.m_lodMaterial);
+                        MeshViewer.CreateMeshViewer(propInfo.name + "_LOD", propInfo.m_lodMesh, propInfo.m_lodMaterial);
                     }
                 }
             }
-            else if (value is TreeInfo)
+            else if (value is TreeInfo treeInfo)
             {
-                var info = (TreeInfo)value;
                 SetupPlopButton(value);
-                if (info.m_mesh != null)
+                if (treeInfo.m_mesh != null)
                 {
                     if (GUILayout.Button("Preview"))
                     {
-                        MeshViewer.CreateMeshViewer(info.name, info.m_mesh, info.m_material);
+                        MeshViewer.CreateMeshViewer(treeInfo.name, treeInfo.m_mesh, treeInfo.m_material);
                     }
                 }
             }
-            else if (value is CitizenInfo)
+            else if (value is CitizenInfo citizenInfo)
             {
-                var info = (CitizenInfo)value;
-                if (info.m_skinRenderer?.sharedMesh != null)
+                if (citizenInfo.m_skinRenderer?.sharedMesh != null)
                 {
                     if (GUILayout.Button("Preview"))
                     {
-                        MeshViewer.CreateMeshViewer(info.name, info.m_skinRenderer?.sharedMesh, info.m_skinRenderer?.material);
+                        MeshViewer.CreateMeshViewer(citizenInfo.name, citizenInfo.m_skinRenderer?.sharedMesh, citizenInfo.m_skinRenderer?.material);
                     }
                 }
-                if (info.m_lodMesh != null)
+                if (citizenInfo.m_lodMesh != null)
                 {
                     if (GUILayout.Button("Preview LOD"))
                     {
-                        MeshViewer.CreateMeshViewer(info.name, info.m_lodMesh, info.m_lodMaterial);
+                        MeshViewer.CreateMeshViewer(citizenInfo.name, citizenInfo.m_lodMesh, citizenInfo.m_lodMaterial);
                     }
                 }
             }
-            else if (value is MilestoneInfo)
+            else if (value is MilestoneInfo milestoneInfo)
             {
-                var info = (MilestoneInfo)value;
                 if (GUILayout.Button("Unlock"))
                 {
                     var wrapper = new MilestonesWrapper(UnlockManager.instance);
-                    wrapper.UnlockMilestone(info.name);
+                    wrapper.UnlockMilestone(milestoneInfo.name);
                 }
             }
-            else if (value is NetInfo.Segment)
+            else if (value is NetInfo.Segment segmentInfo)
             {
-                var info = (NetInfo.Segment)value;
-                if (info.m_mesh != null)
+                if (segmentInfo.m_mesh != null)
                 {
                     if (GUILayout.Button("Preview"))
                     {
-                        MeshViewer.CreateMeshViewer(null, info.m_mesh, info.m_material);
+                        MeshViewer.CreateMeshViewer(null, segmentInfo.m_mesh, segmentInfo.m_material);
                     }
                     if (GUILayout.Button("Preview LOD"))
                     {
-                        MeshViewer.CreateMeshViewer(null, info.m_lodMesh, info.m_lodMaterial);
+                        MeshViewer.CreateMeshViewer(null, segmentInfo.m_lodMesh, segmentInfo.m_lodMaterial);
                     }
                 }
             }
-            else if (value is NetInfo.Node)
+            else if (value is NetInfo.Node nodeInfo)
             {
-                var info = (NetInfo.Node)value;
-                if (info.m_mesh != null)
+                if (nodeInfo.m_mesh != null)
                 {
                     if (GUILayout.Button("Preview"))
                     {
-                        MeshViewer.CreateMeshViewer(null, info.m_mesh, info.m_material);
+                        MeshViewer.CreateMeshViewer(null, nodeInfo.m_mesh, nodeInfo.m_material);
                     }
                     if (GUILayout.Button("Preview LOD"))
                     {
-                        MeshViewer.CreateMeshViewer(null, info.m_lodMesh, info.m_lodMaterial);
+                        MeshViewer.CreateMeshViewer(null, nodeInfo.m_lodMesh, nodeInfo.m_lodMaterial);
                     }
                 }
             }
@@ -161,7 +153,7 @@ namespace ModTools.Explorer
                 {
                     if (GUILayout.Button("Dump .obj"))
                     {
-                        var outPath = refChain.ToString().Replace(' ', '_');
+                        string outPath = refChain.ToString().Replace(' ', '_');
                         DumpUtil.DumpMeshAndTextures(outPath, value as Mesh);
                     }
                 }

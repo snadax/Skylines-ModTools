@@ -68,7 +68,7 @@ namespace ModTools
 
             var results = new Dictionary<string, MemberInfo>();
             GetMembersInternal2(type, recursive, bindingFlags, results);
-            var members = results.Values.ToArray();
+            MemberInfo[] members = results.Values.ToArray();
             _typeCache[type] = members;
             return members;
         }
@@ -76,8 +76,8 @@ namespace ModTools
         private static void GetMembersInternal2(Type type, bool recursive, BindingFlags bindingFlags,
             Dictionary<string, MemberInfo> outResults)
         {
-            var selfMembers = type.GetMembers(bindingFlags);
-            foreach (var member in selfMembers)
+            MemberInfo[] selfMembers = type.GetMembers(bindingFlags);
+            foreach (MemberInfo member in selfMembers)
             {
                 if (!outResults.ContainsKey(member.Name))
                 {
@@ -98,7 +98,9 @@ namespace ModTools
         {
             if (typeof(IEnumerable).IsInstanceOfType(myProperty)
                 || typeof(IEnumerable<>).IsInstanceOfType(myProperty))
+            {
                 return true;
+            }
 
             return false;
         }
@@ -107,7 +109,9 @@ namespace ModTools
         {
             if (typeof(ICollection).IsAssignableFrom(myProperty.GetType())
                 || typeof(ICollection<>).IsAssignableFrom(myProperty.GetType()))
+            {
                 return true;
+            }
 
             return false;
         }
@@ -116,7 +120,9 @@ namespace ModTools
         {
             if (typeof(IList).IsAssignableFrom(myProperty.GetType())
                 || typeof(IList<>).IsAssignableFrom(myProperty.GetType()))
+            {
                 return true;
+            }
 
             return false;
         }

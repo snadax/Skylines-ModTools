@@ -9,16 +9,17 @@ namespace ModTools.Explorer
         public static void OnSceneTreeReflectIList(SceneExplorerState state, ReferenceChain refChain, object myProperty)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
-                return;
-
-            var list = myProperty as IList;
-            if (list == null)
             {
                 return;
             }
 
-            var oldRefChain = refChain;
-            var collectionSize = list.Count;
+            if (!(myProperty is IList list))
+            {
+                return;
+            }
+
+            ReferenceChain oldRefChain = refChain;
+            int collectionSize = list.Count;
             if (collectionSize == 0)
             {
                 GUILayout.BeginHorizontal();
@@ -30,8 +31,8 @@ namespace ModTools.Explorer
                 return;
             }
 
-            var listItemType = list.GetType().GetElementType();
-            var flagsField = listItemType?.GetField("m_flags");
+            Type listItemType = list.GetType().GetElementType();
+            System.Reflection.FieldInfo flagsField = listItemType?.GetField("m_flags");
             bool flagIsEnum = flagsField?.FieldType.IsEnum == true && Type.GetTypeCode(flagsField.FieldType) == TypeCode.Int32;
 
             GUICollectionNavigation.SetUpCollectionNavigation("List", state, refChain, oldRefChain, collectionSize, out int arrayStart, out int arrayEnd);
@@ -44,8 +45,8 @@ namespace ModTools.Explorer
 
                 GUI.contentColor = Color.white;
 
-                var value = list[i];
-                var type = value?.GetType() ?? listItemType;
+                object value = list[i];
+                Type type = value?.GetType() ?? listItemType;
                 bool isNullOrEmpty = value == null || flagIsEnum && Convert.ToInt32(flagsField.GetValue(value)) == 0;
                 if (type != null)
                 {
@@ -87,7 +88,7 @@ namespace ModTools.Explorer
                     if (value is GameObject)
                     {
                         var go = value as GameObject;
-                        foreach (var component in go.GetComponents<Component>())
+                        foreach (Component component in go.GetComponents<Component>())
                         {
                             GUIComponent.OnSceneTreeComponent(state, refChain, component);
                         }

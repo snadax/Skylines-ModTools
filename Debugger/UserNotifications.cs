@@ -25,9 +25,9 @@ namespace ModTools
 
         public static List<KeyValuePair<int, string>> GetNotifications()
         {
-            List<KeyValuePair<int, string>> result = new List<KeyValuePair<int, string>>();
+            var result = new List<KeyValuePair<int, string>>();
 
-            foreach (var item in notifications)
+            foreach (KeyValuePair<int, string> item in notifications)
             {
                 if ((config.hiddenNotifications & (1 << item.Key)) == 0)
                 {

@@ -7,10 +7,10 @@ namespace ModTools
     {
         public static Dictionary<GameObject, bool> FindSceneRoots()
         {
-            Dictionary<GameObject, bool> roots = new Dictionary<GameObject, bool>();
+            var roots = new Dictionary<GameObject, bool>();
 
             GameObject[] objects = GameObject.FindObjectsOfType<GameObject>();
-            foreach (var obj in objects)
+            foreach (GameObject obj in objects)
             {
                 if (!roots.ContainsKey(obj.transform.root.gameObject))
                 {
@@ -23,9 +23,9 @@ namespace ModTools
 
         public static List<KeyValuePair<GameObject, Component>> FindComponentsOfType(string typeName)
         {
-            var roots = FindSceneRoots();
+            Dictionary<GameObject, bool> roots = FindSceneRoots();
             var list = new List<KeyValuePair<GameObject, Component>>();
-            foreach (var root in roots.Keys)
+            foreach (GameObject root in roots.Keys)
             {
                 FindComponentsOfType(typeName, root, list);
             }
@@ -34,7 +34,7 @@ namespace ModTools
 
         public static void FindComponentsOfType(string typeName, GameObject gameObject, List<KeyValuePair<GameObject, Component>> list)
         {
-            var component = gameObject.GetComponent(typeName);
+            Component component = gameObject.GetComponent(typeName);
             if (component != null)
             {
                 list.Add(new KeyValuePair<GameObject, Component>(gameObject, component));

@@ -11,7 +11,7 @@ namespace ModTools
         private static readonly float secondsInYear = secondsInWeek * 52.0f;
         public static string TimeSpanToString(TimeSpan timeSpan)
         {
-            var seconds = Math.Abs(timeSpan.TotalSeconds);
+            double seconds = Math.Abs(timeSpan.TotalSeconds);
             if (seconds < secondsInMinute)
             {
                 return "Less than a minute ago";
@@ -42,7 +42,7 @@ namespace ModTools
 
         private static string TimeSpanToString(int count, string s)
         {
-            return String.Format("{0} {1} ago", count.ToString(), Pluralize(s, count));
+            return string.Format("{0} {1} ago", count.ToString(), Pluralize(s, count));
         }
 
         public static string Pluralize(string s, int count)

@@ -5,12 +5,14 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public class GUIProperty
+    public static class GUIProperty
     {
-        public static void OnSceneTreeReflectProperty(SceneExplorerState state, ReferenceChain refChain, System.Object obj, PropertyInfo property)
+        public static void OnSceneTreeReflectProperty(SceneExplorerState state, ReferenceChain refChain, object obj, PropertyInfo property)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
                 return;
+            }
 
             if (obj == null || property == null)
             {
@@ -128,7 +130,7 @@ namespace ModTools.Explorer
                 {
                     try
                     {
-                        var newValue = GUIControls.EditorValueField(refChain, refChain.UniqueId, property.PropertyType, value);
+                        object newValue = GUIControls.EditorValueField(refChain, refChain.UniqueId, property.PropertyType, value);
                         if (newValue != value)
                         {
                             property.SetValue(obj, newValue, null);
@@ -161,7 +163,7 @@ namespace ModTools.Explorer
             }
             GUIButtons.SetupButtons(property.PropertyType, value, refChain);
             object paste = null;
-            var doPaste = property.CanWrite;
+            bool doPaste = property.CanWrite;
             if (doPaste)
             {
                 doPaste = GUIButtons.SetupPasteButon(property.PropertyType, out paste);
@@ -173,7 +175,7 @@ namespace ModTools.Explorer
                 if (value is GameObject)
                 {
                     var go = value as GameObject;
-                    foreach (var component in go.GetComponents<Component>())
+                    foreach (Component component in go.GetComponents<Component>())
                     {
                         GUIComponent.OnSceneTreeComponent(state, refChain, component);
                     }

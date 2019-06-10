@@ -4,12 +4,14 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public class GUIMethod
+    public static class GUIMethod
     {
-        public static void OnSceneTreeReflectMethod(ReferenceChain refChain, System.Object obj, MethodInfo method)
+        public static void OnSceneTreeReflectMethod(ReferenceChain refChain, object obj, MethodInfo method)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
                 return;
+            }
 
             if (obj == null || method == null)
             {
@@ -26,9 +28,9 @@ namespace ModTools.Explorer
             GUILayout.Label(method.ReturnType.ToString() + " " + method.Name + "(");
             GUI.contentColor = ModTools.Instance.config.nameColor;
 
-            var first = true;
-            var parameters = method.GetParameters();
-            foreach (var param in parameters)
+            bool first = true;
+            ParameterInfo[] parameters = method.GetParameters();
+            foreach (ParameterInfo param in parameters)
             {
                 if (!first)
                 {

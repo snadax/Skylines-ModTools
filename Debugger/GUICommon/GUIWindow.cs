@@ -100,7 +100,7 @@ namespace ModTools
             minSize = new Vector2(64.0f, 64.0f);
             windows.Add(this);
 
-            var uiView = FindObjectOfType<UIView>();
+            UIView uiView = FindObjectOfType<UIView>();
             if (uiView != null)
             {
                 clickCatcher = uiView.AddUIComponent(typeof(UIPanel)) as UIPanel;
@@ -120,7 +120,7 @@ namespace ModTools
             }
 
             //adjust rect from unity pixels to C:S pixels via GetUIView().ratio
-            var ratio = UIView.GetAView().ratio;
+            float ratio = UIView.GetAView().ratio;
 
             clickCatcher.absolutePosition = new Vector3(rect.position.x * ratio, rect.position.y * ratio);
             clickCatcher.size = new Vector2(rect.width * ratio, rect.height * ratio);
@@ -130,10 +130,7 @@ namespace ModTools
 
         private void OnDestroy()
         {
-            if (onUnityDestroy != null)
-            {
-                onUnityDestroy();
-            }
+            onUnityDestroy?.Invoke();
 
             if (clickCatcher != null)
             {
@@ -151,9 +148,9 @@ namespace ModTools
 
         public static void UpdateMouseScrolling()
         {
-            var mouse = Input.mousePosition;
+            Vector3 mouse = Input.mousePosition;
             mouse.y = Screen.height - mouse.y;
-            var mouseInsideGuiWindow = windows.Any(window => window.visible && window.rect.Contains(mouse));
+            bool mouseInsideGuiWindow = windows.Any(window => window.visible && window.rect.Contains(mouse));
             Util.SetMouseScrolling(!mouseInsideGuiWindow);
         }
 
@@ -224,13 +221,13 @@ namespace ModTools
 
             if (visible)
             {
-                var oldSkin = GUI.skin;
+                GUISkin oldSkin = GUI.skin;
                 if (skin != null)
                 {
                     GUI.skin = skin;
                 }
 
-                var matrix = GUI.matrix;
+                Matrix4x4 matrix = GUI.matrix;
                 GUI.matrix = Matrix4x4.Scale(new Vector3(uiScale, uiScale, uiScale));
 
                 rect = GUI.Window(id, rect, i =>
@@ -257,7 +254,7 @@ namespace ModTools
 
                         GUILayout.Space(16.0f);
 
-                        var mouse = Input.mousePosition;
+                        Vector3 mouse = Input.mousePosition;
                         mouse.y = Screen.height - mouse.y;
 
                         DrawBorder();
@@ -279,10 +276,7 @@ namespace ModTools
                     }
                 }, "");
 
-                if (onUnityGUI != null)
-                {
-                    onUnityGUI();
-                }
+                onUnityGUI?.Invoke();
 
                 GUI.matrix = matrix;
 
@@ -303,7 +297,7 @@ namespace ModTools
         private void DrawTitlebar(Vector3 mouse)
         {
             var moveRect = new Rect(rect.x * uiScale, rect.y * uiScale, rect.width * uiScale, 20.0f);
-            var moveTex = moveNormalTexture;
+            Texture2D moveTex = moveNormalTexture;
 
             if (movingWindow != null)
             {
@@ -313,7 +307,7 @@ namespace ModTools
 
                     if (Input.GetMouseButton(0))
                     {
-                        var pos = new Vector2(mouse.x, mouse.y) + moveDragHandle;
+                        Vector2 pos = new Vector2(mouse.x, mouse.y) + moveDragHandle;
                         rect.x = pos.x;
                         rect.y = pos.y;
                         if (rect.x < 0.0f)
@@ -341,10 +335,7 @@ namespace ModTools
 
                         UpdateClickCatcher();
 
-                        if (onMove != null)
-                        {
-                            onMove(rect.position);
-                        }
+                        onMove?.Invoke(rect.position);
                     }
                 }
             }
@@ -367,7 +358,7 @@ namespace ModTools
         private void DrawCloseButton(Vector3 mouse)
         {
             var closeRect = new Rect(rect.x * uiScale + rect.width * uiScale - 20.0f, rect.y * uiScale, 16.0f, 8.0f);
-            var closeTex = closeNormalTexture;
+            Texture2D closeTex = closeNormalTexture;
 
             if (closeRect.Contains(mouse))
             {
@@ -382,10 +373,7 @@ namespace ModTools
 
                     UpdateClickCatcher();
 
-                    if (onClose != null)
-                    {
-                        onClose();
-                    }
+                    onClose?.Invoke();
                 }
             }
 
@@ -395,7 +383,7 @@ namespace ModTools
         private void DrawResizeHandle(Vector3 mouse)
         {
             var resizeRect = new Rect(rect.x * uiScale + rect.width * uiScale - 16.0f, rect.y * uiScale + rect.height * uiScale - 8.0f, 16.0f, 8.0f);
-            var resizeTex = resizeNormalTexture;
+            Texture2D resizeTex = resizeNormalTexture;
 
             if (resizingWindow != null)
             {
@@ -405,7 +393,7 @@ namespace ModTools
 
                     if (Input.GetMouseButton(0))
                     {
-                        var size = new Vector2(mouse.x, mouse.y) + resizeDragHandle - new Vector2(rect.x, rect.y);
+                        Vector2 size = new Vector2(mouse.x, mouse.y) + resizeDragHandle - new Vector2(rect.x, rect.y);
 
                         if (size.x < minSize.x)
                         {
@@ -437,10 +425,7 @@ namespace ModTools
 
                         UpdateClickCatcher();
 
-                        if (onResize != null)
-                        {
-                            onResize(rect.size);
-                        }
+                        onResize?.Invoke(rect.size);
                     }
                 }
             }

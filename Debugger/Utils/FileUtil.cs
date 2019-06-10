@@ -23,18 +23,18 @@ namespace ModTools
 
         public static string FindPluginPath(Type type)
         {
-            var pluginManager = PluginManager.instance;
-            var plugins = pluginManager.GetPluginsInfo();
+            PluginManager pluginManager = PluginManager.instance;
+            IEnumerable<PluginManager.PluginInfo> plugins = pluginManager.GetPluginsInfo();
 
-            foreach (var item in plugins)
+            foreach (PluginManager.PluginInfo item in plugins)
             {
-                var instances = item.GetInstances<IUserMod>();
-                var instance = instances.FirstOrDefault();
+                IUserMod[] instances = item.GetInstances<IUserMod>();
+                IUserMod instance = instances.FirstOrDefault();
                 if (instance != null && instance.GetType() != type)
                 {
                     continue;
                 }
-                foreach (var file in Directory.GetFiles(item.modPath))
+                foreach (string file in Directory.GetFiles(item.modPath))
                 {
                     if (Path.GetExtension(file) == ".dll")
                     {
@@ -51,7 +51,7 @@ namespace ModTools
             {
                 return DateTime.Now.ToString("yyyyMMddhhmmss");
             }
-            var regexSearch = new string(Path.GetInvalidFileNameChars()/* + new string(Path.GetInvalidPathChars()*/);
+            string regexSearch = new string(Path.GetInvalidFileNameChars()/* + new string(Path.GetInvalidPathChars()*/);
             var r = new Regex($"[{Regex.Escape(regexSearch)}]");
             return r.Replace(illegal, "_");
         }

@@ -19,7 +19,7 @@ namespace ModTools
         {
             var go = new GameObject("TextureViewer");
             go.transform.parent = ModTools.Instance.transform;
-            var textureViewer = go.AddComponent<TextureViewer>();
+            TextureViewer textureViewer = go.AddComponent<TextureViewer>();
             textureViewer.caller = refChain;
             var texture3D = texture as Texture3D;
             textureViewer.previewTexture = texture3D == null ? texture : texture3D.ToTexture2D();
@@ -36,7 +36,7 @@ namespace ModTools
         {
             if (previewTexture != null)
             {
-                title = String.Format("Previewing \"{0}\"", previewTexture.name);
+                title = string.Format("Previewing \"{0}\"", previewTexture.name);
 
                 if (GUILayout.Button("Dump .png", GUILayout.Width(128)))
                 {

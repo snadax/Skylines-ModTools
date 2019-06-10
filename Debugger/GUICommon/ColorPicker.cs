@@ -110,15 +110,9 @@ namespace ModTools
         {
             color.a = originalAlpha;
 
-            if (onColorChanged != null)
-            {
-                onColorChanged(color);
-            }
+            onColorChanged?.Invoke(color);
 
-            if (onColor32Changed != null)
-            {
-                onColor32Changed(color);
-            }
+            onColor32Changed?.Invoke(color);
         }
 
         private void Update()
@@ -169,11 +163,11 @@ namespace ModTools
 
         public static Texture2D DrawHuesBar(int width, int height)
         {
-            Texture2D texture = new Texture2D(width, height);
+            var texture = new Texture2D(width, height);
 
             for (int y = 0; y < height; y++)
             {
-                var color = GetColorAtT((y / (float)height) * 360.0f);
+                Color color = GetColorAtT((y / (float)height) * 360.0f);
 
                 for (int x = 0; x < width; x++)
                 {
@@ -187,7 +181,7 @@ namespace ModTools
 
         public static Texture2D DrawLineTex()
         {
-            Texture2D tex = new Texture2D(1, 1);
+            var tex = new Texture2D(1, 1);
             tex.SetPixel(0, 0, lineColor);
             tex.Apply();
             return tex;

@@ -4,7 +4,7 @@
 
 namespace ModTools
 {
-    public class GUIComboBox
+    public static class GUIComboBox
     {
         // Easy to use combobox class
         // ***** For users *****
@@ -35,14 +35,20 @@ namespace ModTools
                 wrapMode = TextureWrapMode.Clamp
             };
 
-            for (var x = 0; x < background.width; x++)
-                for (var y = 0; y < background.height; y++)
+            for (int x = 0; x < background.width; x++)
+            {
+                for (int y = 0; y < background.height; y++)
                 {
                     if (x == 0 || x == background.width - 1 || y == 0 || y == background.height - 1)
+                    {
                         background.SetPixel(x, y, new Color(0, 0, 0, 1));
+                    }
                     else
+                    {
                         background.SetPixel(x, y, new Color(0.05f, 0.05f, 0.05f, 0.95f));
+                    }
                 }
+            }
 
             background.Apply();
 
@@ -73,7 +79,9 @@ namespace ModTools
         public static void DrawGUI()
         {
             if (popupOwner == null || rect.height == 0 || !popupActive)
+            {
                 return;
+            }
 
             // Make sure the rectangle is fully on screen
             //  rect.x = Math.Max(0, Math.Min(rect.x, rect.width));
@@ -94,12 +102,16 @@ namespace ModTools
                 }
 
                 if (GUI.changed)
+                {
                     popupActive = false;
+                }
             }, "", style);
 
             //Cancel the popup if we click outside
             if (Event.current.type == EventType.MouseDown && !rect.Contains(Event.current.mousePosition))
+            {
                 popupOwner = null;
+            }
         }
 
         private static Vector2 comboBoxScroll = Vector2.zero;
@@ -108,7 +120,10 @@ namespace ModTools
         {
             // Trivial cases (0-1 items)
             if (entries.Length == 0)
+            {
                 return 0;
+            }
+
             if (entries.Length == 1)
             {
                 GUILayout.Label(entries[0]);
@@ -123,12 +138,12 @@ namespace ModTools
                 GUI.changed = true;
             }
 
-            var guiChanged = GUI.changed;
+            bool guiChanged = GUI.changed;
 
             float width = 0;
-            foreach (var entry in entries)
+            foreach (string entry in entries)
             {
-                var len = GUI.skin.button.CalcSize(new GUIContent(entry)).x;
+                float len = GUI.skin.button.CalcSize(new GUIContent(entry)).x;
                 if (len > width)
                 {
                     width = len;
@@ -153,10 +168,10 @@ namespace ModTools
                 // But even worse, I can't find a clean way to convert from relative to absolute coordinates
                 Vector2 mousePos = Input.mousePosition;
                 mousePos.y = Screen.height - mousePos.y;
-                var clippedMousePos = Event.current.mousePosition;
+                Vector2 clippedMousePos = Event.current.mousePosition;
                 rect.x = (rect.x + mousePos.x) - clippedMousePos.x;
                 rect.y = (rect.y + mousePos.y) - clippedMousePos.y;
-                var targetHeight = rect.height * entries.Length;
+                float targetHeight = rect.height * entries.Length;
                 hasScrollbars = targetHeight >= 400.0f;
                 rect.height = Mathf.Min(targetHeight, 400.0f);
                 comboBoxScroll = Vector2.zero;
