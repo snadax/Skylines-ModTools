@@ -4,9 +4,8 @@ using UnityEngine;
 
 namespace ModTools
 {
-    class GUIControls
+    internal class GUIControls
     {
-
         private static Configuration config
         {
             get { return ModTools.Instance.config; }
@@ -447,8 +446,7 @@ namespace ModTools
             string result = BufferedTextField(hash, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                int newValue;
-                if (Int32.TryParse(result, out newValue))
+                if (Int32.TryParse(result, out int newValue))
                 {
                     value = newValue;
                 }
@@ -487,8 +485,7 @@ namespace ModTools
             string result = BufferedTextField(hash, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                uint newValue;
-                if (UInt32.TryParse(result, out newValue))
+                if (UInt32.TryParse(result, out uint newValue))
                 {
                     value = newValue;
                 }
@@ -528,8 +525,7 @@ namespace ModTools
             string result = BufferedTextField(hash, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                Int64 newValue;
-                if (Int64.TryParse(result, out newValue))
+                if (Int64.TryParse(result, out long newValue))
                 {
                     value = newValue;
                 }
@@ -569,8 +565,7 @@ namespace ModTools
             string result = BufferedTextField(hash, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                UInt64 newValue;
-                if (UInt64.TryParse(result, out newValue))
+                if (UInt64.TryParse(result, out ulong newValue))
                 {
                     value = newValue;
                 }
@@ -612,8 +607,7 @@ namespace ModTools
             string result = BufferedTextField(hash, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                Int16 newValue;
-                if (Int16.TryParse(result, out newValue))
+                if (Int16.TryParse(result, out short newValue))
                 {
                     value = newValue;
                 }
@@ -653,8 +647,7 @@ namespace ModTools
             string result = BufferedTextField(hash, value.ToString(), numberFieldSize);
             if (result != null)
             {
-                UInt16 newValue;
-                if (UInt16.TryParse(result, out newValue))
+                if (UInt16.TryParse(result, out ushort newValue))
                 {
                     value = newValue;
                 }

@@ -13,7 +13,6 @@ using UnityEngine;
 
 namespace ModTools
 {
-
     public class SceneExplorer : GUIWindow
     {
         public Dictionary<GameObject, bool> sceneRoots = new Dictionary<GameObject, bool>();
@@ -21,25 +20,23 @@ namespace ModTools
         private string findObjectTypeFilter = "";
         private string searchDisplayString = "";
 
-        private GUIArea headerArea;
-        private GUIArea sceneTreeArea;
-        private GUIArea componentArea;
+        private readonly GUIArea headerArea;
+        private readonly GUIArea sceneTreeArea;
+        private readonly GUIArea componentArea;
 
         private Vector2 sceneTreeScrollPosition = Vector2.zero;
         private Vector2 componentScrollPosition = Vector2.zero;
         private SceneExplorerState state;
 
 
-        private float windowTopMargin = 16.0f;
-        private float windowBottomMargin = 8.0f;
+        private readonly float windowTopMargin = 16.0f;
+        private readonly float windowBottomMargin = 8.0f;
 
-        private float headerHeightCompact = 1.65f;
-        private float headerHeightExpanded = 17.0f;
+        private readonly float headerHeightCompact = 1.65f;
+        private readonly float headerHeightExpanded = 17.0f;
         private bool headerExpanded = false;
 
-        private float sceneTreeWidth = 320.0f;
-
-
+        private readonly float sceneTreeWidth = 320.0f;
 
         public SceneExplorer()
             : base("Scene Explorer", new Rect(128, 440, 800, 500), skin)
@@ -71,7 +68,7 @@ namespace ModTools
             headerArea.absolutePosition.y = windowTopMargin;
             headerArea.relativeSize.x = 1.0f;
 
-            if (rect.width < (float)Screen.width / 4.0f && state.currentRefChain != null)
+            if (rect.width < Screen.width / 4.0f && state.CurrentRefChain != null)
             {
                 sceneTreeArea.relativeSize = Vector2.zero;
                 sceneTreeArea.relativeSize = Vector2.zero;
@@ -103,7 +100,7 @@ namespace ModTools
             componentArea.absoluteSize.y = -(headerHeight - windowTopMargin) - windowBottomMargin;
         }
 
-        void ExceptionHandler(Exception ex)
+        private void ExceptionHandler(Exception ex)
         {
             Debug.LogException(ex);
             state = new SceneExplorerState();
@@ -253,7 +250,7 @@ namespace ModTools
             }
             GUILayout.Label("Constants");
 
-            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing);            
+            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing);
             var showProperties = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowProperties, "");
             if (ModTools.Instance.config.sceneExplorerShowProperties != showProperties)
             {
@@ -366,7 +363,7 @@ namespace ModTools
             GUILayout.EndHorizontal();
         }
 
-        void DrawFindGameObjectPanel()
+        private void DrawFindGameObjectPanel()
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("GameObject.Find");

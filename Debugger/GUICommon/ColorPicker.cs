@@ -6,12 +6,11 @@ namespace ModTools
 {
     public class ColorPicker : GUIWindow
     {
-
         public delegate void OnColorChanged(Color color);
 
         public delegate void OnColor32Changed(Color32 color);
 
-        private static Dictionary<string, Texture2D> textureCache = new Dictionary<string, Texture2D>();
+        private static readonly Dictionary<string, Texture2D> textureCache = new Dictionary<string, Texture2D>();
 
         public static Texture2D GetColorTexture(string hash, Color color)
         {
@@ -81,18 +80,18 @@ namespace ModTools
             RedrawPicker();
         }
 
-        void RedrawPicker()
+        private void RedrawPicker()
         {
             DrawColorPicker(colorPicker, currentHSV.h);
         }
 
-        void HandleException(Exception ex)
+        private void HandleException(Exception ex)
         {
             Log.Error("Exception in ColorPicker - " + ex.Message);
             visible = false;
         }
 
-        void DrawWindow()
+        private void DrawWindow()
         {
             GUI.DrawTexture(colorPickerRect, colorPicker);
             GUI.DrawTexture(huesBarRect, huesBar);
@@ -107,7 +106,7 @@ namespace ModTools
             GUI.DrawTexture(new Rect(colorPickerLineX, colorPickerRect.y - 1.0f, 1.0f, colorPickerRect.height + 2.0f), lineTex);
         }
 
-        void InternalOnColorChanged(Color color)
+        private void InternalOnColorChanged(Color color)
         {
             color.a = originalAlpha;
 
@@ -122,7 +121,7 @@ namespace ModTools
             }
         }
 
-        void Update()
+        private void Update()
         {
             Vector2 mouse = Input.mousePosition;
             mouse.y = Screen.height - mouse.y;
@@ -161,7 +160,7 @@ namespace ModTools
             {
                 for (int y = 0; y < texture.height; y++)
                 {
-                    texture.SetPixel(x, y, GetColorAtXY(hue, (float)x / (float)texture.width, 1.0f - (float)y / (float)texture.height));
+                    texture.SetPixel(x, y, GetColorAtXY(hue, x / (float)texture.width, 1.0f - y / (float)texture.height));
                 }
             }
 
@@ -174,7 +173,7 @@ namespace ModTools
 
             for (int y = 0; y < height; y++)
             {
-                var color = GetColorAtT(((float)y / (float)height) * 360.0f);
+                var color = GetColorAtT((y / (float)height) * 360.0f);
 
                 for (int x = 0; x < width; x++)
                 {
