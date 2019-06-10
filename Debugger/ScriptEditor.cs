@@ -7,8 +7,8 @@ namespace ModTools
 {
     public class ScriptEditorFile
     {
-        public string source = "";
-        public string path = "";
+        public string source = string.Empty;
+        public string path = string.Empty;
         public FileSystemWatcher filesystemWatcher;
     }
 
@@ -19,7 +19,7 @@ namespace ModTools
         private const string ExampleScriptFileName = "ExampleScript.cs";
 
         private IModEntryPoint currentMod;
-        private string lastError = "";
+        private string lastError = string.Empty;
 
         private readonly float compactHeaderHeight = 50.0f;
         private readonly float expandedHeaderHeight = 120.0f;
@@ -34,7 +34,7 @@ namespace ModTools
         private Vector2 editorScrollPosition = Vector2.zero;
         private Vector2 projectFilesScrollPosition = Vector2.zero;
 
-        private string projectWorkspacePath = "";
+        private string projectWorkspacePath = string.Empty;
         private readonly List<ScriptEditorFile> projectFiles = new List<ScriptEditorFile>();
         private ScriptEditorFile currentFile;
 
@@ -114,7 +114,7 @@ namespace ModTools
                 lastError = ex.Message;
                 return;
             }
-            lastError = "";
+            lastError = string.Empty;
         }
 
         private void SaveAllProjectFiles()
@@ -131,7 +131,7 @@ namespace ModTools
                 lastError = ex.Message;
                 return;
             }
-            lastError = "";
+            lastError = string.Empty;
         }
 
         private void SaveProjectFile(ScriptEditorFile file) => File.WriteAllText(file.path, file.source);
@@ -313,7 +313,7 @@ namespace ModTools
                     lastError = ex.Message;
                     return;
                 }
-                lastError = "";
+                lastError = string.Empty;
             }
 
             GUI.enabled = true;

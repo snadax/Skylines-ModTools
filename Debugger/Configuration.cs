@@ -65,7 +65,7 @@ namespace ModTools
         public float sceneExplorerTreeIdentSpacing = 16.0f;
         public int sceneExplorerMaxHierarchyDepth = 32;
 
-        public string scriptEditorWorkspacePath = "";
+        public string scriptEditorWorkspacePath = string.Empty;
 
         public string fontName = "Courier New Bold";
         public int fontSize = 14;

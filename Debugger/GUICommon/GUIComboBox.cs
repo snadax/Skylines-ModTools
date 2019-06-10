@@ -108,7 +108,7 @@ namespace ModTools
                 {
                     popupActive = false;
                 }
-            }, "", style);
+            }, string.Empty, style);
 
             // Cancel the popup if we click outside
             if (Event.current.type == EventType.MouseDown && !rect.Contains(Event.current.mousePosition))

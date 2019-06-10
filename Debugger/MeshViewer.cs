@@ -118,7 +118,7 @@ namespace ModTools
 
             Material material1 = (useOriginalShader && material != null) ? material : previewMaterial;
             Graphics.DrawMesh(previewMesh, trs, material1, 0, meshViewerCamera, 0, null, false, false);
-            meshViewerCamera.RenderWithShader(material1.shader, "");
+            meshViewerCamera.RenderWithShader(material1.shader, string.Empty);
 
             if (light != null)
             {

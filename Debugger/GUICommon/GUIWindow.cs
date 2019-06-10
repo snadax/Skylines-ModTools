@@ -271,7 +271,7 @@ namespace ModTools
                             DrawResizeHandle(mouse);
                         }
                     }
-                }, "");
+                }, string.Empty);
 
                 onUnityGUI?.Invoke();
 

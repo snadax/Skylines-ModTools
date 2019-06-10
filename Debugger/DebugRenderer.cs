@@ -157,7 +157,7 @@ namespace ModTools
                 Vector2 size = component.size;
                 Rect rect = CalculateRealComponentRect(position, size);
 
-                GUI.Box(rect, "", hoveredComponent == component ? hoveredRectStyle : normalRectStyle);
+                GUI.Box(rect, string.Empty, hoveredComponent == component ? hoveredRectStyle : normalRectStyle);
             }
 
             if (hoveredComponent != null)
@@ -176,7 +176,7 @@ namespace ModTools
                     coords.y = Screen.height - size.y;
                 }
 
-                GUI.Window(81871, new Rect(coords.x, coords.y, size.x, size.y), DoInfoWindow, "", infoWindowStyle);
+                GUI.Window(81871, new Rect(coords.x, coords.y, size.x, size.y), DoInfoWindow, string.Empty, infoWindowStyle);
             }
         }
 

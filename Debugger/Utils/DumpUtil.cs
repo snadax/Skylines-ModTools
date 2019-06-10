@@ -14,7 +14,7 @@ namespace ModTools.Utils
             Mesh lodMesh = null,
             Material lodMaterial = null)
         {
-            assetName = assetName.Replace("_Data", "");
+            assetName = assetName.Replace("_Data", string.Empty);
             Log.Warning($"Dumping asset \"{assetName}\"...");
             DumpMeshAndTextures(assetName, mesh, material);
             DumpMeshAndTextures($"{assetName}_lod", lodMesh, lodMaterial);
@@ -28,7 +28,7 @@ namespace ModTools.Utils
 
         public static void DumpMeshAndTextures(string assetName, Mesh mesh, Material material = null)
         {
-            assetName = assetName.Replace("_Data", "").LegalizeFileName();
+            assetName = assetName.Replace("_Data", string.Empty).LegalizeFileName();
 
             if (mesh?.isReadable == true)
             {
@@ -42,7 +42,7 @@ namespace ModTools.Utils
 
         public static void DumpTextures(string assetName, Material material)
         {
-            assetName = assetName.Replace("_Data", "").LegalizeFileName();
+            assetName = assetName.Replace("_Data", string.Empty).LegalizeFileName();
             DumpMainTex(assetName, (Texture2D)material.GetTexture("_MainTex"));
             DumpACI(assetName, (Texture2D)material.GetTexture("_ACIMap"));
             DumpXYS(assetName, (Texture2D)material.GetTexture("_XYSMap"));

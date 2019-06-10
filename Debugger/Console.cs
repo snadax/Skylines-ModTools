@@ -47,7 +47,7 @@ namespace ModTools
 
         private readonly object historyLock = new object();
         private readonly List<ConsoleMessage> history = new List<ConsoleMessage>();
-        private readonly List<string> commandHistory = new List<string>() { "" };
+        private readonly List<string> commandHistory = new List<string>() { string.Empty };
         private int currentCommandHistoryIndex;
 
         private Vector2 consoleScrollPosition = Vector2.zero;
@@ -153,7 +153,7 @@ namespace ModTools
                 }
             }
 
-            string caller = "";
+            string caller = string.Empty;
 
             var trace = new StackTrace(_internal ? 0 : 8);
 
@@ -280,20 +280,20 @@ namespace ModTools
             GUILayout.Label("Show console on:", GUILayout.ExpandWidth(false));
             GUILayout.FlexibleSpace();
             GUILayout.Label("Message", GUILayout.ExpandWidth(false));
-            config.showConsoleOnMessage = GUILayout.Toggle(config.showConsoleOnMessage, "", GUILayout.ExpandWidth(false));
+            config.showConsoleOnMessage = GUILayout.Toggle(config.showConsoleOnMessage, string.Empty, GUILayout.ExpandWidth(false));
             GUILayout.FlexibleSpace();
             GUILayout.Label("Warning", GUILayout.ExpandWidth(false));
-            config.showConsoleOnWarning = GUILayout.Toggle(config.showConsoleOnWarning, "", GUILayout.ExpandWidth(false));
+            config.showConsoleOnWarning = GUILayout.Toggle(config.showConsoleOnWarning, string.Empty, GUILayout.ExpandWidth(false));
             GUILayout.FlexibleSpace();
             GUILayout.Label("Error", GUILayout.ExpandWidth(false));
-            config.showConsoleOnError = GUILayout.Toggle(config.showConsoleOnError, "", GUILayout.ExpandWidth(false));
+            config.showConsoleOnError = GUILayout.Toggle(config.showConsoleOnError, string.Empty, GUILayout.ExpandWidth(false));
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Auto-scroll on new messages:");
-            config.consoleAutoScrollToBottom = GUILayout.Toggle(config.consoleAutoScrollToBottom, "");
+            config.consoleAutoScrollToBottom = GUILayout.Toggle(config.consoleAutoScrollToBottom, string.Empty);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
@@ -430,7 +430,7 @@ namespace ModTools
                 }
                 else
                 {
-                    GUILayout.Label("");
+                    GUILayout.Label(string.Empty);
                 }
 
                 GUI.contentColor = Color.white;
@@ -521,9 +521,9 @@ namespace ModTools
 
             if (emptyCommandLineArea)
             {
-                if (commandHistory.Last() != "")
+                if (commandHistory.Last() != string.Empty)
                 {
-                    commandHistory.Add("");
+                    commandHistory.Add(string.Empty);
                     currentCommandHistoryIndex = commandHistory.Count - 1;
                 }
                 else

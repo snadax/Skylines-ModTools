@@ -221,7 +221,7 @@ namespace ModTools
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Use ModTools console");
-            bool newUseConsole = GUILayout.Toggle(config.useModToolsConsole, "");
+            bool newUseConsole = GUILayout.Toggle(config.useModToolsConsole, string.Empty);
             GUILayout.EndHorizontal();
 
             if (newUseConsole != config.useModToolsConsole)
@@ -254,7 +254,7 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Log stack traces to console");
-            bool newLogExceptionsToConsole = GUILayout.Toggle(config.logExceptionsToConsole, "");
+            bool newLogExceptionsToConsole = GUILayout.Toggle(config.logExceptionsToConsole, string.Empty);
             GUILayout.EndHorizontal();
             if (newLogExceptionsToConsole != config.logExceptionsToConsole)
             {
@@ -264,7 +264,7 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Game panel extensions");
-            bool newExtendGamePanels = GUILayout.Toggle(config.extendGamePanels, "");
+            bool newExtendGamePanels = GUILayout.Toggle(config.extendGamePanels, string.Empty);
             GUILayout.EndHorizontal();
 
             if (newExtendGamePanels != config.extendGamePanels)
@@ -288,12 +288,12 @@ namespace ModTools
                 debugRenderer = FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
             }
             GUILayout.Label("Debug Renderer (Ctrl+R)");
-            debugRenderer.drawDebugInfo = GUILayout.Toggle(debugRenderer.drawDebugInfo, "");
+            debugRenderer.drawDebugInfo = GUILayout.Toggle(debugRenderer.drawDebugInfo, string.Empty);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Custom Prefabs Object");
-            bool customPrefabsObject = GUILayout.Toggle(config.customPrefabsObject, "");
+            bool customPrefabsObject = GUILayout.Toggle(config.customPrefabsObject, string.Empty);
             GUILayout.EndHorizontal();
             if (customPrefabsObject != config.customPrefabsObject)
             {
