@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace ModTools.Explorer
@@ -9,7 +7,8 @@ namespace ModTools.Explorer
     {
         public static void OnSceneTreeReflectICollection(SceneExplorerState state, ReferenceChain refChain, System.Object myProperty)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             var collection = myProperty as ICollection;
             if (collection == null)
@@ -30,10 +29,9 @@ namespace ModTools.Explorer
                 return;
             }
 
+            var collectionItemType = collection.GetType().GetElementType();
 
-            int arrayStart;
-            int arrayEnd;
-            GUICollectionNavigation.SetUpCollectionNavigation("Collection", state, refChain, oldRefChain, collectionSize, out arrayStart, out arrayEnd);
+            GUICollectionNavigation.SetUpCollectionNavigation("Collection", state, refChain, oldRefChain, collectionSize, out int arrayStart, out int arrayEnd);
             int count = 0;
             foreach (var value in collection)
             {
@@ -44,16 +42,22 @@ namespace ModTools.Explorer
                 }
 
                 refChain = oldRefChain.Add(count);
-                var type = value.GetType();
 
                 GUILayout.BeginHorizontal();
                 SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-                GUIExpander.ExpanderControls(state, refChain, type);
+                var type = value?.GetType() ?? collectionItemType;
+                if (type != null)
+                {
+                    if (value != null)
+                    {
+                        GUIExpander.ExpanderControls(state, refChain, type);
+                    }
 
-                GUI.contentColor = ModTools.Instance.config.typeColor;
+                    GUI.contentColor = ModTools.Instance.config.typeColor;
 
-                GUILayout.Label(type.ToString() + " ");
+                    GUILayout.Label(type.ToString() + " ");
+                }
 
                 GUI.contentColor = ModTools.Instance.config.nameColor;
 
@@ -69,10 +73,15 @@ namespace ModTools.Explorer
                 GUI.contentColor = Color.white;
 
                 GUILayout.FlexibleSpace();
-                GUIButtons.SetupButtons(type, value, refChain);
+
+                if (value != null)
+                {
+                    GUIButtons.SetupButtons(type, value, refChain);
+                }
+
                 GUILayout.EndHorizontal();
 
-                if (!TypeUtil.IsSpecialType(type) && state.expandedObjects.ContainsKey(refChain))
+                if (value != null && !TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
                 {
                     if (value is GameObject)
                     {

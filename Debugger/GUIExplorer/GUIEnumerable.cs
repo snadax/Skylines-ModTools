@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace ModTools.Explorer
@@ -9,7 +7,8 @@ namespace ModTools.Explorer
     {
         public static void OnSceneTreeReflectIEnumerable(SceneExplorerState state, ReferenceChain refChain, object myProperty)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             var enumerable = myProperty as IEnumerable;
             if (enumerable == null)
@@ -24,16 +23,18 @@ namespace ModTools.Explorer
             {
                 refChain = oldRefChain.Add(count);
 
-                var type = value.GetType();
-
                 GUILayout.BeginHorizontal();
                 SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-                GUIExpander.ExpanderControls(state, refChain, type);
+                var type = value?.GetType();
+                if (type != null)
+                {
+                    GUIExpander.ExpanderControls(state, refChain, type);
 
-                GUI.contentColor = ModTools.Instance.config.typeColor;
+                    GUI.contentColor = ModTools.Instance.config.typeColor;
 
-                GUILayout.Label(type.ToString() + " ");
+                    GUILayout.Label(type.ToString() + " ");
+                }
 
                 GUI.contentColor = ModTools.Instance.config.nameColor;
 
@@ -52,7 +53,7 @@ namespace ModTools.Explorer
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
 
-                if (!TypeUtil.IsSpecialType(type) && state.expandedObjects.ContainsKey(refChain))
+                if (type != null && !TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
                 {
                     if (value is GameObject)
                     {
@@ -73,9 +74,9 @@ namespace ModTools.Explorer
                 }
 
                 count++;
-                if (count >= 1024)
+                if (count >= 128)
                 {
-                    SceneExplorerCommon.OnSceneTreeMessage(refChain, "Array too large to display");
+                    SceneExplorerCommon.OnSceneTreeMessage(refChain, "Enumerable too large to display");
                     break;
                 }
             }

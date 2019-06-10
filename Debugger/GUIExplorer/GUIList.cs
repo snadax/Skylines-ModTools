@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace ModTools.Explorer
 {
     public static class GUIList
     {
-        public static void OnSceneTreeReflectIList(SceneExplorerState state, 
-            ReferenceChain refChain, System.Object myProperty)
+        public static void OnSceneTreeReflectIList(SceneExplorerState state, ReferenceChain refChain, object myProperty)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+                return;
 
             var list = myProperty as IList;
             if (list == null)
@@ -31,28 +29,31 @@ namespace ModTools.Explorer
                 return;
             }
 
-            int arrayStart;
-            int arrayEnd;
-            GUICollectionNavigation.SetUpCollectionNavigation("List", state, refChain, oldRefChain, collectionSize, out arrayStart, out arrayEnd);
+            var listItemType = list.GetType().GetElementType();
+
+            GUICollectionNavigation.SetUpCollectionNavigation("List", state, refChain, oldRefChain, collectionSize, out int arrayStart, out int arrayEnd);
             for (int i = arrayStart; i <= arrayEnd; i++)
             {
                 refChain = oldRefChain.Add(i);
-                if (list[i] == null)
-                {
-                    continue;
-                }
 
                 GUILayout.BeginHorizontal();
                 SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-
                 GUI.contentColor = Color.white;
-                var type = list[i] == null ? null : list[i].GetType();
-                GUIExpander.ExpanderControls(state, refChain, type);
 
-                GUI.contentColor = ModTools.Instance.config.typeColor;
+                var value = list[i];
+                var type = value?.GetType() ?? listItemType;
+                if (type != null)
+                {
+                    if (value != null)
+                    {
+                        GUIExpander.ExpanderControls(state, refChain, type);
+                    }
 
-                GUILayout.Label($"{type} ");
+                    GUI.contentColor = ModTools.Instance.config.typeColor;
+
+                    GUILayout.Label($"{type} ");
+                }
 
                 GUI.contentColor = ModTools.Instance.config.nameColor;
 
@@ -64,49 +65,36 @@ namespace ModTools.Explorer
 
                 GUI.contentColor = ModTools.Instance.config.valueColor;
 
-                if (list[i] == null || !TypeUtil.IsSpecialType(list[i].GetType()))
-                {
-                    GUILayout.Label(list[i] == null ? "null" : list[i].ToString());
-                }
-                else
-                {
-                    try
-                    {
-                        var newValue = GUIControls.EditorValueField(refChain, refChain.ToString(), list[i].GetType(), list[i]);
-                        if (newValue != list[i])
-                        {
-                            list[i] = newValue;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        GUILayout.Label(list[i] == null ? "null" : list[i].ToString());
-                    }
-                }
+                GUILayout.Label(value == null ? "null" : value.ToString());
 
                 GUI.contentColor = Color.white;
 
                 GUILayout.FlexibleSpace();
-                GUIButtons.SetupButtons(type, list[i], refChain);
+
+                if (value != null)
+                {
+                    GUIButtons.SetupButtons(type, value, refChain);
+                }
+                
                 GUILayout.EndHorizontal();
 
-                if (!TypeUtil.IsSpecialType(type) && state.expandedObjects.ContainsKey(refChain))
+                if (value != null && !TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
                 {
-                    if (list[i] is GameObject)
+                    if (value is GameObject)
                     {
-                        var go = list[i] as GameObject;
+                        var go = value as GameObject;
                         foreach (var component in go.GetComponents<Component>())
                         {
                             GUIComponent.OnSceneTreeComponent(state, refChain, component);
                         }
                     }
-                    else if (list[i] is Transform)
+                    else if (value is Transform)
                     {
-                        GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, (Transform)list[i]);
+                        GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, (Transform)value);
                     }
                     else
                     {
-                        GUIReflect.OnSceneTreeReflect(state, refChain, list[i]);
+                        GUIReflect.OnSceneTreeReflect(state, refChain, value);
                     }
                 }
             }
