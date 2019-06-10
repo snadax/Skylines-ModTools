@@ -12,14 +12,14 @@ namespace ModTools
 
         private static readonly Dictionary<string, Texture2D> textureCache = new Dictionary<string, Texture2D>();
 
-        public static Texture2D GetColorTexture(string hash, Color color)
+        public static Texture2D GetColorTexture(string id, Color color)
         {
-            if (!textureCache.ContainsKey(hash))
+            if (!textureCache.TryGetValue(id, out Texture2D texture))
             {
-                textureCache.Add(hash, new Texture2D(1, 1));
+                texture = new Texture2D(1, 1);
+                textureCache.Add(id, texture);
             }
 
-            var texture = textureCache[hash];
             texture.SetPixel(0, 0, color);
             texture.Apply();
             return texture;

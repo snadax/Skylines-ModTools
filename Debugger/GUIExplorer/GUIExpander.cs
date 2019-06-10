@@ -13,18 +13,18 @@ namespace ModTools.Explorer
             {
                 return;
             }
-            if (state.expandedObjects.ContainsKey(refChain))
+            if (state.ExpandedObjects.Contains(refChain.UniqueId))
             {
                 if (GUILayout.Button("-", GUILayout.ExpandWidth(false)))
                 {
-                    state.expandedObjects.Remove(refChain);
+                    state.ExpandedObjects.Remove(refChain.UniqueId);
                 }
             }
             else
             {
                 if (GUILayout.Button("+", GUILayout.ExpandWidth(false)))
                 {
-                    state.expandedObjects.Add(refChain, true);
+                    state.ExpandedObjects.Add(refChain.UniqueId);
                 }
             }
         }

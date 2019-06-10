@@ -89,7 +89,6 @@
     <Compile Include="GUICommon\GUIArea.cs" />
     <Compile Include="GUICommon\GUIComboBox.cs" />
     <Compile Include="GUICommon\GUIWindow.cs" />
-    <Compile Include="Utils\HashCodeUtil.cs" />
     <Compile Include="Utils\HashUtil.cs" />
     <Compile Include="IModEntryPoint.cs" />
     <Compile Include="MeshViewer.cs" />

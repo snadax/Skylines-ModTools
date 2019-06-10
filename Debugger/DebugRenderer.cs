@@ -44,7 +44,7 @@ namespace ModTools
                     refChain = refChain.Add(uiView.gameObject);
 
                     var sceneExplorer = FindObjectOfType<SceneExplorer>();
-                    sceneExplorer.ExpandFromRefChain(refChain.Reverse);
+                    sceneExplorer.ExpandFromRefChain(refChain.GetReversedCopy());
                     sceneExplorer.visible = true;
                 }
                 if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G))

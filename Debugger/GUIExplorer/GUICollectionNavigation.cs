@@ -13,18 +13,17 @@ namespace ModTools.Explorer
 
             GUILayout.Label($"{collectionLabel} size: {collectionSize}");
 
-            if (!state.selectedArrayStartIndices.ContainsKey(refChain))
+            if (!state.SelectedArrayStartIndices.TryGetValue(refChain.UniqueId, out arrayStart))
             {
-                state.selectedArrayStartIndices.Add(refChain, 0);
+                state.SelectedArrayStartIndices.Add(refChain.UniqueId, 0);
             }
 
-            if (!state.selectedArrayEndIndices.ContainsKey(refChain))
+            if (!state.SelectedArrayEndIndices.TryGetValue(refChain.UniqueId, out arrayEnd))
             {
-                state.selectedArrayEndIndices.Add(refChain, 32);
+                state.SelectedArrayEndIndices.Add(refChain.UniqueId, 32);
+                arrayEnd = 32;
             }
 
-            arrayStart = state.selectedArrayStartIndices[refChain];
-            arrayEnd = state.selectedArrayEndIndices[refChain];
             GUIControls.IntField($"{oldRefChain}.arrayStart", "Start index", ref arrayStart, 0.0f, true, true);
             GUIControls.IntField($"{oldRefChain}.arrayEnd", "End index", ref arrayEnd, 0.0f, true, true);
             GUILayout.Label("(32 items max)");
@@ -51,8 +50,8 @@ namespace ModTools.Explorer
                 arrayEnd = arrayStart + 32;
                 arrayEnd = Mathf.Clamp(arrayEnd, 32, collectionSize - 1);
             }
-            state.selectedArrayStartIndices[refChain] = arrayStart;
-            state.selectedArrayEndIndices[refChain] = arrayEnd;
+            state.SelectedArrayStartIndices[refChain.UniqueId] = arrayStart;
+            state.SelectedArrayEndIndices[refChain.UniqueId] = arrayEnd;
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }

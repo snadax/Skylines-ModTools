@@ -1,17 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ModTools
 {
-    public class SceneExplorerState
+    public sealed class SceneExplorerState
     {
-        public Dictionary<ReferenceChain, bool> expandedGameObjects = new Dictionary<ReferenceChain, bool>();
-        public Dictionary<ReferenceChain, bool> expandedComponents = new Dictionary<ReferenceChain, bool>();
-        public Dictionary<ReferenceChain, bool> expandedObjects = new Dictionary<ReferenceChain, bool>();
-        public Dictionary<ReferenceChain, bool> evaluatedProperties = new Dictionary<ReferenceChain, bool>();
-        public Dictionary<ReferenceChain, int> selectedArrayStartIndices = new Dictionary<ReferenceChain, int>();
-        public Dictionary<ReferenceChain, int> selectedArrayEndIndices = new Dictionary<ReferenceChain, int>();
-        public List<object> preventCircularReferences = new List<object>();
-        public ReferenceChain currentRefChain = null;
+        public HashSet<string> ExpandedGameObjects { get; } = new HashSet<string>();
+
+        public HashSet<string> ExpandedComponents { get; } = new HashSet<string>();
+
+        public HashSet<string> ExpandedObjects { get; } = new HashSet<string>();
+
+        public HashSet<string> EvaluatedProperties { get; } = new HashSet<string>();
+
+        public Dictionary<string, int> SelectedArrayStartIndices { get; } = new Dictionary<string, int>();
+
+        public Dictionary<string, int> SelectedArrayEndIndices { get; } = new Dictionary<string, int>();
+
+        public HashSet<object> PreventCircularReferences { get; } = new HashSet<object>();
+
+        public ReferenceChain CurrentRefChain { get; set; }
     }
 }

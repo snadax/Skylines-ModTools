@@ -18,8 +18,6 @@ namespace ModTools.Explorer
                 return;
             }
 
-            var hash = refChain.GetHashCode().ToString();
-
             GUILayout.BeginHorizontal();
             SceneExplorerCommon.InsertIndent(refChain.Ident);
 
@@ -28,7 +26,7 @@ namespace ModTools.Explorer
 
             Exception exceptionOnGetting = null;
 
-            if (property.CanRead && ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically || state.evaluatedProperties.ContainsKey(refChain))
+            if (property.CanRead && ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically || state.EvaluatedProperties.Contains(refChain.UniqueId))
             {
                 try
                 {
@@ -77,13 +75,13 @@ namespace ModTools.Explorer
             GUILayout.Label(" = ");
             GUI.contentColor = ModTools.Instance.config.valueColor;
 
-            if (!ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically && !state.evaluatedProperties.ContainsKey(refChain))
+            if (!ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically && !state.EvaluatedProperties.Contains(refChain.UniqueId))
             {
                 GUI.enabled = true;
 
                 if (GUILayout.Button("Evaluate"))
                 {
-                    state.evaluatedProperties.Add(refChain, true);
+                    state.EvaluatedProperties.Add(refChain.UniqueId);
                 }
             }
             else
@@ -131,7 +129,7 @@ namespace ModTools.Explorer
                 {
                     try
                     {
-                        var newValue = GUIControls.EditorValueField(refChain, hash, property.PropertyType, value);
+                        var newValue = GUIControls.EditorValueField(refChain, refChain.UniqueId, property.PropertyType, value);
                         if (newValue != value)
                         {
                             property.SetValue(obj, newValue, null);
@@ -171,7 +169,7 @@ namespace ModTools.Explorer
             }
             GUILayout.EndHorizontal();
 
-            if (value != null && state.expandedObjects.ContainsKey(refChain))
+            if (value != null && state.ExpandedObjects.Contains(refChain.UniqueId))
             {
                 if (value is GameObject)
                 {

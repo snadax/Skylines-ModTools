@@ -128,7 +128,7 @@ namespace ModTools.Explorer
                 var doPaste = GUIButtons.SetupPasteButon(type, out paste);
                 GUILayout.EndHorizontal();
 
-                if (!TypeUtil.IsSpecialType(type) && state.expandedObjects.ContainsKey(refChain))
+                if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
                 {
                     GUIReflect.OnSceneTreeReflect(state, refChain, value);
                 }
@@ -185,7 +185,7 @@ namespace ModTools.Explorer
                 var doPaste = GUIButtons.SetupPasteButon(type, out paste);
                 GUILayout.EndHorizontal();
 
-                if (!TypeUtil.IsSpecialType(type) && state.expandedObjects.ContainsKey(refChain))
+                if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
                 {
                     GUIReflect.OnSceneTreeReflect(state, refChain, value);
                 }

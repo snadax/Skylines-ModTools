@@ -9,8 +9,6 @@ namespace ModTools.Explorer
     {
         public static void OnSceneTreeReflectField(SceneExplorerState state, ReferenceChain refChain, object obj, FieldInfo field)
         {
-            var hash = refChain.GetHashCode().ToString();
-
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
 
             if (obj == null || field == null)
@@ -83,7 +81,6 @@ namespace ModTools.Explorer
             GUILayout.Label(field.Name);
 
             GUI.contentColor = Color.white;
-            GUI.contentColor = Color.white;
             GUILayout.Label(" = ");
             GUI.contentColor = ModTools.Instance.config.valueColor;
 
@@ -95,7 +92,7 @@ namespace ModTools.Explorer
             {
                 try
                 {
-                    var newValue = GUIControls.EditorValueField(refChain, hash, field.FieldType, value);
+                    var newValue = GUIControls.EditorValueField(refChain, refChain.UniqueId, field.FieldType, value);
                     if (newValue != value)
                     {
                         field.SetValue(obj, newValue);
@@ -123,7 +120,7 @@ namespace ModTools.Explorer
                 doPaste = GUIButtons.SetupPasteButon(field.FieldType, out paste);
             }
             GUILayout.EndHorizontal();
-            if (value != null && !TypeUtil.IsSpecialType(field.FieldType) && state.expandedObjects.ContainsKey(refChain))
+            if (value != null && !TypeUtil.IsSpecialType(field.FieldType) && state.ExpandedObjects.Contains(refChain.UniqueId))
             {
                 if (value is GameObject)
                 {

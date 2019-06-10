@@ -22,7 +22,7 @@ namespace ModTools.Explorer
             {
                 if (!type.IsValueType)
                 {
-                    if (state.preventCircularReferences.Contains(obj))
+                    if (state.PreventCircularReferences.Contains(obj))
                     {
                         try
                         {
@@ -37,7 +37,7 @@ namespace ModTools.Explorer
                     }
                 }
 
-                state.preventCircularReferences.Add(obj);
+                state.PreventCircularReferences.Add(obj);
 
                 if (type == typeof(UnityEngine.Transform))
                 {

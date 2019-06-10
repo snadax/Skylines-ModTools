@@ -26,12 +26,12 @@ namespace ModTools.Explorer
                 GUI.contentColor = ModTools.Instance.config.disabledComponentColor;
             }
 
-            if (state.currentRefChain == null || !state.currentRefChain.Equals(refChain.Add(component)))
+            if (state.CurrentRefChain == null || !state.CurrentRefChain.Equals(refChain.Add(component)))
             {
                 if (GUILayout.Button(">", GUILayout.ExpandWidth(false)))
                 {
-                    state.currentRefChain = refChain.Add(component);
-                    state.currentRefChain.IdentOffset = -(refChain.Length + 1);
+                    state.CurrentRefChain = refChain.Add(component);
+                    state.CurrentRefChain.IdentOffset = -(refChain.Length + 1);
                 }
             }
             else
@@ -39,7 +39,7 @@ namespace ModTools.Explorer
                 GUI.contentColor = ModTools.Instance.config.selectedComponentColor;
                 if (GUILayout.Button("<", GUILayout.ExpandWidth(false)))
                 {
-                    state.currentRefChain = null;
+                    state.CurrentRefChain = null;
                 }
             }
 

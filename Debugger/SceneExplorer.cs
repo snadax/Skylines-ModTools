@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using ColossalFramework;
-using ColossalFramework.UI;
+using System.Reflection;
 using ModTools.Explorer;
-using ModTools.Utils;
 using UnityEngine;
 
 namespace ModTools
@@ -127,10 +121,9 @@ namespace ModTools
                 return;
             }
 
-            if (refChain.ChainTypes[0] != ReferenceChain.ReferenceType.GameObject)
+            if (refChain.FirstItemType != ReferenceChain.ReferenceType.GameObject)
             {
-                Log.Error(String.Format("SceneExplorer: ExpandFromRefChain(): invalid chain type for element [0] - expected {0}, got {1}",
-                    ReferenceChain.ReferenceType.GameObject, refChain.ChainTypes[0]));
+                Log.Error($"SceneExplorer: ExpandFromRefChain(): invalid chain type for element [0] - expected {ReferenceChain.ReferenceType.GameObject}, got {refChain.FirstItemType}");
                 return;
             }
 
@@ -138,50 +131,48 @@ namespace ModTools
             ClearExpanded();
             searchDisplayString = String.Format("Showing results for \"{0}\"", refChain.ToString());
 
-            var rootGameObject = (GameObject)refChain.ChainObjects[0];
+            var rootGameObject = (GameObject)refChain.GetChainItem(0);
             sceneRoots.Add(rootGameObject, true);
 
             var expandedRefChain = new ReferenceChain().Add(rootGameObject);
-            state.expandedGameObjects.Add(expandedRefChain, true);
+            state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
 
             for (int i = 1; i < refChain.Length; i++)
             {
-                switch (refChain.ChainTypes[i])
+                switch (refChain.GetChainItemType(i))
                 {
                     case ReferenceChain.ReferenceType.GameObject:
-                        var go = (GameObject)refChain.ChainObjects[i];
+                        var go = (GameObject)refChain.GetChainItem(i);
                         expandedRefChain = expandedRefChain.Add(go);
-                        state.expandedGameObjects.Add(expandedRefChain, true);
+                        state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
                         break;
                     case ReferenceChain.ReferenceType.Component:
-                        var component = (Component)refChain.ChainObjects[i];
+                        var component = (Component)refChain.GetChainItem(i);
                         expandedRefChain = expandedRefChain.Add(component);
-                        state.expandedComponents.Add(expandedRefChain, true);
+                        state.ExpandedComponents.Add(expandedRefChain.UniqueId);
                         break;
                     case ReferenceChain.ReferenceType.Field:
-                        var field = (FieldInfo)refChain.ChainObjects[i];
+                        var field = (FieldInfo)refChain.GetChainItem(i);
                         expandedRefChain = expandedRefChain.Add(field);
-                        state.expandedObjects.Add(expandedRefChain, true);
+                        state.ExpandedObjects.Add(expandedRefChain.UniqueId);
                         break;
                     case ReferenceChain.ReferenceType.Property:
-                        var property = (PropertyInfo)refChain.ChainObjects[i];
+                        var property = (PropertyInfo)refChain.GetChainItem(i);
                         expandedRefChain = expandedRefChain.Add(property);
-                        state.expandedObjects.Add(expandedRefChain, true);
-                        break;
-                    case ReferenceChain.ReferenceType.Method:
+                        state.ExpandedObjects.Add(expandedRefChain.UniqueId);
                         break;
                     case ReferenceChain.ReferenceType.EnumerableItem:
-                        var index = (int)refChain.ChainObjects[i];
-                        state.selectedArrayStartIndices[expandedRefChain] = index;
-                        state.selectedArrayEndIndices[expandedRefChain] = index;
+                        var index = (int)refChain.GetChainItem(i);
+                        state.SelectedArrayStartIndices[expandedRefChain.UniqueId] = index;
+                        state.SelectedArrayEndIndices[expandedRefChain.UniqueId] = index;
                         expandedRefChain = expandedRefChain.Add(index);
-                        state.expandedObjects.Add(expandedRefChain, true);
+                        state.ExpandedObjects.Add(expandedRefChain.UniqueId);
                         break;
                 }
             }
 
-            state.currentRefChain = refChain.Copy();
-            state.currentRefChain.IdentOffset = -state.currentRefChain.Length;
+            state.CurrentRefChain = refChain.Clone();
+            state.CurrentRefChain.IdentOffset = -state.CurrentRefChain.Length;
         }
 
         public void DrawHeader()
@@ -381,7 +372,7 @@ namespace ModTools
                 if (go != null)
                 {
                     sceneRoots.Clear();
-                    state.expandedGameObjects.Add(new ReferenceChain().Add(go), true);
+                    state.ExpandedGameObjects.Add(new ReferenceChain().Add(go).UniqueId);
                     sceneRoots.Add(go, true);
                     sceneTreeScrollPosition = Vector2.zero;
                     searchDisplayString = String.Format("Showing results for GameObject.Find(\"{0}\")", findGameObjectFilter);
@@ -418,10 +409,10 @@ namespace ModTools
                 foreach (var item in gameObjects)
                 {
                     ClearExpanded();
-                    state.expandedGameObjects.Add(new ReferenceChain().Add(item.Key), true);
+                    state.ExpandedGameObjects.Add(new ReferenceChain().Add(item.Key).UniqueId);
                     if (gameObjects.Count == 1)
                     {
-                        state.expandedComponents.Add(new ReferenceChain().Add(item.Key).Add(item.Value), true);
+                        state.ExpandedComponents.Add(new ReferenceChain().Add(item.Key).Add(item.Value).UniqueId);
                     }
                     sceneRoots.Add(item.Key, true);
                     sceneTreeScrollPosition = Vector2.zero;
@@ -499,16 +490,16 @@ namespace ModTools
 
             componentScrollPosition = GUILayout.BeginScrollView(componentScrollPosition);
 
-            if (state.currentRefChain != null)
+            if (state.CurrentRefChain != null)
             {
                 try
                 {
-                    GUIReflect.OnSceneTreeReflect(state, state.currentRefChain, state.currentRefChain.Evaluate());
+                    GUIReflect.OnSceneTreeReflect(state, state.CurrentRefChain, state.CurrentRefChain.Evaluate());
                 }
                 catch (Exception e)
                 {
                     UnityEngine.Debug.LogException(e);
-                    state.currentRefChain = null;
+                    state.CurrentRefChain = null;
                     throw;
                 }
             }
@@ -529,7 +520,7 @@ namespace ModTools
                 GUI.FocusControl(null);
             }
 
-            state.preventCircularReferences.Clear();
+            state.PreventCircularReferences.Clear();
 
             DrawHeader();
             DrawSceneTree();
@@ -538,15 +529,15 @@ namespace ModTools
 
         private void ClearExpanded()
         {
-            state.expandedGameObjects.Clear();
-            state.expandedComponents.Clear();
-            state.expandedObjects.Clear();
-            state.evaluatedProperties.Clear();
-            state.selectedArrayStartIndices.Clear();
-            state.selectedArrayEndIndices.Clear();
+            state.ExpandedGameObjects.Clear();
+            state.ExpandedComponents.Clear();
+            state.ExpandedObjects.Clear();
+            state.EvaluatedProperties.Clear();
+            state.SelectedArrayStartIndices.Clear();
+            state.SelectedArrayEndIndices.Clear();
             searchDisplayString = "";
             sceneTreeScrollPosition = Vector2.zero;
-            state.currentRefChain = null;
+            state.CurrentRefChain = null;
             TypeUtil.ClearTypeCache();
         }
     }

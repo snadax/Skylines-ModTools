@@ -25,7 +25,7 @@ namespace ModTools.Explorer
                 return;
             }
 
-            if (state.expandedGameObjects.ContainsKey(refChain))
+            if (state.ExpandedGameObjects.Contains(refChain.UniqueId))
             {
                 try
                 {
@@ -34,7 +34,7 @@ namespace ModTools.Explorer
 
                     if (GUILayout.Button("-", GUILayout.ExpandWidth(false)))
                     {
-                        state.expandedGameObjects.Remove(refChain);
+                        state.ExpandedGameObjects.Remove(refChain.UniqueId);
                     }
 
                     GUI.contentColor = ModTools.Instance.config.gameObjectColor;
@@ -62,7 +62,7 @@ namespace ModTools.Explorer
                 }
                 catch (Exception)
                 {
-                    state.expandedGameObjects.Remove(refChain);
+                    state.ExpandedGameObjects.Remove(refChain.UniqueId);
                     throw;
                 }
             }
@@ -73,7 +73,7 @@ namespace ModTools.Explorer
 
                 if (GUILayout.Button("+", GUILayout.ExpandWidth(false)))
                 {
-                    state.expandedGameObjects.Add(refChain, true);
+                    state.ExpandedGameObjects.Add(refChain.UniqueId);
                 }
 
                 GUI.contentColor = ModTools.Instance.config.gameObjectColor;
