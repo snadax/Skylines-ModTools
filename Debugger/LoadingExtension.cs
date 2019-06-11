@@ -5,12 +5,6 @@ namespace ModTools
 {
     public sealed class LoadingExtension : LoadingExtensionBase
     {
-        public override void OnCreated(ILoading loading)
-        {
-            base.OnCreated(loading);
-            ModToolsBootstrap.Bootstrap();
-        }
-
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);

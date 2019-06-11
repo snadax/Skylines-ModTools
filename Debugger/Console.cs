@@ -119,8 +119,11 @@ namespace ModTools
 
         private void HandleDestroy()
         {
-            vanillaPanel.transform.parent = oldVanillaPanelParent;
-            vanillaPanel = null;
+            if (vanillaPanel != null)
+            {
+                vanillaPanel.transform.parent = oldVanillaPanelParent;
+                vanillaPanel = null;
+            }
         }
 
         public void Update()

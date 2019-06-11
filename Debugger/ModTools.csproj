@@ -83,7 +83,6 @@
     <Compile Include="GUIExplorer\SceneExplorerCommon.cs" />
     <Compile Include="Plopper.cs" />
     <Compile Include="LoadingExtension.cs" />
-    <Compile Include="ModToolsBootstrap.cs" />
     <Compile Include="Utils\FileUtil.cs" />
     <Compile Include="Utils\GameObjectUtil.cs" />
     <Compile Include="GamePanelExtender.cs" />

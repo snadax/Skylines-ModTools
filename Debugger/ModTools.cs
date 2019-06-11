@@ -38,7 +38,6 @@ namespace ModTools
             Destroy(colorPicker);
 
             instance = null;
-            ModToolsBootstrap.initialized = false;
         }
 
         public static ModTools Instance
@@ -137,10 +136,6 @@ namespace ModTools
 
         private void OnApplicationLogMessageReceivedThreaded(string condition, string trace, LogType type)
         {
-            if (!ModToolsBootstrap.initialized)
-            {
-                return;
-            }
             lock (LoggingLock)
             {
                 if (config.logLevel > 2)
