@@ -108,7 +108,6 @@
     <Compile Include="TextureViewer.cs" />
     <Compile Include="SceneExplorer.cs" />
     <Compile Include="Utils\TypeUtil.cs" />
-    <Compile Include="UpdateHook.cs" />
     <Compile Include="UserNotifications.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Utils\DumpUtil.cs" />
