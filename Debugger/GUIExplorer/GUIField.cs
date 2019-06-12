@@ -94,8 +94,8 @@ namespace ModTools.Explorer
             {
                 try
                 {
-                    object newValue = GUIControls.EditorValueField(refChain, refChain.UniqueId, field.FieldType, value);
-                    if (newValue != value)
+                    var newValue = GUIControls.EditorValueField(refChain.UniqueId, field.FieldType, value);
+                    if (!newValue.Equals(value))
                     {
                         field.SetValue(obj, newValue);
                     }

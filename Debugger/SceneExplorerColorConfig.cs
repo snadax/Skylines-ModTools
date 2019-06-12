@@ -33,13 +33,14 @@ namespace ModTools
             }
         }
 
-        private void DrawColorControl(string name, ref Color value, ColorPicker.OnColorChanged onColorChanged)
+        private Color DrawColorControl(string name, Color value)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(name);
             GUILayout.FlexibleSpace();
-            GUIControls.ColorField(name, "", ref value, 0.0f, null, true, true, onColorChanged);
+            var newColor = GUIControls.CustomValueField(name, string.Empty, GUIControls.PresentColor, value);
             GUILayout.EndHorizontal();
+            return newColor;
         }
 
         private void DrawWindow()
@@ -72,35 +73,37 @@ namespace ModTools
 
             GUILayout.EndHorizontal();
 
-            DrawColorControl("Background", ref config.backgroundColor, color =>
+            var newColor = DrawColorControl("Background", config.backgroundColor);
+            if (newColor != config.backgroundColor)
             {
-                config.backgroundColor = color;
+                config.backgroundColor = newColor;
                 bgTexture.SetPixel(0, 0, config.backgroundColor);
                 bgTexture.Apply();
-            });
+            }
 
-            DrawColorControl("Titlebar", ref config.titlebarColor, color =>
+            newColor = DrawColorControl("Titlebar", config.titlebarColor);
+            if (newColor != config.titlebarColor)
             {
-                config.titlebarColor = color;
+                config.titlebarColor = newColor;
                 moveNormalTexture.SetPixel(0, 0, config.titlebarColor);
                 moveNormalTexture.Apply();
 
                 moveHoverTexture.SetPixel(0, 0, config.titlebarColor * 1.2f);
                 moveHoverTexture.Apply();
-            });
+            }
 
-            DrawColorControl("Titlebar text", ref config.titlebarTextColor, color => config.titlebarTextColor = color);
+            config.titlebarTextColor = DrawColorControl("Titlebar text", config.titlebarTextColor);
 
-            DrawColorControl("GameObject", ref config.gameObjectColor, color => config.gameObjectColor = color);
-            DrawColorControl("Component (enabled)", ref config.enabledComponentColor, color => config.enabledComponentColor = color);
-            DrawColorControl("Component (disabled)", ref config.disabledComponentColor, color => config.disabledComponentColor = color);
-            DrawColorControl("Selected component", ref config.selectedComponentColor, color => config.selectedComponentColor = color);
-            DrawColorControl("Keyword", ref config.keywordColor, color => config.keywordColor = color);
-            DrawColorControl("Member name", ref config.nameColor, color => config.nameColor = color);
-            DrawColorControl("Member type", ref config.typeColor, color => config.typeColor = color);
-            DrawColorControl("Member modifier", ref config.modifierColor, color => config.modifierColor = color);
-            DrawColorControl("Field type", ref config.memberTypeColor, color => config.memberTypeColor = color);
-            DrawColorControl("Member value", ref config.valueColor, color => config.valueColor = color);
+            config.gameObjectColor = DrawColorControl("GameObject", config.gameObjectColor);
+            config.enabledComponentColor = DrawColorControl("Component (enabled)", config.enabledComponentColor);
+            config.disabledComponentColor = DrawColorControl("Component (disabled)", config.disabledComponentColor);
+            config.selectedComponentColor = DrawColorControl("Selected component", config.selectedComponentColor);
+            config.keywordColor = DrawColorControl("Keyword", config.keywordColor);
+            config.nameColor = DrawColorControl("Member name", config.nameColor);
+            config.typeColor = DrawColorControl("Member type", config.typeColor);
+            config.modifierColor = DrawColorControl("Member modifier", config.modifierColor);
+            config.memberTypeColor = DrawColorControl("Field type", config.memberTypeColor);
+            config.valueColor = DrawColorControl("Member value", config.valueColor);
 
             GUILayout.BeginHorizontal();
 

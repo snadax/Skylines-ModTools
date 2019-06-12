@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ModTools.Explorer
 {
@@ -50,17 +49,12 @@ namespace ModTools.Explorer
                 return;
             }
 
-            GUIControls.QuaternionField(refChain.ToString(), name, ref vec, ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident, () =>
-            {
-                try
-                {
-                    ModTools.Instance.watches.AddWatch(refChain);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error("Exception in ModTools:OnSceneTreeReflectUnityEngineQuaternion - " + ex.Message);
-                }
-            });
+            vec = GUIControls.CustomValueField(
+                refChain.UniqueId,
+                name,
+                GUIControls.PresentQuaternion,
+                vec,
+                ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident);
         }
 
         private static void OnSceneTreeReflectUnityEngineVector3(ReferenceChain refChain, string name, ref Vector3 vec)
@@ -70,17 +64,12 @@ namespace ModTools.Explorer
                 return;
             }
 
-            GUIControls.Vector3Field(refChain.ToString(), name, ref vec, ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident, () =>
-            {
-                try
-                {
-                    ModTools.Instance.watches.AddWatch(refChain);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error("Exception in ModTools:OnSceneTreeReflectUnityEngineVector3 - " + ex.Message);
-                }
-            });
+            vec = GUIControls.CustomValueField(
+                refChain.UniqueId,
+                name,
+                GUIControls.PresentVector3,
+                vec,
+                ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident);
         }
     }
 }

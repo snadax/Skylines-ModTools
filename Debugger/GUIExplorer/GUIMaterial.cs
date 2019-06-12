@@ -167,15 +167,13 @@ namespace ModTools.Explorer
                 GUI.contentColor = Color.white;
 
                 GUILayout.Label(" = ");
-                Color f = value;
 
                 GUI.contentColor = ModTools.Instance.config.valueColor;
 
-                string propertyCopy = prop;
-                GUIControls.ColorField(refChain.ToString(), "", ref f, 0.0f, null, true, true, color => material.SetColor(propertyCopy, color));
-                if (f != value)
+                var newColor = GUIControls.CustomValueField(refChain.UniqueId, string.Empty, GUIControls.PresentColor, value);
+                if (newColor != value)
                 {
-                    material.SetColor(prop, f);
+                    material.SetColor(prop, newColor);
                 }
 
                 GUI.contentColor = Color.white;

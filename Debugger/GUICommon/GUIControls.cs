@@ -1,653 +1,202 @@
 ﻿using System;
-using System.Linq;
+using ModTools.Utils;
 using UnityEngine;
 
 namespace ModTools
 {
     internal static class GUIControls
     {
-        private static Configuration config => ModTools.Instance.config;
+        private static Configuration Config => ModTools.Instance.config;
 
-        public static float numberFieldSize = 100;
-        public static float stringFieldSize = 200;
-        public static float byteFieldSize = 40;
-        public static float charFieldSize = 25;
+        private const float NumberFieldSize = 100f;
+        private const float StringFieldSize = 200f;
+        private const float ByteFieldSize = 40f;
+        private const float CharFieldSize = 25f;
 
         public delegate void WatchButtonCallback();
 
-        public static string BufferedTextField(string id, string value, float fieldSize)
+        private static string lastFocusedFieldId;
+        private static bool lastFocusedFieldEmpty;
+
+        private static string BufferedTextField(string id, string value, float fieldSize)
         {
+            var focusedFieldId = GUI.GetNameOfFocusedControl();
+
+            if (focusedFieldId != lastFocusedFieldId)
+            {
+                lastFocusedFieldEmpty = string.IsNullOrEmpty(value);
+                lastFocusedFieldId = focusedFieldId;
+            }
+
+            if (focusedFieldId == id && lastFocusedFieldEmpty)
+            {
+                value = string.Empty;
+            }
+
             GUI.SetNextControlName(id);
-            string newValue = GUILayout.TextField(value, GUILayout.Width(fieldSize));
+            var newValue = GUILayout.TextField(value, GUILayout.Width(fieldSize), GUILayout.Height(22f));
+
+            if (focusedFieldId == id)
+            {
+                lastFocusedFieldEmpty = string.IsNullOrEmpty(newValue);
+                if (lastFocusedFieldEmpty)
+                {
+                    return null;
+                }
+            }
+
             return value != newValue ? newValue : null;
         }
 
-        public static object EditorValueField(ReferenceChain refChain, string id, Type type, object value)
+        public static T PrimitiveValueField<T>(string id, string name, T value)
+            where T : struct
         {
-            if (type == typeof(float))
+            GUILayout.BeginHorizontal();
+
+            if (!string.IsNullOrEmpty(name))
             {
-                float f = (float)value;
-                FloatField(id, "", ref f, 0.0f, true, true);
-                return f != (float)value ? f : value;
+                GUI.contentColor = Config.nameColor;
+                GUILayout.Label(name);
             }
 
-            if (type == typeof(double))
+            GUI.contentColor = Config.valueColor;
+
+            var newText = BufferedTextField(id, value.ToString(), GetTextFieldSize(typeof(T)));
+
+            GUI.contentColor = Color.white;
+
+            GUILayout.EndHorizontal();
+
+            return ParseHelper.TryParse<T>(newText, out var newValue) ? newValue : value;
+        }
+
+        private static float GetTextFieldSize(Type valueType)
+        {
+            switch (Type.GetTypeCode(valueType))
             {
-                double f = (double)value;
-                DoubleField(id, "", ref f, 0.0f, true, true);
-                return f != (double)value ? f : value;
+                case TypeCode.Char:
+                    return CharFieldSize;
+
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                    return ByteFieldSize;
+
+                case TypeCode.String:
+                    return StringFieldSize;
+
+                default:
+                    return NumberFieldSize;
+            }
+        }
+
+        public static object PrimitiveValueField(string id, string name, object value)
+        {
+            GUILayout.BeginHorizontal();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                GUI.contentColor = Config.nameColor;
+                GUILayout.Label(name);
             }
 
-            if (type == typeof(byte))
-            {
-                byte f = (byte)value;
-                ByteField(id, "", ref f, 0.0f, true, true);
-                return f != (byte)value ? f : value;
-            }
+            GUI.contentColor = Config.valueColor;
 
-            if (type == typeof(int))
-            {
-                int f = (int)value;
-                IntField(id, "", ref f, 0.0f, true, true);
-                return f != (int)value ? f : value;
-            }
+            var valueType = value.GetType();
+            var newText = BufferedTextField(id, value.ToString(), GetTextFieldSize(valueType));
 
-            if (type == typeof(uint))
-            {
-                uint f = (uint)value;
-                UIntField(id, "", ref f, 0.0f, true, true);
-                return f != (uint)value ? f : value;
-            }
+            GUI.contentColor = Color.white;
 
-            if (type == typeof(long))
-            {
-                long f = (long)value;
-                Int64Field(id, "", ref f, 0.0f, true, true);
-                return f != (long)value ? f : value;
-            }
+            GUILayout.EndHorizontal();
 
-            if (type == typeof(ulong))
-            {
-                ulong f = (ulong)value;
-                UInt64Field(id, "", ref f, 0.0f, true, true);
-                return f != (ulong)value ? f : value;
-            }
+            return ParseHelper.TryParse(newText, valueType, out var newValue) ? newValue : value;
+        }
 
-            if (type == typeof(short))
+        public static object EditorValueField(string id, Type type, object value)
+        {
+            if (type.IsPrimitive && type != typeof(bool) || type == typeof(string))
             {
-                short f = (short)value;
-                Int16Field(id, "", ref f, 0.0f, true, true);
-                return f != (short)value ? f : value;
-            }
-
-            if (type == typeof(ushort))
-            {
-                ushort f = (ushort)value;
-                UInt16Field(id, "", ref f, 0.0f, true, true);
-                return f != (ushort)value ? f : value;
+                return PrimitiveValueField(id, string.Empty, value);
             }
 
             if (type == typeof(bool))
             {
-                bool f = (bool)value;
-                BoolField("", ref f, 0.0f, true, true);
-                return f != (bool)value ? f : value;
-            }
-
-            if (type == typeof(string))
-            {
-                string f = (string)value;
-                StringField(id, "", ref f, 0.0f, true, true);
-                return f != (string)value ? f : value;
-            }
-
-            if (type == typeof(char))
-            {
-                char f = (char)value;
-                CharField(id, "", ref f, 0.0f, true, true);
-                return f != (char)value ? f : value;
-            }
-
-            if (type == typeof(Vector2))
-            {
-                var f = (Vector2)value;
-                Vector2Field(id, "", ref f, 0.0f, null, true, true);
-                return f != (Vector2)value ? f : value;
-            }
-
-            if (type == typeof(Vector3))
-            {
-                var f = (Vector3)value;
-                Vector3Field(id, "", ref f, 0.0f, null, true, true);
-                return f != (Vector3)value ? f : value;
-            }
-
-            if (type == typeof(Vector4))
-            {
-                var f = (Vector4)value;
-                Vector4Field(id, "", ref f, 0.0f, null, true, true);
-                return f != (Vector4)value ? f : value;
-            }
-
-            if (type == typeof(Quaternion))
-            {
-                var f = (Quaternion)value;
-                QuaternionField(id, "", ref f, 0.0f, null, true, true);
-                return f != (Quaternion)value ? f : value;
-            }
-
-            if (type == typeof(Color))
-            {
-                var f = (Color)value;
-                ColorField(id, "", ref f, 0.0f, null, true, true, color => refChain.SetValue(color));
-                return f != (Color)value ? f : value;
-            }
-
-            if (type == typeof(Color32))
-            {
-                var f = (Color32)value;
-                Color32Field(id, "", ref f, 0.0f, null, true, true, color => refChain.SetValue(color));
-                var v = (Color32)value;
-                return f.r != v.r || f.g != v.g || f.b != v.b || f.a != v.a ? f : value;
+                return BoolField(string.Empty, (bool)value);
             }
 
             if (type.IsEnum)
             {
-                object f = value;
-                EnumField(id, "", ref f, 0.0f, true, true);
-                return f != value ? f : value;
+                return EnumField(id, string.Empty, value);
+            }
+
+            if (type == typeof(Vector2))
+            {
+                return CustomValueField(id, string.Empty, PresentVector2, (Vector2)value);
+            }
+
+            if (type == typeof(Vector3))
+            {
+                return CustomValueField(id, string.Empty, PresentVector3, (Vector3)value);
+            }
+
+            if (type == typeof(Vector4))
+            {
+                return CustomValueField(id, string.Empty, PresentVector4, (Vector4)value);
+            }
+
+            if (type == typeof(Quaternion))
+            {
+                return CustomValueField(id, string.Empty, PresentQuaternion, (Quaternion)value);
+            }
+
+            if (type == typeof(Color))
+            {
+                return CustomValueField(id, string.Empty, PresentColor, (Color)value);
+            }
+
+            if (type == typeof(Color32))
+            {
+                return (Color32)CustomValueField(id, string.Empty, PresentColor, (Color)(Color32)value);
             }
 
             return value;
         }
 
-        public static void FloatField(string id, string name, ref float value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
+        public static bool BoolField(string name, bool value)
         {
             GUILayout.BeginHorizontal();
 
-            if (ident != 0.0f)
+            if (!string.IsNullOrEmpty(name))
             {
-                GUILayout.Space(ident);
+                GUI.contentColor = Config.nameColor;
+                GUILayout.Label(name);
             }
 
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("float");
-            }
+            GUI.contentColor = Config.valueColor;
 
-            GUI.contentColor = config.nameColor;
-            GUILayout.Label(name);
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            GUI.contentColor = config.valueColor;
-
-            string result = BufferedTextField(id, value.ToString(), numberFieldSize);
-            if (result != null)
-            {
-                if (float.TryParse(result, out float newValue))
-                {
-                    value = newValue;
-                }
-            }
+            value = GUILayout.Toggle(value, string.Empty);
 
             GUI.contentColor = Color.white;
 
             GUILayout.EndHorizontal();
+
+            return value;
         }
 
-        public static void DoubleField(string id, string name, ref double value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("double");
-            }
-
-            GUI.contentColor = config.nameColor;
-            GUILayout.Label(name);
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            GUI.contentColor = config.valueColor;
-
-            string result = BufferedTextField(id, value.ToString(), numberFieldSize);
-            if (result != null)
-            {
-                if (double.TryParse(result, out double newValue))
-                {
-                    value = newValue;
-                }
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
-        }
-
-        public static void ByteField(string id, string name, ref byte value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("int");
-            }
-
-            GUI.contentColor = config.nameColor;
-
-            GUILayout.Label(name);
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            GUI.contentColor = config.valueColor;
-            string result = BufferedTextField(id, value.ToString(), byteFieldSize);
-            if (result != null)
-            {
-                if (byte.TryParse(result, out byte newValue))
-                {
-                    value = newValue;
-                }
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
-        }
-
-        public static void IntField(string id, string name, ref int value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("int");
-            }
-
-            GUI.contentColor = config.nameColor;
-
-            GUILayout.Label(name);
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            GUI.contentColor = config.valueColor;
-
-            string result = BufferedTextField(id, value.ToString(), numberFieldSize);
-            if (result != null)
-            {
-                if (int.TryParse(result, out int newValue))
-                {
-                    value = newValue;
-                }
-            }
-
-            GUI.contentColor = Color.white;
-            GUILayout.EndHorizontal();
-        }
-
-        public static void UIntField(string id, string name, ref uint value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("uint");
-            }
-
-            GUI.contentColor = config.nameColor;
-
-            GUILayout.Label(name);
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            GUI.contentColor = config.valueColor;
-
-            string result = BufferedTextField(id, value.ToString(), numberFieldSize);
-            if (result != null)
-            {
-                if (uint.TryParse(result, out uint newValue))
-                {
-                    value = newValue;
-                }
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
-        }
-
-        public static void Int64Field(string id, string name, ref long value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("Int64");
-            }
-
-            GUI.contentColor = config.nameColor;
-
-            GUILayout.Label(name);
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            GUI.contentColor = config.valueColor;
-
-            string result = BufferedTextField(id, value.ToString(), numberFieldSize);
-            if (result != null)
-            {
-                if (long.TryParse(result, out long newValue))
-                {
-                    value = newValue;
-                }
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
-        }
-
-        public static void UInt64Field(string id, string name, ref ulong value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("UInt64");
-            }
-
-            GUI.contentColor = config.nameColor;
-
-            GUILayout.Label(name);
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            GUI.contentColor = config.valueColor;
-
-            string result = BufferedTextField(id, value.ToString(), numberFieldSize);
-            if (result != null)
-            {
-                if (ulong.TryParse(result, out ulong newValue))
-                {
-                    value = newValue;
-                }
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
-        }
-
-        public static void Int16Field(string id, string name, ref short value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("Int16");
-            }
-
-            GUI.contentColor = config.nameColor;
-
-            GUILayout.Label(name);
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            GUI.contentColor = config.valueColor;
-
-            string result = BufferedTextField(id, value.ToString(), numberFieldSize);
-            if (result != null)
-            {
-                if (short.TryParse(result, out short newValue))
-                {
-                    value = newValue;
-                }
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
-        }
-
-        public static void UInt16Field(string id, string name, ref ushort value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("UInt16");
-            }
-
-            GUI.contentColor = config.nameColor;
-
-            GUILayout.Label(name);
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            GUI.contentColor = config.valueColor;
-
-            string result = BufferedTextField(id, value.ToString(), numberFieldSize);
-            if (result != null)
-            {
-                if (ushort.TryParse(result, out ushort newValue))
-                {
-                    value = newValue;
-                }
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
-        }
-
-        public static void StringField(string id, string name, ref string value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("string");
-            }
-
-            GUI.contentColor = config.nameColor;
-            GUILayout.Label(name);
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            GUI.contentColor = config.valueColor;
-
-            string result = BufferedTextField(id, value, stringFieldSize);
-            if (result != null)
-            {
-                value = result;
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
-        }
-
-        public static void CharField(string id, string name, ref char value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("string");
-            }
-
-            GUI.contentColor = config.nameColor;
-            GUILayout.Label(name);
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            GUI.contentColor = config.valueColor;
-
-            string result = BufferedTextField(id, value.ToString(), charFieldSize);
-            if (result != null)
-            {
-                value = result[0];
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
-        }
-
-        public static void BoolField(string name, ref bool value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("bool");
-            }
-
-            GUI.contentColor = config.nameColor;
-            GUILayout.Label(name);
-
-            GUI.contentColor = config.valueColor;
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            value = GUILayout.Toggle(value, "");
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
-        }
-
-        public static void EnumField(string id, string name, ref object value, float ident = 0.0f, bool noSpace = false, bool noTypeLabel = false)
+        public static object EnumField(string id, string name, object value)
         {
             GUILayout.BeginHorizontal();
 
             try
             {
-                if (ident != 0.0f)
+                var enumType = value.GetType();
+
+                if (!string.IsNullOrEmpty(name))
                 {
-                    GUILayout.Space(ident);
+                    GUI.contentColor = Config.nameColor;
+                    GUILayout.Label(name);
                 }
 
-                Type enumType = value.GetType();
-
-                if (!noTypeLabel)
-                {
-                    GUI.contentColor = config.typeColor;
-                    GUILayout.Label(enumType.FullName);
-                }
-
-                GUI.contentColor = config.nameColor;
-                GUILayout.Label(name);
-                GUI.contentColor = config.valueColor;
-
-                if (!noSpace)
-                {
-                    GUILayout.FlexibleSpace();
-                }
-
-                string[] enumNames = Enum.GetNames(enumType).ToArray();
+                GUI.contentColor = Config.valueColor;
 
                 if (TypeUtil.IsBitmaskEnum(enumType))
                 {
@@ -655,354 +204,137 @@ namespace ModTools
                 }
                 else
                 {
-                    int i = 0;
-                    for (; i < enumNames.Length; i++)
+                    var names = Enum.GetNames(enumType);
+                    var values = Enum.GetValues(enumType);
+                    var valueIndex = Array.IndexOf(values, value);
+                    var newValueIndex = GUIComboBox.Box(valueIndex, names, id);
+                    if (newValueIndex != valueIndex)
                     {
-                        if (value.ToString() == enumNames[i])
-                        {
-                            break;
-                        }
+                        value = values.GetValue(newValueIndex);
                     }
-
-                    int newIndex = GUIComboBox.Box(i, enumNames, id);
-                    value = Enum.Parse(enumType, enumNames[newIndex]);
                 }
 
                 GUI.contentColor = Color.white;
             }
-            catch (Exception)
+            finally
             {
                 GUILayout.EndHorizontal();
-                throw;
             }
 
-            GUILayout.EndHorizontal();
+            return value;
         }
 
-        public static void Vector2Field(string id, string name, ref Vector2 value, float ident = 0.0f, WatchButtonCallback watch = null, bool noSpace = false, bool noTypeLabel = false)
+        public delegate T ValuePresenterDelegate<T>(string id, T value) where T : struct;
+
+        public static Vector2 PresentVector2(string id, Vector2 value)
         {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("Vector2");
-            }
-
-            GUI.contentColor = config.nameColor;
-            GUILayout.Label(name);
-
-            GUI.contentColor = config.valueColor;
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            FloatField(id + ".x", "x", ref value.x, 0.0f, true, true);
-            FloatField(id + ".y", "y", ref value.y, 0.0f, true, true);
-
-            if (watch != null)
-            {
-                if (GUILayout.Button("Watch"))
-                {
-                    watch();
-                }
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
+            value.x = PrimitiveValueField(id + ".x", "x", value.x);
+            value.y = PrimitiveValueField(id + ".y", "y", value.y);
+            return value;
         }
 
-        public static void Vector3Field(string id, string name, ref Vector3 value, float ident = 0.0f, WatchButtonCallback watch = null, bool noSpace = false, bool noTypeLabel = false)
+        public static Vector3 PresentVector3(string id, Vector3 value)
         {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("Vector3");
-            }
-
-            GUI.contentColor = config.nameColor;
-            GUILayout.Label(name);
-
-            GUI.contentColor = config.valueColor;
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            FloatField(id + ".x", "x", ref value.x, 0.0f, true, true);
-            FloatField(id + ".y", "y", ref value.y, 0.0f, true, true);
-            FloatField(id + ".z", "z", ref value.z, 0.0f, true, true);
-
-            if (watch != null)
-            {
-                if (GUILayout.Button("Watch"))
-                {
-                    watch();
-                }
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
+            value.x = PrimitiveValueField(id + ".x", "x", value.x);
+            value.y = PrimitiveValueField(id + ".y", "y", value.y);
+            value.z = PrimitiveValueField(id + ".z", "z", value.z);
+            return value;
         }
 
-        public static void Vector4Field(string id, string name, ref Vector4 value, float ident = 0.0f, WatchButtonCallback watch = null, bool noSpace = false, bool noTypeLabel = false)
+        public static Vector4 PresentVector4(string id, Vector4 value)
         {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("Vector4");
-            }
-
-            GUI.contentColor = config.nameColor;
-            GUILayout.Label(name);
-
-            GUI.contentColor = config.valueColor;
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            FloatField(id + ".x", "x", ref value.x, 0.0f, true, true);
-            FloatField(id + ".y", "y", ref value.y, 0.0f, true, true);
-            FloatField(id + ".z", "z", ref value.z, 0.0f, true, true);
-            FloatField(id + ".w", "w", ref value.w, 0.0f, true, true);
-
-            if (watch != null)
-            {
-                if (GUILayout.Button("Watch"))
-                {
-                    watch();
-                }
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
+            value.x = PrimitiveValueField(id + ".x", "x", value.x);
+            value.y = PrimitiveValueField(id + ".y", "y", value.y);
+            value.z = PrimitiveValueField(id + ".z", "z", value.z);
+            value.w = PrimitiveValueField(id + ".w", "w", value.w);
+            return value;
         }
 
-        public static void QuaternionField(string id, string name, ref Quaternion value, float ident = 0.0f, WatchButtonCallback watch = null, bool noSpace = false, bool noTypeLabel = false)
+        public static Quaternion PresentQuaternion(string id, Quaternion value)
         {
-            GUILayout.BeginHorizontal();
-
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("Quaternion (euler)");
-            }
-
-            GUI.contentColor = config.nameColor;
-            GUILayout.Label(name);
-
-            GUI.contentColor = config.valueColor;
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            Vector3 euler = value.eulerAngles;
-
-            FloatField(id + ".x", "x", ref euler.x, 0.0f, true, true);
-            FloatField(id + ".y", "y", ref euler.y, 0.0f, true, true);
-            FloatField(id + ".z", "z", ref euler.z, 0.0f, true, true);
-
+            var euler = value.eulerAngles;
+            euler.x = PrimitiveValueField(id + ".x", "x", euler.x);
+            euler.y = PrimitiveValueField(id + ".y", "y", euler.y);
+            euler.z = PrimitiveValueField(id + ".z", "z", euler.z);
             if (euler != value.eulerAngles)
             {
                 value = Quaternion.Euler(euler);
             }
 
-            if (watch != null)
-            {
-                if (GUILayout.Button("Watch"))
-                {
-                    watch();
-                }
-            }
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
+            return value;
         }
 
-        public static void ColorField(string id, string name, ref Color value, float ident = 0.0f, WatchButtonCallback watch = null, bool noSpace = false, bool noTypeLabel = false, ColorPicker.OnColorChanged onColorChanged = null)
+        public static Color PresentColor(string id, Color value)
         {
-            GUILayout.BeginHorizontal();
+            var r = (byte)Mathf.Clamp(value.r * 255.0f, byte.MinValue, byte.MaxValue);
+            var g = (byte)Mathf.Clamp(value.g * 255.0f, byte.MinValue, byte.MaxValue);
+            var b = (byte)Mathf.Clamp(value.b * 255.0f, byte.MinValue, byte.MaxValue);
+            var a = (byte)Mathf.Clamp(value.a * 255.0f, byte.MinValue, byte.MaxValue);
 
-            if (ident != 0.0f)
-            {
-                GUILayout.Space(ident);
-            }
-
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("Color");
-            }
-
-            GUI.contentColor = config.nameColor;
-            GUILayout.Label(name);
-
-            GUI.contentColor = config.valueColor;
-
-            if (!noSpace)
-            {
-                GUILayout.FlexibleSpace();
-            }
-
-            byte r = (byte)Mathf.Clamp(value.r * 255.0f, byte.MinValue, byte.MaxValue);
-            byte g = (byte)Mathf.Clamp(value.g * 255.0f, byte.MinValue, byte.MaxValue);
-            byte b = (byte)Mathf.Clamp(value.b * 255.0f, byte.MinValue, byte.MaxValue);
-            byte a = (byte)Mathf.Clamp(value.a * 255.0f, byte.MinValue, byte.MaxValue);
-
-            ByteField(id + ".r", "r", ref r, 0.0f, true, true);
-            ByteField(id + ".g", "g", ref g, 0.0f, true, true);
-            ByteField(id + ".b", "b", ref b, 0.0f, true, true);
-            ByteField(id + ".a", "a", ref a, 0.0f, true, true);
+            r = PrimitiveValueField(id + ".r", "r", r);
+            g = PrimitiveValueField(id + ".g", "g", g);
+            b = PrimitiveValueField(id + ".b", "b", b);
+            a = PrimitiveValueField(id + ".a", "a", a);
 
             value.r = Mathf.Clamp01(r / 255.0f);
             value.g = Mathf.Clamp01(g / 255.0f);
             value.b = Mathf.Clamp01(b / 255.0f);
             value.a = Mathf.Clamp01(a / 255.0f);
 
-            if (onColorChanged != null)
+            if (GUILayout.Button(string.Empty, GUILayout.Width(72)))
             {
-                if (value.r != r || value.g != g || value.b != b || value.a != a)
+                var picker = ModTools.Instance.colorPicker;
+                if (picker != null)
                 {
-                    onColorChanged(value);
-                }
+                    picker.SetColor(value);
 
-                if (GUILayout.Button("", GUILayout.Width(72)))
-                {
-                    ColorPicker picker = ModTools.Instance.colorPicker;
-                    if (picker != null)
-                    {
-                        picker.SetColor(value, onColorChanged);
+                    Vector2 mouse = Input.mousePosition;
+                    mouse.y = Screen.height - mouse.y;
 
-                        Vector2 mouse = Input.mousePosition;
-                        mouse.y = Screen.height - mouse.y;
-
-                        picker.rect.position = mouse;
-                        picker.visible = true;
-                    }
-                }
-
-                Rect lastRect = GUILayoutUtility.GetLastRect();
-                lastRect.x += 4.0f;
-                lastRect.y += 4.0f;
-                lastRect.width -= 8.0f;
-                lastRect.height -= 8.0f;
-                GUI.DrawTexture(lastRect, ColorPicker.GetColorTexture(id, value), ScaleMode.StretchToFill);
-            }
-
-            if (watch != null)
-            {
-                if (GUILayout.Button("Watch"))
-                {
-                    watch();
+                    picker.rect.position = mouse;
+                    picker.visible = true;
                 }
             }
 
-            GUI.contentColor = Color.white;
+            var lastRect = GUILayoutUtility.GetLastRect();
+            lastRect.x += 4.0f;
+            lastRect.y += 4.0f;
+            lastRect.width -= 8.0f;
+            lastRect.height -= 8.0f;
+            GUI.DrawTexture(lastRect, ColorPicker.GetColorTexture(id, value), ScaleMode.StretchToFill);
 
-            GUILayout.EndHorizontal();
+            return value;
         }
 
-        public static void Color32Field(string id, string name, ref Color32 value, float ident = 0.0f, WatchButtonCallback watch = null, bool noSpace = false, bool noTypeLabel = false, ColorPicker.OnColor32Changed onColor32Changed = null)
+        public static T CustomValueField<T>(string id, string name, ValuePresenterDelegate<T> presenter, T value, float ident = 0.0f)
+            where T : struct
         {
             GUILayout.BeginHorizontal();
 
             if (ident != 0.0f)
             {
                 GUILayout.Space(ident);
+                GUI.contentColor = Config.typeColor;
+                GUILayout.Label(value.GetType().Name);
             }
 
-            if (!noTypeLabel)
-            {
-                GUI.contentColor = config.typeColor;
-                GUILayout.Label("Color");
-            }
-
-            GUI.contentColor = config.nameColor;
+            GUI.contentColor = Config.nameColor;
             GUILayout.Label(name);
 
-            GUI.contentColor = config.valueColor;
+            GUI.contentColor = Config.valueColor;
 
-            if (!noSpace)
+            if (ident != 0.0f)
             {
                 GUILayout.FlexibleSpace();
             }
 
-            ByteField(id + ".r", "r", ref value.r, 0.0f, true, true);
-            ByteField(id + ".g", "g", ref value.g, 0.0f, true, true);
-            ByteField(id + ".b", "b", ref value.b, 0.0f, true, true);
-            ByteField(id + ".a", "a", ref value.a, 0.0f, true, true);
-
-            if (onColor32Changed != null)
-            {
-                if (GUILayout.Button("", GUILayout.Width(72)))
-                {
-                    ColorPicker picker = ModTools.Instance.colorPicker;
-                    if (picker != null)
-                    {
-                        picker.SetColor(value, onColor32Changed);
-
-                        Vector2 mouse = Input.mousePosition;
-                        mouse.y = Screen.height - mouse.y;
-
-                        picker.rect.position = mouse;
-                        picker.visible = true;
-                    }
-                }
-
-                Rect lastRect = GUILayoutUtility.GetLastRect();
-                lastRect.x += 4.0f;
-                lastRect.y += 4.0f;
-                lastRect.width -= 8.0f;
-                lastRect.height -= 8.0f;
-                GUI.DrawTexture(lastRect, ColorPicker.GetColorTexture(id, value), ScaleMode.StretchToFill);
-            }
-
-            if (watch != null)
-            {
-                if (GUILayout.Button("Watch"))
-                {
-                    watch();
-                }
-            }
+            var result = presenter(id, value);
 
             GUI.contentColor = Color.white;
 
             GUILayout.EndHorizontal();
+
+            return result;
         }
     }
 }

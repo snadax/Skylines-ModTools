@@ -276,7 +276,7 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Max items in history:", GUILayout.ExpandWidth(false));
-            GUIControls.IntField("ConsoleMaxItemsInHistory", "", ref config.consoleMaxHistoryLength, 0.0f, true, true);
+            config.consoleMaxHistoryLength = GUIControls.PrimitiveValueField("ConsoleMaxItemsInHistory", string.Empty, config.consoleMaxHistoryLength);
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

@@ -106,6 +106,7 @@
     <Compile Include="StackTraceViewer.cs" />
     <Compile Include="TextureViewer.cs" />
     <Compile Include="SceneExplorer.cs" />
+    <Compile Include="Utils\ParseHelper.cs" />
     <Compile Include="Utils\TypeUtil.cs" />
     <Compile Include="UserNotifications.cs" />
     <Compile Include="Util.cs" />
