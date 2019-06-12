@@ -18,8 +18,8 @@ namespace ModTools.Explorer
                 return;
             }
 
-            ReferenceChain oldRefChain = refChain;
-            int collectionSize = list.Count;
+            var oldRefChain = refChain;
+            var collectionSize = list.Count;
             if (collectionSize == 0)
             {
                 GUILayout.BeginHorizontal();
@@ -31,12 +31,12 @@ namespace ModTools.Explorer
                 return;
             }
 
-            Type listItemType = list.GetType().GetElementType();
-            System.Reflection.FieldInfo flagsField = listItemType?.GetField("m_flags");
-            bool flagIsEnum = flagsField?.FieldType.IsEnum == true && Type.GetTypeCode(flagsField.FieldType) == TypeCode.Int32;
+            var listItemType = list.GetType().GetElementType();
+            var flagsField = listItemType?.GetField("m_flags");
+            var flagIsEnum = flagsField?.FieldType.IsEnum == true && Type.GetTypeCode(flagsField.FieldType) == TypeCode.Int32;
 
-            GUICollectionNavigation.SetUpCollectionNavigation("List", state, refChain, oldRefChain, collectionSize, out int arrayStart, out int arrayEnd);
-            for (int i = arrayStart; i <= arrayEnd; i++)
+            GUICollectionNavigation.SetUpCollectionNavigation("List", state, refChain, oldRefChain, collectionSize, out var arrayStart, out var arrayEnd);
+            for (var i = arrayStart; i <= arrayEnd; i++)
             {
                 refChain = oldRefChain.Add(i);
 
@@ -45,9 +45,9 @@ namespace ModTools.Explorer
 
                 GUI.contentColor = Color.white;
 
-                object value = list[i];
-                Type type = value?.GetType() ?? listItemType;
-                bool isNullOrEmpty = value == null || flagIsEnum && Convert.ToInt32(flagsField.GetValue(value)) == 0;
+                var value = list[i];
+                var type = value?.GetType() ?? listItemType;
+                var isNullOrEmpty = value == null || flagIsEnum && Convert.ToInt32(flagsField.GetValue(value)) == 0;
                 if (type != null)
                 {
                     if (!isNullOrEmpty)
@@ -88,7 +88,7 @@ namespace ModTools.Explorer
                     if (value is GameObject)
                     {
                         var go = value as GameObject;
-                        foreach (Component component in go.GetComponents<Component>())
+                        foreach (var component in go.GetComponents<Component>())
                         {
                             GUIComponent.OnSceneTreeComponent(state, refChain, component);
                         }

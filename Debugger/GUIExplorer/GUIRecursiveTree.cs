@@ -46,19 +46,19 @@ namespace ModTools.Explorer
 
                     GUILayout.EndHorizontal();
 
-                    Component[] components = obj.GetComponents(typeof(Component));
+                    var components = obj.GetComponents(typeof(Component));
 
                     if (ModTools.Instance.config.sceneExplorerSortAlphabetically)
                     {
                         Array.Sort(components, (component, component1) => component.GetType().ToString().CompareTo(component1.GetType().ToString()));
                     }
 
-                    foreach (Component component in components)
+                    foreach (var component in components)
                     {
                         GUIComponent.OnSceneTreeComponent(state, refChain.Add(component), component);
                     }
 
-                    for (int i = 0; i < obj.transform.childCount; i++)
+                    for (var i = 0; i < obj.transform.childCount; i++)
                     {
                         OnSceneTreeRecursive(modToolsGo, state, refChain.Add(obj.transform.GetChild(i)), obj.transform.GetChild(i).gameObject);
                     }

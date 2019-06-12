@@ -18,7 +18,7 @@ namespace ModTools
         {
             var go = new GameObject("TextureViewer");
             go.transform.parent = ModTools.Instance.transform;
-            TextureViewer textureViewer = go.AddComponent<TextureViewer>();
+            var textureViewer = go.AddComponent<TextureViewer>();
             textureViewer.caller = refChain;
             var texture3D = texture as Texture3D;
             textureViewer.previewTexture = texture3D == null ? texture : texture3D.ToTexture2D();
@@ -39,7 +39,7 @@ namespace ModTools
                     TextureUtil.DumpTextureToPNG(previewTexture);
                 }
 
-                float aspect = previewTexture.width / (previewTexture.height + 60.0f);
+                var aspect = previewTexture.width / (previewTexture.height + 60.0f);
                 rect.width = rect.height * aspect;
                 GUI.DrawTexture(new Rect(0.0f, 60.0f, rect.width, rect.height - 60.0f), previewTexture, ScaleMode.ScaleToFit, false);
             }

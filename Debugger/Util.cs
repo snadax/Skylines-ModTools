@@ -10,7 +10,7 @@ namespace ModTools
         {
             try
             {
-                SavedBool mouseWheelZoom = ReflectionUtil.GetPrivate<SavedBool>(ToolsModifierControl.cameraController, "m_mouseWheelZoom");
+                var mouseWheelZoom = ReflectionUtil.GetPrivate<SavedBool>(ToolsModifierControl.cameraController, "m_mouseWheelZoom");
                 if (mouseWheelZoom.value != isEnabled)
                 {
                     mouseWheelZoom.value = isEnabled;
@@ -23,7 +23,7 @@ namespace ModTools
 
         public static bool ComponentIsEnabled(Component component)
         {
-            System.Reflection.PropertyInfo prop = component.GetType().GetProperty("enabled");
+            var prop = component.GetType().GetProperty("enabled");
             return prop == null || (bool)prop.GetValue(component, null);
         }
     }

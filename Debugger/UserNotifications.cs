@@ -6,23 +6,17 @@ namespace ModTools
     {
         private static Configuration config => ModTools.Instance.config;
 
-        private static readonly List<KeyValuePair<int, string>> notifications = new List<KeyValuePair<int, string>>();
-        private static int notificationsCount;
-
-        static UserNotifications()
+        private static readonly List<KeyValuePair<int, string>> notifications = new List<KeyValuePair<int, string>>
         {
-            Add(LoggingChangeNotification);
-            Add(UnityLoggingHookNotification);
-        }
-
-        private static void Add(string notification)
-            => notifications.Add(new KeyValuePair<int, string>(notificationsCount++, notification));
+            new KeyValuePair<int, string>(0, LoggingChangeNotification),
+            new KeyValuePair<int, string>(1, UnityLoggingHookNotification)
+        };
 
         public static List<KeyValuePair<int, string>> GetNotifications()
         {
             var result = new List<KeyValuePair<int, string>>();
 
-            foreach (KeyValuePair<int, string> item in notifications)
+            foreach (var item in notifications)
             {
                 if ((config.hiddenNotifications & (1 << item.Key)) == 0)
                 {

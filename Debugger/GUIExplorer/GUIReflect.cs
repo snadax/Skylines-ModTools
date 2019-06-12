@@ -19,7 +19,7 @@ namespace ModTools.Explorer
                 return;
             }
 
-            Type type = obj.GetType();
+            var type = obj.GetType();
 
             if (!rawReflection)
             {
@@ -75,14 +75,14 @@ namespace ModTools.Explorer
                 }
             }
 
-            MemberInfo[] members = TypeUtil.GetAllMembers(type, ModTools.Instance.config.sceneExplorerShowInheritedMembers);
+            var members = TypeUtil.GetAllMembers(type, ModTools.Instance.config.sceneExplorerShowInheritedMembers);
 
             if (ModTools.Instance.config.sceneExplorerSortAlphabetically)
             {
                 Array.Sort(members, (info, info1) => string.CompareOrdinal(info.Name, info1.Name));
             }
 
-            foreach (MemberInfo member in members)
+            foreach (var member in members)
             {
                 if (member.MemberType == MemberTypes.Field && ModTools.Instance.config.sceneExplorerShowFields)
                 {

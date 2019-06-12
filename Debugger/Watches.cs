@@ -38,7 +38,7 @@ namespace ModTools
             Type ret = null;
             if (watches.Contains(refChain))
             {
-                object item = refChain.LastItem;
+                var item = refChain.LastItem;
                 var info = item as FieldInfo;
                 ret = info?.FieldType ?? (item as PropertyInfo)?.PropertyType;
             }
@@ -49,11 +49,11 @@ namespace ModTools
         {
             watchesScroll = GUILayout.BeginScrollView(watchesScroll);
 
-            foreach (ReferenceChain watch in watches.ToArray())
+            foreach (var watch in watches.ToArray())
             {
                 GUILayout.BeginHorizontal();
 
-                Type type = GetWatchType(watch);
+                var type = GetWatchType(watch);
 
                 GUI.contentColor = config.typeColor;
                 GUILayout.Label(type.ToString());
@@ -64,7 +64,7 @@ namespace ModTools
 
                 GUI.enabled = false;
 
-                object value = watch.Evaluate();
+                var value = watch.Evaluate();
                 GUI.contentColor = config.valueColor;
 
                 if (value == null || !TypeUtil.IsSpecialType(type))
@@ -75,7 +75,7 @@ namespace ModTools
                 {
                     try
                     {
-                        GUIControls.EditorValueField(watch, "watch." + watch, type, value);
+                        GUIControls.EditorValueField("watch." + watch, type, value);
                     }
                     catch (Exception)
                     {
@@ -91,7 +91,7 @@ namespace ModTools
 
                 if (GUILayout.Button("Find in Scene Explorer"))
                 {
-                    SceneExplorer sceneExplorer = FindObjectOfType<SceneExplorer>();
+                    var sceneExplorer = FindObjectOfType<SceneExplorer>();
                     sceneExplorer.ExpandFromRefChain(watch.Trim(watch.Length - 1));
                     sceneExplorer.visible = true;
                 }

@@ -116,7 +116,7 @@ namespace ModTools.Explorer
             }
             GUIButtons.SetupButtons(field.FieldType, value, refChain);
             object paste = null;
-            bool doPaste = !field.IsLiteral && !field.IsInitOnly;
+            var doPaste = !field.IsLiteral && !field.IsInitOnly;
             if (doPaste)
             {
                 doPaste = GUIButtons.SetupPasteButon(field.FieldType, out paste);
@@ -127,7 +127,7 @@ namespace ModTools.Explorer
                 if (value is GameObject)
                 {
                     var go = value as GameObject;
-                    foreach (Component component in go.GetComponents<Component>())
+                    foreach (var component in go.GetComponents<Component>())
                     {
                         GUIComponent.OnSceneTreeComponent(state, refChain, component);
                     }

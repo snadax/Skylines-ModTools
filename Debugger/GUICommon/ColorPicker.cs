@@ -10,7 +10,7 @@ namespace ModTools
 
         public static Texture2D GetColorTexture(string id, Color color)
         {
-            if (!textureCache.TryGetValue(id, out Texture2D texture))
+            if (!textureCache.TryGetValue(id, out var texture))
             {
                 texture = new Texture2D(1, 1);
                 textureCache.Add(id, texture);
@@ -76,13 +76,13 @@ namespace ModTools
             GUI.DrawTexture(colorPickerRect, colorPicker);
             GUI.DrawTexture(huesBarRect, huesBar);
 
-            float huesBarLineY = huesBarRect.y + (1.0f - (float)currentHSV.h / 360.0f) * huesBarRect.height;
+            var huesBarLineY = huesBarRect.y + (1.0f - (float)currentHSV.h / 360.0f) * huesBarRect.height;
             GUI.DrawTexture(new Rect(huesBarRect.x - 2.0f, huesBarLineY, huesBarRect.width + 4.0f, 2.0f), lineTex);
 
-            float colorPickerLineY = colorPickerRect.x + (float)currentHSV.v * colorPickerRect.width;
+            var colorPickerLineY = colorPickerRect.x + (float)currentHSV.v * colorPickerRect.width;
             GUI.DrawTexture(new Rect(colorPickerRect.x - 1.0f, colorPickerLineY, colorPickerRect.width + 2.0f, 1.0f), lineTex);
 
-            float colorPickerLineX = colorPickerRect.y + (float)currentHSV.s * colorPickerRect.height;
+            var colorPickerLineX = colorPickerRect.y + (float)currentHSV.s * colorPickerRect.height;
             GUI.DrawTexture(new Rect(colorPickerLineX, colorPickerRect.y - 1.0f, 1.0f, colorPickerRect.height + 2.0f), lineTex);
         }
 
@@ -123,9 +123,9 @@ namespace ModTools
 
         public static void DrawColorPicker(Texture2D texture, double hue)
         {
-            for (int x = 0; x < texture.width; x++)
+            for (var x = 0; x < texture.width; x++)
             {
-                for (int y = 0; y < texture.height; y++)
+                for (var y = 0; y < texture.height; y++)
                 {
                     texture.SetPixel(x, y, GetColorAtXY(hue, x / (float)texture.width, 1.0f - y / (float)texture.height));
                 }
@@ -138,11 +138,11 @@ namespace ModTools
         {
             var texture = new Texture2D(width, height);
 
-            for (int y = 0; y < height; y++)
+            for (var y = 0; y < height; y++)
             {
-                Color color = GetColorAtT(y / (float)height * 360.0f);
+                var color = GetColorAtT(y / (float)height * 360.0f);
 
-                for (int x = 0; x < width; x++)
+                for (var x = 0; x < width; x++)
                 {
                     texture.SetPixel(x, y, color);
                 }

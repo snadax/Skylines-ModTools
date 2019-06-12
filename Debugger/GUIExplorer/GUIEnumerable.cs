@@ -17,17 +17,17 @@ namespace ModTools.Explorer
                 return;
             }
 
-            int count = 0;
-            ReferenceChain oldRefChain = refChain;
+            var count = 0;
+            var oldRefChain = refChain;
 
-            foreach (object value in enumerable)
+            foreach (var value in enumerable)
             {
                 refChain = oldRefChain.Add(count);
 
                 GUILayout.BeginHorizontal();
                 SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-                System.Type type = value?.GetType();
+                var type = value?.GetType();
                 if (type != null)
                 {
                     GUIExpander.ExpanderControls(state, refChain, type);
@@ -59,7 +59,7 @@ namespace ModTools.Explorer
                     if (value is GameObject)
                     {
                         var go = value as GameObject;
-                        foreach (Component component in go.GetComponents<Component>())
+                        foreach (var component in go.GetComponents<Component>())
                         {
                             GUIComponent.OnSceneTreeComponent(state, refChain, component);
                         }

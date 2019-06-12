@@ -68,7 +68,7 @@ namespace ModTools
         {
             var go = new GameObject("MeshViewer");
             go.transform.parent = ModTools.Instance.transform;
-            MeshViewer meshViewer = go.AddComponent<MeshViewer>();
+            var meshViewer = go.AddComponent<MeshViewer>();
             meshViewer.assetName = assetName;
             meshViewer.previewMesh = mesh;
             meshViewer.material = material;
@@ -91,9 +91,9 @@ namespace ModTools
                 return;
             }
 
-            float intensity = 0.0f;
-            Color color = Color.black;
-            bool enabled = false;
+            var intensity = 0.0f;
+            var color = Color.black;
+            var enabled = false;
 
             if (light != null)
             {
@@ -105,18 +105,18 @@ namespace ModTools
                 light.enabled = true;
             }
 
-            float magnitude = bounds.extents.magnitude;
-            float num1 = magnitude + 16f;
-            float num2 = magnitude * m_Distance;
+            var magnitude = bounds.extents.magnitude;
+            var num1 = magnitude + 16f;
+            var num2 = magnitude * m_Distance;
             meshViewerCamera.transform.position = -Vector3.forward * num2;
             meshViewerCamera.transform.rotation = Quaternion.identity;
             meshViewerCamera.nearClipPlane = Mathf.Max(num2 - num1 * 1.5f, 0.01f);
             meshViewerCamera.farClipPlane = num2 + num1 * 1.5f;
-            Quaternion q = Quaternion.Euler(m_PreviewDir.y, 0.0f, 0.0f)
+            var q = Quaternion.Euler(m_PreviewDir.y, 0.0f, 0.0f)
                            * Quaternion.Euler(0.0f, m_PreviewDir.x, 0.0f);
             var trs = Matrix4x4.TRS(q * -bounds.center, q, Vector3.one);
 
-            Material material1 = (useOriginalShader && material != null) ? material : previewMaterial;
+            var material1 = (useOriginalShader && material != null) ? material : previewMaterial;
             Graphics.DrawMesh(previewMesh, trs, material1, 0, meshViewerCamera, 0, null, false, false);
             meshViewerCamera.RenderWithShader(material1.shader, string.Empty);
 
@@ -171,7 +171,7 @@ namespace ModTools
                 }
                 else
                 {
-                    Color oldColor = GUI.color;
+                    var oldColor = GUI.color;
                     GUI.color = Color.yellow;
                     GUILayout.Label("Mesh isn't readable!");
                     GUI.color = oldColor;
@@ -197,12 +197,12 @@ namespace ModTools
                 }
                 else if (Event.current.type == EventType.MouseDrag)
                 {
-                    Vector2 pos = Event.current.mousePosition;
+                    var pos = Event.current.mousePosition;
                     if (Event.current.button == 0 || Event.current.button == 2)
                     {
                         if (lastLeftMousePos != Vector2.zero)
                         {
-                            Vector2 moveDelta = (pos - lastLeftMousePos) * 2.0f;
+                            var moveDelta = (pos - lastLeftMousePos) * 2.0f;
                             m_PreviewDir -= moveDelta / Mathf.Min(targetRT.width, targetRT.height)
                                                  * UIView.GetAView().ratio * 140f;
                             m_PreviewDir.y = Mathf.Clamp(m_PreviewDir.y, -90f, 90f);
@@ -213,12 +213,12 @@ namespace ModTools
                     {
                         if (lastRightMousePos != Vector2.zero)
                         {
-                            Vector2 moveDelta1 = pos - lastRightMousePos;
+                            var moveDelta1 = pos - lastRightMousePos;
                             m_Distance += (float)(moveDelta1.y / (double)targetRT.height
                                                          * UIView.GetAView().ratio * 40.0);
                             const float num1 = 6f;
-                            float magnitude = bounds.extents.magnitude;
-                            float num2 = magnitude + 16f;
+                            var magnitude = bounds.extents.magnitude;
+                            var num2 = magnitude + 16f;
                             m_Distance = Mathf.Min(m_Distance, 4f, num1 * (num2 / magnitude));
                         }
                         lastRightMousePos = pos;
@@ -245,7 +245,7 @@ namespace ModTools
             if (calculateBounds && previewMesh.isReadable)
             {
                 bounds = new Bounds(Vector3.zero, Vector3.zero);
-                foreach (Vector3 vertex in previewMesh.vertices)
+                foreach (var vertex in previewMesh.vertices)
                 {
                     bounds.Encapsulate(vertex);
                 }
@@ -259,8 +259,7 @@ namespace ModTools
 
         public void SetCitizenInfoObjects(bool enabled)
         {
-            CitizenInfo[] info = Resources.FindObjectsOfTypeAll<CitizenInfo>();
-            foreach (CitizenInfo i in info)
+            foreach (var i in Resources.FindObjectsOfTypeAll<CitizenInfo>())
             {
                 i.gameObject.SetActive(enabled);
             }

@@ -132,7 +132,7 @@ namespace ModTools.Explorer
 
                 if (((Mesh)value).isReadable && GUILayout.Button("Dump .obj"))
                 {
-                    string outPath = refChain.ToString().Replace(' ', '_');
+                    var outPath = refChain.ToString().Replace(' ', '_');
                     DumpUtil.DumpMeshAndTextures(outPath, value as Mesh);
                 }
             }

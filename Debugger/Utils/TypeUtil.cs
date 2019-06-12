@@ -53,14 +53,14 @@ namespace ModTools
 
             var results = new Dictionary<string, MemberInfo>();
             GetMembersInternal2(type, recursive, bindingFlags, results);
-            MemberInfo[] members = results.Values.ToArray();
+            var members = results.Values.ToArray();
             _typeCache[type] = members;
             return members;
         }
 
         private static void GetMembersInternal2(Type type, bool recursive, BindingFlags bindingFlags, Dictionary<string, MemberInfo> outResults)
         {
-            foreach (MemberInfo member in type.GetMembers(bindingFlags))
+            foreach (var member in type.GetMembers(bindingFlags))
             {
                 if (!outResults.ContainsKey(member.Name))
                 {

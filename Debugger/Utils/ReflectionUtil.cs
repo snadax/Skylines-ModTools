@@ -10,13 +10,13 @@ namespace ModTools.Utils
 
         public static T GetPrivate<T>(object o, string fieldName)
         {
-            FieldInfo field = FindField<T>(fieldName);
+            var field = FindField<T>(fieldName);
             return field != null ? (T)field.GetValue(o) : default;
         }
 
         public static void SetPrivate<T>(object o, string fieldName, object value)
         {
-            FieldInfo field = FindField<T>(fieldName);
+            var field = FindField<T>(fieldName);
             field?.SetValue(o, value);
         }
     }

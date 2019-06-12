@@ -34,7 +34,7 @@ namespace ModTools.Explorer
                 return;
             }
 
-            if (!indentStrings.TryGetValue(indent, out string indentString))
+            if (!indentStrings.TryGetValue(indent, out var indentString))
             {
                 indentString = new StringBuilder().Insert(0, "· ", indent).ToString();
                 indentStrings.Add(indent, indentString);

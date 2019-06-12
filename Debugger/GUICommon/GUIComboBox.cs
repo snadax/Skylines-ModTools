@@ -42,9 +42,9 @@ namespace ModTools
                 wrapMode = TextureWrapMode.Clamp
             };
 
-            for (int x = 0; x < background.width; x++)
+            for (var x = 0; x < background.width; x++)
             {
-                for (int y = 0; y < background.height; y++)
+                for (var y = 0; y < background.height; y++)
                 {
                     if (x == 0 || x == background.width - 1 || y == 0 || y == background.height - 1)
                     {
@@ -141,12 +141,12 @@ namespace ModTools
                 GUI.changed = true;
             }
 
-            bool guiChanged = GUI.changed;
+            var guiChanged = GUI.changed;
 
             float width = 0;
-            foreach (string entry in entries)
+            foreach (var entry in entries)
             {
-                float len = GUI.skin.button.CalcSize(new GUIContent(entry)).x;
+                var len = GUI.skin.button.CalcSize(new GUIContent(entry)).x;
                 if (len > width)
                 {
                     width = len;
@@ -171,10 +171,10 @@ namespace ModTools
                 // But even worse, I can't find a clean way to convert from relative to absolute coordinates
                 Vector2 mousePos = Input.mousePosition;
                 mousePos.y = Screen.height - mousePos.y;
-                Vector2 clippedMousePos = Event.current.mousePosition;
+                var clippedMousePos = Event.current.mousePosition;
                 rect.x = rect.x + mousePos.x - clippedMousePos.x;
                 rect.y = rect.y + mousePos.y - clippedMousePos.y;
-                float targetHeight = rect.height * entries.Length;
+                var targetHeight = rect.height * entries.Length;
                 hasScrollbars = targetHeight >= 400.0f;
                 rect.height = Mathf.Min(targetHeight, 400.0f);
                 comboBoxScroll = Vector2.zero;

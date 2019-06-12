@@ -31,7 +31,7 @@ namespace ModTools
                 mainObject = new GameObject(ModToolsName);
                 UnityEngine.Object.DontDestroyOnLoad(mainObject);
 
-                ModTools modTools = mainObject.AddComponent<ModTools>();
+                var modTools = mainObject.AddComponent<ModTools>();
                 modTools.Initialize();
             }
             catch (Exception e)

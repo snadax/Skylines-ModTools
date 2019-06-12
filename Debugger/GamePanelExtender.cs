@@ -173,7 +173,7 @@ namespace ModTools
                 UIAlignAnchor.TopRight,
                 (component, param) =>
                 {
-                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     sceneExplorer.ExpandFromRefChain(buildingsBufferRefChain.Add(instance.Building));
                     sceneExplorer.visible = true;
                 }
@@ -187,9 +187,9 @@ namespace ModTools
                 UIAlignAnchor.TopRight,
                 (component, param) =>
                 {
-                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
-                    Building building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
-                    string assetName = building.Info.name;
+                    var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    var building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
+                    var assetName = building.Info.name;
                     DumpUtil.DumpAsset(assetName, building.Info.m_mesh, building.Info.m_material, building.Info.m_lodMesh, building.Info.m_lodMaterial);
                 }
             );
@@ -215,7 +215,7 @@ namespace ModTools
                 UIAlignAnchor.BottomRight,
                 (component, param) =>
                 {
-                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
 
                     if (instance.Vehicle == 0)
                     {
@@ -238,9 +238,9 @@ namespace ModTools
                 UIAlignAnchor.BottomRight,
                 (component, param) =>
                 {
-                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
-                    VehicleInfo vehicleInfo = instance.Vehicle == 0 ? VehicleManager.instance.m_parkedVehicles.m_buffer[instance.ParkedVehicle].Info : VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle].Info;
-                    string assetName = vehicleInfo.name;
+                    var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    var vehicleInfo = instance.Vehicle == 0 ? VehicleManager.instance.m_parkedVehicles.m_buffer[instance.ParkedVehicle].Info : VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle].Info;
+                    var assetName = vehicleInfo.name;
                     DumpUtil.DumpAsset(assetName, vehicleInfo.m_mesh, vehicleInfo.m_material, vehicleInfo.m_lodMesh, vehicleInfo.m_lodMaterial);
                 }
             );
@@ -268,10 +268,10 @@ namespace ModTools
                 UIAlignAnchor.TopRight,
                 (component, param) =>
                 {
-                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     if (instance.Type == InstanceType.CitizenInstance)
                     {
-                        CitizenInstance ci = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
+                        var ci = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
                         if (ci.m_citizen == 0)
                         {
                             return;
@@ -294,7 +294,7 @@ namespace ModTools
                 UIAlignAnchor.TopRight,
                 (component, param) =>
                 {
-                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     if (instance.Type == InstanceType.CitizenInstance)
                     {
                         sceneExplorer.ExpandFromRefChain(citizenInstancesBufferRefChain.Add(instance.CitizenInstance));
@@ -302,9 +302,9 @@ namespace ModTools
                     }
                     else if (instance.Type == InstanceType.Citizen)
                     {
-                        for (int index = 0; index < CitizenManager.instance.m_instances.m_buffer.Length; index++)
+                        for (var index = 0; index < CitizenManager.instance.m_instances.m_buffer.Length; index++)
                         {
-                            CitizenInstance ci = CitizenManager.instance.m_instances.m_buffer[index];
+                            var ci = CitizenManager.instance.m_instances.m_buffer[index];
                             if (ci.m_flags == CitizenInstance.Flags.None || ci.Info == null || ci.m_citizen != instance.Citizen)
                             {
                                 continue;
@@ -325,18 +325,18 @@ namespace ModTools
                 UIAlignAnchor.TopRight,
                 (component, param) =>
                 {
-                    InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
+                    var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     if (instance.Type == InstanceType.CitizenInstance)
                     {
-                        CitizenInstance ci = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
-                        uint citizen = ci.m_citizen;
+                        var ci = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
+                        var citizen = ci.m_citizen;
                         if (citizen == 0)
                         {
                             return;
                         }
-                        for (int index = 0; index < CitizenManager.instance.m_units.m_buffer.Length; index++)
+                        for (var index = 0; index < CitizenManager.instance.m_units.m_buffer.Length; index++)
                         {
-                            CitizenUnit cu = CitizenManager.instance.m_units.m_buffer[index];
+                            var cu = CitizenManager.instance.m_units.m_buffer[index];
                             if (cu.m_flags == CitizenUnit.Flags.None)
                             {
                                 continue;
@@ -378,9 +378,9 @@ namespace ModTools
                         {
                             return;
                         }
-                        for (int index = 0; index < CitizenManager.instance.m_units.m_buffer.Length; index++)
+                        for (var index = 0; index < CitizenManager.instance.m_units.m_buffer.Length; index++)
                         {
-                            CitizenUnit cu = CitizenManager.instance.m_units.m_buffer[index];
+                            var cu = CitizenManager.instance.m_units.m_buffer[index];
                             if (cu.m_flags == CitizenUnit.Flags.None)
                             {
                                 continue;
@@ -597,85 +597,85 @@ namespace ModTools
         {
             if (zonedBuildingInfoPanel.component.isVisible)
             {
-                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(zonedBuildingInfoPanel, "m_InstanceID");
-                Building building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
+                var instance = ReflectionUtil.GetPrivate<InstanceID>(zonedBuildingInfoPanel, "m_InstanceID");
+                var building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
                 zonedBuildingAssetNameLabel.text = $"AssetName: {building.Info.name}";
             }
 
             if (serviceBuildingInfoPanel.component.isVisible)
             {
-                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(serviceBuildingInfoPanel, "m_InstanceID");
-                Building building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
+                var instance = ReflectionUtil.GetPrivate<InstanceID>(serviceBuildingInfoPanel, "m_InstanceID");
+                var building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
                 serviceBuildingAssetNameLabel.text = $"AssetName: {building.Info.name}";
             }
 
             if (citizenVehicleInfoPanel.component.isVisible)
             {
-                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(citizenVehicleInfoPanel, "m_InstanceID");
+                var instance = ReflectionUtil.GetPrivate<InstanceID>(citizenVehicleInfoPanel, "m_InstanceID");
 
                 if (instance.Vehicle == 0)
                 {
-                    VehicleParked vehicle = VehicleManager.instance.m_parkedVehicles.m_buffer[instance.ParkedVehicle];
+                    var vehicle = VehicleManager.instance.m_parkedVehicles.m_buffer[instance.ParkedVehicle];
                     citizenVehicleAssetNameLabel.text = $"AssetName: {vehicle.Info.name}";
                 }
                 else
                 {
-                    Vehicle vehicle = VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle];
+                    var vehicle = VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle];
                     citizenVehicleAssetNameLabel.text = $"AssetName: {vehicle.Info.name}";
                 }
             }
 
             if (cityServiceVehicleInfoPanel.component.isVisible)
             {
-                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(cityServiceVehicleInfoPanel, "m_InstanceID");
+                var instance = ReflectionUtil.GetPrivate<InstanceID>(cityServiceVehicleInfoPanel, "m_InstanceID");
 
                 if (instance.Vehicle == 0)
                 {
-                    VehicleParked vehicle = VehicleManager.instance.m_parkedVehicles.m_buffer[instance.ParkedVehicle];
+                    var vehicle = VehicleManager.instance.m_parkedVehicles.m_buffer[instance.ParkedVehicle];
                     cityServiceVehicleAssetNameLabel.text = $"AssetName: {vehicle.Info.name}";
                 }
                 else
                 {
-                    Vehicle vehicle = VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle];
+                    var vehicle = VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle];
                     cityServiceVehicleAssetNameLabel.text = $"AssetName: {vehicle.Info.name}";
                 }
             }
 
             if (publicTransportVehicleInfoPanel.component.isVisible)
             {
-                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(publicTransportVehicleInfoPanel, "m_InstanceID");
+                var instance = ReflectionUtil.GetPrivate<InstanceID>(publicTransportVehicleInfoPanel, "m_InstanceID");
 
                 if (instance.Vehicle == 0)
                 {
-                    VehicleParked vehicle = VehicleManager.instance.m_parkedVehicles.m_buffer[instance.ParkedVehicle];
+                    var vehicle = VehicleManager.instance.m_parkedVehicles.m_buffer[instance.ParkedVehicle];
                     publicTransportVehicleAssetNameLabel.text = $"AssetName: {vehicle.Info.name}";
                 }
                 else
                 {
-                    Vehicle vehicle = VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle];
+                    var vehicle = VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle];
                     publicTransportVehicleAssetNameLabel.text = $"AssetName: {vehicle.Info.name}";
                 }
             }
 
             if (animalInfoPanel.component.isVisible)
             {
-                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(animalInfoPanel, "m_InstanceID");
-                CitizenInstance animal = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
+                var instance = ReflectionUtil.GetPrivate<InstanceID>(animalInfoPanel, "m_InstanceID");
+                var animal = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
                 animalAssetNameLabel.text = $"AssetName: {animal.Info.name}";
             }
 
             if (citizenInfoPanel.component.isVisible)
             {
-                InstanceID instance = ReflectionUtil.GetPrivate<InstanceID>(citizenInfoPanel, "m_InstanceID");
+                var instance = ReflectionUtil.GetPrivate<InstanceID>(citizenInfoPanel, "m_InstanceID");
                 if (instance.Type == InstanceType.CitizenInstance)
                 {
-                    CitizenInstance citizen = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
+                    var citizen = CitizenManager.instance.m_instances.m_buffer[instance.CitizenInstance];
                     citizenAssetNameLabel.text = $"AssetName: {citizen.Info.name}";
                 }
                 else if (instance.Type == InstanceType.Citizen)
                 {
                     citizenAssetNameLabel.text = "AssetName: N/A";
-                    foreach (CitizenInstance ci in CitizenManager.instance.m_instances.m_buffer)
+                    foreach (var ci in CitizenManager.instance.m_instances.m_buffer)
                     {
                         if (ci.m_flags == CitizenInstance.Flags.None || ci.Info == null
                             || ci.m_citizen != instance.Citizen)

@@ -17,27 +17,27 @@ namespace ModTools.Explorer
                 return;
             }
 
-            Vector3 position = transform.position;
+            var position = transform.position;
             OnSceneTreeReflectUnityEngineVector3(refChain.Add("position"), "position", ref position);
             transform.position = position;
 
-            Vector3 localPosition = transform.localPosition;
+            var localPosition = transform.localPosition;
             OnSceneTreeReflectUnityEngineVector3(refChain.Add("localPosition"), "localPosition", ref localPosition);
             transform.localPosition = localPosition;
 
-            Vector3 localEulerAngles = transform.localEulerAngles;
+            var localEulerAngles = transform.localEulerAngles;
             OnSceneTreeReflectUnityEngineVector3(refChain.Add("localEulerAngles"), "localEulerAngles", ref localEulerAngles);
             transform.localEulerAngles = localEulerAngles;
 
-            Quaternion rotation = transform.rotation;
+            var rotation = transform.rotation;
             OnSceneTreeReflectUnityEngineQuaternion(refChain.Add("rotation"), "rotation", ref rotation);
             transform.rotation = rotation;
 
-            Quaternion localRotation = transform.localRotation;
+            var localRotation = transform.localRotation;
             OnSceneTreeReflectUnityEngineQuaternion(refChain.Add("localRotation"), "localRotation", ref localRotation);
             transform.localRotation = localRotation;
 
-            Vector3 localScale = transform.localScale;
+            var localScale = transform.localScale;
             OnSceneTreeReflectUnityEngineVector3(refChain.Add("localScale"), "localScale", ref localScale);
             transform.localScale = localScale;
         }

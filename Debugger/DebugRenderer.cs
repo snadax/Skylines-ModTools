@@ -19,18 +19,18 @@ namespace ModTools
 
         public void Update()
         {
-            UIComponent hoveredLocal = hoveredComponent;
+            var hoveredLocal = hoveredComponent;
             if (drawDebugInfo && hoveredLocal != null)
             {
                 if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F))
                 {
-                    UIView uiView = FindObjectOfType<UIView>();
+                    var uiView = FindObjectOfType<UIView>();
                     if (uiView == null)
                     {
                         return;
                     }
 
-                    UIComponent current = hoveredLocal;
+                    var current = hoveredLocal;
                     var refChain = new ReferenceChain();
                     refChain = refChain.Add(current);
                     while (current != null)
@@ -41,18 +41,15 @@ namespace ModTools
 
                     refChain = refChain.Add(uiView.gameObject);
 
-                    SceneExplorer sceneExplorer = FindObjectOfType<SceneExplorer>();
+                    var sceneExplorer = FindObjectOfType<SceneExplorer>();
                     sceneExplorer.ExpandFromRefChain(refChain.GetReversedCopy());
                     sceneExplorer.visible = true;
                 }
-                if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G))
+                if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G) && hoveredComponents.Count > 1 && hoveredComponent != null)
                 {
-                    if (hoveredComponents.Count > 1 && hoveredComponent != null)
-                    {
-                        int index = hoveredComponents.IndexOf(hoveredComponent);
-                        int newIndex = (index + hoveredComponents.Count + 1) % hoveredComponents.Count;
-                        hoveredComponent = hoveredComponents[newIndex];
-                    }
+                    var index = hoveredComponents.IndexOf(hoveredComponent);
+                    var newIndex = (index + hoveredComponents.Count + 1) % hoveredComponents.Count;
+                    hoveredComponent = hoveredComponents[newIndex];
                 }
             }
         }
@@ -93,24 +90,24 @@ namespace ModTools
                 };
             }
 
-            UIView uiView = FindObjectOfType<UIView>();
+            var uiView = FindObjectOfType<UIView>();
 
             if (uiView == null)
             {
                 return;
             }
 
-            UIComponent[] components = GetComponentsInChildren<UIComponent>();
+            var components = GetComponentsInChildren<UIComponent>();
             Array.Sort(components, RenderSortFunc);
 
-            Vector3 mouse = Input.mousePosition;
+            var mouse = Input.mousePosition;
             mouse.y = Screen.height - mouse.y;
 
             hoveredComponents.Clear();
             long hash = 0;
-            for (int i = components.Length - 1; i > 0; i--)
+            for (var i = components.Length - 1; i > 0; i--)
             {
-                UIComponent component = components[i];
+                var component = components[i];
 
                 if (!component.isVisible)
                 {
@@ -127,9 +124,9 @@ namespace ModTools
                     continue;
                 }
 
-                Vector3 position = component.absolutePosition;
-                Vector2 size = component.size;
-                Rect rect = CalculateRealComponentRect(position, size);
+                var position = component.absolutePosition;
+                var size = component.size;
+                var rect = CalculateRealComponentRect(position, size);
                 if (rect.Contains(mouse))
                 {
                     hash += CalculateHash(component);
@@ -146,23 +143,23 @@ namespace ModTools
                 hoveredComponent = hoveredComponents[0];
             }
 
-            foreach (UIComponent component in components)
+            foreach (var component in components)
             {
                 if (!component.isVisible)
                 {
                     continue;
                 }
 
-                Vector3 position = component.absolutePosition;
-                Vector2 size = component.size;
-                Rect rect = CalculateRealComponentRect(position, size);
+                var position = component.absolutePosition;
+                var size = component.size;
+                var rect = CalculateRealComponentRect(position, size);
 
                 GUI.Box(rect, string.Empty, hoveredComponent == component ? hoveredRectStyle : normalRectStyle);
             }
 
             if (hoveredComponent != null)
             {
-                Vector3 coords = mouse;
+                var coords = mouse;
 
                 var size = new Vector2(300.0f, 300.0f);
 
@@ -182,8 +179,8 @@ namespace ModTools
 
         private Rect CalculateRealComponentRect(Vector3 absolutePosition, Vector2 size)
         {
-            float dx = Screen.width / 1920.0f;
-            float dy = Screen.height / 1080.0f;
+            var dx = Screen.width / 1920.0f;
+            var dy = Screen.height / 1080.0f;
             absolutePosition.x *= dx;
             absolutePosition.y *= dy;
             size.x *= dx;
@@ -231,7 +228,7 @@ namespace ModTools
                 GUILayout.Label($"texture.name: {textureSprite.texture?.name}");
             }
             GUILayout.Label($"zOrder: {hoveredComponent.zOrder}");
-            long hash = CalculateHash(hoveredComponent);
+            var hash = CalculateHash(hoveredComponent);
             GUILayout.Label($"hash: {HashUtil.HashToString(hash)}");
         }
 

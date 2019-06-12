@@ -52,14 +52,12 @@ namespace ModTools
                     }
                 }
 
-                var hsvColor = new HSV
+                return new HSV
                 {
                     h = h,
                     s = s,
                     v = v / 255
                 };
-
-                return hsvColor;
             }
 
             public static Color HSV2RGB(HSV color) => HSV2RGB(color.h, color.s, color.v);

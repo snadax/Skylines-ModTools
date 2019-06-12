@@ -24,8 +24,8 @@ namespace ModTools
 
         public void Begin()
         {
-            Vector2 position = Position;
-            Vector2 size = Size;
+            var position = Position;
+            var size = Size;
             GUILayout.BeginArea(new Rect(position.x, position.y, size.x, size.y));
         }
 

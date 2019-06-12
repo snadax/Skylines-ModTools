@@ -25,7 +25,7 @@ namespace ModTools
 
         static ScriptCompiler()
         {
-            string tempPath = Application.temporaryCachePath;
+            var tempPath = Application.temporaryCachePath;
             workspacePath = Path.Combine(tempPath, "ModTools");
             if (!Directory.Exists(workspacePath))
             {
@@ -45,7 +45,7 @@ namespace ModTools
         {
             modInstance = null;
 
-            if (CompileSource(sources, out string dllPath))
+            if (CompileSource(sources, out var dllPath))
             {
                 var assembly = Assembly.LoadFile(dllPath);
 
@@ -56,7 +56,7 @@ namespace ModTools
                 }
 
                 Type entryPointType = null;
-                foreach (Type type in assembly.GetTypes())
+                foreach (var type in assembly.GetTypes())
                 {
                     if (typeof(IModEntryPoint).IsAssignableFrom(type))
                     {
@@ -90,25 +90,25 @@ namespace ModTools
 
         public static bool CompileSource(List<ScriptEditorFile> sources, out string dllPath)
         {
-            string name = $"tmp_{Random.Range(0, int.MaxValue)}";
+            var name = $"tmp_{Random.Range(0, int.MaxValue)}";
 
-            string sourcePath = Path.Combine(sourcesPath, name);
+            var sourcePath = Path.Combine(sourcesPath, name);
 
             Directory.CreateDirectory(sourcePath);
 
-            string outputPath = Path.Combine(dllsPath, name);
+            var outputPath = Path.Combine(dllsPath, name);
             Directory.CreateDirectory(outputPath);
 
-            foreach (ScriptEditorFile file in sources)
+            foreach (var file in sources)
             {
-                string sourceFilePath = Path.Combine(sourcePath, Path.GetFileName(file.path));
+                var sourceFilePath = Path.Combine(sourcePath, Path.GetFileName(file.path));
                 File.WriteAllText(sourceFilePath, file.source);
             }
 
             dllPath = Path.Combine(outputPath, Path.GetFileName(outputPath) + ".dll");
 
-            string modToolsAssembly = FileUtil.FindPluginPath(typeof(Mod));
-            string[] additionalAssemblies = gameAssemblies.Concat(new[] { modToolsAssembly }).ToArray();
+            var modToolsAssembly = FileUtil.FindPluginPath(typeof(Mod));
+            var additionalAssemblies = gameAssemblies.Concat(new[] { modToolsAssembly }).ToArray();
 
             PluginManager.CompileSourceInFolder(sourcePath, outputPath, additionalAssemblies);
             return File.Exists(dllPath);
@@ -118,12 +118,12 @@ namespace ModTools
         {
             var directory = new DirectoryInfo(path);
 
-            foreach (FileInfo file in directory.GetFiles())
+            foreach (var file in directory.GetFiles())
             {
                 file.Delete();
             }
 
-            foreach (DirectoryInfo dir in directory.GetDirectories())
+            foreach (var dir in directory.GetDirectories())
             {
                 ClearFolder(dir.FullName);
                 dir.Delete();

@@ -27,8 +27,8 @@ namespace ModTools.Explorer
             GUILayout.Label(method.ReturnType.ToString() + " " + method.Name + "(");
             GUI.contentColor = ModTools.Instance.config.nameColor;
 
-            bool first = true;
-            foreach (ParameterInfo param in method.GetParameters())
+            var first = true;
+            foreach (var param in method.GetParameters())
             {
                 if (!first)
                 {

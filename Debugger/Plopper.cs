@@ -17,7 +17,7 @@ namespace ModTools.Explorer
             {
                 return;
             }
-            ToolManager toolManager = Singleton<ToolManager>.instance;
+            var toolManager = Singleton<ToolManager>.instance;
             if (toolManager?.m_properties == null)
             {
                 return;
@@ -28,7 +28,7 @@ namespace ModTools.Explorer
                 ploppedPrefab = null;
                 return;
             }
-            ToolBase currentTool = toolManager.m_properties.CurrentTool;
+            var currentTool = toolManager.m_properties.CurrentTool;
             if (currentTool == null)
             {
                 return;
@@ -36,11 +36,11 @@ namespace ModTools.Explorer
             if (currentTool is BuildingTool || currentTool is NetTool || currentTool is TreeTool
                 || currentTool is PropTool)
             {
-                FieldInfo prefabField = currentTool.GetType()
+                var prefabField = currentTool.GetType()
                     .GetField("m_prefab", BindingFlags.Instance | BindingFlags.Public);
                 if (prefabField != null)
                 {
-                    object prefab = prefabField.GetValue(currentTool);
+                    var prefab = prefabField.GetValue(currentTool);
                     if ((PrefabInfo)prefab != ploppedPrefab)
                     {
                         ploppedPrefab = null;
@@ -59,7 +59,7 @@ namespace ModTools.Explorer
 
         public static void StartPlopping(PrefabInfo prefabInfo)
         {
-            ToolBase currentTool = Singleton<ToolManager>.instance.m_properties.CurrentTool;
+            var currentTool = Singleton<ToolManager>.instance.m_properties.CurrentTool;
             if (currentTool == null)
             {
                 return;
@@ -86,13 +86,14 @@ namespace ModTools.Explorer
             {
                 toolType = null;
             }
+
             if (toolType == null || currentTool.GetType() != toolType && !(currentTool is DefaultTool))
             {
                 return;
             }
             if (prefabInfo is BuildingInfo buildingInfo)
             {
-                BuildingTool buildingTool = ToolsModifierControl.GetTool<BuildingTool>();
+                var buildingTool = ToolsModifierControl.GetTool<BuildingTool>();
                 if (buildingTool == null)
                 {
                     Log.Warning("BuildingTool not found!");
@@ -104,7 +105,7 @@ namespace ModTools.Explorer
             }
             else if (prefabInfo is NetInfo netInfo)
             {
-                NetTool netTool = ToolsModifierControl.GetTool<NetTool>();
+                var netTool = ToolsModifierControl.GetTool<NetTool>();
                 if (netTool == null)
                 {
                     Log.Warning("NetTool not found!");
@@ -115,7 +116,7 @@ namespace ModTools.Explorer
             }
             else if (prefabInfo is PropInfo propInfo)
             {
-                PropTool propTool = ToolsModifierControl.GetTool<PropTool>();
+                var propTool = ToolsModifierControl.GetTool<PropTool>();
                 if (propTool == null)
                 {
                     Log.Warning("PropTool not found!");
@@ -126,7 +127,7 @@ namespace ModTools.Explorer
             }
             else if (prefabInfo is TreeInfo treeInfo)
             {
-                TreeTool treeTool = ToolsModifierControl.GetTool<TreeTool>();
+                var treeTool = ToolsModifierControl.GetTool<TreeTool>();
                 if (treeTool == null)
                 {
                     Log.Warning("TreeTool not found!");

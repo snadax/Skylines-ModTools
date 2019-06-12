@@ -40,7 +40,7 @@ namespace ModTools
         {
             get
             {
-                string command = commandHistory[currentCommandHistoryIndex];
+                var command = commandHistory[currentCommandHistoryIndex];
                 return command.Length == 0 ? false : command.Contains('\n') || command.Length >= 64;
             }
         }
@@ -70,12 +70,12 @@ namespace ModTools
 
             RecalculateAreas();
 
-            onUnityGUI = () => KeyboardCallback();
+            onUnityGUI = KeyboardCallback;
         }
 
         private void KeyboardCallback()
         {
-            Event e = Event.current;
+            var e = Event.current;
             if (e.type != EventType.KeyUp || GUI.GetNameOfFocusedControl() != "ModToolsConsoleCommandLine")
             {
                 return;
@@ -99,8 +99,8 @@ namespace ModTools
                 // event.Use() does not consume the event, work around the enter being inserted into the textbox by
                 // deleting the line break
                 var editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
-                int pos = editor.selectIndex;
-                string currentCommand = commandHistory[currentCommandHistoryIndex];
+                var pos = editor.selectIndex;
+                var currentCommand = commandHistory[currentCommandHistoryIndex];
                 commandHistory[currentCommandHistoryIndex]
                     = currentCommand.Substring(0, pos - 1) + currentCommand.Substring(pos, currentCommand.Length - pos);
 
@@ -130,7 +130,7 @@ namespace ModTools
         {
             if (vanillaPanel == null)
             {
-                DebugOutputPanel panel = UIView.library?.Get<DebugOutputPanel>("DebugOutputPanel");
+                var panel = UIView.library?.Get<DebugOutputPanel>("DebugOutputPanel");
                 if (panel == null)
                 {
                     return;
@@ -147,7 +147,7 @@ namespace ModTools
             {
                 if (history.Count > 0)
                 {
-                    ConsoleMessage last = history.Last();
+                    var last = history.Last();
                     if (message == last.message && type == last.type)
                     {
                         last.count++;
@@ -156,7 +156,7 @@ namespace ModTools
                 }
             }
 
-            string caller = string.Empty;
+            var caller = string.Empty;
 
             var trace = new StackTrace(_internal ? 0 : 8);
 
@@ -167,7 +167,7 @@ namespace ModTools
                 {
                     MethodBase callingMethod = null;
 
-                    StackFrame frame = trace.GetFrame(i);
+                    var frame = trace.GetFrame(i);
                     if (frame != null)
                     {
                         callingMethod = frame.GetMethod();
@@ -217,7 +217,7 @@ namespace ModTools
 
         private void RecalculateAreas()
         {
-            float headerHeight = headerExpanded ? headerHeightExpanded : headerHeightCompact;
+            var headerHeight = headerExpanded ? headerHeightExpanded : headerHeightCompact;
             headerHeight *= config.fontSize;
             headerHeight += 32.0f;
 
@@ -225,7 +225,7 @@ namespace ModTools
             headerArea.absolutePosition.y = 16.0f;
             headerArea.absoluteSize.y = headerHeight;
 
-            float commandLineAreaHeight = commandLineAreaExpanded
+            var commandLineAreaHeight = commandLineAreaExpanded
                 ? commandLineAreaHeightExpanded
                 : commandLineAreaHeightCompact;
 
@@ -366,7 +366,7 @@ namespace ModTools
 
             consoleScrollPosition = GUILayout.BeginScrollView(consoleScrollPosition);
 
-            foreach (KeyValuePair<int, string> item in userNotifications)
+            foreach (var item in userNotifications)
             {
                 GUILayout.BeginHorizontal(skin.box);
 
@@ -389,11 +389,11 @@ namespace ModTools
                 messages = history.ToArray();
             }
 
-            foreach (ConsoleMessage item in messages)
+            foreach (var item in messages)
             {
                 GUILayout.BeginHorizontal(skin.box);
 
-                string msg = config.consoleFormatString.Replace("{{type}}", item.type.ToString())
+                var msg = config.consoleFormatString.Replace("{{type}}", item.type.ToString())
                         .Replace("{{caller}}", item.caller)
                         .Replace("{{message}}", item.message);
 
@@ -438,7 +438,7 @@ namespace ModTools
 
                 GUI.contentColor = Color.white;
 
-                StackTrace stackTrace = item.trace;
+                var stackTrace = item.trace;
                 if (stackTrace != null)
                 {
                     GUIStackTrace.StackTraceButton(stackTrace);
@@ -520,7 +520,7 @@ namespace ModTools
 
         private void RunCommandLine()
         {
-            string commandLine = commandHistory[currentCommandHistoryIndex];
+            var commandLine = commandHistory[currentCommandHistoryIndex];
 
             if (emptyCommandLineArea)
             {
@@ -536,9 +536,9 @@ namespace ModTools
             }
             emptyCommandLineArea = true;
 
-            string source = string.Format(defaultSource, commandLine);
+            var source = string.Format(defaultSource, commandLine);
             var file = new ScriptEditorFile() { path = "ModToolsCommandLineScript.cs", source = source };
-            if (!ScriptCompiler.RunSource(new List<ScriptEditorFile>() { file }, out _, out IModEntryPoint instance))
+            if (!ScriptCompiler.RunSource(new List<ScriptEditorFile>() { file }, out _, out var instance))
             {
                 Log.Error("Failed to compile command-line!");
             }

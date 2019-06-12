@@ -18,10 +18,10 @@ namespace ModTools
             resizable = false;
 
             availableFonts = Font.GetOSInstalledFontNames();
-            int c = 0;
-            string configFont = config.fontName;
+            var c = 0;
+            var configFont = config.fontName;
 
-            foreach (string font in availableFonts)
+            foreach (var font in availableFonts)
             {
                 if (font == configFont)
                 {
@@ -45,12 +45,12 @@ namespace ModTools
 
         private void DrawWindow()
         {
-            Configuration config = ModTools.Instance.config;
+            var config = ModTools.Instance.config;
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Font");
 
-            int newSelectedFont = GUIComboBox.Box(selectedFont, availableFonts, "SceneExplorerColorConfigFontsComboBox");
+            var newSelectedFont = GUIComboBox.Box(selectedFont, availableFonts, "SceneExplorerColorConfigFontsComboBox");
             if (newSelectedFont != selectedFont)
             {
                 config.fontName = availableFonts[newSelectedFont];
@@ -63,7 +63,7 @@ namespace ModTools
 
             GUILayout.Label("Font size");
 
-            int newFontSize = (int)GUILayout.HorizontalSlider(config.fontSize, 13.0f, 39.0f, GUILayout.Width(256));
+            var newFontSize = (int)GUILayout.HorizontalSlider(config.fontSize, 13.0f, 39.0f, GUILayout.Width(256));
 
             if (newFontSize != config.fontSize)
             {

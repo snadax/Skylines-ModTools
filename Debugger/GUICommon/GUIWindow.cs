@@ -97,7 +97,7 @@ namespace ModTools
             minSize = new Vector2(64.0f, 64.0f);
             windows.Add(this);
 
-            UIView uiView = FindObjectOfType<UIView>();
+            var uiView = FindObjectOfType<UIView>();
             if (uiView != null)
             {
                 clickCatcher = uiView.AddUIComponent(typeof(UIPanel)) as UIPanel;
@@ -117,7 +117,7 @@ namespace ModTools
             }
 
             // adjust rect from unity pixels to C:S pixels via GetUIView().ratio
-            float ratio = UIView.GetAView().ratio;
+            var ratio = UIView.GetAView().ratio;
 
             clickCatcher.absolutePosition = new Vector3(rect.position.x * ratio, rect.position.y * ratio);
             clickCatcher.size = new Vector2(rect.width * ratio, rect.height * ratio);
@@ -145,9 +145,9 @@ namespace ModTools
 
         public static void UpdateMouseScrolling()
         {
-            Vector3 mouse = Input.mousePosition;
+            var mouse = Input.mousePosition;
             mouse.y = Screen.height - mouse.y;
-            bool mouseInsideGuiWindow = windows.Any(window => window.visible && window.rect.Contains(mouse));
+            var mouseInsideGuiWindow = windows.Any(window => window.visible && window.rect.Contains(mouse));
             Util.SetMouseScrolling(!mouseInsideGuiWindow);
         }
 
@@ -218,13 +218,13 @@ namespace ModTools
 
             if (visible)
             {
-                GUISkin oldSkin = GUI.skin;
+                var oldSkin = GUI.skin;
                 if (skin != null)
                 {
                     GUI.skin = skin;
                 }
 
-                Matrix4x4 matrix = GUI.matrix;
+                var matrix = GUI.matrix;
                 GUI.matrix = Matrix4x4.Scale(new Vector3(uiScale, uiScale, uiScale));
 
                 rect = GUI.Window(id, rect, i =>
@@ -251,7 +251,7 @@ namespace ModTools
 
                         GUILayout.Space(16.0f);
 
-                        Vector3 mouse = Input.mousePosition;
+                        var mouse = Input.mousePosition;
                         mouse.y = Screen.height - mouse.y;
 
                         DrawBorder();
@@ -294,7 +294,7 @@ namespace ModTools
         private void DrawTitlebar(Vector3 mouse)
         {
             var moveRect = new Rect(rect.x * uiScale, rect.y * uiScale, rect.width * uiScale, 20.0f);
-            Texture2D moveTex = moveNormalTexture;
+            var moveTex = moveNormalTexture;
 
             if (movingWindow != null)
             {
@@ -304,7 +304,7 @@ namespace ModTools
 
                     if (Input.GetMouseButton(0))
                     {
-                        Vector2 pos = new Vector2(mouse.x, mouse.y) + moveDragHandle;
+                        var pos = new Vector2(mouse.x, mouse.y) + moveDragHandle;
                         rect.x = pos.x;
                         rect.y = pos.y;
                         if (rect.x < 0.0f)
@@ -355,7 +355,7 @@ namespace ModTools
         private void DrawCloseButton(Vector3 mouse)
         {
             var closeRect = new Rect(rect.x * uiScale + rect.width * uiScale - 20.0f, rect.y * uiScale, 16.0f, 8.0f);
-            Texture2D closeTex = closeNormalTexture;
+            var closeTex = closeNormalTexture;
 
             if (closeRect.Contains(mouse))
             {
@@ -380,7 +380,7 @@ namespace ModTools
         private void DrawResizeHandle(Vector3 mouse)
         {
             var resizeRect = new Rect(rect.x * uiScale + rect.width * uiScale - 16.0f, rect.y * uiScale + rect.height * uiScale - 8.0f, 16.0f, 8.0f);
-            Texture2D resizeTex = resizeNormalTexture;
+            var resizeTex = resizeNormalTexture;
 
             if (resizingWindow != null)
             {
@@ -390,7 +390,7 @@ namespace ModTools
 
                     if (Input.GetMouseButton(0))
                     {
-                        Vector2 size = new Vector2(mouse.x, mouse.y) + resizeDragHandle - new Vector2(rect.x, rect.y);
+                        var size = new Vector2(mouse.x, mouse.y) + resizeDragHandle - new Vector2(rect.x, rect.y);
 
                         if (size.x < minSize.x)
                         {

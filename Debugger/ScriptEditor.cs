@@ -52,7 +52,7 @@ namespace ModTools
 
         private void RecalculateAreas()
         {
-            float headerHeight = headerExpanded ? expandedHeaderHeight : compactHeaderHeight;
+            var headerHeight = headerExpanded ? expandedHeaderHeight : compactHeaderHeight;
 
             headerArea.absolutePosition.y = 32.0f;
             headerArea.relativeSize.x = 1.0f;
@@ -78,14 +78,13 @@ namespace ModTools
                 return;
             }
 
-            bool exampleFileExists = false;
+            var exampleFileExists = false;
 
             projectFiles.Clear();
 
             try
             {
-                List<string> files = FileUtil.ListFilesInDirectory(projectWorkspacePath);
-                foreach (string file in files)
+                foreach (var file in FileUtil.ListFilesInDirectory(projectWorkspacePath))
                 {
                     if (Path.GetExtension(file) == ".cs")
                     {
@@ -121,7 +120,7 @@ namespace ModTools
         {
             try
             {
-                foreach (ScriptEditorFile file in projectFiles)
+                foreach (var file in projectFiles)
                 {
                     SaveProjectFile(file);
                 }
@@ -152,7 +151,7 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Project workspace:", GUILayout.ExpandWidth(false));
-            string newProjectWorkspacePath = GUILayout.TextField(projectWorkspacePath, GUILayout.ExpandWidth(true));
+            var newProjectWorkspacePath = GUILayout.TextField(projectWorkspacePath, GUILayout.ExpandWidth(true));
             if (!newProjectWorkspacePath.Equals(projectWorkspacePath))
             {
                 projectWorkspacePath = newProjectWorkspacePath.Trim();
@@ -170,7 +169,7 @@ namespace ModTools
             projectFilesScrollPosition = GUILayout.BeginScrollView(projectFilesScrollPosition);
             GUILayout.BeginHorizontal();
 
-            foreach (ScriptEditorFile file in projectFiles)
+            foreach (var file in projectFiles)
             {
                 if (GUILayout.Button(Path.GetFileName(file.path), GUILayout.ExpandWidth(false)))
                 {
@@ -192,7 +191,7 @@ namespace ModTools
 
             GUI.SetNextControlName(textAreaControlName);
 
-            string text = GUILayout.TextArea(currentFile != null ? currentFile.source : "No file loaded..", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            var text = GUILayout.TextArea(currentFile != null ? currentFile.source : "No file loaded..", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
             var editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
 
             if (GUIUtility.keyboardControl == editor.controlID && Event.current.Equals(Event.KeyboardEvent("tab")))
@@ -238,7 +237,7 @@ namespace ModTools
 
             if (GUILayout.Button("Compile"))
             {
-                if (ScriptCompiler.CompileSource(projectFiles, out string dllPath))
+                if (ScriptCompiler.CompileSource(projectFiles, out var dllPath))
                 {
                     Log.Message("Source compiled to \"" + dllPath + "\"");
                 }
@@ -250,7 +249,7 @@ namespace ModTools
 
             if (GUILayout.Button("Run"))
             {
-                if (ScriptCompiler.RunSource(projectFiles, out string errorMessage, out currentMod))
+                if (ScriptCompiler.RunSource(projectFiles, out var errorMessage, out currentMod))
                 {
                     Log.Message("Running IModEntryPoint.OnModLoaded()");
 

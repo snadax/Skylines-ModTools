@@ -14,7 +14,7 @@ namespace ModTools
         {
             _filesMustBeNull = _filesMustBeNull ?? new List<string>();
 
-            foreach (string file in Directory.GetFiles(path))
+            foreach (var file in Directory.GetFiles(path))
             {
                 _filesMustBeNull.Add(file);
             }
@@ -23,16 +23,16 @@ namespace ModTools
 
         public static string FindPluginPath(Type type)
         {
-            foreach (PluginManager.PluginInfo item in PluginManager.instance.GetPluginsInfo())
+            foreach (var item in PluginManager.instance.GetPluginsInfo())
             {
-                IUserMod[] instances = item.GetInstances<IUserMod>();
-                IUserMod instance = instances.FirstOrDefault();
+                var instances = item.GetInstances<IUserMod>();
+                var instance = instances.FirstOrDefault();
                 if (instance != null && instance.GetType() != type)
                 {
                     continue;
                 }
 
-                foreach (string file in Directory.GetFiles(item.modPath))
+                foreach (var file in Directory.GetFiles(item.modPath))
                 {
                     if (Path.GetExtension(file) == ".dll")
                     {
@@ -50,7 +50,7 @@ namespace ModTools
                 return DateTime.Now.ToString("yyyyMMddhhmmss");
             }
 
-            string regexSearch = new string(Path.GetInvalidFileNameChars());
+            var regexSearch = new string(Path.GetInvalidFileNameChars());
             var r = new Regex($"[{Regex.Escape(regexSearch)}]");
             return r.Replace(illegal, "_");
         }

@@ -9,7 +9,7 @@ namespace ModTools
         {
             var roots = new Dictionary<GameObject, bool>();
 
-            foreach (GameObject obj in Object.FindObjectsOfType<GameObject>())
+            foreach (var obj in Object.FindObjectsOfType<GameObject>())
             {
                 if (!roots.ContainsKey(obj.transform.root.gameObject))
                 {
@@ -22,9 +22,9 @@ namespace ModTools
 
         public static List<KeyValuePair<GameObject, Component>> FindComponentsOfType(string typeName)
         {
-            Dictionary<GameObject, bool> roots = FindSceneRoots();
+            var roots = FindSceneRoots();
             var list = new List<KeyValuePair<GameObject, Component>>();
-            foreach (GameObject root in roots.Keys)
+            foreach (var root in roots.Keys)
             {
                 FindComponentsOfType(typeName, root, list);
             }
@@ -33,13 +33,13 @@ namespace ModTools
 
         public static void FindComponentsOfType(string typeName, GameObject gameObject, List<KeyValuePair<GameObject, Component>> list)
         {
-            Component component = gameObject.GetComponent(typeName);
+            var component = gameObject.GetComponent(typeName);
             if (component != null)
             {
                 list.Add(new KeyValuePair<GameObject, Component>(gameObject, component));
             }
 
-            for (int i = 0; i < gameObject.transform.childCount; i++)
+            for (var i = 0; i < gameObject.transform.childCount; i++)
             {
                 FindComponentsOfType(typeName, gameObject.transform.GetChild(i).gameObject, list);
             }
@@ -47,7 +47,7 @@ namespace ModTools
 
         public static string WhereIs(GameObject gameObject, bool logToConsole = true)
         {
-            string outResult = gameObject.name;
+            var outResult = gameObject.name;
             WhereIsInternal(gameObject, ref outResult);
 
             if (logToConsole)

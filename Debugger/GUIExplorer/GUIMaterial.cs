@@ -83,16 +83,16 @@ namespace ModTools.Explorer
                 return;
             }
 
-            ReferenceChain oldRefChain = refChain;
+            var oldRefChain = refChain;
 
-            foreach (string prop in textureProps)
+            foreach (var prop in textureProps)
             {
                 if (!material.HasProperty(prop))
                 {
                     continue;
                 }
 
-                Texture value = material.GetTexture(prop);
+                var value = material.GetTexture(prop);
                 if (value == null)
                 {
                     continue;
@@ -100,7 +100,7 @@ namespace ModTools.Explorer
 
                 refChain = oldRefChain.Add(prop);
 
-                System.Type type = value.GetType();
+                var type = value.GetType();
 
                 GUILayout.BeginHorizontal();
                 SceneExplorerCommon.InsertIndent(refChain.Ident + 1);
@@ -125,7 +125,7 @@ namespace ModTools.Explorer
 
                 GUILayout.FlexibleSpace();
                 GUIButtons.SetupButtons(type, value, refChain);
-                bool doPaste = GUIButtons.SetupPasteButon(type, out object paste);
+                var doPaste = GUIButtons.SetupPasteButon(type, out var paste);
                 GUILayout.EndHorizontal();
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
@@ -139,17 +139,17 @@ namespace ModTools.Explorer
                 }
             }
 
-            foreach (string prop in colorProps)
+            foreach (var prop in colorProps)
             {
                 if (!material.HasProperty(prop))
                 {
                     continue;
                 }
 
-                Color value = material.GetColor(prop);
+                var value = material.GetColor(prop);
                 refChain = oldRefChain.Add(prop);
 
-                System.Type type = value.GetType();
+                var type = value.GetType();
 
                 GUILayout.BeginHorizontal();
                 SceneExplorerCommon.InsertIndent(refChain.Ident + 1);
@@ -179,7 +179,7 @@ namespace ModTools.Explorer
                 GUI.contentColor = Color.white;
                 GUILayout.FlexibleSpace();
                 GUIButtons.SetupButtons(type, value, refChain);
-                bool doPaste = GUIButtons.SetupPasteButon(type, out object paste);
+                var doPaste = GUIButtons.SetupPasteButon(type, out var paste);
                 GUILayout.EndHorizontal();
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))

@@ -76,7 +76,7 @@ namespace ModTools
                 componentArea.absoluteSize.x = -sceneTreeWidth;
             }
 
-            float headerHeight = headerExpanded ? headerHeightExpanded : headerHeightCompact;
+            var headerHeight = headerExpanded ? headerHeightExpanded : headerHeightCompact;
             headerHeight *= ModTools.Instance.config.fontSize;
             headerHeight += 32.0f;
 
@@ -127,10 +127,10 @@ namespace ModTools
             var rootGameObject = (GameObject)refChain.GetChainItem(0);
             sceneRoots.Add(rootGameObject, true);
 
-            ReferenceChain expandedRefChain = new ReferenceChain().Add(rootGameObject);
+            var expandedRefChain = new ReferenceChain().Add(rootGameObject);
             state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
 
-            for (int i = 1; i < refChain.Length; i++)
+            for (var i = 1; i < refChain.Length; i++)
             {
                 switch (refChain.GetChainItemType(i))
                 {
@@ -159,7 +159,7 @@ namespace ModTools
                         break;
 
                     case ReferenceChain.ReferenceType.EnumerableItem:
-                        int index = (int)refChain.GetChainItem(i);
+                        var index = (int)refChain.GetChainItem(i);
                         state.SelectedArrayStartIndices[expandedRefChain.UniqueId] = index;
                         state.SelectedArrayEndIndices[expandedRefChain.UniqueId] = index;
                         expandedRefChain = expandedRefChain.Add(index);
@@ -221,7 +221,7 @@ namespace ModTools
             GUILayout.Label("Show:", GUILayout.ExpandWidth(false));
             GUI.contentColor = Color.white;
 
-            bool showFields = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowFields, string.Empty);
+            var showFields = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowFields, string.Empty);
             if (ModTools.Instance.config.sceneExplorerShowFields != showFields)
             {
                 ModTools.Instance.config.sceneExplorerShowFields = showFields;
@@ -230,7 +230,7 @@ namespace ModTools
             GUILayout.Label("Fields");
 
             GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing);
-            bool showConsts = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowConsts, string.Empty);
+            var showConsts = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowConsts, string.Empty);
             if (ModTools.Instance.config.sceneExplorerShowConsts != showConsts)
             {
                 ModTools.Instance.config.sceneExplorerShowConsts = showConsts;
@@ -239,7 +239,7 @@ namespace ModTools
             GUILayout.Label("Constants");
 
             GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing);
-            bool showProperties = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowProperties, string.Empty);
+            var showProperties = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowProperties, string.Empty);
             if (ModTools.Instance.config.sceneExplorerShowProperties != showProperties)
             {
                 ModTools.Instance.config.sceneExplorerShowProperties = showProperties;
@@ -248,7 +248,7 @@ namespace ModTools
             GUILayout.Label("Properties");
 
             GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing);
-            bool showMethods = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowMethods, string.Empty);
+            var showMethods = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowMethods, string.Empty);
             if (ModTools.Instance.config.sceneExplorerShowMethods != showMethods)
             {
                 ModTools.Instance.config.sceneExplorerShowMethods = showMethods;
@@ -273,7 +273,7 @@ namespace ModTools
             GUILayout.BeginHorizontal();
             GUI.contentColor = Color.green;
             GUILayout.Label("Show field/ property modifiers:", GUILayout.ExpandWidth(false));
-            bool showModifiers = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowModifiers, string.Empty);
+            var showModifiers = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowModifiers, string.Empty);
             if (showModifiers != ModTools.Instance.config.sceneExplorerShowModifiers)
             {
                 ModTools.Instance.config.sceneExplorerShowModifiers = showModifiers;
@@ -287,7 +287,7 @@ namespace ModTools
             GUILayout.BeginHorizontal();
             GUI.contentColor = Color.green;
             GUILayout.Label("Show inherited members:", GUILayout.ExpandWidth(false));
-            bool showInheritedMembers = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowInheritedMembers, string.Empty);
+            var showInheritedMembers = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowInheritedMembers, string.Empty);
             if (showInheritedMembers != ModTools.Instance.config.sceneExplorerShowInheritedMembers)
             {
                 ModTools.Instance.config.sceneExplorerShowInheritedMembers = showInheritedMembers;
@@ -302,7 +302,7 @@ namespace ModTools
             GUILayout.BeginHorizontal();
             GUI.contentColor = Color.green;
             GUILayout.Label("Evaluate properties automatically:", GUILayout.ExpandWidth(false));
-            bool evaluatePropertiesAutomatically = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically, string.Empty);
+            var evaluatePropertiesAutomatically = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically, string.Empty);
             if (evaluatePropertiesAutomatically != ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically)
             {
                 ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically = evaluatePropertiesAutomatically;
@@ -317,7 +317,7 @@ namespace ModTools
             GUI.contentColor = Color.green;
             GUILayout.Label("Sort alphabetically:", GUILayout.ExpandWidth(false));
             GUI.contentColor = Color.white;
-            bool sortAlphabetically = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerSortAlphabetically, string.Empty);
+            var sortAlphabetically = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerSortAlphabetically, string.Empty);
             if (sortAlphabetically != ModTools.Instance.config.sceneExplorerSortAlphabetically)
             {
                 ModTools.Instance.config.sceneExplorerSortAlphabetically = sortAlphabetically;
@@ -400,10 +400,10 @@ namespace ModTools
 
             if (GUILayout.Button("Find"))
             {
-                List<KeyValuePair<GameObject, Component>> gameObjects = GameObjectUtil.FindComponentsOfType(findObjectTypeFilter.Trim());
+                var gameObjects = GameObjectUtil.FindComponentsOfType(findObjectTypeFilter.Trim());
 
                 sceneRoots.Clear();
-                foreach (KeyValuePair<GameObject, Component> item in gameObjects)
+                foreach (var item in gameObjects)
                 {
                     ClearExpanded();
                     state.ExpandedGameObjects.Add(new ReferenceChain().Add(item.Key).UniqueId);
@@ -444,13 +444,13 @@ namespace ModTools
 
             sceneTreeScrollPosition = GUILayout.BeginScrollView(sceneTreeScrollPosition);
 
-            GameObject[] gameObjects = sceneRoots.Keys.ToArray();
+            var gameObjects = sceneRoots.Keys.ToArray();
 
             if (ModTools.Instance.config.sceneExplorerSortAlphabetically)
             {
                 try
                 {
-                    Array.Sort(gameObjects, (o, o1) => o.name == null ? 1 : o1.name == null ? -1 : o.name.CompareTo(o1.name));
+                    Array.Sort(gameObjects, (o, o1) => o?.name == null ? 1 : o1?.name == null ? -1 : o.name.CompareTo(o1.name));
                 }
                 catch (Exception e)
                 {
@@ -458,7 +458,7 @@ namespace ModTools
                 }
             }
 
-            foreach (GameObject obj in gameObjects)
+            foreach (var obj in gameObjects)
             {
                 GUIRecursiveTree.OnSceneTreeRecursive(gameObject, state, new ReferenceChain().Add(obj), obj);
             }
@@ -497,7 +497,7 @@ namespace ModTools
         {
             RecalculateAreas();
 
-            bool enterPressed = Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter);
+            var enterPressed = Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter);
 
             if (enterPressed)
             {

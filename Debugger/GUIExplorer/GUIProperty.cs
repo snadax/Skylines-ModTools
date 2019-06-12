@@ -23,7 +23,7 @@ namespace ModTools.Explorer
             GUILayout.BeginHorizontal();
             SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-            bool propertyWasEvaluated = false;
+            var propertyWasEvaluated = false;
             object value = null;
 
             Exception exceptionOnGetting = null;
@@ -130,7 +130,7 @@ namespace ModTools.Explorer
                 {
                     try
                     {
-                        object newValue = GUIControls.EditorValueField(refChain, refChain.UniqueId, property.PropertyType, value);
+                        var newValue = GUIControls.EditorValueField(refChain.UniqueId, property.PropertyType, value);
                         if (newValue != value)
                         {
                             property.SetValue(obj, newValue, null);
@@ -163,7 +163,7 @@ namespace ModTools.Explorer
             }
             GUIButtons.SetupButtons(property.PropertyType, value, refChain);
             object paste = null;
-            bool doPaste = property.CanWrite;
+            var doPaste = property.CanWrite;
             if (doPaste)
             {
                 doPaste = GUIButtons.SetupPasteButon(property.PropertyType, out paste);
@@ -175,7 +175,7 @@ namespace ModTools.Explorer
                 if (value is GameObject)
                 {
                     var go = value as GameObject;
-                    foreach (Component component in go.GetComponents<Component>())
+                    foreach (var component in go.GetComponents<Component>())
                     {
                         GUIComponent.OnSceneTreeComponent(state, refChain, component);
                     }

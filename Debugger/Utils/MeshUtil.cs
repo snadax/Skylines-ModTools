@@ -16,7 +16,7 @@ namespace ModTools.Utils
                 File.Delete(fileName);
             }
 
-            Mesh meshToDump = mesh;
+            var meshToDump = mesh;
 
             if (!mesh.isReadable)
             {
