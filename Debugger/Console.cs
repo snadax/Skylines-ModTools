@@ -541,7 +541,7 @@ namespace ModTools
 
             if (emptyCommandLineArea)
             {
-                if (commandHistory.Last() != string.Empty)
+                if (commandHistory.Count > 0 && !string.IsNullOrEmpty(commandHistory[commandHistory.Count - 1]))
                 {
                     commandHistory.Add(string.Empty);
                     currentCommandHistoryIndex = commandHistory.Count - 1;

@@ -42,7 +42,7 @@ namespace ModTools
                 }
             }
 
-            throw new Exception("Failed to find assembly!");
+            throw new FileNotFoundException("Failed to find assembly!");
         }
 
         public static string LegalizeFileName(this string illegal)

@@ -118,7 +118,7 @@ namespace ModTools
             SetInstance();
         }
 
-        private UIButton CreateButton(string text, int width, int height, UIComponent parentComponent, Vector3 offset, UIAlignAnchor anchor, MouseEventHandler handler)
+        private static UIButton CreateButton(string text, int width, int height, UIComponent parentComponent, Vector3 offset, UIAlignAnchor anchor, MouseEventHandler handler)
         {
             var button = UIView.GetAView().AddUIComponent(typeof(UIButton)) as UIButton;
             button.name = "ModTools Button";
@@ -142,7 +142,7 @@ namespace ModTools
             return button;
         }
 
-        private UILabel CreateLabel(string text, int width, int height, UIComponent parentComponent, Vector3 offset, UIAlignAnchor anchor)
+        private static UILabel CreateLabel(string text, int width, int height, UIComponent parentComponent, Vector3 offset, UIAlignAnchor anchor)
         {
             var label = UIView.GetAView().AddUIComponent(typeof(UILabel)) as UILabel;
             label.text = text;

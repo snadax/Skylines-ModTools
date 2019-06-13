@@ -353,7 +353,7 @@ namespace ModTools
         {
             sceneTreeArea.Begin();
 
-            if (searchDisplayString != string.Empty)
+            if (!string.IsNullOrEmpty(searchDisplayString))
             {
                 GUI.contentColor = Color.green;
                 GUILayout.Label(searchDisplayString);

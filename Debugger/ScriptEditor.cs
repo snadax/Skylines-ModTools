@@ -107,6 +107,8 @@ namespace ModTools
             Visible = false;
         }
 
+        private static void SaveProjectFile(ScriptEditorFile file) => File.WriteAllText(file.Path, file.Source);
+
         private void RecalculateAreas()
         {
             var headerHeight = headerExpanded ? ExpandedHeaderHeight : CompactHeaderHeight;
@@ -143,8 +145,6 @@ namespace ModTools
 
             lastError = string.Empty;
         }
-
-        private void SaveProjectFile(ScriptEditorFile file) => File.WriteAllText(file.Path, file.Source);
 
         private void DrawHeader()
         {

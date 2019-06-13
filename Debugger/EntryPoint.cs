@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public sealed class Mod : IUserMod
+    public sealed class EntryPoint : IUserMod
     {
         private const string ModToolsName = "ModTools";
 

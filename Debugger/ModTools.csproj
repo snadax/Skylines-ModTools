@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ModTools</RootNamespace>
-    <AssemblyName>000_ModTools</AssemblyName>
+    <AssemblyName>000ModTools</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -98,7 +98,7 @@
     <Compile Include="ModTools.cs" />
     <Compile Include="GUICommon\GUIControls.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="Mod.cs" />
+    <Compile Include="EntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceChain.cs" />
     <Compile Include="SceneExplorerColorConfig.cs" />

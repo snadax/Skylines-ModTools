@@ -182,7 +182,7 @@ namespace ModTools
             }
         }
 
-        private Rect CalculateRealComponentRect(Vector3 absolutePosition, Vector2 size)
+        private static Rect CalculateRealComponentRect(Vector3 absolutePosition, Vector2 size)
         {
             var dx = Screen.width / 1920.0f;
             var dy = Screen.height / 1080.0f;
@@ -192,6 +192,9 @@ namespace ModTools
             size.y *= dy;
             return new Rect(absolutePosition.x, absolutePosition.y, size.x, size.y);
         }
+
+        private static long CalculateHash(UIComponent c)
+            => HashUtil.HashRect(new Rect(c.relativePosition.x, c.relativePosition.y, c.size.x, c.size.y));
 
         private void DoInfoWindow(int i)
         {
@@ -240,9 +243,6 @@ namespace ModTools
             var hash = CalculateHash(hoveredComponent);
             GUILayout.Label($"hash: {HashUtil.HashToString(hash)}");
         }
-
-        private long CalculateHash(UIComponent c)
-            => HashUtil.HashRect(new Rect(c.relativePosition.x, c.relativePosition.y, c.size.x, c.size.y));
 
         private int RenderSortFunc(UIComponent lhs, UIComponent rhs) => lhs.renderOrder.CompareTo(rhs.renderOrder);
     }
