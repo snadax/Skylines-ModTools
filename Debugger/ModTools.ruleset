@@ -340,4 +340,16 @@
     <Rule Id="RCS1234" Action="Error" />
     <Rule Id="RCS1235" Action="Warning" />
   </Rules>
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA0001" Action="None" />
+    <Rule Id="SA1101" Action="None" />
+    <Rule Id="SA1124" Action="None" />
+    <Rule Id="SA1200" Action="None" />
+    <Rule Id="SA1407" Action="None" />
+    <Rule Id="SA1408" Action="None" />
+    <Rule Id="SA1600" Action="None" />
+    <Rule Id="SA1602" Action="None" />
+    <Rule Id="SA1633" Action="None" />
+    <Rule Id="SX1101" Action="Warning" />
+  </Rules>
 </RuleSet>
