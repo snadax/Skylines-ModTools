@@ -33,6 +33,7 @@ namespace ModTools
         private SceneExplorerState state;
 
         private bool headerExpanded;
+        private bool treeExpanded = true;
 
         public SceneExplorer()
             : base("Scene Explorer", new Rect(128, 440, 800, 500), Skin)
@@ -54,7 +55,7 @@ namespace ModTools
             headerArea.AbsolutePosition.y = WindowTopMargin;
             headerArea.RelativeSize.x = 1.0f;
 
-            if (WindowRect.width < Screen.width / 4.0f && state.CurrentRefChain != null)
+            if (WindowRect.width < Screen.width / 4.0f && state.CurrentRefChain != null || !treeExpanded)
             {
                 sceneTreeArea.RelativeSize = Vector2.zero;
                 sceneTreeArea.RelativeSize = Vector2.zero;
@@ -184,21 +185,30 @@ namespace ModTools
         {
             GUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("▼", GUILayout.ExpandWidth(false)))
+            if (GUILayout.Button(" ▼▼▼ ", GUILayout.ExpandWidth(false)))
             {
                 headerExpanded = true;
                 RecalculateAreas();
             }
 
-            if (GUILayout.Button("Refresh", GUILayout.ExpandWidth(false)))
+            if (GUILayout.Button(treeExpanded ? " ◀◀◀ " : " ▶▶▶ ", GUILayout.ExpandWidth(false)))
             {
-                Refresh();
+                treeExpanded = !treeExpanded;
+                RecalculateAreas();
             }
 
-            if (GUILayout.Button("Fold all/ Clear", GUILayout.ExpandWidth(false)))
+            if (treeExpanded)
             {
-                ClearExpanded();
-                Refresh();
+                if (GUILayout.Button("Refresh", GUILayout.ExpandWidth(false)))
+                {
+                    Refresh();
+                }
+
+                if (GUILayout.Button("Fold all / Clear", GUILayout.ExpandWidth(false)))
+                {
+                    ClearExpanded();
+                    Refresh();
+                }
             }
 
             GUILayout.FlexibleSpace();
@@ -329,9 +339,15 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("▲", GUILayout.ExpandWidth(false)))
+            if (GUILayout.Button(" ▲▲▲ ", GUILayout.ExpandWidth(false)))
             {
                 headerExpanded = false;
+                RecalculateAreas();
+            }
+
+            if (GUILayout.Button(treeExpanded ? " ◀◀◀ " : " ▶▶▶ ", GUILayout.ExpandWidth(false)))
+            {
+                treeExpanded = !treeExpanded;
                 RecalculateAreas();
             }
 
