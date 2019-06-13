@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    internal sealed class ReferenceChain : IEquatable<ReferenceChain>, ICloneable
+    internal sealed class ReferenceChain : ICloneable
     {
         private readonly object[] chainObjects = new object[ModTools.Instance.Config.SceneExplorerMaxHierarchyDepth];
         private readonly ReferenceType[] chainTypes = new ReferenceType[ModTools.Instance.Config.SceneExplorerMaxHierarchyDepth];
@@ -308,9 +308,14 @@ namespace ModTools
             return false;
         }
 
-        public bool Equals(ReferenceChain other)
+        public bool IsSameChain(ReferenceChain other)
         {
-            if (other == null || Length != other.Length)
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            if (Length != other.Length)
             {
                 return false;
             }

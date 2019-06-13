@@ -24,7 +24,7 @@ namespace ModTools.Explorer
                 ? ModTools.Instance.Config.EnabledComponentColor
                 : ModTools.Instance.Config.DisabledComponentColor;
 
-            if (state.CurrentRefChain?.Equals(refChain.Add(component)) != true)
+            if (state.CurrentRefChain?.IsSameChain(refChain.Add(component)) != true)
             {
                 if (GUILayout.Button(">", GUILayout.ExpandWidth(false)))
                 {
