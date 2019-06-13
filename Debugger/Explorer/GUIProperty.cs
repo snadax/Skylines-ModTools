@@ -164,7 +164,7 @@ namespace ModTools.Explorer
                 ModTools.Instance.Watches.AddWatch(refChain);
             }
 
-            GUIButtons.SetupButtons(property.PropertyType, value, refChain);
+            GUIButtons.SetupButtons(refChain, property.PropertyType, value, valueIndex: -1);
             object paste = null;
             var doPaste = property.CanWrite;
             if (doPaste)

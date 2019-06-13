@@ -125,7 +125,7 @@ namespace ModTools.Explorer
                 GUI.contentColor = Color.white;
 
                 GUILayout.FlexibleSpace();
-                GUIButtons.SetupButtons(type, value, refChain);
+                GUIButtons.SetupButtons(refChain, type, value, valueIndex: -1);
                 var doPaste = GUIButtons.SetupPasteButon(type, out var paste);
                 GUILayout.EndHorizontal();
 
@@ -179,7 +179,7 @@ namespace ModTools.Explorer
 
                 GUI.contentColor = Color.white;
                 GUILayout.FlexibleSpace();
-                GUIButtons.SetupButtons(type, value, refChain);
+                GUIButtons.SetupButtons(refChain, type, value, valueIndex: -1);
                 var doPaste = GUIButtons.SetupPasteButon(type, out var paste);
                 GUILayout.EndHorizontal();
 

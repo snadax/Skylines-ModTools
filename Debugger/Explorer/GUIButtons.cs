@@ -8,134 +8,81 @@ namespace ModTools.Explorer
     {
         private static object buffer;
 
-        public static void SetupButtons(Type type, object value, ReferenceChain refChain)
+        public static void SetupButtons(ReferenceChain refChain, Type type, object value, int valueIndex)
         {
-            if (value is VehicleInfo vehicleInfo)
+            switch (value)
             {
-                if (vehicleInfo.m_mesh != null && GUILayout.Button("Preview"))
-                {
-                    MeshViewer.CreateMeshViewer(vehicleInfo.name, vehicleInfo.m_mesh, vehicleInfo.m_material);
-                }
+                case null:
+                    return;
 
-                if (vehicleInfo.m_lodMesh != null && GUILayout.Button("Preview LOD"))
-                {
-                    MeshViewer.CreateMeshViewer(vehicleInfo.name + "_LOD", vehicleInfo.m_lodMesh, vehicleInfo.m_lodMaterial);
-                }
-            }
-            else if (value is NetInfo)
-            {
-                SetupPlopButton(value);
-            }
-            else if (value is BuildingInfo buildingInfo)
-            {
-                SetupPlopButton(value);
-                if (buildingInfo.m_mesh != null && GUILayout.Button("Preview"))
-                {
-                    MeshViewer.CreateMeshViewer(buildingInfo.name, buildingInfo.m_mesh, buildingInfo.m_material);
-                }
+                case PrefabInfo prefabInfo:
+                    SetupButtonsForPrefab(prefabInfo);
+                    goto default;
 
-                if (buildingInfo.m_lodMesh != null && GUILayout.Button("Preview LOD"))
-                {
-                    MeshViewer.CreateMeshViewer(buildingInfo.name + "_LOD", buildingInfo.m_lodMesh, buildingInfo.m_lodMaterial);
-                }
-            }
-            else if (value is PropInfo propInfo)
-            {
-                SetupPlopButton(value);
-                if (propInfo.m_mesh != null && GUILayout.Button("Preview"))
-                {
-                    MeshViewer.CreateMeshViewer(propInfo.name, propInfo.m_mesh, propInfo.m_material);
-                }
-
-                if (propInfo.m_lodMesh != null && GUILayout.Button("Preview LOD"))
-                {
-                    MeshViewer.CreateMeshViewer(propInfo.name + "_LOD", propInfo.m_lodMesh, propInfo.m_lodMaterial);
-                }
-            }
-            else if (value is TreeInfo treeInfo)
-            {
-                SetupPlopButton(value);
-                if (treeInfo.m_mesh != null && GUILayout.Button("Preview"))
-                {
-                    MeshViewer.CreateMeshViewer(treeInfo.name, treeInfo.m_mesh, treeInfo.m_material);
-                }
-            }
-            else if (value is CitizenInfo citizenInfo)
-            {
-                if (citizenInfo.m_skinRenderer?.sharedMesh != null && GUILayout.Button("Preview"))
-                {
-                    MeshViewer.CreateMeshViewer(citizenInfo.name, citizenInfo.m_skinRenderer?.sharedMesh, citizenInfo.m_skinRenderer?.material);
-                }
-
-                if (citizenInfo.m_lodMesh != null && GUILayout.Button("Preview LOD"))
-                {
-                    MeshViewer.CreateMeshViewer(citizenInfo.name, citizenInfo.m_lodMesh, citizenInfo.m_lodMaterial);
-                }
-            }
-            else if (value is MilestoneInfo milestoneInfo)
-            {
-                if (GUILayout.Button("Unlock"))
-                {
-                    var wrapper = new MilestonesWrapper(UnlockManager.instance);
-                    wrapper.UnlockMilestone(milestoneInfo.name);
-                }
-            }
-            else if (value is NetInfo.Segment segmentInfo)
-            {
-                if (segmentInfo.m_mesh != null)
-                {
-                    if (GUILayout.Button("Preview"))
+                case MilestoneInfo milestoneInfo:
+                    if (GUILayout.Button("Unlock"))
                     {
-                        MeshViewer.CreateMeshViewer(null, segmentInfo.m_mesh, segmentInfo.m_material);
+                        var wrapper = new MilestonesWrapper(UnlockManager.instance);
+                        wrapper.UnlockMilestone(milestoneInfo.name);
                     }
 
-                    if (GUILayout.Button("Preview LOD"))
+                    return;
+
+                case NetInfo.Segment segmentInfo:
+                    SetupMeshPreviewButton(name: null, segmentInfo.m_mesh, segmentInfo.m_material, segmentInfo.m_lodMesh, segmentInfo.m_lodMaterial);
+                    goto default;
+
+                case NetInfo.Node nodeInfo:
+                    SetupMeshPreviewButton(name: null, nodeInfo.m_mesh, nodeInfo.m_material, nodeInfo.m_lodMesh, nodeInfo.m_lodMaterial);
+                    goto default;
+
+                case CitizenInstance instance
+                    when valueIndex > 0 && (instance.m_flags & (CitizenInstance.Flags.Created | CitizenInstance.Flags.Deleted)) == CitizenInstance.Flags.Created:
+
+                    InstanceID citizenInstanceInst = default;
+                    citizenInstanceInst.CitizenInstance = (ushort)valueIndex;
+                    SetupGotoButton(citizenInstanceInst, instance.GetLastFramePosition());
+                    goto default;
+
+                case Citizen citizen when citizen.m_instance > 0:
+                    ref var citizenInstance = ref CitizenManager.instance.m_instances.m_buffer[citizen.m_instance];
+                    if ((citizenInstance.m_flags & (CitizenInstance.Flags.Created | CitizenInstance.Flags.Deleted)) == CitizenInstance.Flags.Created)
                     {
-                        MeshViewer.CreateMeshViewer(null, segmentInfo.m_lodMesh, segmentInfo.m_lodMaterial);
-                    }
-                }
-            }
-            else if (value is NetInfo.Node nodeInfo)
-            {
-                if (nodeInfo.m_mesh != null)
-                {
-                    if (GUILayout.Button("Preview"))
-                    {
-                        MeshViewer.CreateMeshViewer(null, nodeInfo.m_mesh, nodeInfo.m_material);
+                        InstanceID citizenInstanceInst2 = default;
+                        citizenInstanceInst2.CitizenInstance = citizen.m_instance;
+                        SetupGotoButton(citizenInstanceInst2, citizenInstance.GetLastFramePosition());
                     }
 
-                    if (GUILayout.Button("Preview LOD"))
+                    goto default;
+
+                case Vehicle vehicle when valueIndex > 0 && (vehicle.m_flags & (Vehicle.Flags.Created | Vehicle.Flags.Deleted)) == Vehicle.Flags.Created:
+                    InstanceID vehicleInst = default;
+                    vehicleInst.Vehicle = (ushort)valueIndex;
+                    SetupGotoButton(vehicleInst, vehicle.GetLastFramePosition());
+                    break;
+
+                case VehicleParked parkedVehicle when valueIndex > 0 && (parkedVehicle.m_flags & 3) == 1:
+                    InstanceID parkedVehicleInst = default;
+                    parkedVehicleInst.ParkedVehicle = (ushort)valueIndex;
+                    SetupGotoButton(parkedVehicleInst, parkedVehicle.m_position);
+                    goto default;
+
+                case Building building when valueIndex > 0 && (building.m_flags & (Building.Flags.Created | Building.Flags.Deleted)) == Building.Flags.Created:
+                    InstanceID buildingInst = default;
+                    buildingInst.Building = (ushort)valueIndex;
+                    SetupGotoButton(buildingInst, building.m_position);
+                    goto default;
+
+                default:
+                    if (GUILayout.Button("Copy"))
                     {
-                        MeshViewer.CreateMeshViewer(null, nodeInfo.m_lodMesh, nodeInfo.m_lodMaterial);
+                        buffer = value;
                     }
-                }
-            }
-            else if (TypeUtil.IsTextureType(type) && value != null)
-            {
-                var texture = (Texture)value;
-                if (GUILayout.Button("Preview"))
-                {
-                    TextureViewer.CreateTextureViewer(texture);
-                }
 
-                if (GUILayout.Button("Dump .png"))
-                {
-                    TextureUtil.DumpTextureToPNG(texture);
-                }
+                    return;
             }
-            else if (TypeUtil.IsMeshType(type) && value != null)
-            {
-                if (GUILayout.Button("Preview"))
-                {
-                    MeshViewer.CreateMeshViewer(null, (Mesh)value, null);
-                }
 
-                if (((Mesh)value).isReadable && GUILayout.Button("Dump .obj"))
-                {
-                    var outPath = refChain.ToString().Replace(' ', '_');
-                    DumpUtil.DumpMeshAndTextures(outPath, value as Mesh);
-                }
-            }
+            SetupTextureOrMeshButtons(type, value, refChain);
 
             if (GUILayout.Button("Copy"))
             {
@@ -155,12 +102,101 @@ namespace ModTools.Explorer
             return GUILayout.Button("Unset");
         }
 
+        private static void SetupButtonsForPrefab(PrefabInfo prefabInfo)
+        {
+            switch (prefabInfo)
+            {
+                case VehicleInfo vehicleInfo:
+                    SetupMeshPreviewButton(vehicleInfo.name, vehicleInfo.m_mesh, vehicleInfo.m_material, vehicleInfo.m_lodMesh, vehicleInfo.m_lodMaterial);
+                    break;
+
+                case NetInfo _:
+                    SetupPlopButton(prefabInfo);
+                    break;
+
+                case BuildingInfo buildingInfo:
+                    SetupPlopButton(prefabInfo);
+                    SetupMeshPreviewButton(buildingInfo.name, buildingInfo.m_mesh, buildingInfo.m_material, buildingInfo.m_lodMesh, buildingInfo.m_lodMaterial);
+                    break;
+
+                case PropInfo propInfo:
+                    SetupPlopButton(prefabInfo);
+                    SetupMeshPreviewButton(propInfo.name, propInfo.m_mesh, propInfo.m_material, propInfo.m_lodMesh, propInfo.m_lodMaterial);
+                    break;
+
+                case TreeInfo treeInfo:
+                    SetupPlopButton(prefabInfo);
+                    SetupMeshPreviewButton(treeInfo.name, treeInfo.m_mesh, treeInfo.m_material, lodMesh: null, lodMaterial: null);
+                    break;
+
+                case CitizenInfo citizenInfo:
+                    SetupMeshPreviewButton(
+                        citizenInfo.name,
+                        citizenInfo.m_skinRenderer?.sharedMesh,
+                        citizenInfo.m_skinRenderer?.material,
+                        citizenInfo.m_lodMesh,
+                        citizenInfo.m_lodMaterial);
+                    break;
+            }
+        }
+
+        private static void SetupMeshPreviewButton(string name, Mesh mesh, Material material, Mesh lodMesh, Material lodMaterial)
+        {
+            if (mesh != null && GUILayout.Button("Preview"))
+            {
+                MeshViewer.CreateMeshViewer(name, mesh, material);
+            }
+
+            if (lodMesh != null && GUILayout.Button("Preview LOD"))
+            {
+                MeshViewer.CreateMeshViewer(name + "_LOD", lodMesh, lodMaterial);
+            }
+        }
+
+        private static void SetupTextureOrMeshButtons(Type type, object value, ReferenceChain refChain)
+        {
+            if (TypeUtil.IsTextureType(type))
+            {
+                var texture = (Texture)value;
+                if (GUILayout.Button("Preview"))
+                {
+                    TextureViewer.CreateTextureViewer(texture);
+                }
+
+                if (GUILayout.Button("Dump .png"))
+                {
+                    TextureUtil.DumpTextureToPNG(texture);
+                }
+            }
+            else if (TypeUtil.IsMeshType(type))
+            {
+                if (GUILayout.Button("Preview"))
+                {
+                    MeshViewer.CreateMeshViewer(null, (Mesh)value, null);
+                }
+
+                if (((Mesh)value).isReadable && GUILayout.Button("Dump .obj"))
+                {
+                    var outPath = refChain.ToString().Replace(' ', '_');
+                    DumpUtil.DumpMeshAndTextures(outPath, value as Mesh);
+                }
+            }
+        }
+
         private static void SetupPlopButton(object @object)
         {
             var info = @object as PrefabInfo;
             if (info != null && GUILayout.Button("Plop"))
             {
                 Plopper.StartPlopping(info);
+            }
+        }
+
+        private static void SetupGotoButton(InstanceID instance, Vector3 position)
+        {
+            if (GUILayout.Button("Go to"))
+            {
+                ToolsModifierControl.cameraController.SetTarget(instance, position, true);
             }
         }
     }
