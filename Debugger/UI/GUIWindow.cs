@@ -4,7 +4,7 @@ using System.Linq;
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.UI
 {
     internal abstract class GUIWindow : MonoBehaviour
     {

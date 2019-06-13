@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ModTools
+namespace ModTools.UI
 {
     internal sealed class GUIArea
     {

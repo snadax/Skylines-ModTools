@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 // Taken from the MechJeb2 (https://github.com/MuMech/MechJeb2) source, see MECHJEB-LICENSE for license info
-namespace ModTools
+namespace ModTools.UI
 {
     internal static class GUIComboBox
     {

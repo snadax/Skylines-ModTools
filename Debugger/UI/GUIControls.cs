@@ -2,7 +2,7 @@
 using ModTools.Utils;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.UI
 {
     internal static class GUIControls
     {

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.UI
 {
     internal static class GUIStackTrace
     {
