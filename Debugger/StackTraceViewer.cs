@@ -15,7 +15,7 @@ namespace ModTools
         {
         }
 
-        private static Configuration Config => ModTools.Instance.Config;
+        private static ModConfiguration Config => ModTools.Instance.Config;
 
         public static StackTraceViewer CreateStackTraceViewer(StackTrace trace)
         {

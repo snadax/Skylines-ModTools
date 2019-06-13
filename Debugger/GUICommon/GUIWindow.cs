@@ -91,7 +91,7 @@ namespace ModTools
 
         protected string Title { get; set; }
 
-        private static Configuration Config => ModTools.Instance.Config;
+        private static ModConfiguration Config => ModTools.Instance.Config;
 
         public static void UpdateFont()
         {

@@ -30,7 +30,7 @@ namespace ModTools
             }
         }
 
-        private static Configuration Config => ModTools.Instance.Config;
+        private static ModConfiguration Config => ModTools.Instance.Config;
 
         protected override void DrawWindow()
         {
@@ -103,7 +103,7 @@ namespace ModTools
 
             if (GUILayout.Button("Reset", GUILayout.Width(128)))
             {
-                var template = new Configuration();
+                var template = new ModConfiguration();
 
                 config.BackgroundColor = template.BackgroundColor;
                 BgTexture.SetPixel(0, 0, config.BackgroundColor);

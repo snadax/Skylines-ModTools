@@ -40,7 +40,7 @@ namespace ModTools
             }
         }
 
-        public Configuration Config { get; set; } = new Configuration();
+        public ModConfiguration Config { get; set; } = new ModConfiguration();
 
         internal SceneExplorer SceneExplorer { get; private set; }
 
@@ -54,10 +54,10 @@ namespace ModTools
 
         public void LoadConfig()
         {
-            Config = Configuration.Deserialize(ConfigPath);
+            Config = ModConfiguration.Deserialize(ConfigPath);
             if (Config == null)
             {
-                Config = new Configuration();
+                Config = new ModConfiguration();
                 SaveConfig();
             }
 

@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public sealed class Configuration
+    [XmlRoot("Configuration")]
+    public sealed class ModConfiguration
     {
         #region General
 
@@ -188,15 +189,15 @@ namespace ModTools
 
         #endregion
 
-        public static Configuration Deserialize(string filename)
+        public static ModConfiguration Deserialize(string filename)
         {
-            var serializer = new XmlSerializer(typeof(Configuration));
+            var serializer = new XmlSerializer(typeof(ModConfiguration));
 
             try
             {
                 using (var reader = new StreamReader(filename))
                 {
-                    return (Configuration)serializer.Deserialize(reader);
+                    return (ModConfiguration)serializer.Deserialize(reader);
                 }
             }
             catch (Exception e)
@@ -210,7 +211,7 @@ namespace ModTools
 
         public void Serialize(string filename)
         {
-            var serializer = new XmlSerializer(typeof(Configuration));
+            var serializer = new XmlSerializer(typeof(ModConfiguration));
 
             try
             {

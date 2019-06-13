@@ -76,7 +76,7 @@ namespace ModTools
             RecalculateAreas();
         }
 
-        private static Configuration Config => ModTools.Instance.Config;
+        private static ModConfiguration Config => ModTools.Instance.Config;
 
         private bool CommandLineAreaExpanded
         {
@@ -353,7 +353,7 @@ namespace ModTools
 
             if (GUILayout.Button("Reset"))
             {
-                var template = new Configuration();
+                var template = new ModConfiguration();
                 Config.ConsoleMaxHistoryLength = template.ConsoleMaxHistoryLength;
                 Config.ConsoleFormatString = template.ConsoleFormatString;
                 Config.ShowConsoleOnMessage = template.ShowConsoleOnMessage;

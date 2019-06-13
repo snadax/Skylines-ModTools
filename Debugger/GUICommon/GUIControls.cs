@@ -17,7 +17,7 @@ namespace ModTools
         public delegate T ValuePresenterDelegate<T>(string id, T value)
             where T : struct;
 
-        private static Configuration Config => ModTools.Instance.Config;
+        private static ModConfiguration Config => ModTools.Instance.Config;
 
         public static T PrimitiveValueField<T>(string id, string name, T value)
             where T : struct

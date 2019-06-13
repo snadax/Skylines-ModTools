@@ -19,7 +19,7 @@ It is recommended that you enable this (as it will probably become the default m
             new KeyValuePair<int, string>(1, UnityLoggingHookNotification),
         };
 
-        private static Configuration Config => ModTools.Instance.Config;
+        private static ModConfiguration Config => ModTools.Instance.Config;
 
         public static List<KeyValuePair<int, string>> GetNotifications()
         {
