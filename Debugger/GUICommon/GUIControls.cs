@@ -6,47 +6,18 @@ namespace ModTools
 {
     internal static class GUIControls
     {
-        private static Configuration Config => ModTools.Instance.config;
-
         private const float NumberFieldSize = 100f;
         private const float StringFieldSize = 200f;
         private const float ByteFieldSize = 40f;
         private const float CharFieldSize = 25f;
 
-        public delegate void WatchButtonCallback();
-
         private static string lastFocusedFieldId;
         private static bool lastFocusedFieldEmpty;
 
-        private static string BufferedTextField(string id, string value, float fieldSize)
-        {
-            var focusedFieldId = GUI.GetNameOfFocusedControl();
+        public delegate T ValuePresenterDelegate<T>(string id, T value)
+            where T : struct;
 
-            if (focusedFieldId != lastFocusedFieldId)
-            {
-                lastFocusedFieldEmpty = string.IsNullOrEmpty(value);
-                lastFocusedFieldId = focusedFieldId;
-            }
-
-            if (focusedFieldId == id && lastFocusedFieldEmpty)
-            {
-                value = string.Empty;
-            }
-
-            GUI.SetNextControlName(id);
-            var newValue = GUILayout.TextField(value, GUILayout.Width(fieldSize), GUILayout.Height(22f));
-
-            if (focusedFieldId == id)
-            {
-                lastFocusedFieldEmpty = string.IsNullOrEmpty(newValue);
-                if (lastFocusedFieldEmpty)
-                {
-                    return null;
-                }
-            }
-
-            return value != newValue ? newValue : null;
-        }
+        private static Configuration Config => ModTools.Instance.Config;
 
         public static T PrimitiveValueField<T>(string id, string name, T value)
             where T : struct
@@ -68,25 +39,6 @@ namespace ModTools
             GUILayout.EndHorizontal();
 
             return ParseHelper.TryParse<T>(newText, out var newValue) ? newValue : value;
-        }
-
-        private static float GetTextFieldSize(Type valueType)
-        {
-            switch (Type.GetTypeCode(valueType))
-            {
-                case TypeCode.Char:
-                    return CharFieldSize;
-
-                case TypeCode.Byte:
-                case TypeCode.SByte:
-                    return ByteFieldSize;
-
-                case TypeCode.String:
-                    return StringFieldSize;
-
-                default:
-                    return NumberFieldSize;
-            }
         }
 
         public static object PrimitiveValueField(string id, string name, object value)
@@ -224,8 +176,6 @@ namespace ModTools
             return value;
         }
 
-        public delegate T ValuePresenterDelegate<T>(string id, T value) where T : struct;
-
         public static Vector2 PresentVector2(string id, Vector2 value)
         {
             value.x = PrimitiveValueField(id + ".x", "x", value.x);
@@ -283,7 +233,7 @@ namespace ModTools
 
             if (GUILayout.Button(string.Empty, GUILayout.Width(72)))
             {
-                var picker = ModTools.Instance.colorPicker;
+                var picker = ModTools.Instance.ColorPicker;
                 if (picker != null)
                 {
                     picker.SetColor(value);
@@ -337,6 +287,55 @@ namespace ModTools
             GUILayout.EndHorizontal();
 
             return result;
+        }
+
+        private static string BufferedTextField(string id, string value, float fieldSize)
+        {
+            var focusedFieldId = GUI.GetNameOfFocusedControl();
+
+            if (focusedFieldId != lastFocusedFieldId)
+            {
+                lastFocusedFieldEmpty = string.IsNullOrEmpty(value);
+                lastFocusedFieldId = focusedFieldId;
+            }
+
+            if (focusedFieldId == id && lastFocusedFieldEmpty)
+            {
+                value = string.Empty;
+            }
+
+            GUI.SetNextControlName(id);
+            var newValue = GUILayout.TextField(value, GUILayout.Width(fieldSize), GUILayout.Height(22f));
+
+            if (focusedFieldId == id)
+            {
+                lastFocusedFieldEmpty = string.IsNullOrEmpty(newValue);
+                if (lastFocusedFieldEmpty)
+                {
+                    return null;
+                }
+            }
+
+            return value != newValue ? newValue : null;
+        }
+
+        private static float GetTextFieldSize(Type valueType)
+        {
+            switch (Type.GetTypeCode(valueType))
+            {
+                case TypeCode.Char:
+                    return CharFieldSize;
+
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                    return ByteFieldSize;
+
+                case TypeCode.String:
+                    return StringFieldSize;
+
+                default:
+                    return NumberFieldSize;
+            }
         }
     }
 }

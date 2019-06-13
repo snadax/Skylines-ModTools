@@ -7,7 +7,7 @@ namespace ModTools.Explorer
     {
         public static void OnSceneTreeRecursive(GameObject modToolsGo, SceneExplorerState state, ReferenceChain refChain, GameObject obj)
         {
-            if (obj == modToolsGo && !ModTools.DEBUG_MODTOOLS)
+            if (obj == modToolsGo && !ModTools.DEBUGMODTOOLS)
             {
                 return;
             }
@@ -23,7 +23,7 @@ namespace ModTools.Explorer
                 return;
             }
 
-            if (obj.name == "_ModToolsInternal" && !ModTools.DEBUG_MODTOOLS)
+            if (obj.name == "_ModToolsInternal" && !ModTools.DEBUGMODTOOLS)
             {
                 return;
             }
@@ -40,7 +40,7 @@ namespace ModTools.Explorer
                         state.ExpandedGameObjects.Remove(refChain.UniqueId);
                     }
 
-                    GUI.contentColor = ModTools.Instance.config.GameObjectColor;
+                    GUI.contentColor = ModTools.Instance.Config.GameObjectColor;
                     GUILayout.Label(obj.name);
                     GUI.contentColor = Color.white;
 
@@ -48,7 +48,7 @@ namespace ModTools.Explorer
 
                     var components = obj.GetComponents(typeof(Component));
 
-                    if (ModTools.Instance.config.SceneExplorerSortAlphabetically)
+                    if (ModTools.Instance.Config.SceneExplorerSortAlphabetically)
                     {
                         Array.Sort(components, (component, component1) => component.GetType().ToString().CompareTo(component1.GetType().ToString()));
                     }
@@ -79,7 +79,7 @@ namespace ModTools.Explorer
                     state.ExpandedGameObjects.Add(refChain.UniqueId);
                 }
 
-                GUI.contentColor = ModTools.Instance.config.GameObjectColor;
+                GUI.contentColor = ModTools.Instance.Config.GameObjectColor;
                 GUILayout.Label(obj.name);
                 GUI.contentColor = Color.white;
                 GUILayout.EndHorizontal();

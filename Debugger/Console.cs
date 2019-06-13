@@ -10,35 +10,52 @@ namespace ModTools
 {
     internal sealed class Console : GUIWindow, ILogger
     {
-        private static Configuration Config => ModTools.Instance.config;
+        public const string DefaultSource = @"
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using System.IO;
+using System.Linq;
+using ColossalFramework.UI;
+using UnityEngine;
+
+namespace ModTools
+{{
+    class ModToolsCommandLineRunner : IModEntryPoint
+    {{
+        public void OnModLoaded()
+        {{
+            {0}
+        }}
+
+        public void OnModUnloaded()
+        {{
+        }}
+    }}
+}}";
+
+        private const float HeaderHeightCompact = 0.5f;
+        private const float HeaderHeightExpanded = 8.0f;
+        private const float CommandLineAreaHeightCompact = 45.0f;
+        private const float CommandLineAreaHeightExpanded = 120.0f;
+
+        private readonly Color orangeColor = new Color(1.0f, 0.647f, 0.0f, 1.0f);
 
         private readonly GUIArea headerArea;
         private readonly GUIArea consoleArea;
         private readonly GUIArea commandLineArea;
-        private bool focusCommandLineArea;
-        private bool emptyCommandLineArea = true;
-        private bool setCommandLinePosition;
-        private int commandLinePosition;
-
-        private readonly float headerHeightCompact = 0.5f;
-        private readonly float headerHeightExpanded = 8.0f;
-        private bool headerExpanded;
-
-        private readonly float commandLineAreaHeightCompact = 45.0f;
-        private readonly float commandLineAreaHeightExpanded = 120.0f;
-
-        private bool CommandLineAreaExpanded
-        {
-            get
-            {
-                var command = commandHistory[currentCommandHistoryIndex];
-                return command.Length == 0 ? false : command.Contains('\n') || command.Length >= 64;
-            }
-        }
 
         private readonly object historyLock = new object();
         private readonly List<ConsoleMessage> history = new List<ConsoleMessage>();
         private readonly List<string> commandHistory = new List<string>() { string.Empty };
+
+        private bool focusCommandLineArea;
+        private bool emptyCommandLineArea = true;
+        private bool setCommandLinePosition;
+        private int commandLinePosition;
+        private bool headerExpanded;
+
         private int currentCommandHistoryIndex;
 
         private Vector2 consoleScrollPosition = Vector2.zero;
@@ -59,6 +76,124 @@ namespace ModTools
             RecalculateAreas();
         }
 
+        private static Configuration Config => ModTools.Instance.Config;
+
+        private bool CommandLineAreaExpanded
+        {
+            get
+            {
+                var command = commandHistory[currentCommandHistoryIndex];
+                return command.Length == 0 ? false : command.Contains('\n') || command.Length >= 64;
+            }
+        }
+
+        public void Update()
+        {
+            if (vanillaPanel == null)
+            {
+                var panel = UIView.library?.Get<DebugOutputPanel>("DebugOutputPanel");
+                if (panel == null)
+                {
+                    return;
+                }
+
+                vanillaPanel = panel;
+                oldVanillaPanelParent = vanillaPanel.transform.parent;
+                vanillaPanel.transform.parent = transform;
+            }
+        }
+
+        public void Log(string message, LogType type)
+        {
+            lock (historyLock)
+            {
+                if (history.Count > 0)
+                {
+                    var lastMessage = history[history.Count - 1];
+                    if (message == lastMessage.Message && type == lastMessage.Type)
+                    {
+                        lastMessage.Count++;
+                        return;
+                    }
+                }
+            }
+
+            var caller = string.Empty;
+
+            var trace = new StackTrace(8);
+
+            for (var i = 0; i < trace.FrameCount; i++)
+            {
+                MethodBase callingMethod = null;
+
+                var frame = trace.GetFrame(i);
+                if (frame != null)
+                {
+                    callingMethod = frame.GetMethod();
+                }
+
+                if (callingMethod == null)
+                {
+                    continue;
+                }
+
+                caller = callingMethod.DeclaringType != null ? $"{callingMethod.DeclaringType}.{callingMethod.Name}()" : $"{callingMethod}()";
+                break;
+            }
+
+            lock (historyLock)
+            {
+                history.Add(new ConsoleMessage(caller, message, type, trace));
+
+                if (history.Count >= Config.ConsoleMaxHistoryLength)
+                {
+                    history.RemoveAt(0);
+                }
+            }
+
+            if (type == LogType.Log && Config.ShowConsoleOnMessage)
+            {
+                Visible = true;
+            }
+            else if (type == LogType.Warning && Config.ShowConsoleOnWarning)
+            {
+                Visible = true;
+            }
+            else if ((type == LogType.Exception || type == LogType.Error) && Config.ShowConsoleOnError)
+            {
+                Visible = true;
+            }
+
+            if (Config.ConsoleAutoScrollToBottom)
+            {
+                consoleScrollPosition.y = float.MaxValue;
+            }
+        }
+
+        public void DrawHeader()
+        {
+            headerArea.Begin();
+
+            if (headerExpanded)
+            {
+                DrawExpandedHeader();
+            }
+            else
+            {
+                DrawCompactHeader();
+            }
+
+            headerArea.End();
+        }
+
+        protected override void DrawWindow()
+        {
+            RecalculateAreas();
+            DrawHeader();
+            DrawConsole();
+            DrawCommandLineArea();
+        }
+
         protected override void OnWindowDrawn()
         {
             var e = Event.current;
@@ -66,6 +201,7 @@ namespace ModTools
             {
                 return;
             }
+
             if (setCommandLinePosition)
             {
                 // return has been hit with control pressed in previous GUI event
@@ -113,90 +249,11 @@ namespace ModTools
             }
         }
 
-        public void Update()
-        {
-            if (vanillaPanel == null)
-            {
-                var panel = UIView.library?.Get<DebugOutputPanel>("DebugOutputPanel");
-                if (panel == null)
-                {
-                    return;
-                }
-                vanillaPanel = panel;
-                oldVanillaPanelParent = vanillaPanel.transform.parent;
-                vanillaPanel.transform.parent = transform;
-            }
-        }
-
-        public void Log(string message, LogType type)
-        {
-            lock (historyLock)
-            {
-                if (history.Count > 0)
-                {
-                    var lastMessage = history[history.Count - 1];
-                    if (message == lastMessage.Message && type == lastMessage.Type)
-                    {
-                        lastMessage.Count++;
-                        return;
-                    }
-                }
-            }
-
-            var caller = string.Empty;
-
-            var trace = new StackTrace(8);
-
-            for (var i = 0; i < trace.FrameCount; i++)
-            {
-                MethodBase callingMethod = null;
-
-                var frame = trace.GetFrame(i);
-                if (frame != null)
-                {
-                    callingMethod = frame.GetMethod();
-                }
-
-                if (callingMethod == null)
-                {
-                    continue;
-                }
-                caller = callingMethod.DeclaringType != null ? $"{callingMethod.DeclaringType}.{callingMethod.Name}()" : $"{callingMethod}()";
-                break;
-            }
-
-            lock (historyLock)
-            {
-                history.Add(new ConsoleMessage(caller, message, type, trace));
-
-                if (history.Count >= Config.ConsoleMaxHistoryLength)
-                {
-                    history.RemoveAt(0);
-                }
-            }
-
-            if (type == LogType.Log && Config.ShowConsoleOnMessage)
-            {
-                Visible = true;
-            }
-            else if (type == LogType.Warning && Config.ShowConsoleOnWarning)
-            {
-                Visible = true;
-            }
-            else if ((type == LogType.Exception || type == LogType.Error) && Config.ShowConsoleOnError)
-            {
-                Visible = true;
-            }
-
-            if (Config.ConsoleAutoScrollToBottom)
-            {
-                consoleScrollPosition.y = float.MaxValue;
-            }
-        }
+        protected override void HandleException(Exception ex) => Log("Exception in ModTools Console - " + ex.Message, LogType.Exception);
 
         private void RecalculateAreas()
         {
-            var headerHeight = headerExpanded ? headerHeightExpanded : headerHeightCompact;
+            var headerHeight = headerExpanded ? HeaderHeightExpanded : HeaderHeightCompact;
             headerHeight *= Config.FontSize;
             headerHeight += 32.0f;
 
@@ -205,8 +262,8 @@ namespace ModTools
             headerArea.AbsoluteSize.y = headerHeight;
 
             var commandLineAreaHeight = CommandLineAreaExpanded
-                ? commandLineAreaHeightExpanded
-                : commandLineAreaHeightCompact;
+                ? CommandLineAreaHeightExpanded
+                : CommandLineAreaHeightCompact;
 
             consoleArea.AbsolutePosition.y = 16.0f + headerHeight;
             consoleArea.RelativeSize.x = 1.0f;
@@ -218,8 +275,6 @@ namespace ModTools
             commandLineArea.RelativeSize.x = 1.0f;
             commandLineArea.AbsoluteSize.y = commandLineAreaHeight;
         }
-
-        protected override void HandleException(Exception ex) => Log("Exception in ModTools Console - " + ex.Message, LogType.Exception);
 
         private void DrawCompactHeader()
         {
@@ -318,24 +373,6 @@ namespace ModTools
 
             GUILayout.EndHorizontal();
         }
-
-        public void DrawHeader()
-        {
-            headerArea.Begin();
-
-            if (headerExpanded)
-            {
-                DrawExpandedHeader();
-            }
-            else
-            {
-                DrawCompactHeader();
-            }
-
-            headerArea.End();
-        }
-
-        private Color orangeColor = new Color(1.0f, 0.647f, 0.0f, 1.0f);
 
         private void DrawConsole()
         {
@@ -448,6 +485,7 @@ namespace ModTools
             {
                 GUI.enabled = false;
             }
+
             GUILayout.EndScrollView();
 
             GUILayout.EndVertical();
@@ -513,9 +551,10 @@ namespace ModTools
                     currentCommandHistoryIndex = commandHistory.Count - 1;
                 }
             }
+
             emptyCommandLineArea = true;
 
-            var source = string.Format(defaultSource, commandLine);
+            var source = string.Format(DefaultSource, commandLine);
             var file = new ScriptEditorFile(source, "ModToolsCommandLineScript.cs");
             if (!ScriptCompiler.RunSource(new List<ScriptEditorFile>() { file }, out _, out var instance))
             {
@@ -530,40 +569,8 @@ namespace ModTools
             {
                 global::ModTools.Log.Error("Error executing command-line..");
             }
+
             focusCommandLineArea = true;
         }
-
-        protected override void DrawWindow()
-        {
-            RecalculateAreas();
-            DrawHeader();
-            DrawConsole();
-            DrawCommandLineArea();
-        }
-
-        private readonly string defaultSource = @"
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
-using System.Linq;
-using ColossalFramework.UI;
-using UnityEngine;
-
-namespace ModTools
-{{
-    class ModToolsCommandLineRunner : IModEntryPoint
-    {{
-        public void OnModLoaded()
-        {{
-            {0}
-        }}
-
-        public void OnModUnloaded()
-        {{
-        }}
-    }}
-}}";
     }
 }

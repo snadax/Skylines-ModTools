@@ -4,12 +4,12 @@ namespace ModTools
 {
     internal static class Log
     {
-        private static readonly object syncObject = new object();
+        private static readonly object SyncObject = new object();
         private static ILogger customLogger;
 
         public static void SetCustomLogger(ILogger logger)
         {
-            lock (syncObject)
+            lock (SyncObject)
             {
                 customLogger = logger;
             }
@@ -18,7 +18,7 @@ namespace ModTools
         public static void Message(string s)
         {
             ILogger logger;
-            lock (syncObject)
+            lock (SyncObject)
             {
                 logger = customLogger;
             }
@@ -36,7 +36,7 @@ namespace ModTools
         public static void Error(string s)
         {
             ILogger logger;
-            lock (syncObject)
+            lock (SyncObject)
             {
                 logger = customLogger;
             }
@@ -54,7 +54,7 @@ namespace ModTools
         public static void Warning(string s)
         {
             ILogger logger;
-            lock (syncObject)
+            lock (SyncObject)
             {
                 logger = customLogger;
             }

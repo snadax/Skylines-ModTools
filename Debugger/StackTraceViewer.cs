@@ -6,11 +6,16 @@ namespace ModTools
 {
     internal sealed class StackTraceViewer : GUIWindow
     {
-        private static Configuration Config => ModTools.Instance.config;
-
         private StackTrace trace;
 
         private Vector2 scrollPos = Vector2.zero;
+
+        private StackTraceViewer()
+            : base("Stack-trace viewer", new Rect(16.0f, 16.0f, 512.0f, 256.0f), Skin)
+        {
+        }
+
+        private static Configuration Config => ModTools.Instance.Config;
 
         public static StackTraceViewer CreateStackTraceViewer(StackTrace trace)
         {
@@ -19,11 +24,6 @@ namespace ModTools
             var viewer = go.AddComponent<StackTraceViewer>();
             viewer.trace = trace;
             return viewer;
-        }
-
-        private StackTraceViewer()
-            : base("Stack-trace viewer", new Rect(16.0f, 16.0f, 512.0f, 256.0f), Skin)
-        {
         }
 
         protected override void OnWindowClosed() => Destroy(this);

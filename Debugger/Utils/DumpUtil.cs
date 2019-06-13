@@ -34,6 +34,7 @@ namespace ModTools.Utils
             {
                 MeshUtil.DumpMeshToOBJ(mesh, $"{assetName}.obj");
             }
+
             if (material != null)
             {
                 DumpTextures(assetName, material);
@@ -55,6 +56,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = mainTex.width * mainTex.height;
@@ -74,6 +76,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = aciMap.width * aciMap.height;
@@ -97,6 +100,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = xysMap.width * xysMap.height;
@@ -118,6 +122,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = xycaMap.width * xycaMap.height;

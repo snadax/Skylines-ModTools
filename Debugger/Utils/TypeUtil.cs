@@ -8,6 +8,8 @@ namespace ModTools
 {
     internal static class TypeUtil
     {
+        private static Dictionary<Type, MemberInfo[]> typeCache = new Dictionary<Type, MemberInfo[]>();
+
         public static bool IsSpecialType(Type t)
         {
             return t.IsPrimitive
@@ -42,7 +44,23 @@ namespace ModTools
 
         public static void ClearTypeCache() => typeCache = new Dictionary<Type, MemberInfo[]>();
 
-        private static Dictionary<Type, MemberInfo[]> typeCache = new Dictionary<Type, MemberInfo[]>();
+        public static bool IsEnumerable(object myProperty)
+        {
+            return typeof(IEnumerable).IsInstanceOfType(myProperty)
+                || typeof(IEnumerable<>).IsInstanceOfType(myProperty);
+        }
+
+        public static bool IsCollection(object myProperty)
+        {
+            return typeof(ICollection).IsAssignableFrom(myProperty.GetType())
+                || typeof(ICollection<>).IsAssignableFrom(myProperty.GetType());
+        }
+
+        public static bool IsList(object myProperty)
+        {
+            return typeof(IList).IsAssignableFrom(myProperty.GetType())
+                || typeof(IList<>).IsAssignableFrom(myProperty.GetType());
+        }
 
         private static MemberInfo[] GetMembersInternal(Type type, bool recursive, BindingFlags bindingFlags)
         {
@@ -72,24 +90,6 @@ namespace ModTools
             {
                 GetMembersInternal2(type.BaseType, true, bindingFlags, outResults);
             }
-        }
-
-        public static bool IsEnumerable(object myProperty)
-        {
-            return typeof(IEnumerable).IsInstanceOfType(myProperty)
-                || typeof(IEnumerable<>).IsInstanceOfType(myProperty);
-        }
-
-        public static bool IsCollection(object myProperty)
-        {
-            return typeof(ICollection).IsAssignableFrom(myProperty.GetType())
-                || typeof(ICollection<>).IsAssignableFrom(myProperty.GetType());
-        }
-
-        public static bool IsList(object myProperty)
-        {
-            return typeof(IList).IsAssignableFrom(myProperty.GetType())
-                || typeof(IList<>).IsAssignableFrom(myProperty.GetType());
         }
     }
 }

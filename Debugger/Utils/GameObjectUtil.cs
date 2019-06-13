@@ -28,6 +28,7 @@ namespace ModTools
             {
                 FindComponentsOfType(typeName, root, list);
             }
+
             return list;
         }
 

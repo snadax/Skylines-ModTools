@@ -5,8 +5,6 @@ namespace ModTools
 {
     internal sealed class SceneExplorerColorConfig : GUIWindow
     {
-        private static Configuration Config => ModTools.Instance.config;
-
         private readonly string[] availableFonts;
         private int selectedFont;
 
@@ -32,19 +30,11 @@ namespace ModTools
             }
         }
 
-        private Color DrawColorControl(string name, Color value)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(name);
-            GUILayout.FlexibleSpace();
-            var newColor = GUIControls.CustomValueField(name, string.Empty, GUIControls.PresentColor, value);
-            GUILayout.EndHorizontal();
-            return newColor;
-        }
+        private static Configuration Config => ModTools.Instance.Config;
 
         protected override void DrawWindow()
         {
-            var config = ModTools.Instance.config;
+            var config = ModTools.Instance.Config;
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Font");
@@ -152,6 +142,16 @@ namespace ModTools
         {
             Log.Error("Exception in SceneExplorerColorConfig - " + ex.Message);
             Visible = false;
+        }
+
+        private Color DrawColorControl(string name, Color value)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name);
+            GUILayout.FlexibleSpace();
+            var newColor = GUIControls.CustomValueField(name, string.Empty, GUIControls.PresentColor, value);
+            GUILayout.EndHorizontal();
+            return newColor;
         }
     }
 }

@@ -20,12 +20,6 @@ namespace ModTools
             this.window = window;
         }
 
-        private Vector2 GetPosition()
-            => AbsolutePosition + new Vector2(RelativePosition.x * window.WindowRect.width, RelativePosition.y * window.WindowRect.height) + margin;
-
-        private Vector2 GetSize()
-            => AbsoluteSize + new Vector2(RelativeSize.x * window.WindowRect.width, RelativeSize.y * window.WindowRect.height) - margin * 2.0f;
-
         public void Begin()
         {
             var position = GetPosition();
@@ -34,5 +28,11 @@ namespace ModTools
         }
 
         public void End() => GUILayout.EndArea();
+
+        private Vector2 GetPosition()
+            => AbsolutePosition + new Vector2(RelativePosition.x * window.WindowRect.width, RelativePosition.y * window.WindowRect.height) + margin;
+
+        private Vector2 GetSize()
+            => AbsoluteSize + new Vector2(RelativeSize.x * window.WindowRect.width, RelativeSize.y * window.WindowRect.height) - margin * 2.0f;
     }
 }

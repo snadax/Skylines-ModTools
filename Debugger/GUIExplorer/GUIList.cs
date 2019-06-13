@@ -55,12 +55,12 @@ namespace ModTools.Explorer
                         GUIExpander.ExpanderControls(state, refChain, type);
                     }
 
-                    GUI.contentColor = ModTools.Instance.config.TypeColor;
+                    GUI.contentColor = ModTools.Instance.Config.TypeColor;
 
                     GUILayout.Label($"{type} ");
                 }
 
-                GUI.contentColor = ModTools.Instance.config.NameColor;
+                GUI.contentColor = ModTools.Instance.Config.NameColor;
 
                 GUILayout.Label($"{oldRefChain.LastItemName}.[{i}]");
 
@@ -68,7 +68,7 @@ namespace ModTools.Explorer
 
                 GUILayout.Label(" = ");
 
-                GUI.contentColor = ModTools.Instance.config.ValueColor;
+                GUI.contentColor = ModTools.Instance.Config.ValueColor;
 
                 GUILayout.Label(value == null ? "null" : isNullOrEmpty ? "empty" : value.ToString());
 

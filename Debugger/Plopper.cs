@@ -17,22 +17,26 @@ namespace ModTools.Explorer
             {
                 return;
             }
+
             var toolManager = Singleton<ToolManager>.instance;
             if (toolManager?.m_properties == null)
             {
                 return;
             }
+
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Singleton<ToolManager>.instance.m_properties.CurrentTool = ToolsModifierControl.GetTool<DefaultTool>();
                 ploppedPrefab = null;
                 return;
             }
+
             var currentTool = toolManager.m_properties.CurrentTool;
             if (currentTool == null)
             {
                 return;
             }
+
             if (currentTool is BuildingTool || currentTool is NetTool || currentTool is TreeTool
                 || currentTool is PropTool)
             {
@@ -91,6 +95,7 @@ namespace ModTools.Explorer
             {
                 return;
             }
+
             if (prefabInfo is BuildingInfo buildingInfo)
             {
                 var buildingTool = ToolsModifierControl.GetTool<BuildingTool>();
@@ -99,6 +104,7 @@ namespace ModTools.Explorer
                     Log.Warning("BuildingTool not found!");
                     return;
                 }
+
                 Singleton<ToolManager>.instance.m_properties.CurrentTool = buildingTool;
                 buildingTool.m_prefab = buildingInfo;
                 ploppedPrefab = buildingInfo;
@@ -112,6 +118,7 @@ namespace ModTools.Explorer
                     Log.Warning("NetTool not found!");
                     return;
                 }
+
                 Singleton<ToolManager>.instance.m_properties.CurrentTool = netTool;
                 netTool.m_prefab = netInfo;
                 ploppedPrefab = netInfo;
@@ -124,6 +131,7 @@ namespace ModTools.Explorer
                     Log.Warning("PropTool not found!");
                     return;
                 }
+
                 Singleton<ToolManager>.instance.m_properties.CurrentTool = propTool;
                 propTool.m_prefab = propInfo;
                 ploppedPrefab = propInfo;
@@ -136,6 +144,7 @@ namespace ModTools.Explorer
                     Log.Warning("TreeTool not found!");
                     return;
                 }
+
                 Singleton<ToolManager>.instance.m_properties.CurrentTool = treeTool;
                 treeTool.m_prefab = treeInfo;
                 ploppedPrefab = treeInfo;

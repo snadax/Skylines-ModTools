@@ -28,7 +28,7 @@ namespace ModTools.Explorer
 
             Exception exceptionOnGetting = null;
 
-            if (property.CanRead && ModTools.Instance.config.SceneExplorerEvaluatePropertiesAutomatically || state.EvaluatedProperties.Contains(refChain.UniqueId))
+            if (property.CanRead && ModTools.Instance.Config.SceneExplorerEvaluatePropertiesAutomatically || state.EvaluatedProperties.Contains(refChain.UniqueId))
             {
                 try
                 {
@@ -53,31 +53,31 @@ namespace ModTools.Explorer
                 GUI.enabled = false;
             }
 
-            if (ModTools.Instance.config.SceneExplorerShowModifiers)
+            if (ModTools.Instance.Config.SceneExplorerShowModifiers)
             {
-                GUI.contentColor = ModTools.Instance.config.MemberTypeColor;
+                GUI.contentColor = ModTools.Instance.Config.MemberTypeColor;
                 GUILayout.Label("property ");
 
                 if (!property.CanWrite)
                 {
-                    GUI.contentColor = ModTools.Instance.config.KeywordColor;
+                    GUI.contentColor = ModTools.Instance.Config.KeywordColor;
                     GUILayout.Label("const ");
                 }
             }
 
-            GUI.contentColor = ModTools.Instance.config.TypeColor;
+            GUI.contentColor = ModTools.Instance.Config.TypeColor;
 
             GUILayout.Label(property.PropertyType.ToString() + " ");
 
-            GUI.contentColor = ModTools.Instance.config.NameColor;
+            GUI.contentColor = ModTools.Instance.Config.NameColor;
 
             GUILayout.Label(property.Name);
 
             GUI.contentColor = Color.white;
             GUILayout.Label(" = ");
-            GUI.contentColor = ModTools.Instance.config.ValueColor;
+            GUI.contentColor = ModTools.Instance.Config.ValueColor;
 
-            if (!ModTools.Instance.config.SceneExplorerEvaluatePropertiesAutomatically && !state.EvaluatedProperties.Contains(refChain.UniqueId))
+            if (!ModTools.Instance.Config.SceneExplorerEvaluatePropertiesAutomatically && !state.EvaluatedProperties.Contains(refChain.UniqueId))
             {
                 GUI.enabled = true;
 
@@ -100,6 +100,7 @@ namespace ModTools.Explorer
                         exceptionOnGetting = e;
                     }
                 }
+
                 if (exceptionOnGetting != null)
                 {
                     GUI.contentColor = Color.red;
@@ -159,8 +160,9 @@ namespace ModTools.Explorer
 
             if (GUILayout.Button("Watch"))
             {
-                ModTools.Instance.watches.AddWatch(refChain);
+                ModTools.Instance.Watches.AddWatch(refChain);
             }
+
             GUIButtons.SetupButtons(property.PropertyType, value, refChain);
             object paste = null;
             var doPaste = property.CanWrite;
@@ -168,6 +170,7 @@ namespace ModTools.Explorer
             {
                 doPaste = GUIButtons.SetupPasteButon(property.PropertyType, out paste);
             }
+
             GUILayout.EndHorizontal();
 
             if (value != null && state.ExpandedObjects.Contains(refChain.UniqueId))
@@ -189,6 +192,7 @@ namespace ModTools.Explorer
                     GUIReflect.OnSceneTreeReflect(state, refChain, value);
                 }
             }
+
             if (doPaste)
             {
                 try

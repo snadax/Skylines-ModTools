@@ -38,11 +38,13 @@ namespace ModTools.Explorer
                 arrayStart -= pageSize;
                 arrayEnd -= pageSize;
             }
+
             if (GUILayout.Button("►", GUILayout.ExpandWidth(false)))
             {
                 arrayStart += pageSize;
                 arrayEnd += pageSize;
             }
+
             arrayStart = Mathf.Clamp(arrayStart, 0, collectionSize - pageSize);
             arrayEnd = Mathf.Clamp(arrayEnd, pageSize - 1, collectionSize - 1);
             if (arrayStart > arrayEnd)
@@ -55,6 +57,7 @@ namespace ModTools.Explorer
                 arrayEnd = arrayStart + 32;
                 arrayEnd = Mathf.Clamp(arrayEnd, 32, collectionSize - 1);
             }
+
             state.SelectedArrayStartIndices[refChain.UniqueId] = arrayStart;
             state.SelectedArrayEndIndices[refChain.UniqueId] = arrayEnd;
             GUILayout.FlexibleSpace();

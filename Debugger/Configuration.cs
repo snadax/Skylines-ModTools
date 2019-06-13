@@ -188,24 +188,6 @@ namespace ModTools
 
         #endregion
 
-        public void Serialize(string filename)
-        {
-            var serializer = new XmlSerializer(typeof(Configuration));
-
-            try
-            {
-                using (var writer = new StreamWriter(filename))
-                {
-                    serializer.Serialize(writer, this);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError("Failed to serialize configuration");
-                Debug.LogException(ex);
-            }
-        }
-
         public static Configuration Deserialize(string filename)
         {
             var serializer = new XmlSerializer(typeof(Configuration));
@@ -224,6 +206,24 @@ namespace ModTools
             }
 
             return null;
+        }
+
+        public void Serialize(string filename)
+        {
+            var serializer = new XmlSerializer(typeof(Configuration));
+
+            try
+            {
+                using (var writer = new StreamWriter(filename))
+                {
+                    serializer.Serialize(writer, this);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Failed to serialize configuration");
+                Debug.LogException(ex);
+            }
         }
     }
 }

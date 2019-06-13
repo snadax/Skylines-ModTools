@@ -8,48 +8,11 @@ namespace ModTools
 {
     internal abstract class GUIWindow : MonoBehaviour
     {
+        public static GUISkin Skin;
+
         protected const float UIScale = 1.0f;
 
-        private readonly int id;
-
-        private static Configuration Config => ModTools.Instance.config;
-
-        protected abstract void DrawWindow();
-
-        protected virtual void HandleException(Exception ex)
-        {
-        }
-
-        protected virtual void OnWindowDrawn()
-        {
-        }
-
-        protected virtual void OnWindowOpened()
-        {
-        }
-
-        protected virtual void OnWindowClosed()
-        {
-        }
-
-        protected virtual void OnWindowResized(Vector2 size)
-        {
-        }
-
-        protected virtual void OnWindowMoved(Vector2 position)
-        {
-        }
-
-        protected virtual void OnWindowDestroyed()
-        {
-        }
-
-        public Rect WindowRect => windowRect;
-        private Rect windowRect = new Rect(0, 0, 64, 64);
-
-        public void MoveResize(Rect newWindowRect) => windowRect = newWindowRect;
-
-        public static GUISkin Skin;
+        private static readonly List<GUIWindow> Windows = new List<GUIWindow>();
 
         private static GUIWindow resizingWindow;
         private static Vector2 resizeDragHandle = Vector2.zero;
@@ -57,7 +20,37 @@ namespace ModTools
         private static GUIWindow movingWindow;
         private static Vector2 moveDragHandle = Vector2.zero;
 
+        private readonly int id;
+        private readonly UIPanel clickCatcher;
+
+        private Vector2 minSize = Vector2.zero;
+        private Rect windowRect = new Rect(0, 0, 64, 64);
+
         private bool visible;
+
+        protected GUIWindow(string title, Rect rect, GUISkin skin)
+        {
+            id = UnityEngine.Random.Range(1024, int.MaxValue);
+            Title = title;
+            windowRect = rect;
+            Skin = skin;
+            minSize = new Vector2(64.0f, 64.0f);
+            Windows.Add(this);
+
+            var uiView = FindObjectOfType<UIView>();
+            if (uiView != null)
+            {
+                clickCatcher = uiView.AddUIComponent(typeof(UIPanel)) as UIPanel;
+                if (clickCatcher != null)
+                {
+                    clickCatcher.name = "_ModToolsInternal";
+                }
+            }
+
+            UpdateClickCatcher();
+        }
+
+        public Rect WindowRect => windowRect;
 
         public bool Visible
         {
@@ -98,48 +91,20 @@ namespace ModTools
 
         protected string Title { get; set; }
 
-        private Vector2 minSize = Vector2.zero;
+        private static Configuration Config => ModTools.Instance.Config;
 
-        private static readonly List<GUIWindow> windows = new List<GUIWindow>();
-
-        private readonly UIPanel clickCatcher;
-
-        protected GUIWindow(string title, Rect rect, GUISkin skin)
+        public static void UpdateFont()
         {
-            id = UnityEngine.Random.Range(1024, int.MaxValue);
-            Title = title;
-            windowRect = rect;
-            Skin = skin;
-            minSize = new Vector2(64.0f, 64.0f);
-            windows.Add(this);
-
-            var uiView = FindObjectOfType<UIView>();
-            if (uiView != null)
-            {
-                clickCatcher = uiView.AddUIComponent(typeof(UIPanel)) as UIPanel;
-                if (clickCatcher != null)
-                {
-                    clickCatcher.name = "_ModToolsInternal";
-                }
-            }
-
-            UpdateClickCatcher();
+            Skin.font = Font.CreateDynamicFontFromOSFont(Config.FontName, Config.FontSize);
+            ModTools.Instance.SceneExplorer.RecalculateAreas();
         }
 
-        private void UpdateClickCatcher()
+        public static void UpdateMouseScrolling()
         {
-            if (clickCatcher == null)
-            {
-                return;
-            }
-
-            // adjust rect from unity pixels to C:S pixels via GetUIView().ratio
-            var ratio = UIView.GetAView().ratio;
-
-            clickCatcher.absolutePosition = new Vector3(windowRect.position.x * ratio, windowRect.position.y * ratio);
-            clickCatcher.size = new Vector2(windowRect.width * ratio, windowRect.height * ratio);
-            clickCatcher.isVisible = Visible;
-            clickCatcher.zOrder = int.MaxValue;
+            var mouse = Input.mousePosition;
+            mouse.y = Screen.height - mouse.y;
+            var mouseInsideGuiWindow = Windows.Any(window => window.Visible && window.windowRect.Contains(mouse));
+            Util.SetMouseScrolling(!mouseInsideGuiWindow);
         }
 
         public void OnDestroy()
@@ -151,21 +116,7 @@ namespace ModTools
                 Destroy(clickCatcher.gameObject);
             }
 
-            windows.Remove(this);
-        }
-
-        public static void UpdateFont()
-        {
-            Skin.font = Font.CreateDynamicFontFromOSFont(Config.FontName, Config.FontSize);
-            ModTools.Instance.sceneExplorer.RecalculateAreas();
-        }
-
-        public static void UpdateMouseScrolling()
-        {
-            var mouse = Input.mousePosition;
-            mouse.y = Screen.height - mouse.y;
-            var mouseInsideGuiWindow = windows.Any(window => window.Visible && window.windowRect.Contains(mouse));
-            Util.SetMouseScrolling(!mouseInsideGuiWindow);
+            Windows.Remove(this);
         }
 
         public void OnGUI()
@@ -256,6 +207,54 @@ namespace ModTools
             GUI.skin = oldSkin;
         }
 
+        public void MoveResize(Rect newWindowRect) => windowRect = newWindowRect;
+
+        protected abstract void DrawWindow();
+
+        protected virtual void HandleException(Exception ex)
+        {
+        }
+
+        protected virtual void OnWindowDrawn()
+        {
+        }
+
+        protected virtual void OnWindowOpened()
+        {
+        }
+
+        protected virtual void OnWindowClosed()
+        {
+        }
+
+        protected virtual void OnWindowResized(Vector2 size)
+        {
+        }
+
+        protected virtual void OnWindowMoved(Vector2 position)
+        {
+        }
+
+        protected virtual void OnWindowDestroyed()
+        {
+        }
+
+        private void UpdateClickCatcher()
+        {
+            if (clickCatcher == null)
+            {
+                return;
+            }
+
+            // adjust rect from unity pixels to C:S pixels via GetUIView().ratio
+            var ratio = UIView.GetAView().ratio;
+
+            clickCatcher.absolutePosition = new Vector3(windowRect.position.x * ratio, windowRect.position.y * ratio);
+            clickCatcher.size = new Vector2(windowRect.width * ratio, windowRect.height * ratio);
+            clickCatcher.isVisible = Visible;
+            clickCatcher.zOrder = int.MaxValue;
+        }
+
         private void WindowFunction(int id)
         {
             GUILayout.Space(8.0f);
@@ -322,6 +321,7 @@ namespace ModTools
                         {
                             windowRect.x = 0.0f;
                         }
+
                         if (windowRect.x + windowRect.width > Screen.width)
                         {
                             windowRect.x = Screen.width - windowRect.width;
@@ -331,6 +331,7 @@ namespace ModTools
                         {
                             windowRect.y = 0.0f;
                         }
+
                         if (windowRect.y + windowRect.height > Screen.height)
                         {
                             windowRect.y = Screen.height - windowRect.height;

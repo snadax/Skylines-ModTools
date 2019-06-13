@@ -31,7 +31,7 @@ namespace ModTools.Utils
                         colors = mesh.colors,
                         triangles = mesh.triangles,
                         normals = mesh.normals,
-                        tangents = mesh.tangents
+                        tangents = mesh.tangents,
                     };
                     meshToDump.RecalculateBounds();
                 }
@@ -48,7 +48,7 @@ namespace ModTools.Utils
                 {
                     OBJLoader.ExportOBJ(meshToDump.EncodeOBJ(), stream);
                     stream.Close();
-                    Log.Warning($"Dumped mesh \"{ mesh.name}\" to \"{fileName}\"");
+                    Log.Warning($"Dumped mesh \"{mesh.name}\" to \"{fileName}\"");
                 }
             }
             catch (Exception ex)

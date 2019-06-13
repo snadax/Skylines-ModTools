@@ -16,7 +16,8 @@ namespace ModTools
                 UnityEngine.Debug.LogError("ModTools instance wasn't present");
                 return;
             }
-            if (modTools.config.ExtendGamePanels && appMode == ItemClass.Availability.Game)
+
+            if (modTools.Config.ExtendGamePanels && appMode == ItemClass.Availability.Game)
             {
                 modTools.gameObject.AddComponent<GamePanelExtender>();
             }

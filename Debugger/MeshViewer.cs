@@ -7,11 +7,13 @@ namespace ModTools
 {
     internal sealed class MeshViewer : GUIWindow
     {
+        private readonly RenderTexture targetRT;
+        private readonly Camera meshViewerCamera;
+        private readonly Light light;
+
         private Mesh previewMesh;
         private Material previewMaterial;
         private string assetName;
-
-        private readonly RenderTexture targetRT;
 
         private float distance = 4f;
         private Vector2 previewDir = new Vector2(120f, -20f);
@@ -19,11 +21,7 @@ namespace ModTools
         private Vector2 lastLeftMousePos = Vector2.zero;
         private Vector2 lastRightMousePos = Vector2.zero;
 
-        private readonly Camera meshViewerCamera;
-
         private Material material;
-
-        private readonly Light light;
 
         private bool useOriginalShader;
 
@@ -66,6 +64,7 @@ namespace ModTools
             {
                 meshViewer.previewMaterial.mainTexture = material.mainTexture;
             }
+
             meshViewer.Setup(calculateBounds);
             meshViewer.Visible = true;
             meshViewer.SetCitizenInfoObjects(false);
@@ -113,6 +112,37 @@ namespace ModTools
                 light.intensity = intensity;
                 light.color = color;
                 light.enabled = enabled;
+            }
+        }
+
+        public void Setup(bool calculateBounds)
+        {
+            if (previewMesh == null)
+            {
+                return;
+            }
+
+            if (calculateBounds && previewMesh.isReadable)
+            {
+                bounds = new Bounds(Vector3.zero, Vector3.zero);
+                foreach (var vertex in previewMesh.vertices)
+                {
+                    bounds.Encapsulate(vertex);
+                }
+            }
+            else
+            {
+                bounds = new Bounds(new Vector3(0, 0, 0), new Vector3(3, 3, 3));
+            }
+
+            distance = 4f;
+        }
+
+        public void SetCitizenInfoObjects(bool enabled)
+        {
+            foreach (var i in Resources.FindObjectsOfTypeAll<CitizenInfo>())
+            {
+                i.gameObject.SetActive(enabled);
             }
         }
 
@@ -164,6 +194,7 @@ namespace ModTools
                     DumpUtil.DumpMeshAndTextures($"{previewMesh.name}", previewMesh);
                 }
             }
+
             if (previewMesh.isReadable)
             {
                 GUILayout.Label($"Triangles: {previewMesh.triangles.Length / 3}");
@@ -175,6 +206,7 @@ namespace ModTools
                 GUILayout.Label("Mesh isn't readable!");
                 GUI.color = oldColor;
             }
+
             if (material?.mainTexture != null)
             {
                 GUILayout.Label($"Texture size: {material.mainTexture.width}x{material.mainTexture.height}");
@@ -206,6 +238,7 @@ namespace ModTools
                                              * UIView.GetAView().ratio * 140f;
                         previewDir.y = Mathf.Clamp(previewDir.y, -90f, 90f);
                     }
+
                     lastLeftMousePos = pos;
                 }
                 else
@@ -220,42 +253,12 @@ namespace ModTools
                         var num2 = magnitude + 16f;
                         distance = Mathf.Min(distance, 4f, num1 * (num2 / magnitude));
                     }
+
                     lastRightMousePos = pos;
                 }
             }
 
-            GUI.DrawTexture(new Rect(0.0f, 64.0f, WindowRect.width, WindowRect.height - 64.0f), targetRT,
-                ScaleMode.StretchToFill, false);
-        }
-
-        public void Setup(bool calculateBounds)
-        {
-            if (previewMesh == null)
-            {
-                return;
-            }
-
-            if (calculateBounds && previewMesh.isReadable)
-            {
-                bounds = new Bounds(Vector3.zero, Vector3.zero);
-                foreach (var vertex in previewMesh.vertices)
-                {
-                    bounds.Encapsulate(vertex);
-                }
-            }
-            else
-            {
-                bounds = new Bounds(new Vector3(0, 0, 0), new Vector3(3, 3, 3));
-            }
-            distance = 4f;
-        }
-
-        public void SetCitizenInfoObjects(bool enabled)
-        {
-            foreach (var i in Resources.FindObjectsOfTypeAll<CitizenInfo>())
-            {
-                i.gameObject.SetActive(enabled);
-            }
+            GUI.DrawTexture(new Rect(0.0f, 64.0f, WindowRect.width, WindowRect.height - 64.0f), targetRT, ScaleMode.StretchToFill, false);
         }
     }
 }

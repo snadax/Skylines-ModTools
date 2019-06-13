@@ -7,12 +7,14 @@ namespace ModTools
 {
     internal sealed class DebugRenderer : MonoBehaviour
     {
+        private readonly List<UIComponent> hoveredComponents = new List<UIComponent>();
+
         private GUIStyle normalRectStyle;
         private GUIStyle hoveredRectStyle;
         private GUIStyle infoWindowStyle;
 
         private UIComponent hoveredComponent;
-        private readonly List<UIComponent> hoveredComponents = new List<UIComponent>();
+
         private long previousHash = 0;
 
         public bool DrawDebugInfo { get; set; }
@@ -45,6 +47,7 @@ namespace ModTools
                     sceneExplorer.ExpandFromRefChain(refChain.GetReversedCopy());
                     sceneExplorer.Visible = true;
                 }
+
                 if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G) && hoveredComponents.Count > 1 && hoveredComponent != null)
                 {
                     var index = hoveredComponents.IndexOf(hoveredComponent);
@@ -86,7 +89,7 @@ namespace ModTools
                     normal = { background = null },
                     hover = { background = null },
                     active = { background = null },
-                    focused = { background = null }
+                    focused = { background = null },
                 };
             }
 
@@ -133,11 +136,13 @@ namespace ModTools
                     hoveredComponents.Add(component);
                 }
             }
+
             if (hoveredComponent != null && hash != previousHash)
             {
                 hoveredComponent = null;
                 previousHash = hash;
             }
+
             if (hoveredComponent == null && hoveredComponents.Count > 0)
             {
                 hoveredComponent = hoveredComponents[0];
@@ -194,6 +199,7 @@ namespace ModTools
             {
                 return;
             }
+
             GUI.color = Color.red;
             GUILayout.Label("[Press Ctrl+F to open it in SceneExplorer]");
             GUI.color = Color.blue;
@@ -216,27 +222,27 @@ namespace ModTools
             {
                 GUILayout.Label($"atlas.name: {interactiveComponent.atlas.name}");
             }
+
             var sprite = hoveredComponent as UISprite;
             if (sprite != null)
             {
                 GUILayout.Label($"atlas.name: {sprite.atlas?.name}");
                 GUILayout.Label($"spriteName: {sprite.spriteName}");
             }
+
             var textureSprite = hoveredComponent as UITextureSprite;
             if (textureSprite != null)
             {
                 GUILayout.Label($"texture.name: {textureSprite.texture?.name}");
             }
+
             GUILayout.Label($"zOrder: {hoveredComponent.zOrder}");
             var hash = CalculateHash(hoveredComponent);
             GUILayout.Label($"hash: {HashUtil.HashToString(hash)}");
         }
 
         private long CalculateHash(UIComponent c)
-        {
-            return HashUtil.HashRect(new Rect(c.relativePosition.x, c.relativePosition.y,
-                c.size.x, c.size.y));
-        }
+            => HashUtil.HashRect(new Rect(c.relativePosition.x, c.relativePosition.y, c.size.x, c.size.y));
 
         private int RenderSortFunc(UIComponent lhs, UIComponent rhs) => lhs.renderOrder.CompareTo(rhs.renderOrder);
     }

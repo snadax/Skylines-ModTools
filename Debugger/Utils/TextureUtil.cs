@@ -26,29 +26,9 @@ namespace ModTools.Utils
                     return;
                 }
             }
+
             File.WriteAllBytes(filename, bytes);
             Log.Warning($"Texture dumped to \"{filename}\"");
-        }
-
-        private static Texture2D MakeReadable(this Texture texture)
-        {
-            Log.Warning($"Texture \"{texture.name}\" is marked as read-only, running workaround..");
-            var rt = RenderTexture.GetTemporary(texture.width, texture.height, 0);
-            Graphics.Blit(texture, rt);
-            var tex = ToTexture2D(rt);
-            RenderTexture.ReleaseTemporary(rt);
-            return tex;
-        }
-
-        private static Texture2D ToTexture2D(this RenderTexture rt)
-        {
-            var oldRt = RenderTexture.active;
-            RenderTexture.active = rt;
-            var tex = new Texture2D(rt.width, rt.height);
-            tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
-            tex.Apply();
-            RenderTexture.active = oldRt;
-            return tex;
         }
 
         public static Texture2D ToTexture2D(this Texture3D t3d)
@@ -68,6 +48,7 @@ namespace ModTools.Utils
                     }
                 }
             }
+
             tex.Apply();
             return tex;
         }
@@ -83,18 +64,6 @@ namespace ModTools.Utils
             SetCubemapFace(texture, CubemapFace.NegativeZ, cubemap, 1, 3);
             texture.Apply();
             return texture;
-        }
-
-        private static void SetCubemapFace(Texture2D texture, CubemapFace face, Cubemap cubemap, int positionY, int positionX)
-        {
-            for (var x = 0; x < cubemap.height; x++)
-            {
-                for (var y = 0; y < cubemap.width; y++)
-                {
-                    var color = cubemap.GetPixel(face, x, y);
-                    texture.SetPixel(positionX * cubemap.width + x, positionY * cubemap.height + y, color);
-                }
-            }
         }
 
         public static void DumpTextureToPNG(Texture previewTexture, string filename = null)
@@ -128,6 +97,7 @@ namespace ModTools.Utils
             {
                 File.Delete(filename);
             }
+
             if (previewTexture is Texture2D texture2D)
             {
                 DumpTexture2D(texture2D, filename);
@@ -162,6 +132,7 @@ namespace ModTools.Utils
             {
                 input = texture2D.MakeReadable().GetPixels32();
             }
+
             return input;
         }
 
@@ -183,6 +154,7 @@ namespace ModTools.Utils
                 result[i].b = (byte)(byte.MaxValue - colors[i].b);
                 result[i].a = (byte)(byte.MaxValue - colors[i].a);
             }
+
             return result;
         }
 
@@ -218,29 +190,84 @@ namespace ModTools.Utils
                 if (r != null)
                 {
                     if (ralpha)
-                    { r[index].r = rr; r[index].g = rr; r[index].b = rr; }
+                    {
+                        r[index].r = rr;
+                        r[index].g = rr;
+                        r[index].b = rr;
+                    }
                     else
-                    { r[index].r = rr; }
+                    {
+                        r[index].r = rr;
+                    }
                 }
 
                 if (g != null)
                 {
                     if (galpha)
-                    { g[index].r = gg; g[index].g = gg; g[index].b = gg; }
+                    {
+                        g[index].r = gg;
+                        g[index].g = gg;
+                        g[index].b = gg;
+                    }
                     else
-                    { g[index].g = gg; }
+                    {
+                        g[index].g = gg;
+                    }
                 }
 
                 if (b != null)
                 {
                     if (balpha)
-                    { b[index].r = bb; b[index].g = bb; b[index].b = bb; }
+                    {
+                        b[index].r = bb;
+                        b[index].g = bb;
+                        b[index].b = bb;
+                    }
                     else
-                    { b[index].b = bb; }
+                    {
+                        b[index].b = bb;
+                    }
                 }
 
                 if (a != null)
-                { a[index].r = aa; a[index].g = aa; a[index].b = aa; }
+                {
+                    a[index].r = aa;
+                    a[index].g = aa;
+                    a[index].b = aa;
+                }
+            }
+        }
+
+        private static Texture2D MakeReadable(this Texture texture)
+        {
+            Log.Warning($"Texture \"{texture.name}\" is marked as read-only, running workaround..");
+            var rt = RenderTexture.GetTemporary(texture.width, texture.height, 0);
+            Graphics.Blit(texture, rt);
+            var tex = ToTexture2D(rt);
+            RenderTexture.ReleaseTemporary(rt);
+            return tex;
+        }
+
+        private static Texture2D ToTexture2D(this RenderTexture rt)
+        {
+            var oldRt = RenderTexture.active;
+            RenderTexture.active = rt;
+            var tex = new Texture2D(rt.width, rt.height);
+            tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
+            tex.Apply();
+            RenderTexture.active = oldRt;
+            return tex;
+        }
+
+        private static void SetCubemapFace(Texture2D texture, CubemapFace face, Cubemap cubemap, int positionY, int positionX)
+        {
+            for (var x = 0; x < cubemap.height; x++)
+            {
+                for (var y = 0; y < cubemap.width; y++)
+                {
+                    var color = cubemap.GetPixel(face, x, y);
+                    texture.SetPixel(positionX * cubemap.width + x, positionY * cubemap.height + y, color);
+                }
             }
         }
     }

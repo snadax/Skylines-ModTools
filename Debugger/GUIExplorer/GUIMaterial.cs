@@ -4,7 +4,7 @@ namespace ModTools.Explorer
 {
     internal static class GUIMaterial
     {
-        private static readonly string[] textureProps =
+        private static readonly string[] TextureProps =
         {
             "_BackTex",
             "_BumpMap",
@@ -41,19 +41,19 @@ namespace ModTools.Explorer
             "luminTex",
             "searchTex",
             "_SrcTex",
-            "_Blurred"
+            "_Blurred",
         };
 
-        private static readonly string[] colorProps =
+        private static readonly string[] ColorProps =
         {
             "_Color",
             "_ColorV0",
             "_ColorV1",
             "_ColorV2",
-            "_ColorV3"
+            "_ColorV3",
         };
 
-        private static readonly string[] vectorProps =
+        private static readonly string[] VectorProps =
         {
             "_FloorParams",
             "_UvAnimation",
@@ -67,7 +67,7 @@ namespace ModTools.Explorer
             "_TyreLocation5",
             "_TyreLocation6",
             "_TyreLocation7",
-            "_TyreParams"
+            "_TyreParams",
         };
 
         public static void OnSceneReflectUnityEngineMaterial(SceneExplorerState state, ReferenceChain refChain, Material material)
@@ -85,7 +85,7 @@ namespace ModTools.Explorer
 
             var oldRefChain = refChain;
 
-            foreach (var prop in textureProps)
+            foreach (var prop in TextureProps)
             {
                 if (!material.HasProperty(prop))
                 {
@@ -107,11 +107,11 @@ namespace ModTools.Explorer
 
                 GUIExpander.ExpanderControls(state, refChain, type);
 
-                GUI.contentColor = ModTools.Instance.config.TypeColor;
+                GUI.contentColor = ModTools.Instance.Config.TypeColor;
 
                 GUILayout.Label(type.ToString() + " ");
 
-                GUI.contentColor = ModTools.Instance.config.NameColor;
+                GUI.contentColor = ModTools.Instance.Config.NameColor;
 
                 GUILayout.Label(prop);
 
@@ -119,7 +119,7 @@ namespace ModTools.Explorer
 
                 GUILayout.Label(" = ");
 
-                GUI.contentColor = ModTools.Instance.config.ValueColor;
+                GUI.contentColor = ModTools.Instance.Config.ValueColor;
                 GUILayout.Label(value.ToString());
                 GUI.contentColor = Color.white;
 
@@ -139,7 +139,7 @@ namespace ModTools.Explorer
                 }
             }
 
-            foreach (var prop in colorProps)
+            foreach (var prop in ColorProps)
             {
                 if (!material.HasProperty(prop))
                 {
@@ -156,11 +156,11 @@ namespace ModTools.Explorer
 
                 GUIExpander.ExpanderControls(state, refChain, type);
 
-                GUI.contentColor = ModTools.Instance.config.TypeColor;
+                GUI.contentColor = ModTools.Instance.Config.TypeColor;
 
                 GUILayout.Label(type.ToString() + " ");
 
-                GUI.contentColor = ModTools.Instance.config.NameColor;
+                GUI.contentColor = ModTools.Instance.Config.NameColor;
 
                 GUILayout.Label(prop);
 
@@ -168,7 +168,7 @@ namespace ModTools.Explorer
 
                 GUILayout.Label(" = ");
 
-                GUI.contentColor = ModTools.Instance.config.ValueColor;
+                GUI.contentColor = ModTools.Instance.Config.ValueColor;
 
                 var newColor = GUIControls.CustomValueField(refChain.UniqueId, string.Empty, GUIControls.PresentColor, value);
                 if (newColor != value)
@@ -186,6 +186,7 @@ namespace ModTools.Explorer
                 {
                     GUIReflect.OnSceneTreeReflect(state, refChain, value);
                 }
+
                 if (doPaste)
                 {
                     material.SetColor(prop, (Color)paste);

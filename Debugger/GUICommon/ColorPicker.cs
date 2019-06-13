@@ -6,20 +6,8 @@ namespace ModTools
 {
     internal sealed class ColorPicker : GUIWindow
     {
-        private static readonly Dictionary<string, Texture2D> textureCache = new Dictionary<string, Texture2D>();
-
-        public static Texture2D GetColorTexture(string id, Color color)
-        {
-            if (!textureCache.TryGetValue(id, out var texture))
-            {
-                texture = new Texture2D(1, 1);
-                textureCache.Add(id, texture);
-            }
-
-            texture.SetPixel(0, 0, color);
-            texture.Apply();
-            return texture;
-        }
+        private static readonly Dictionary<string, Texture2D> TextureCache = new Dictionary<string, Texture2D>();
+        private static readonly Color LineColor = Color.white;
 
         private readonly int colorPickerSize = 142;
         private readonly int huesBarWidth = 26;
@@ -33,9 +21,9 @@ namespace ModTools
         private Rect huesBarRect;
 
         private Texture2D lineTexTexture;
-        private static Color lineColor = Color.white;
 
-        public ColorPicker() : base("ColorPicker", new Rect(16.0f, 16.0f, 188.0f, 156.0f), Skin)
+        public ColorPicker()
+            : base("ColorPicker", new Rect(16.0f, 16.0f, 188.0f, 156.0f), Skin)
         {
             Resizable = false;
             HasTitlebar = false;
@@ -52,70 +40,17 @@ namespace ModTools
 
         private Texture2D LineTex => lineTexTexture ?? (lineTexTexture = DrawLineTex());
 
-        public void SetColor(Color color)
+        public static Texture2D GetColorTexture(string id, Color color)
         {
-            originalAlpha = color.a;
-            currentHSV = ColorUtil.HSV.RGB2HSV(color);
-            currentHSV.H = 360.0f - currentHSV.H;
-            RedrawPicker();
-        }
-
-        private void RedrawPicker() => DrawColorPicker(Texture, currentHSV.H);
-
-        protected override void HandleException(Exception ex)
-        {
-            Log.Error("Exception in ColorPicker - " + ex.Message);
-            Visible = false;
-        }
-
-        protected override void DrawWindow()
-        {
-            GUI.DrawTexture(colorPickerRect, Texture);
-            GUI.DrawTexture(huesBarRect, HuesBar);
-
-            var huesBarLineY = huesBarRect.y + (1.0f - (float)currentHSV.H / 360.0f) * huesBarRect.height;
-            GUI.DrawTexture(new Rect(huesBarRect.x - 2.0f, huesBarLineY, huesBarRect.width + 4.0f, 2.0f), LineTex);
-
-            var colorPickerLineY = colorPickerRect.x + (float)currentHSV.V * colorPickerRect.width;
-            GUI.DrawTexture(new Rect(colorPickerRect.x - 1.0f, colorPickerLineY, colorPickerRect.width + 2.0f, 1.0f), LineTex);
-
-            var colorPickerLineX = colorPickerRect.y + (float)currentHSV.S * colorPickerRect.height;
-            GUI.DrawTexture(new Rect(colorPickerLineX, colorPickerRect.y - 1.0f, 1.0f, colorPickerRect.height + 2.0f), LineTex);
-        }
-
-        public void Update()
-        {
-            Vector2 mouse = Input.mousePosition;
-            mouse.y = Screen.height - mouse.y;
-
-            if (Input.GetMouseButton(0) && !WindowRect.Contains(mouse))
+            if (!TextureCache.TryGetValue(id, out var texture))
             {
-                Visible = false;
-                return;
+                texture = new Texture2D(1, 1);
+                TextureCache.Add(id, texture);
             }
 
-            mouse -= WindowRect.position;
-
-            if (Input.GetMouseButton(0))
-            {
-                if (huesBarRect.Contains(mouse))
-                {
-                    currentHSV.H = (1.0f - Mathf.Clamp01((mouse.y - huesBarRect.y) / huesBarRect.height)) * 360.0f;
-                    RedrawPicker();
-
-                    // TODO: color changing
-                    //InternalOnColorChanged(ColorUtil.HSV.HSV2RGB(currentHSV));
-                }
-
-                if (colorPickerRect.Contains(mouse))
-                {
-                    currentHSV.S = Mathf.Clamp01((mouse.x - colorPickerRect.x) / colorPickerRect.width);
-                    currentHSV.V = Mathf.Clamp01((mouse.y - colorPickerRect.y) / colorPickerRect.height);
-
-                    // TODO: color changing
-                    //InternalOnColorChanged(ColorUtil.HSV.HSV2RGB(currentHSV));
-                }
-            }
+            texture.SetPixel(0, 0, color);
+            texture.Apply();
+            return texture;
         }
 
         public static void DrawColorPicker(Texture2D texture, double hue)
@@ -152,7 +87,7 @@ namespace ModTools
         public static Texture2D DrawLineTex()
         {
             var tex = new Texture2D(1, 1);
-            tex.SetPixel(0, 0, lineColor);
+            tex.SetPixel(0, 0, LineColor);
             tex.Apply();
             return tex;
         }
@@ -162,5 +97,71 @@ namespace ModTools
 
         public static Color GetColorAtXY(double hue, float xT, float yT)
             => ColorUtil.HSV.HSV2RGB(new ColorUtil.HSV { H = hue, S = xT, V = yT });
+
+        public void SetColor(Color color)
+        {
+            originalAlpha = color.a;
+            currentHSV = ColorUtil.HSV.RGB2HSV(color);
+            currentHSV.H = 360.0f - currentHSV.H;
+            RedrawPicker();
+        }
+
+        public void Update()
+        {
+            Vector2 mouse = Input.mousePosition;
+            mouse.y = Screen.height - mouse.y;
+
+            if (Input.GetMouseButton(0) && !WindowRect.Contains(mouse))
+            {
+                Visible = false;
+                return;
+            }
+
+            mouse -= WindowRect.position;
+
+            if (Input.GetMouseButton(0))
+            {
+                if (huesBarRect.Contains(mouse))
+                {
+                    currentHSV.H = (1.0f - Mathf.Clamp01((mouse.y - huesBarRect.y) / huesBarRect.height)) * 360.0f;
+                    RedrawPicker();
+
+                    // TODO: color changing
+                    ////InternalOnColorChanged(ColorUtil.HSV.HSV2RGB(currentHSV));
+                }
+
+                if (colorPickerRect.Contains(mouse))
+                {
+                    currentHSV.S = Mathf.Clamp01((mouse.x - colorPickerRect.x) / colorPickerRect.width);
+                    currentHSV.V = Mathf.Clamp01((mouse.y - colorPickerRect.y) / colorPickerRect.height);
+
+                    // TODO: color changing
+                    ////InternalOnColorChanged(ColorUtil.HSV.HSV2RGB(currentHSV));
+                }
+            }
+        }
+
+        protected override void HandleException(Exception ex)
+        {
+            Log.Error("Exception in ColorPicker - " + ex.Message);
+            Visible = false;
+        }
+
+        protected override void DrawWindow()
+        {
+            GUI.DrawTexture(colorPickerRect, Texture);
+            GUI.DrawTexture(huesBarRect, HuesBar);
+
+            var huesBarLineY = huesBarRect.y + (1.0f - (float)currentHSV.H / 360.0f) * huesBarRect.height;
+            GUI.DrawTexture(new Rect(huesBarRect.x - 2.0f, huesBarLineY, huesBarRect.width + 4.0f, 2.0f), LineTex);
+
+            var colorPickerLineY = colorPickerRect.x + (float)currentHSV.V * colorPickerRect.width;
+            GUI.DrawTexture(new Rect(colorPickerRect.x - 1.0f, colorPickerLineY, colorPickerRect.width + 2.0f, 1.0f), LineTex);
+
+            var colorPickerLineX = colorPickerRect.y + (float)currentHSV.S * colorPickerRect.height;
+            GUI.DrawTexture(new Rect(colorPickerLineX, colorPickerRect.y - 1.0f, 1.0f, colorPickerRect.height + 2.0f), LineTex);
+        }
+
+        private void RedrawPicker() => DrawColorPicker(Texture, currentHSV.H);
     }
 }

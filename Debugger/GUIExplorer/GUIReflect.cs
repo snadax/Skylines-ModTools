@@ -34,6 +34,7 @@ namespace ModTools.Explorer
                     {
                         GUI.contentColor = Color.white;
                     }
+
                     return;
                 }
 
@@ -68,6 +69,7 @@ namespace ModTools.Explorer
                     GUIMaterial.OnSceneReflectUnityEngineMaterial(state, refChain, (Material)obj);
                     return;
                 }
+
                 if (type == typeof(Mesh) && !((Mesh)obj).isReadable)
                 {
                     SceneExplorerCommon.OnSceneTreeMessage(refChain, "Mesh is not readable");
@@ -75,20 +77,20 @@ namespace ModTools.Explorer
                 }
             }
 
-            var members = TypeUtil.GetAllMembers(type, ModTools.Instance.config.SceneExplorerShowInheritedMembers);
+            var members = TypeUtil.GetAllMembers(type, ModTools.Instance.Config.SceneExplorerShowInheritedMembers);
 
-            if (ModTools.Instance.config.SceneExplorerSortAlphabetically)
+            if (ModTools.Instance.Config.SceneExplorerSortAlphabetically)
             {
                 Array.Sort(members, (info, info1) => string.CompareOrdinal(info.Name, info1.Name));
             }
 
             foreach (var member in members)
             {
-                if (member.MemberType == MemberTypes.Field && ModTools.Instance.config.SceneExplorerShowFields)
+                if (member.MemberType == MemberTypes.Field && ModTools.Instance.Config.SceneExplorerShowFields)
                 {
                     var field = (FieldInfo)member;
 
-                    if (field.IsLiteral && !field.IsInitOnly && !ModTools.Instance.config.SceneExplorerShowConsts)
+                    if (field.IsLiteral && !field.IsInitOnly && !ModTools.Instance.Config.SceneExplorerShowConsts)
                     {
                         continue;
                     }
@@ -102,7 +104,7 @@ namespace ModTools.Explorer
                         SceneExplorerCommon.OnSceneTreeMessage(refChain, $"Exception when fetching field \"{field.Name}\" - {ex.Message}\n{ex.StackTrace}");
                     }
                 }
-                else if (member.MemberType == MemberTypes.Property && ModTools.Instance.config.SceneExplorerShowProperties)
+                else if (member.MemberType == MemberTypes.Property && ModTools.Instance.Config.SceneExplorerShowProperties)
                 {
                     var property = (PropertyInfo)member;
 
@@ -115,7 +117,7 @@ namespace ModTools.Explorer
                         SceneExplorerCommon.OnSceneTreeMessage(refChain, $"Exception when fetching property \"{property.Name}\" - {ex.Message}\n{ex.StackTrace}");
                     }
                 }
-                else if (member.MemberType == MemberTypes.Method && ModTools.Instance.config.SceneExplorerShowMethods)
+                else if (member.MemberType == MemberTypes.Method && ModTools.Instance.Config.SceneExplorerShowMethods)
                 {
                     var method = (MethodInfo)member;
 

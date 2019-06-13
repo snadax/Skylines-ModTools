@@ -8,6 +8,10 @@ namespace ModTools
 {
     internal sealed class ReferenceChain : IEquatable<ReferenceChain>, ICloneable
     {
+        private readonly object[] chainObjects = new object[ModTools.Instance.Config.SceneExplorerMaxHierarchyDepth];
+        private readonly ReferenceType[] chainTypes = new ReferenceType[ModTools.Instance.Config.SceneExplorerMaxHierarchyDepth];
+        private string uniqueId;
+
         public enum ReferenceType
         {
             None,
@@ -17,12 +21,8 @@ namespace ModTools
             Property,
             Method,
             EnumerableItem,
-            SpecialNamedProperty
+            SpecialNamedProperty,
         }
-
-        private readonly object[] chainObjects = new object[ModTools.Instance.config.SceneExplorerMaxHierarchyDepth];
-        private readonly ReferenceType[] chainTypes = new ReferenceType[ModTools.Instance.config.SceneExplorerMaxHierarchyDepth];
-        private string uniqueId;
 
         public int IdentOffset { get; set; }
 
@@ -76,7 +76,7 @@ namespace ModTools
             return clone;
         }
 
-        public bool CheckDepth() => Length >= ModTools.Instance.config.SceneExplorerMaxHierarchyDepth;
+        public bool CheckDepth() => Length >= ModTools.Instance.Config.SceneExplorerMaxHierarchyDepth;
 
         public ReferenceChain Add(GameObject go)
         {
@@ -153,35 +153,6 @@ namespace ModTools
         public ReferenceType GetChainItemType(int index)
             => index >= 0 && index < Length ? chainTypes[index] : ReferenceType.None;
 
-        private string ItemToString(int i)
-        {
-            switch (chainTypes[i])
-            {
-                case ReferenceType.GameObject:
-                    return ((GameObject)chainObjects[i]).name;
-
-                case ReferenceType.Component:
-                    return ((Component)chainObjects[i]).name;
-
-                case ReferenceType.Field:
-                    return ((FieldInfo)chainObjects[i]).Name;
-
-                case ReferenceType.Property:
-                    return ((PropertyInfo)chainObjects[i]).Name;
-
-                case ReferenceType.Method:
-                    return ((MethodInfo)chainObjects[i]).Name;
-
-                case ReferenceType.EnumerableItem:
-                    return "[" + chainObjects[i] + "]";
-
-                case ReferenceType.SpecialNamedProperty:
-                    return (string)chainObjects[i];
-            }
-
-            return string.Empty;
-        }
-
         public override string ToString()
         {
             switch (Length)
@@ -214,7 +185,7 @@ namespace ModTools
             var copy = new ReferenceChain
             {
                 Length = Length,
-                IdentOffset = IdentOffset
+                IdentOffset = IdentOffset,
             };
 
             for (var i = 0; i < Length; i++)
@@ -262,6 +233,7 @@ namespace ModTools
 
                             itemCount++;
                         }
+
                         break;
 
                     case ReferenceType.SpecialNamedProperty:
@@ -308,6 +280,7 @@ namespace ModTools
 
                             itemCount++;
                         }
+
                         break;
 
                     case ReferenceType.SpecialNamedProperty:
@@ -328,6 +301,7 @@ namespace ModTools
                 {
                     propertyInfo.SetValue(current, value, null);
                 }
+
                 return true;
             }
 
@@ -360,6 +334,35 @@ namespace ModTools
             }
 
             return true;
+        }
+
+        private string ItemToString(int i)
+        {
+            switch (chainTypes[i])
+            {
+                case ReferenceType.GameObject:
+                    return ((GameObject)chainObjects[i]).name;
+
+                case ReferenceType.Component:
+                    return ((Component)chainObjects[i]).name;
+
+                case ReferenceType.Field:
+                    return ((FieldInfo)chainObjects[i]).Name;
+
+                case ReferenceType.Property:
+                    return ((PropertyInfo)chainObjects[i]).Name;
+
+                case ReferenceType.Method:
+                    return ((MethodInfo)chainObjects[i]).Name;
+
+                case ReferenceType.EnumerableItem:
+                    return "[" + chainObjects[i] + "]";
+
+                case ReferenceType.SpecialNamedProperty:
+                    return (string)chainObjects[i];
+            }
+
+            return string.Empty;
         }
     }
 }

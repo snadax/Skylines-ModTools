@@ -1,11 +1,18 @@
 ﻿using UnityEngine;
 
 // Taken from the MechJeb2 (https://github.com/MuMech/MechJeb2) source, see MECHJEB-LICENSE for license info
-
 namespace ModTools
 {
     internal static class GUIComboBox
     {
+        // Unity identifier of the window, just needs to be unique
+        private static readonly int Id = GUIUtility.GetControlID(FocusType.Passive);
+
+        // ComboBox GUI Style
+        private static readonly GUIStyle Style;
+
+        private static Vector2 comboBoxScroll = Vector2.zero;
+
         // Easy to use combobox class
         // ***** For users *****
         // Call the Box method with the latest selected item, list of text entries
@@ -27,19 +34,13 @@ namespace ModTools
         // Result to be returned to the owner
         private static int selectedItem;
 
-        // Unity identifier of the window, just needs to be unique
-        private static readonly int id = GUIUtility.GetControlID(FocusType.Passive);
-
-        // ComboBox GUI Style
-        private static readonly GUIStyle style;
-
         private static GUIStyle yellowOnHover;
 
         static GUIComboBox()
         {
             var background = new Texture2D(16, 16, TextureFormat.RGBA32, false)
             {
-                wrapMode = TextureWrapMode.Clamp
+                wrapMode = TextureWrapMode.Clamp,
             };
 
             for (var x = 0; x < background.width; x++)
@@ -59,11 +60,11 @@ namespace ModTools
 
             background.Apply();
 
-            style = new GUIStyle(GUI.skin.window);
-            style.normal.background = background;
-            style.onNormal.background = background;
-            style.border.top = style.border.bottom;
-            style.padding.top = style.padding.bottom;
+            Style = new GUIStyle(GUI.skin.window);
+            Style.normal.background = background;
+            Style.onNormal.background = background;
+            Style.border.top = Style.border.bottom;
+            Style.padding.top = Style.padding.bottom;
         }
 
         public static GUIStyle YellowOnHover
@@ -79,6 +80,7 @@ namespace ModTools
                     t.Apply();
                     yellowOnHover.hover.background = t;
                 }
+
                 return yellowOnHover;
             }
         }
@@ -90,25 +92,7 @@ namespace ModTools
                 return;
             }
 
-            rect = GUILayout.Window(id, rect, identifier =>
-            {
-                if (hasScrollbars)
-                {
-                    comboBoxScroll = GUILayout.BeginScrollView(comboBoxScroll, false, false);
-                }
-
-                selectedItem = GUILayout.SelectionGrid(-1, entries, 1, YellowOnHover);
-
-                if (hasScrollbars)
-                {
-                    GUILayout.EndScrollView();
-                }
-
-                if (GUI.changed)
-                {
-                    popupActive = false;
-                }
-            }, string.Empty, style);
+            rect = GUILayout.Window(Id, rect, WindowFunction, string.Empty, Style);
 
             // Cancel the popup if we click outside
             if (Event.current.type == EventType.MouseDown && !rect.Contains(Event.current.mousePosition))
@@ -116,8 +100,6 @@ namespace ModTools
                 popupOwner = null;
             }
         }
-
-        private static Vector2 comboBoxScroll = Vector2.zero;
 
         public static int Box(int selectedItem, string[] entries, string caller)
         {
@@ -157,17 +139,21 @@ namespace ModTools
             {
                 // We will set the changed status when we return from the menu instead
                 GUI.changed = guiChanged;
+
                 // Update the global state with the new items
                 popupOwner = caller;
                 popupActive = true;
                 GUIComboBox.entries = entries;
+
                 // Magic value to force position update during repaint event
                 rect = new Rect(0, 0, 0, 0);
             }
+
             // The GetLastRect method only works during repaint event, but the Button will return false during repaint
             if (Event.current.type == EventType.Repaint && popupOwner == caller && rect.height == 0)
             {
                 rect = GUILayoutUtility.GetLastRect();
+
                 // But even worse, I can't find a clean way to convert from relative to absolute coordinates
                 Vector2 mousePos = Input.mousePosition;
                 mousePos.y = Screen.height - mousePos.y;
@@ -181,6 +167,26 @@ namespace ModTools
             }
 
             return selectedItem;
+        }
+
+        private static void WindowFunction(int id)
+        {
+            if (hasScrollbars)
+            {
+                comboBoxScroll = GUILayout.BeginScrollView(comboBoxScroll, false, false);
+            }
+
+            selectedItem = GUILayout.SelectionGrid(-1, entries, 1, YellowOnHover);
+
+            if (hasScrollbars)
+            {
+                GUILayout.EndScrollView();
+            }
+
+            if (GUI.changed)
+            {
+                popupActive = false;
+            }
         }
     }
 }

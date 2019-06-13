@@ -46,11 +46,11 @@ namespace ModTools.Utils
 
         private static class Parsers<T>
         {
+            private static readonly TryParseDelegate Parser = (TryParseDelegate)Delegate.CreateDelegate(typeof(TryParseDelegate), typeof(T), "TryParse");
+
             private delegate bool TryParseDelegate(string text, out T result);
 
-            private static readonly TryParseDelegate parser = (TryParseDelegate)Delegate.CreateDelegate(typeof(TryParseDelegate), typeof(T), "TryParse");
-
-            public static bool TryParse(string text, out T result) => parser(text, out result);
+            public static bool TryParse(string text, out T result) => Parser(text, out result);
         }
     }
 }

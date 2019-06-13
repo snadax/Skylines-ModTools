@@ -41,6 +41,7 @@ namespace ModTools
                     }
                 }
             }
+
             throw new Exception("Failed to find assembly!");
         }
 

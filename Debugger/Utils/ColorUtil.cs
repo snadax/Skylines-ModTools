@@ -11,8 +11,6 @@ namespace ModTools
             public double S;
             public double V;
 
-            public override string ToString() => $"H: {H.ToString("0.00")}, S: {S.ToString("0.00")}, V:{V.ToString("0.00")}";
-
             public static HSV RGB2HSV(Color color) => RGB2HSV((int)(color.r * 255), (int)(color.g * 255), (int)(color.b * 255));
 
             public static HSV RGB2HSV(double r, double b, double g)
@@ -59,7 +57,7 @@ namespace ModTools
                 {
                     H = h,
                     S = s,
-                    V = v / 255
+                    V = v / 255,
                 };
             }
 
@@ -143,6 +141,8 @@ namespace ModTools
 
                 return new Color((float)r, (float)g, (float)b, 1);
             }
+
+            public override string ToString() => $"H: {H.ToString("0.00")}, S: {S.ToString("0.00")}, V:{V.ToString("0.00")}";
         }
     }
 }

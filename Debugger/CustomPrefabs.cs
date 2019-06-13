@@ -10,14 +10,21 @@ namespace ModTools
         private static bool bootstrapped;
         private static GameObject thisGameObject;
 
-        public VehicleInfo[] Vehicles;
-        public BuildingInfo[] Buildings;
-        public PropInfo[] Props;
-        public TreeInfo[] Trees;
-        public NetInfo[] Nets;
-        public EventInfo[] Events;
-        public TransportInfo[] Transports;
-        public CitizenInfo[] Citizens;
+        public VehicleInfo[] Vehicles { get; private set; }
+
+        public BuildingInfo[] Buildings { get; private set; }
+
+        public PropInfo[] Props { get; private set; }
+
+        public TreeInfo[] Trees { get; private set; }
+
+        public NetInfo[] Nets { get; private set; }
+
+        public EventInfo[] Events { get; private set; }
+
+        public TransportInfo[] Transports { get; private set; }
+
+        public CitizenInfo[] Citizens { get; private set; }
 
         public static void Bootstrap()
         {
@@ -26,10 +33,12 @@ namespace ModTools
                 thisGameObject = new GameObject("Custom Prefabs");
                 thisGameObject.AddComponent<CustomPrefabs>();
             }
+
             if (bootstrapped)
             {
                 return;
             }
+
             bootstrapped = true;
         }
 
@@ -45,6 +54,7 @@ namespace ModTools
             {
                 return;
             }
+
             bootstrapped = false;
         }
 
@@ -72,7 +82,8 @@ namespace ModTools
             Citizens = null;
         }
 
-        private static T[] GetCustomPrefabs<T>() where T : PrefabInfo
+        private static T[] GetCustomPrefabs<T>()
+            where T : PrefabInfo
         {
             var result = new List<T>();
             var count = PrefabCollection<T>.LoadedCount();
@@ -83,8 +94,10 @@ namespace ModTools
                 {
                     continue;
                 }
+
                 result.Add(prefab);
             }
+
             return result.OrderBy(p => p.name).ToArray();
         }
     }

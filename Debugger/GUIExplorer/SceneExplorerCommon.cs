@@ -6,7 +6,7 @@ namespace ModTools.Explorer
 {
     internal static class SceneExplorerCommon
     {
-        private static readonly Dictionary<int, string> indentStrings = new Dictionary<int, string>();
+        private static readonly Dictionary<int, string> IndentStrings = new Dictionary<int, string>();
 
         internal static void OnSceneTreeMessage(ReferenceChain refChain, string message)
         {
@@ -34,13 +34,13 @@ namespace ModTools.Explorer
                 return;
             }
 
-            if (!indentStrings.TryGetValue(indent, out var indentString))
+            if (!IndentStrings.TryGetValue(indent, out var indentString))
             {
                 indentString = new StringBuilder().Insert(0, "· ", indent).ToString();
-                indentStrings.Add(indent, indentString);
+                IndentStrings.Add(indent, indentString);
             }
 
-            GUILayout.Label(indentString, GUILayout.Width(ModTools.Instance.config.SceneExplorerTreeIdentSpacing * indent));
+            GUILayout.Label(indentString, GUILayout.Width(ModTools.Instance.Config.SceneExplorerTreeIdentSpacing * indent));
         }
     }
 }

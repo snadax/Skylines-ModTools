@@ -9,14 +9,14 @@ namespace ModTools
     {
         private readonly List<ReferenceChain> watches = new List<ReferenceChain>();
 
-        private Configuration Config => ModTools.Instance.config;
-
         private Vector2 watchesScroll = Vector2.zero;
 
         public Watches()
             : base("Watches", new Rect(504, 128, 800, 300), Skin)
         {
         }
+
+        private Configuration Config => ModTools.Instance.Config;
 
         public void AddWatch(ReferenceChain refChain)
         {
@@ -41,6 +41,7 @@ namespace ModTools
                 var info = item as FieldInfo;
                 ret = info?.FieldType ?? (item as PropertyInfo)?.PropertyType;
             }
+
             return ret;
         }
 

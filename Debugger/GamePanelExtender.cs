@@ -112,6 +112,12 @@ namespace ModTools
             }
         }
 
+        public void Update()
+        {
+            Initialize();
+            SetInstance();
+        }
+
         private UIButton CreateButton(string text, int width, int height, UIComponent parentComponent, Vector3 offset, UIAlignAnchor anchor, MouseEventHandler handler)
         {
             var button = UIView.GetAView().AddUIComponent(typeof(UIButton)) as UIButton;
@@ -136,8 +142,7 @@ namespace ModTools
             return button;
         }
 
-        private UILabel CreateLabel(string text, int width, int height, UIComponent parentComponent, Vector3 offset,
-            UIAlignAnchor anchor)
+        private UILabel CreateLabel(string text, int width, int height, UIComponent parentComponent, Vector3 offset, UIAlignAnchor anchor)
         {
             var label = UIView.GetAView().AddUIComponent(typeof(UILabel)) as UILabel;
             label.text = text;
@@ -150,24 +155,29 @@ namespace ModTools
             return label;
         }
 
-        private void AddBuildingPanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel,
-            out UIButton showExplorerButton, Vector3 showExplorerButtonOffset,
-            out UIButton dumpMeshTextureButton, Vector3 dumpMeshTextureButtonOffset)
+        private void AddBuildingPanelControls(
+            WorldInfoPanel infoPanel,
+            out UILabel assetNameLabel,
+            out UIButton showExplorerButton,
+            Vector3 showExplorerButtonOffset,
+            out UIButton dumpMeshTextureButton,
+            Vector3 dumpMeshTextureButtonOffset)
         {
             infoPanel.component.Find<UILabel>("AllGood").isVisible = false;
             infoPanel.component.Find<UIPanel>("ProblemsPanel").isVisible = false;
 
-            assetNameLabel = CreateLabel
-            (
-                "AssetName: <>", 160, 24,
+            assetNameLabel = CreateLabel(
+                "AssetName: <>",
+                160,
+                24,
                 infoPanel.component,
                 new Vector3(8.0f, 48.0f, 0.0f),
-                UIAlignAnchor.TopLeft
-            );
+                UIAlignAnchor.TopLeft);
 
-            showExplorerButton = CreateButton
-            (
-                "Find in SceneExplorer", 160, 24,
+            showExplorerButton = CreateButton(
+                "Find in SceneExplorer",
+                160,
+                24,
                 infoPanel.component,
                 showExplorerButtonOffset,
                 UIAlignAnchor.TopRight,
@@ -176,12 +186,12 @@ namespace ModTools
                     var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     sceneExplorer.ExpandFromRefChain(buildingsBufferRefChain.Add(instance.Building));
                     sceneExplorer.Visible = true;
-                }
-            );
+                });
 
-            dumpMeshTextureButton = CreateButton
-            (
-                "Dump asset", 160, 24,
+            dumpMeshTextureButton = CreateButton(
+                "Dump asset",
+                160,
+                24,
                 infoPanel.component,
                 dumpMeshTextureButtonOffset,
                 UIAlignAnchor.TopRight,
@@ -191,25 +201,25 @@ namespace ModTools
                     var building = BuildingManager.instance.m_buildings.m_buffer[instance.Building];
                     var assetName = building.Info.name;
                     DumpUtil.DumpAsset(assetName, building.Info.m_mesh, building.Info.m_material, building.Info.m_lodMesh, building.Info.m_lodMaterial);
-                }
-            );
+                });
         }
 
         private void AddVehiclePanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel, out UIButton showExplorerButton, out UIButton dumpMeshTextureButton)
         {
             infoPanel.component.Find<UILabel>("Type").isVisible = false;
 
-            assetNameLabel = CreateLabel
-            (
-                "AssetName: <>", 160, 24,
+            assetNameLabel = CreateLabel(
+                "AssetName: <>",
+                160,
+                24,
                 infoPanel.component,
                 new Vector3(8.0f, 48.0f, 0.0f),
-                UIAlignAnchor.TopLeft
-            );
+                UIAlignAnchor.TopLeft);
 
-            showExplorerButton = CreateButton
-            (
-                "Find in SceneExplorer", 160, 24,
+            showExplorerButton = CreateButton(
+                "Find in SceneExplorer",
+                160,
+                24,
                 infoPanel.component,
                 new Vector3(-8.0f, -57.0f, 0.0f),
                 UIAlignAnchor.BottomRight,
@@ -227,12 +237,12 @@ namespace ModTools
                     }
 
                     sceneExplorer.Visible = true;
-                }
-            );
+                });
 
-            dumpMeshTextureButton = CreateButton
-            (
-                "Dump asset", 160, 24,
+            dumpMeshTextureButton = CreateButton(
+                "Dump asset",
+                160,
+                24,
                 infoPanel.component,
                 new Vector3(-8.0f, -25.0f, 0.0f),
                 UIAlignAnchor.BottomRight,
@@ -242,27 +252,31 @@ namespace ModTools
                     var vehicleInfo = instance.Vehicle == 0 ? VehicleManager.instance.m_parkedVehicles.m_buffer[instance.ParkedVehicle].Info : VehicleManager.instance.m_vehicles.m_buffer[instance.Vehicle].Info;
                     var assetName = vehicleInfo.name;
                     DumpUtil.DumpAsset(assetName, vehicleInfo.m_mesh, vehicleInfo.m_material, vehicleInfo.m_lodMesh, vehicleInfo.m_lodMaterial);
-                }
-            );
+                });
         }
 
-        private void AddCitizenPanelControls(WorldInfoPanel infoPanel, out UILabel assetNameLabel,
-                out UIButton showExplorerButton, Vector3 showExplorerButtonOffset,
-                out UIButton showInstanceButton, Vector3 showInstanceButtonOffset,
-                out UIButton showUnitButton, Vector3 showUniteButtonOffset
-                )
+        private void AddCitizenPanelControls(
+            WorldInfoPanel infoPanel,
+            out UILabel assetNameLabel,
+            out UIButton showExplorerButton,
+            Vector3 showExplorerButtonOffset,
+            out UIButton showInstanceButton,
+            Vector3 showInstanceButtonOffset,
+            out UIButton showUnitButton,
+            Vector3 showUniteButtonOffset)
         {
-            assetNameLabel = CreateLabel
-            (
-                "AssetName: <>", 160, 24,
+            assetNameLabel = CreateLabel(
+                "AssetName: <>",
+                160,
+                24,
                 infoPanel.component,
                 new Vector3(8.0f, 48.0f, 0.0f),
-                UIAlignAnchor.TopLeft
-            );
+                UIAlignAnchor.TopLeft);
 
-            showExplorerButton = CreateButton
-            (
-                "Find citizen in SE", 160, 24,
+            showExplorerButton = CreateButton(
+                "Find citizen in SE",
+                160,
+                24,
                 infoPanel.component,
                 showExplorerButtonOffset,
                 UIAlignAnchor.TopRight,
@@ -276,19 +290,21 @@ namespace ModTools
                         {
                             return;
                         }
+
                         sceneExplorer.ExpandFromRefChain(citizenInstancesBufferRefChain.Add((int)ci.m_citizen));
                     }
                     else if (instance.Type == InstanceType.Citizen)
                     {
                         sceneExplorer.ExpandFromRefChain(citizensBufferRefChain.Add((int)instance.Citizen));
                     }
-                    sceneExplorer.Visible = true;
-                }
-            );
 
-            showInstanceButton = CreateButton
-            (
-                "Find instance in SE   ", 160, 24,
+                    sceneExplorer.Visible = true;
+                });
+
+            showInstanceButton = CreateButton(
+                "Find instance in SE   ",
+                160,
+                24,
                 infoPanel.component,
                 showInstanceButtonOffset,
                 UIAlignAnchor.TopRight,
@@ -309,17 +325,18 @@ namespace ModTools
                             {
                                 continue;
                             }
+
                             sceneExplorer.ExpandFromRefChain(citizenInstancesBufferRefChain.Add(index));
                             sceneExplorer.Visible = true;
                             break;
                         }
                     }
-                }
-            );
+                });
 
-            showUnitButton = CreateButton
-            (
-                "Find unit in SE   ", 160, 24,
+            showUnitButton = CreateButton(
+                "Find unit in SE   ",
+                160,
+                24,
                 infoPanel.component,
                 showUniteButtonOffset,
                 UIAlignAnchor.TopRight,
@@ -334,6 +351,7 @@ namespace ModTools
                         {
                             return;
                         }
+
                         for (var index = 0; index < CitizenManager.instance.m_units.m_buffer.Length; index++)
                         {
                             var cu = CitizenManager.instance.m_units.m_buffer[index];
@@ -341,6 +359,7 @@ namespace ModTools
                             {
                                 continue;
                             }
+
                             uint unit = 0;
                             if (cu.m_citizen0 == citizen)
                             {
@@ -362,14 +381,17 @@ namespace ModTools
                             {
                                 unit = cu.m_citizen4;
                             }
+
                             if (unit == 0)
                             {
                                 continue;
                             }
+
                             sceneExplorer.ExpandFromRefChain(citizensUnitsBufferRefChain.Add(index));
                             sceneExplorer.Visible = true;
                             break;
                         }
+
                         sceneExplorer.Visible = true;
                     }
                     else if (instance.Type == InstanceType.Citizen)
@@ -378,6 +400,7 @@ namespace ModTools
                         {
                             return;
                         }
+
                         for (var index = 0; index < CitizenManager.instance.m_units.m_buffer.Length; index++)
                         {
                             var cu = CitizenManager.instance.m_units.m_buffer[index];
@@ -385,6 +408,7 @@ namespace ModTools
                             {
                                 continue;
                             }
+
                             uint unit = 0;
                             if (cu.m_citizen0 == instance.Citizen)
                             {
@@ -406,23 +430,18 @@ namespace ModTools
                             {
                                 unit = cu.m_citizen4;
                             }
+
                             if (unit == 0)
                             {
                                 continue;
                             }
+
                             sceneExplorer.ExpandFromRefChain(citizensUnitsBufferRefChain.Add(index));
                             sceneExplorer.Visible = true;
                             break;
                         }
                     }
-                }
-            );
-        }
-
-        public void Update()
-        {
-            Initialize();
-            SetInstance();
+                });
         }
 
         private void Initialize()
@@ -441,10 +460,14 @@ namespace ModTools
                     GameObject.Find("(Library) ZonedBuildingWorldInfoPanel").GetComponent<ZonedBuildingWorldInfoPanel>();
                 if (zonedBuildingInfoPanel != null)
                 {
-                    AddBuildingPanelControls(zonedBuildingInfoPanel, out zonedBuildingAssetNameLabel,
-                        out zonedBuildingShowExplorerButton, new Vector3(-8.0f, 100.0f, 0.0f),
-                        out zonedBuildingDumpMeshTextureButton, new Vector3(-8.0f, 132.0f, 0.0f)
-                        );
+                    AddBuildingPanelControls(
+                        zonedBuildingInfoPanel,
+                        out zonedBuildingAssetNameLabel,
+                        out zonedBuildingShowExplorerButton,
+                        new Vector3(-8.0f, 100.0f, 0.0f),
+                        out zonedBuildingDumpMeshTextureButton,
+                        new Vector3(-8.0f, 132.0f, 0.0f));
+
                     initializedZonedBuildingsPanel = true;
                 }
             }
@@ -456,10 +479,14 @@ namespace ModTools
                     GameObject.Find("(Library) CityServiceWorldInfoPanel").GetComponent<CityServiceWorldInfoPanel>();
                 if (serviceBuildingInfoPanel != null)
                 {
-                    AddBuildingPanelControls(serviceBuildingInfoPanel, out serviceBuildingAssetNameLabel,
-                        out serviceBuildingShowExplorerButton, new Vector3(-8.0f, 175.0f, 0.0f),
-                        out serviceBuildingDumpMeshTextureButton, new Vector3(-8.0f, 200.0f, 0.0f)
-                        );
+                    AddBuildingPanelControls(
+                        serviceBuildingInfoPanel,
+                        out serviceBuildingAssetNameLabel,
+                        out serviceBuildingShowExplorerButton,
+                        new Vector3(-8.0f, 175.0f, 0.0f),
+                        out serviceBuildingDumpMeshTextureButton,
+                        new Vector3(-8.0f, 200.0f, 0.0f));
+
                     initializedServiceBuildingsPanel = true;
                 }
             }
@@ -488,8 +515,7 @@ namespace ModTools
                         citizenVehicleInfoPanel,
                         out citizenVehicleAssetNameLabel,
                         out citizenVehicleShowExplorerButton,
-                        out citizenVehicleDumpTextureMeshButton
-                        );
+                        out citizenVehicleDumpTextureMeshButton);
                     initializedCitizenVehiclePanel = true;
                 }
             }
@@ -552,11 +578,16 @@ namespace ModTools
                 animalInfoPanel = GameObject.Find("(Library) AnimalWorldInfoPanel").GetComponent<AnimalWorldInfoPanel>();
                 if (animalInfoPanel != null)
                 {
-                    AddCitizenPanelControls(animalInfoPanel, out animalAssetNameLabel,
-                        out animalShowExplorerButton, new Vector3(-8.0f, 65.0f, 0.0f),
-                        out animalShowInstanceButton, new Vector3(-8.0f, 90.0f, 0.0f),
-                        out animalShowUnitButton, new Vector3(-8.0f, 115.0f, 0.0f)
-                        );
+                    AddCitizenPanelControls(
+                        animalInfoPanel,
+                        out animalAssetNameLabel,
+                        out animalShowExplorerButton,
+                        new Vector3(-8.0f, 65.0f, 0.0f),
+                        out animalShowInstanceButton,
+                        new Vector3(-8.0f, 90.0f, 0.0f),
+                        out animalShowUnitButton,
+                        new Vector3(-8.0f, 115.0f, 0.0f));
+
                     initializedAnimalPanel = true;
                 }
             }
@@ -583,11 +614,16 @@ namespace ModTools
                 citizenInfoPanel = GameObject.Find("(Library) CitizenWorldInfoPanel").GetComponent<HumanWorldInfoPanel>();
                 if (citizenInfoPanel != null)
                 {
-                    AddCitizenPanelControls(citizenInfoPanel, out citizenAssetNameLabel,
-                        out citizenShowExplorerButton, new Vector3(-8.0f, 110.0f, 0.0f),
-                        out citizenShowInstanceButton, new Vector3(-8.0f, 135.0f, 0.0f),
-                        out citizenShowUnitButton, new Vector3(-8.0f, 160.0f, 0.0f)
-                        );
+                    AddCitizenPanelControls(
+                        citizenInfoPanel,
+                        out citizenAssetNameLabel,
+                        out citizenShowExplorerButton,
+                        new Vector3(-8.0f, 110.0f, 0.0f),
+                        out citizenShowInstanceButton,
+                        new Vector3(-8.0f, 135.0f, 0.0f),
+                        out citizenShowUnitButton,
+                        new Vector3(-8.0f, 160.0f, 0.0f));
+
                     initializedCitizenPanel = true;
                 }
             }
@@ -682,6 +718,7 @@ namespace ModTools
                         {
                             continue;
                         }
+
                         citizenAssetNameLabel.text = $"AssetName: {ci.Info.name}";
                         break;
                     }

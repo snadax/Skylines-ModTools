@@ -21,11 +21,11 @@ namespace ModTools.Explorer
             GUILayout.BeginHorizontal();
             SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-            GUI.contentColor = ModTools.Instance.config.MemberTypeColor;
+            GUI.contentColor = ModTools.Instance.Config.MemberTypeColor;
             GUILayout.Label("method ");
             GUI.contentColor = Color.white;
             GUILayout.Label(method.ReturnType.ToString() + " " + method.Name + "(");
-            GUI.contentColor = ModTools.Instance.config.NameColor;
+            GUI.contentColor = ModTools.Instance.Config.NameColor;
 
             var first = true;
             foreach (var param in method.GetParameters())
@@ -41,6 +41,7 @@ namespace ModTools.Explorer
 
                 GUILayout.Label(param.ParameterType.ToString() + " " + param.Name);
             }
+
             GUI.contentColor = Color.white;
             GUILayout.Label(")");
 
@@ -63,6 +64,7 @@ namespace ModTools.Explorer
                     }
                 }
             }
+
             GUILayout.EndHorizontal();
         }
     }
