@@ -6,7 +6,7 @@ namespace ModTools
     internal sealed class ModTools : GUIWindow
     {
 #if DEBUG
-        public const bool DEBUG_MODTOOLS = true;
+        public const bool DEBUGMODTOOLS = true;
 #else
         public const bool DEBUGMODTOOLS = false;
 
