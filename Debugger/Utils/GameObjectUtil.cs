@@ -3,15 +3,13 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public static class GameObjectUtil
+    internal static class GameObjectUtil
     {
-
         public static Dictionary<GameObject, bool> FindSceneRoots()
         {
-            Dictionary<GameObject, bool> roots = new Dictionary<GameObject, bool>();
+            var roots = new Dictionary<GameObject, bool>();
 
-            GameObject[] objects = GameObject.FindObjectsOfType<GameObject>();
-            foreach (var obj in objects)
+            foreach (var obj in Object.FindObjectsOfType<GameObject>())
             {
                 if (!roots.ContainsKey(obj.transform.root.gameObject))
                 {
@@ -30,6 +28,7 @@ namespace ModTools
             {
                 FindComponentsOfType(typeName, root, list);
             }
+
             return list;
         }
 
@@ -41,7 +40,7 @@ namespace ModTools
                 list.Add(new KeyValuePair<GameObject, Component>(gameObject, component));
             }
 
-            for (int i = 0; i < gameObject.transform.childCount; i++)
+            for (var i = 0; i < gameObject.transform.childCount; i++)
             {
                 FindComponentsOfType(typeName, gameObject.transform.GetChild(i).gameObject, list);
             }
@@ -49,9 +48,9 @@ namespace ModTools
 
         public static string WhereIs(GameObject gameObject, bool logToConsole = true)
         {
-            string outResult = gameObject.name;
+            var outResult = gameObject.name;
             WhereIsInternal(gameObject, ref outResult);
-            
+
             if (logToConsole)
             {
                 Debug.LogWarning(outResult);
@@ -68,7 +67,5 @@ namespace ModTools
                 WhereIsInternal(gameObject.transform.parent.gameObject, ref outResult);
             }
         }
-
     }
-
 }

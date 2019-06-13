@@ -1,15 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
+using ModTools.UI;
 using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUIField
+    internal static class GUIField
     {
         public static void OnSceneTreeReflectField(SceneExplorerState state, ReferenceChain refChain, object obj, FieldInfo field)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
+                return;
+            }
 
             if (obj == null || field == null)
             {
@@ -30,7 +33,7 @@ namespace ModTools.Explorer
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogException(e);
+                Debug.LogException(e);
             }
 
             if (value != null)
@@ -43,9 +46,9 @@ namespace ModTools.Explorer
                 GUI.enabled = false;
             }
 
-            if (ModTools.Instance.config.sceneExplorerShowModifiers)
+            if (ModTools.Instance.Config.SceneExplorerShowModifiers)
             {
-                GUI.contentColor = ModTools.Instance.config.modifierColor;
+                GUI.contentColor = ModTools.Instance.Config.ModifierColor;
 
                 if (field.IsPublic)
                 {
@@ -56,33 +59,33 @@ namespace ModTools.Explorer
                     GUILayout.Label("private ");
                 }
 
-                GUI.contentColor = ModTools.Instance.config.memberTypeColor;
+                GUI.contentColor = ModTools.Instance.Config.MemberTypeColor;
 
                 GUILayout.Label("field ");
 
                 if (field.IsStatic)
                 {
-                    GUI.contentColor = ModTools.Instance.config.keywordColor;
+                    GUI.contentColor = ModTools.Instance.Config.KeywordColor;
                     GUILayout.Label("static ");
                 }
 
                 if (field.IsInitOnly)
                 {
-                    GUI.contentColor = ModTools.Instance.config.keywordColor;
+                    GUI.contentColor = ModTools.Instance.Config.KeywordColor;
                     GUILayout.Label("const ");
                 }
             }
 
-            GUI.contentColor = ModTools.Instance.config.typeColor;
+            GUI.contentColor = ModTools.Instance.Config.TypeColor;
             GUILayout.Label(field.FieldType + " ");
 
-            GUI.contentColor = ModTools.Instance.config.nameColor;
+            GUI.contentColor = ModTools.Instance.Config.NameColor;
 
             GUILayout.Label(field.Name);
 
             GUI.contentColor = Color.white;
             GUILayout.Label(" = ");
-            GUI.contentColor = ModTools.Instance.config.valueColor;
+            GUI.contentColor = ModTools.Instance.Config.ValueColor;
 
             if (value == null || !TypeUtil.IsSpecialType(field.FieldType))
             {
@@ -92,8 +95,8 @@ namespace ModTools.Explorer
             {
                 try
                 {
-                    var newValue = GUIControls.EditorValueField(refChain, refChain.UniqueId, field.FieldType, value);
-                    if (newValue != value)
+                    var newValue = GUIControls.EditorValueField(refChain.UniqueId, field.FieldType, value);
+                    if (!newValue.Equals(value))
                     {
                         field.SetValue(obj, newValue);
                     }
@@ -110,15 +113,17 @@ namespace ModTools.Explorer
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Watch"))
             {
-                ModTools.Instance.watches.AddWatch(refChain);
+                ModTools.Instance.Watches.AddWatch(refChain);
             }
-            GUIButtons.SetupButtons(field.FieldType, value, refChain);
+
+            GUIButtons.SetupButtons(refChain, field.FieldType, value, valueIndex: -1);
             object paste = null;
             var doPaste = !field.IsLiteral && !field.IsInitOnly;
             if (doPaste)
             {
                 doPaste = GUIButtons.SetupPasteButon(field.FieldType, out paste);
             }
+
             GUILayout.EndHorizontal();
             if (value != null && !TypeUtil.IsSpecialType(field.FieldType) && state.ExpandedObjects.Contains(refChain.UniqueId))
             {
@@ -130,15 +135,16 @@ namespace ModTools.Explorer
                         GUIComponent.OnSceneTreeComponent(state, refChain, component);
                     }
                 }
-                else if (value is Transform)
+                else if (value is Transform transform)
                 {
-                    GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, (Transform)value);
+                    GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, transform);
                 }
                 else
                 {
                     GUIReflect.OnSceneTreeReflect(state, refChain, value);
                 }
             }
+
             if (doPaste)
             {
                 try
@@ -150,7 +156,6 @@ namespace ModTools.Explorer
                     Log.Warning(e.Message);
                 }
             }
-
         }
     }
 }

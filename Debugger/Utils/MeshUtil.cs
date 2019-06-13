@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ModTools.Utils
 {
-    public static class MeshUtil
+    internal static class MeshUtil
     {
         public static void DumpMeshToOBJ(Mesh mesh, string fileName)
         {
@@ -16,7 +16,7 @@ namespace ModTools.Utils
                 File.Delete(fileName);
             }
 
-            Mesh meshToDump = mesh;
+            var meshToDump = mesh;
 
             if (!mesh.isReadable)
             {
@@ -24,14 +24,14 @@ namespace ModTools.Utils
 
                 try
                 {
-                    // copy the relevant data to the temporary mesh 
+                    // copy the relevant data to the temporary mesh
                     meshToDump = new Mesh
                     {
                         vertices = mesh.vertices,
                         colors = mesh.colors,
                         triangles = mesh.triangles,
                         normals = mesh.normals,
-                        tangents = mesh.tangents
+                        tangents = mesh.tangents,
                     };
                     meshToDump.RecalculateBounds();
                 }
@@ -48,7 +48,7 @@ namespace ModTools.Utils
                 {
                     OBJLoader.ExportOBJ(meshToDump.EncodeOBJ(), stream);
                     stream.Close();
-                    Log.Warning($"Dumped mesh \"{((Mesh) mesh).name}\" to \"{fileName}\"");
+                    Log.Warning($"Dumped mesh \"{mesh.name}\" to \"{fileName}\"");
                 }
             }
             catch (Exception ex)

@@ -4,54 +4,50 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUICollection
+    internal static class GUIList
     {
-        public static void OnSceneTreeReflectICollection(SceneExplorerState state, ReferenceChain refChain, System.Object myProperty)
+        public static void OnSceneTreeReflectIList(SceneExplorerState state, ReferenceChain refChain, object myProperty)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
                 return;
+            }
 
-            var collection = myProperty as ICollection;
-            if (collection == null)
+            if (!(myProperty is IList list))
             {
                 return;
             }
 
             var oldRefChain = refChain;
-            var collectionSize = collection.Count;
+            var collectionSize = list.Count;
             if (collectionSize == 0)
             {
                 GUILayout.BeginHorizontal();
                 GUI.contentColor = Color.yellow;
-                GUILayout.Label("Collection is empty!");
+                GUILayout.Label("List is empty!");
                 GUI.contentColor = Color.white;
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
                 return;
             }
 
-            var collectionItemType = collection.GetType().GetElementType();
-            var flagsField = collectionItemType?.GetField("m_flags");
-            bool flagIsEnum = flagsField?.FieldType.IsEnum == true && Type.GetTypeCode(flagsField.FieldType) == TypeCode.Int32;
+            var listItemType = list.GetType().GetElementType();
+            var flagsField = listItemType?.GetField("m_flags");
+            var flagIsEnum = flagsField?.FieldType.IsEnum == true && Type.GetTypeCode(flagsField.FieldType) == TypeCode.Int32;
 
-            GUICollectionNavigation.SetUpCollectionNavigation("Collection", state, refChain, oldRefChain, collectionSize, out int arrayStart, out int arrayEnd);
-            int count = 0;
-            foreach (var value in collection)
+            GUICollectionNavigation.SetUpCollectionNavigation("List", state, refChain, oldRefChain, collectionSize, out var arrayStart, out var arrayEnd);
+            for (var i = arrayStart; i <= arrayEnd; i++)
             {
-                if (count < arrayStart)
-                {
-                    count++;
-                    continue;
-                }
-
-                refChain = oldRefChain.Add(count);
+                refChain = oldRefChain.Add(i);
 
                 GUILayout.BeginHorizontal();
                 SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-                bool isNullOrEmpty = value == null || flagIsEnum && Convert.ToInt32(flagsField.GetValue(value)) == 0;
+                GUI.contentColor = Color.white;
 
-                var type = value?.GetType() ?? collectionItemType;
+                var value = list[i];
+                var type = value?.GetType() ?? listItemType;
+                var isNullOrEmpty = value == null || flagIsEnum && Convert.ToInt32(flagsField.GetValue(value)) == 0;
                 if (type != null)
                 {
                     if (!isNullOrEmpty)
@@ -59,20 +55,21 @@ namespace ModTools.Explorer
                         GUIExpander.ExpanderControls(state, refChain, type);
                     }
 
-                    GUI.contentColor = ModTools.Instance.config.typeColor;
+                    GUI.contentColor = ModTools.Instance.Config.TypeColor;
 
-                    GUILayout.Label(type.ToString() + " ");
+                    GUILayout.Label($"{type} ");
                 }
 
-                GUI.contentColor = ModTools.Instance.config.nameColor;
+                GUI.contentColor = ModTools.Instance.Config.NameColor;
 
-                GUILayout.Label($"{oldRefChain.LastItemName}.[{count}]");
+                GUILayout.Label($"{oldRefChain.LastItemName}.[{i}]");
 
                 GUI.contentColor = Color.white;
 
                 GUILayout.Label(" = ");
 
-                GUI.contentColor = ModTools.Instance.config.valueColor;
+                GUI.contentColor = ModTools.Instance.Config.ValueColor;
+
                 GUILayout.Label(value == null ? "null" : isNullOrEmpty ? "empty" : value.ToString());
 
                 GUI.contentColor = Color.white;
@@ -81,7 +78,7 @@ namespace ModTools.Explorer
 
                 if (!isNullOrEmpty)
                 {
-                    GUIButtons.SetupButtons(type, value, refChain);
+                    GUIButtons.SetupButtons(refChain, type, value, i);
                 }
 
                 GUILayout.EndHorizontal();
@@ -96,20 +93,14 @@ namespace ModTools.Explorer
                             GUIComponent.OnSceneTreeComponent(state, refChain, component);
                         }
                     }
-                    else if (value is Transform)
+                    else if (value is Transform transform)
                     {
-                        GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, (Transform)value);
+                        GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, transform);
                     }
                     else
                     {
                         GUIReflect.OnSceneTreeReflect(state, refChain, value);
                     }
-                }
-
-                count++;
-                if (count > arrayEnd)
-                {
-                    break;
                 }
             }
         }

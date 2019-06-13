@@ -1,95 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using ICities;
+using ModTools.UI;
 using UnityEngine;
 
 namespace ModTools
 {
-
-    public class ScriptEditorFile
+    internal sealed class ScriptEditor : GUIWindow
     {
-        public string source = "";
-        public string path = "";
-        public FileSystemWatcher filesystemWatcher = null;
-    }
-
-    public class ScriptEditor : GUIWindow
-    {
-
-        private readonly string textAreaControlName = "ModToolsScriptEditorTextArea";
-
+        private const string TextAreaControlName = "ModToolsScriptEditorTextArea";
         private const string ExampleScriptFileName = "ExampleScript.cs";
 
+        private const float CompactHeaderHeight = 50.0f;
+        private const float ExpandedHeaderHeight = 120.0f;
+        private const float FooterHeight = 60.0f;
+
+        private readonly List<ScriptEditorFile> projectFiles = new List<ScriptEditorFile>();
+        private readonly bool headerExpanded = true;
+
+        private readonly GUIArea headerArea;
+        private readonly GUIArea editorArea;
+        private readonly GUIArea footerArea;
+
         private IModEntryPoint currentMod;
-        private string lastError = "";
-
-        private float compactHeaderHeight = 50.0f;
-        private float expandedHeaderHeight = 120.0f;
-        private float footerHeight = 60.0f;
-
-        private bool headerExpanded = true;
-
-        private GUIArea headerArea;
-        private GUIArea editorArea;
-        private GUIArea footerArea;
+        private string lastError = string.Empty;
 
         private Vector2 editorScrollPosition = Vector2.zero;
         private Vector2 projectFilesScrollPosition = Vector2.zero;
 
-        private string projectWorkspacePath = "";
-        private List<ScriptEditorFile> projectFiles = new List<ScriptEditorFile>();
-        private ScriptEditorFile currentFile = null;
+        private string projectWorkspacePath = string.Empty;
 
-        public ScriptEditor() : base("Script Editor", new Rect(16.0f, 16.0f, 640.0f, 480.0f), skin)
+        private ScriptEditorFile currentFile;
+
+        public ScriptEditor()
+            : base("Script Editor", new Rect(16.0f, 16.0f, 640.0f, 480.0f), Skin)
         {
-            onDraw = DrawWindow;
-            onException = HandleException;
-            visible = true;
-
             headerArea = new GUIArea(this);
             editorArea = new GUIArea(this);
             footerArea = new GUIArea(this);
             RecalculateAreas();
         }
 
-        void RecalculateAreas()
-        {
-            float headerHeight = headerExpanded ? expandedHeaderHeight : compactHeaderHeight;
-
-            headerArea.absolutePosition.y = 32.0f;
-            headerArea.relativeSize.x = 1.0f;
-            headerArea.absoluteSize.y = headerHeight;
-
-            editorArea.absolutePosition.y = 32.0f + headerHeight;
-            editorArea.relativeSize.x = 1.0f;
-            editorArea.relativeSize.y = 1.0f;
-            editorArea.absoluteSize.y = -(32.0f + headerHeight + footerHeight);
-
-            footerArea.relativePosition.y = 1.0f;
-            footerArea.absolutePosition.y = -footerHeight;
-            footerArea.absoluteSize.y = footerHeight;
-            footerArea.relativeSize.x = 1.0f;
-        }
-
         public void ReloadProjectWorkspace()
         {
-            projectWorkspacePath = ModTools.Instance.config.scriptEditorWorkspacePath;
+            projectWorkspacePath = ModTools.Instance.Config.ScriptEditorWorkspacePath;
             if (projectWorkspacePath.Length == 0)
             {
                 lastError = "Invalid project workspace path";
                 return;
             }
 
-            bool exampleFileExists = false;
+            var exampleFileExists = false;
 
             projectFiles.Clear();
 
             try
             {
-                var files = FileUtil.ListFilesInDirectory(projectWorkspacePath);
-                foreach (var file in files)
+                foreach (var file in FileUtil.ListFilesInDirectory(projectWorkspacePath))
                 {
                     if (Path.GetExtension(file) == ".cs")
                     {
@@ -98,17 +65,13 @@ namespace ModTools
                             exampleFileExists = true;
                         }
 
-                        projectFiles.Add(new ScriptEditorFile() { path = file, source = File.ReadAllText(file) });
+                        projectFiles.Add(new ScriptEditorFile(File.ReadAllText(file), file));
                     }
                 }
+
                 if (!exampleFileExists)
                 {
-                    var exampleFile = new ScriptEditorFile()
-                    {
-                        path = Path.Combine(projectWorkspacePath, ExampleScriptFileName),
-                        source = defaultSource
-                    };
-
+                    var exampleFile = new ScriptEditorFile(ScriptEditorFile.DefaultSource, Path.Combine(projectWorkspacePath, ExampleScriptFileName));
                     projectFiles.Add(exampleFile);
                     SaveProjectFile(exampleFile);
                 }
@@ -118,10 +81,55 @@ namespace ModTools
                 lastError = ex.Message;
                 return;
             }
-            lastError = "";
+
+            lastError = string.Empty;
         }
 
-        void SaveAllProjectFiles()
+        protected override void DrawWindow()
+        {
+            DrawHeader();
+
+            if (projectFiles.Count > 0)
+            {
+                DrawEditor();
+                DrawFooter();
+            }
+            else
+            {
+                editorArea.Begin();
+                GUILayout.Label("Select a valid project workspace path");
+                editorArea.End();
+            }
+        }
+
+        protected override void HandleException(Exception ex)
+        {
+            Log.Error("Exception in ScriptEditor - " + ex.Message);
+            Visible = false;
+        }
+
+        private static void SaveProjectFile(ScriptEditorFile file) => File.WriteAllText(file.Path, file.Source);
+
+        private void RecalculateAreas()
+        {
+            var headerHeight = headerExpanded ? ExpandedHeaderHeight : CompactHeaderHeight;
+
+            headerArea.AbsolutePosition.y = 32.0f;
+            headerArea.RelativeSize.x = 1.0f;
+            headerArea.AbsoluteSize.y = headerHeight;
+
+            editorArea.AbsolutePosition.y = 32.0f + headerHeight;
+            editorArea.RelativeSize.x = 1.0f;
+            editorArea.RelativeSize.y = 1.0f;
+            editorArea.AbsoluteSize.y = -(32.0f + headerHeight + FooterHeight);
+
+            footerArea.RelativePosition.y = 1.0f;
+            footerArea.AbsolutePosition.y = -FooterHeight;
+            footerArea.AbsoluteSize.y = FooterHeight;
+            footerArea.RelativeSize.x = 1.0f;
+        }
+
+        private void SaveAllProjectFiles()
         {
             try
             {
@@ -135,22 +143,11 @@ namespace ModTools
                 lastError = ex.Message;
                 return;
             }
-            lastError = "";
+
+            lastError = string.Empty;
         }
 
-        void SaveProjectFile(ScriptEditorFile file)
-        {
-            File.WriteAllText(file.path, file.source);
-        }
-
-        void Update()
-        {
-            if (GUI.GetNameOfFocusedControl() == textAreaControlName)
-            {
-            }
-        }
-
-        void DrawHeader()
+        private void DrawHeader()
         {
             headerArea.Begin();
             GUILayout.BeginHorizontal();
@@ -163,7 +160,7 @@ namespace ModTools
             if (!newProjectWorkspacePath.Equals(projectWorkspacePath))
             {
                 projectWorkspacePath = newProjectWorkspacePath.Trim();
-                ModTools.Instance.config.scriptEditorWorkspacePath = projectWorkspacePath;
+                ModTools.Instance.Config.ScriptEditorWorkspacePath = projectWorkspacePath;
                 ModTools.Instance.SaveConfig();
             }
 
@@ -179,7 +176,7 @@ namespace ModTools
 
             foreach (var file in projectFiles)
             {
-                if (GUILayout.Button(Path.GetFileName(file.path), GUILayout.ExpandWidth(false)))
+                if (GUILayout.Button(Path.GetFileName(file.Path), GUILayout.ExpandWidth(false)))
                 {
                     currentFile = file;
                 }
@@ -191,40 +188,32 @@ namespace ModTools
             headerArea.End();
         }
 
-        void DrawEditor()
+        private void DrawEditor()
         {
             editorArea.Begin();
 
             editorScrollPosition = GUILayout.BeginScrollView(editorScrollPosition);
 
-            GUI.SetNextControlName(textAreaControlName);
+            GUI.SetNextControlName(TextAreaControlName);
 
-            string text = GUILayout.TextArea(currentFile != null ? currentFile.source : "No file loaded..", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
-            TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
+            var text = GUILayout.TextArea(currentFile != null ? currentFile.Source : "No file loaded..", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            var editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), GUIUtility.keyboardControl);
 
             if (GUIUtility.keyboardControl == editor.controlID && Event.current.Equals(Event.KeyboardEvent("tab")))
             {
-#if OLDVERSION
-                if (text.Length > editor.pos)
-                {
-                    text = text.Insert(editor.pos, "\t");
-                    editor.pos++;
-                    editor.selectPos = editor.pos;
-                }
-#else
                 if (text.Length > editor.cursorIndex)
                 {
                     text = text.Insert(editor.cursorIndex, "\t");
                     editor.cursorIndex++;
                     editor.selectIndex = editor.cursorIndex;
                 }
-#endif
+
                 Event.current.Use();
             }
 
             if (currentFile != null)
             {
-                currentFile.source = text;
+                currentFile.Source = text;
             }
 
             GUILayout.EndScrollView();
@@ -232,7 +221,7 @@ namespace ModTools
             editorArea.End();
         }
 
-        void DrawFooter()
+        private void DrawFooter()
         {
             footerArea.Begin();
 
@@ -245,8 +234,7 @@ namespace ModTools
 
             if (GUILayout.Button("Compile"))
             {
-                string dllPath;
-                if (ScriptCompiler.CompileSource(projectFiles, out dllPath))
+                if (ScriptCompiler.CompileSource(projectFiles, out var dllPath))
                 {
                     Log.Message("Source compiled to \"" + dllPath + "\"");
                 }
@@ -258,8 +246,7 @@ namespace ModTools
 
             if (GUILayout.Button("Run"))
             {
-                string errorMessage;
-                if (ScriptCompiler.RunSource(projectFiles, out errorMessage, out currentMod))
+                if (ScriptCompiler.RunSource(projectFiles, out var errorMessage, out currentMod))
                 {
                     Log.Message("Running IModEntryPoint.OnModLoaded()");
 
@@ -322,7 +309,8 @@ namespace ModTools
                     lastError = ex.Message;
                     return;
                 }
-                lastError = "";
+
+                lastError = string.Empty;
             }
 
             GUI.enabled = true;
@@ -336,56 +324,5 @@ namespace ModTools
 
             footerArea.End();
         }
-
-        void DrawWindow()
-        {
-            DrawHeader();
-
-            if (projectFiles.Any())
-            {
-                DrawEditor();
-                DrawFooter();
-            }
-            else
-            {
-                editorArea.Begin();
-                GUILayout.Label("Select a valid project workspace path");
-                editorArea.End();
-            }
-        }
-
-        void HandleException(Exception ex)
-        {
-            Log.Error("Exception in ScriptEditor - " + ex.Message);
-            visible = false;
-        }
-
-        private readonly string defaultSource = @"//You can copy this script's file and use it for your own scripts
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
-using System.Linq;
-using ColossalFramework.UI;
-using UnityEngine;
-        
-
-namespace ModTools
-{
-    class ExampleScript : IModEntryPoint
-    {
-        public void OnModLoaded()
-        {
-            throw new Exception(""Hello World!""); //replace this line with your script
-        }
-        public void OnModUnloaded()
-        {
-            throw new Exception(""Goodbye Cruel World!""); //replace this line with your clean up script
-        }
     }
-}";
-
-    }
-
 }

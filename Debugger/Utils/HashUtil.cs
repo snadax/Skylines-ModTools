@@ -1,10 +1,18 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ModTools
 {
-    public static class HashUtil
+    internal static class HashUtil
     {
+        private static readonly long[] LargePrimes = new[]
+        {
+            8100529L,
+            12474907L,
+            15485039L,
+            21768739L,
+            28644467L,
+            32452681L,
+        };
 
         public static long HashRect(Rect rect)
         {
@@ -16,26 +24,8 @@ namespace ModTools
             return state;
         }
 
-        public static string HashToString(long hash)
-        {
-            return String.Format("{0:X}", hash);
-        }
+        public static string HashToString(long hash) => $"{hash:X}";
 
-        private static long[] largePrimes = new[]
-        {
-            8100529L,
-            12474907L,
-            15485039L,
-            21768739L,
-            28644467L,
-            32452681L
-        };
-
-        private static void Accumulate(ref long state, float value, int index)
-        {
-            state ^= ((long)value) * largePrimes[index];
-        }
-
+        private static void Accumulate(ref long state, float value, int index) => state ^= (long)value * LargePrimes[index];
     }
-
 }

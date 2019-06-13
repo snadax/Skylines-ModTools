@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUIExpander
+    internal static class GUIExpander
     {
         public static void ExpanderControls(SceneExplorerState state, ReferenceChain refChain, Type type, object o = null)
         {
             GUI.contentColor = Color.white;
-            if (TypeUtil.IsSpecialType(type) || (o!=null && TypeUtil.IsEnumerable(o)))
+            if (TypeUtil.IsSpecialType(type) || o != null && TypeUtil.IsEnumerable(o))
             {
                 return;
             }
+
             if (state.ExpandedObjects.Contains(refChain.UniqueId))
             {
                 if (GUILayout.Button("-", GUILayout.ExpandWidth(false)))
@@ -20,12 +20,9 @@ namespace ModTools.Explorer
                     state.ExpandedObjects.Remove(refChain.UniqueId);
                 }
             }
-            else
+            else if (GUILayout.Button("+", GUILayout.ExpandWidth(false)))
             {
-                if (GUILayout.Button("+", GUILayout.ExpandWidth(false)))
-                {
-                    state.ExpandedObjects.Add(refChain.UniqueId);
-                }
+                state.ExpandedObjects.Add(refChain.UniqueId);
             }
         }
     }

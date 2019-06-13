@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ModTools.UI;
 using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUIMaterial
+    internal static class GUIMaterial
     {
-        private static readonly string[] textureProps = {
+        private static readonly string[] TextureProps =
+        {
             "_BackTex",
             "_BumpMap",
             "_BumpSpecMap",
@@ -43,18 +42,19 @@ namespace ModTools.Explorer
             "luminTex",
             "searchTex",
             "_SrcTex",
-            "_Blurred"
+            "_Blurred",
         };
 
-        private static readonly string[] colorProps = {
+        private static readonly string[] ColorProps =
+        {
             "_Color",
             "_ColorV0",
             "_ColorV1",
             "_ColorV2",
-            "_ColorV3"
+            "_ColorV3",
         };
 
-        private static readonly string[] vectorProps = new string[]
+        private static readonly string[] VectorProps =
         {
             "_FloorParams",
             "_UvAnimation",
@@ -68,13 +68,15 @@ namespace ModTools.Explorer
             "_TyreLocation5",
             "_TyreLocation6",
             "_TyreLocation7",
-            "_TyreParams"
+            "_TyreParams",
         };
-
 
         public static void OnSceneReflectUnityEngineMaterial(SceneExplorerState state, ReferenceChain refChain, Material material)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
+                return;
+            }
 
             if (material == null)
             {
@@ -82,9 +84,9 @@ namespace ModTools.Explorer
                 return;
             }
 
-            ReferenceChain oldRefChain = refChain;
+            var oldRefChain = refChain;
 
-            foreach (var prop in textureProps)
+            foreach (var prop in TextureProps)
             {
                 if (!material.HasProperty(prop))
                 {
@@ -106,11 +108,11 @@ namespace ModTools.Explorer
 
                 GUIExpander.ExpanderControls(state, refChain, type);
 
-                GUI.contentColor = ModTools.Instance.config.typeColor;
+                GUI.contentColor = ModTools.Instance.Config.TypeColor;
 
                 GUILayout.Label(type.ToString() + " ");
 
-                GUI.contentColor = ModTools.Instance.config.nameColor;
+                GUI.contentColor = ModTools.Instance.Config.NameColor;
 
                 GUILayout.Label(prop);
 
@@ -118,14 +120,13 @@ namespace ModTools.Explorer
 
                 GUILayout.Label(" = ");
 
-                GUI.contentColor = ModTools.Instance.config.valueColor;
+                GUI.contentColor = ModTools.Instance.Config.ValueColor;
                 GUILayout.Label(value.ToString());
                 GUI.contentColor = Color.white;
 
                 GUILayout.FlexibleSpace();
-                GUIButtons.SetupButtons(type, value, refChain);
-                object paste;
-                var doPaste = GUIButtons.SetupPasteButon(type, out paste);
+                GUIButtons.SetupButtons(refChain, type, value, valueIndex: -1);
+                var doPaste = GUIButtons.SetupPasteButon(type, out var paste);
                 GUILayout.EndHorizontal();
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
@@ -139,14 +140,14 @@ namespace ModTools.Explorer
                 }
             }
 
-            foreach (string prop in colorProps)
+            foreach (var prop in ColorProps)
             {
                 if (!material.HasProperty(prop))
                 {
                     continue;
                 }
 
-                Color value = material.GetColor(prop);
+                var value = material.GetColor(prop);
                 refChain = oldRefChain.Add(prop);
 
                 var type = value.GetType();
@@ -156,69 +157,44 @@ namespace ModTools.Explorer
 
                 GUIExpander.ExpanderControls(state, refChain, type);
 
-                GUI.contentColor = ModTools.Instance.config.typeColor;
+                GUI.contentColor = ModTools.Instance.Config.TypeColor;
 
                 GUILayout.Label(type.ToString() + " ");
 
-                GUI.contentColor = ModTools.Instance.config.nameColor;
+                GUI.contentColor = ModTools.Instance.Config.NameColor;
 
                 GUILayout.Label(prop);
 
                 GUI.contentColor = Color.white;
 
                 GUILayout.Label(" = ");
-                var f = value;
 
-                GUI.contentColor = ModTools.Instance.config.valueColor;
+                GUI.contentColor = ModTools.Instance.Config.ValueColor;
 
-                var propertyCopy = prop;
-                GUIControls.ColorField(refChain.ToString(), "", ref f, 0.0f, null, true, true, color => { material.SetColor(propertyCopy, color); });
-                if (f != value)
+                var newColor = GUIControls.CustomValueField(refChain.UniqueId, string.Empty, GUIControls.PresentColor, value);
+                if (newColor != value)
                 {
-                    material.SetColor(prop, f);
+                    material.SetColor(prop, newColor);
                 }
 
                 GUI.contentColor = Color.white;
                 GUILayout.FlexibleSpace();
-                GUIButtons.SetupButtons(type, value, refChain);
-                object paste;
-                var doPaste = GUIButtons.SetupPasteButon(type, out paste);
+                GUIButtons.SetupButtons(refChain, type, value, valueIndex: -1);
+                var doPaste = GUIButtons.SetupPasteButon(type, out var paste);
                 GUILayout.EndHorizontal();
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
                 {
                     GUIReflect.OnSceneTreeReflect(state, refChain, value);
                 }
+
                 if (doPaste)
                 {
                     material.SetColor(prop, (Color)paste);
                 }
             }
-//            GUILayout.BeginHorizontal();
-//            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * (refChain.Ident + 1));
-//            GUI.contentColor = ModTools.Instance.config.typeColor;
-//
-//            GUILayout.Label("Shader:");
-//
-//            GUI.contentColor = ModTools.Instance.config.nameColor;
-//
-//            var shaders = Resources.FindObjectsOfTypeAll<Shader>();
-//            Array.Sort(shaders, (a, b) => string.Compare(a.name, b.name, StringComparison.Ordinal));
-//            var availableShaders = shaders.Select(s => s.name).ToArray();
-//            var currentShader = material.shader;
-//            var selectedShader = Array.IndexOf(shaders, currentShader);
-//
-//            var newSelectedShader = GUIComboBox.Box(selectedShader, availableShaders, "SceneExplorerShadersComboBox");
-//            if (newSelectedShader != selectedShader)
-//            {
-//                material.shader = shaders[newSelectedShader];
-//            }
-//            GUILayout.FlexibleSpace();
-//            GUILayout.EndHorizontal();
 
             GUIReflect.OnSceneTreeReflect(state, refChain, material, true);
         }
-
-
     }
 }

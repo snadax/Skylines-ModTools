@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Diagnostics;
+using ModTools.UI;
 using UnityEngine;
 
 namespace ModTools
 {
-    public class StackTraceViewer : GUIWindow
+    internal sealed class StackTraceViewer : GUIWindow
     {
-
-        private static Configuration config
-        {
-            get { return ModTools.Instance.config; }
-        }
-
         private StackTrace trace;
 
         private Vector2 scrollPos = Vector2.zero;
+
+        private StackTraceViewer()
+            : base("Stack-trace viewer", new Rect(16.0f, 16.0f, 512.0f, 256.0f), Skin)
+        {
+        }
+
+        private static ModConfiguration Config => ModTools.Instance.Config;
 
         public static StackTraceViewer CreateStackTraceViewer(StackTrace trace)
         {
@@ -25,24 +27,11 @@ namespace ModTools
             return viewer;
         }
 
-        private StackTraceViewer() : base("Stack-trace viewer", new Rect(16.0f, 16.0f, 512.0f, 256.0f), skin)
-        {
-            onDraw = DrawWindow;
-            onException = HandleException;
-            onClose = HandleClosed;
-        }
+        protected override void OnWindowClosed() => Destroy(this);
 
-        void HandleClosed()
-        {
-            Destroy(this);
-        }
+        protected override void HandleException(Exception ex) => Log.Error("Exception in StackTraceViewer - " + ex.Message);
 
-        void HandleException(Exception ex)
-        {
-            Log.Error("Exception in StackTraceViewer - " + ex.Message);
-        }
-
-        void DrawWindow()
+        protected override void DrawWindow()
         {
             if (trace == null)
             {
@@ -57,19 +46,19 @@ namespace ModTools
 
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
-            int count = 0;
+            var count = 0;
             foreach (var frame in stackFrames)
             {
-                GUILayout.BeginHorizontal(skin.box);
+                GUILayout.BeginHorizontal(Skin.box);
                 var method = frame.GetMethod();
 
                 GUILayout.Label(count.ToString(), GUILayout.ExpandWidth(false));
-                
-                GUI.contentColor = config.nameColor;
+
+                GUI.contentColor = Config.NameColor;
 
                 GUILayout.Label(method.ToString(), GUILayout.ExpandWidth(false));
 
-                GUI.contentColor = config.typeColor;
+                GUI.contentColor = Config.TypeColor;
 
                 if (method.DeclaringType != null)
                 {
@@ -84,7 +73,5 @@ namespace ModTools
 
             GUILayout.EndScrollView();
         }
-
     }
-
 }

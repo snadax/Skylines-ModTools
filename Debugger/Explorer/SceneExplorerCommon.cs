@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public class SceneExplorerCommon
+    internal static class SceneExplorerCommon
     {
-        private static Dictionary<int, string> indentStrings = new Dictionary<int, string>();
+        private static readonly Dictionary<int, string> IndentStrings = new Dictionary<int, string>();
 
         internal static void OnSceneTreeMessage(ReferenceChain refChain, string message)
         {
             GUILayout.BeginHorizontal();
-            SceneExplorerCommon.InsertIndent(refChain.Ident);
+            InsertIndent(refChain.Ident);
             GUILayout.Label(message);
             GUILayout.EndHorizontal();
         }
@@ -34,13 +34,13 @@ namespace ModTools.Explorer
                 return;
             }
 
-            if (!indentStrings.TryGetValue(indent, out string indentString))
+            if (!IndentStrings.TryGetValue(indent, out var indentString))
             {
                 indentString = new StringBuilder().Insert(0, "· ", indent).ToString();
-                indentStrings.Add(indent, indentString);
+                IndentStrings.Add(indent, indentString);
             }
 
-            GUILayout.Label(indentString, GUILayout.Width(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * indent));
+            GUILayout.Label(indentString, GUILayout.Width(ModTools.Instance.Config.SceneExplorerTreeIdentSpacing * indent));
         }
     }
 }

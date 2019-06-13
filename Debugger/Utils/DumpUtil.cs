@@ -1,17 +1,20 @@
 ﻿using System.IO;
-using System.Linq;
 using ColossalFramework.IO;
 using ColossalFramework.UI;
 using UnityEngine;
 
 namespace ModTools.Utils
 {
-    public static class DumpUtil
+    internal static class DumpUtil
     {
-        public static void DumpAsset(string assetName, Mesh mesh, Material material,
-            Mesh lodMesh = null, Material lodMaterial = null)
+        public static void DumpAsset(
+            string assetName,
+            Mesh mesh,
+            Material material,
+            Mesh lodMesh = null,
+            Material lodMaterial = null)
         {
-            assetName = assetName.Replace("_Data", "");
+            assetName = assetName.Replace("_Data", string.Empty);
             Log.Warning($"Dumping asset \"{assetName}\"...");
             DumpMeshAndTextures(assetName, mesh, material);
             DumpMeshAndTextures($"{assetName}_lod", lodMesh, lodMaterial);
@@ -25,12 +28,13 @@ namespace ModTools.Utils
 
         public static void DumpMeshAndTextures(string assetName, Mesh mesh, Material material = null)
         {
-            assetName = assetName.Replace("_Data", "").LegalizeFileName();
+            assetName = assetName.Replace("_Data", string.Empty).LegalizeFileName();
 
-            if (mesh != null && mesh.isReadable)
+            if (mesh?.isReadable == true)
             {
                 MeshUtil.DumpMeshToOBJ(mesh, $"{assetName}.obj");
             }
+
             if (material != null)
             {
                 DumpTextures(assetName, material);
@@ -39,11 +43,11 @@ namespace ModTools.Utils
 
         public static void DumpTextures(string assetName, Material material)
         {
-            assetName = assetName.Replace("_Data", "").LegalizeFileName();
-            DumpMainTex(assetName, (Texture2D) material.GetTexture("_MainTex"));
-            DumpACI(assetName, (Texture2D) material.GetTexture("_ACIMap"));
-            DumpXYS(assetName, (Texture2D) material.GetTexture("_XYSMap"));
-            DumpXYCA(assetName, (Texture2D) material.GetTexture("_XYCAMap"));
+            assetName = assetName.Replace("_Data", string.Empty).LegalizeFileName();
+            DumpMainTex(assetName, (Texture2D)material.GetTexture("_MainTex"));
+            DumpACI(assetName, (Texture2D)material.GetTexture("_ACIMap"));
+            DumpXYS(assetName, (Texture2D)material.GetTexture("_XYSMap"));
+            DumpXYCA(assetName, (Texture2D)material.GetTexture("_XYCAMap"));
         }
 
         private static void DumpMainTex(string assetName, Texture2D mainTex, bool extract = true)
@@ -52,6 +56,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = mainTex.width * mainTex.height;
@@ -63,7 +68,6 @@ namespace ModTools.Utils
             {
                 TextureUtil.DumpTextureToPNG(mainTex, $"{assetName}_MainTex");
             }
-
         }
 
         private static void DumpACI(string assetName, Texture2D aciMap, bool extract = true)
@@ -72,6 +76,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = aciMap.width * aciMap.height;
@@ -95,6 +100,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = xysMap.width * xysMap.height;
@@ -116,6 +122,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = xycaMap.width * xycaMap.height;

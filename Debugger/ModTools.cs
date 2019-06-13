@@ -1,50 +1,32 @@
-﻿using System;
-using ColossalFramework.UI;
-using ICities;
+﻿using ColossalFramework.UI;
+using ModTools.UI;
 using UnityEngine;
 
 namespace ModTools
 {
-
-    public class ModTools : GUIWindow
+    internal sealed class ModTools : GUIWindow
     {
-
 #if DEBUG
-        public static readonly bool DEBUG_MODTOOLS = true;
+        public const bool DEBUGMODTOOLS = true;
 #else
-        public static readonly bool DEBUG_MODTOOLS = false;
+        public const bool DEBUGMODTOOLS = false;
+
 #endif
+
+        private const string ConfigPath = "ModToolsConfig.xml";
         private static readonly object LoggingLock = new object();
         private static readonly object InstanceLock = new object();
 
-        private Vector2 mainScroll = Vector2.zero;
+        private static ModTools instance;
+        private static bool loggingInitialized;
 
-        public Console console;
-        public SceneExplorer sceneExplorer;
+        private Console console;
         private DebugRenderer debugRenderer;
-        public SceneExplorerColorConfig sceneExplorerColorConfig;
 
-        public ScriptEditor scriptEditor;
-
-        public Watches watches;
-        public ColorPicker colorPicker;
-
-        public Configuration config = new Configuration();
-        public static readonly string configPath = "ModToolsConfig.xml";
-
-        private static ModTools instance = null;
-
-        public void OnUnityDestroyCallback()
+        public ModTools()
+            : base("Mod Tools", new Rect(128, 128, 356, 290), Skin)
         {
-            Destroy(console);
-            Destroy(sceneExplorer);
-            Destroy(sceneExplorerColorConfig);
-            Destroy(scriptEditor);
-            Destroy(watches);
-            Destroy(colorPicker);
-
-            instance = null;
-            ModToolsBootstrap.initialized = false;
+            Resizable = false;
         }
 
         public static ModTools Instance
@@ -59,67 +41,69 @@ namespace ModTools
             }
         }
 
+        public ModConfiguration Config { get; set; } = new ModConfiguration();
+
+        internal SceneExplorer SceneExplorer { get; private set; }
+
+        internal ColorPicker ColorPicker { get; private set; }
+
+        internal Watches Watches { get; private set; }
+
+        internal ScriptEditor ScriptEditor { get; private set; }
+
+        internal SceneExplorerColorConfig SceneExplorerColorConfig { get; private set; }
+
         public void LoadConfig()
         {
-            config = Configuration.Deserialize(configPath);
-            if (config == null)
+            Config = ModConfiguration.Deserialize(ConfigPath);
+            if (Config == null)
             {
-                config = new Configuration();
+                Config = new ModConfiguration();
                 SaveConfig();
             }
 
             if (console != null)
             {
-                console.rect = config.consoleRect;
-                console.visible = config.consoleVisible;
+                console.MoveResize(Config.ConsoleRect);
+                console.Visible = Config.ConsoleVisible;
             }
 
-            watches.rect = config.watchesRect;
-            watches.visible = config.watchesVisible;
+            Watches.MoveResize(Config.WatchesRect);
+            Watches.Visible = Config.WatchesVisible;
 
-            sceneExplorer.rect = config.sceneExplorerRect;
-            sceneExplorer.visible = config.sceneExplorerVisible;
+            SceneExplorer.MoveResize(Config.SceneExplorerRect);
+            SceneExplorer.Visible = Config.SceneExplorerVisible;
 
-            if (sceneExplorer.visible)
+            if (SceneExplorer.Visible)
             {
-                sceneExplorer.Refresh();
+                SceneExplorer.Refresh();
             }
 
-            scriptEditor.ReloadProjectWorkspace();
+            ScriptEditor.ReloadProjectWorkspace();
         }
 
         public void SaveConfig()
         {
-            if (config != null)
+            if (Config != null)
             {
                 if (console != null)
                 {
-                    config.consoleRect = console.rect;
-                    config.consoleVisible = console.visible;
+                    Config.ConsoleRect = console.WindowRect;
+                    Config.ConsoleVisible = console.Visible;
                 }
 
-                config.watchesRect = watches.rect;
-                config.watchesVisible = watches.visible;
+                Config.WatchesRect = Watches.WindowRect;
+                Config.WatchesVisible = Watches.Visible;
 
-                config.sceneExplorerRect = sceneExplorer.rect;
-                config.sceneExplorerVisible = sceneExplorer.visible;
+                Config.SceneExplorerRect = SceneExplorer.WindowRect;
+                Config.SceneExplorerVisible = SceneExplorer.Visible;
 
-                Configuration.Serialize(configPath, config);
+                Config.Serialize(ConfigPath);
             }
         }
 
-        public ModTools() : base("Mod Tools", new Rect(128, 128, 356, 290), skin)
-        {
-            onDraw = DoMainWindow;
-            onUnityDestroy = OnUnityDestroyCallback;
-            resizable = false;
-        }
-
-        private static bool loggingInitialized = false;
-
         public void Initialize()
         {
-
             if (!loggingInitialized)
             {
                 Application.logMessageReceivedThreaded += OnApplicationLogMessageReceivedThreaded;
@@ -127,76 +111,37 @@ namespace ModTools
                 loggingInitialized = true;
             }
 
-            sceneExplorer = gameObject.AddComponent<SceneExplorer>();
-            watches = gameObject.AddComponent<Watches>();
-            colorPicker = gameObject.AddComponent<ColorPicker>();
-            scriptEditor = gameObject.AddComponent<ScriptEditor>();
-            scriptEditor.visible = false;
-            sceneExplorerColorConfig = gameObject.AddComponent<SceneExplorerColorConfig>();
+            SceneExplorer = gameObject.AddComponent<SceneExplorer>();
+            Watches = gameObject.AddComponent<Watches>();
+            ColorPicker = gameObject.AddComponent<ColorPicker>();
+            ScriptEditor = gameObject.AddComponent<ScriptEditor>();
+            ScriptEditor.Visible = false;
+            SceneExplorerColorConfig = gameObject.AddComponent<SceneExplorerColorConfig>();
 
             LoadConfig();
 
-            if (config.useModToolsConsole)
+            if (Config.UseModToolsConsole)
             {
                 console = gameObject.AddComponent<Console>();
-            }
-
-        }
-
-        private void OnApplicationLogMessageReceivedThreaded(string condition, string trace, LogType type)
-        {
-            if (!ModToolsBootstrap.initialized)
-            {
-                return;
-            }
-            lock (LoggingLock)
-            {
-                if (config.logLevel > 2)
-                {
-                    return;
-                }
-                if (type == LogType.Exception)
-                {
-                    var message = condition;
-                    if (config.logExceptionsToConsole)
-                    {
-                        if (trace != null)
-                        {
-                            message = $"{message}\n\n{trace}";
-                        }
-                    }
-                    Log.Error(message);
-                }
-                else if (type == LogType.Error || type == LogType.Assert)
-                {
-                    Log.Error(condition);
-                }
-                else if (type == LogType.Warning && config.logLevel < 2)
-                {
-                    Log.Warning(condition);
-                }
-                else if (config.logLevel == 0)
-                {
-                    Log.Message(condition);
-                }
+                Log.SetCustomLogger(console);
             }
         }
 
-        void Update()
+        public void Update()
         {
             UpdateMouseScrolling();
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Q))
             {
-                visible = !visible;
+                Visible = !Visible;
             }
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.E))
             {
-                sceneExplorer.visible = !sceneExplorer.visible;
-                if (sceneExplorer.visible)
+                SceneExplorer.Visible = !SceneExplorer.Visible;
+                if (SceneExplorer.Visible)
                 {
-                    sceneExplorer.Refresh();
+                    SceneExplorer.Refresh();
                 }
             }
 
@@ -204,46 +149,59 @@ namespace ModTools
             {
                 if (debugRenderer == null)
                 {
-                    debugRenderer = GameObject.FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
+                    debugRenderer = FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
                 }
-                debugRenderer.drawDebugInfo = !debugRenderer.drawDebugInfo;
+
+                debugRenderer.DrawDebugInfo = !debugRenderer.DrawDebugInfo;
             }
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.W))
             {
-                watches.visible = !watches.visible;
+                Watches.Visible = !Watches.Visible;
             }
 
-            if (config.useModToolsConsole && Input.GetKeyDown(KeyCode.F7))
+            if (Config.UseModToolsConsole && Input.GetKeyDown(KeyCode.F7))
             {
-                console.visible = !console.visible;
+                console.Visible = !console.Visible;
             }
 
             if (Input.GetKeyDown(KeyCode.BackQuote))
             {
-                scriptEditor.visible = !scriptEditor.visible;
+                ScriptEditor.Visible = !ScriptEditor.Visible;
             }
         }
 
-        void DoMainWindow()
+        protected override void OnWindowDestroyed()
+        {
+            Destroy(console);
+            Destroy(SceneExplorer);
+            Destroy(SceneExplorerColorConfig);
+            Destroy(ScriptEditor);
+            Destroy(Watches);
+            Destroy(ColorPicker);
+            instance = null;
+        }
+
+        protected override void DrawWindow()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Use ModTools console");
-            var newUseConsole = GUILayout.Toggle(config.useModToolsConsole, "");
+            var newUseConsole = GUILayout.Toggle(Config.UseModToolsConsole, "Use ModTools console");
             GUILayout.EndHorizontal();
 
-            if (newUseConsole != config.useModToolsConsole)
+            if (newUseConsole != Config.UseModToolsConsole)
             {
-                config.useModToolsConsole = newUseConsole;
+                Config.UseModToolsConsole = newUseConsole;
 
-                if (config.useModToolsConsole)
+                if (Config.UseModToolsConsole)
                 {
                     console = gameObject.AddComponent<Console>();
+                    Log.SetCustomLogger(console);
                 }
                 else
                 {
                     Destroy(console);
                     console = null;
+                    Log.SetCustomLogger(null);
                 }
 
                 SaveConfig();
@@ -251,36 +209,34 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Console log level");
-            var newLogLevel = GUILayout.SelectionGrid(config.logLevel, new[]{"Log", "Warn","Err", "None" }, 4);
+            var newLogLevel = GUILayout.SelectionGrid(Config.LogLevel, new[] { "Log", "Warn", "Err", "None" }, 4);
             GUILayout.EndHorizontal();
 
-            if (newLogLevel != config.logLevel)
+            if (newLogLevel != Config.LogLevel)
             {
-                config.logLevel = newLogLevel;
+                Config.LogLevel = newLogLevel;
                 SaveConfig();
             }
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Log stack traces to console");
-            var newLogExceptionsToConsole = GUILayout.Toggle(config.logExceptionsToConsole, "");
+            var newLogExceptionsToConsole = GUILayout.Toggle(Config.LogExceptionsToConsole, "Log stack traces to console");
             GUILayout.EndHorizontal();
-            if (newLogExceptionsToConsole != config.logExceptionsToConsole)
+            if (newLogExceptionsToConsole != Config.LogExceptionsToConsole)
             {
-                config.logExceptionsToConsole = newLogExceptionsToConsole;
+                Config.LogExceptionsToConsole = newLogExceptionsToConsole;
                 SaveConfig();
             }
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Game panel extensions");
-            var newExtendGamePanels = GUILayout.Toggle(config.extendGamePanels, "");
+            var newExtendGamePanels = GUILayout.Toggle(Config.ExtendGamePanels, "Game panel extensions");
             GUILayout.EndHorizontal();
 
-            if (newExtendGamePanels != config.extendGamePanels)
+            if (newExtendGamePanels != Config.ExtendGamePanels)
             {
-                config.extendGamePanels = newExtendGamePanels;
+                Config.ExtendGamePanels = newExtendGamePanels;
                 SaveConfig();
 
-                if (config.extendGamePanels)
+                if (Config.ExtendGamePanels)
                 {
                     gameObject.AddComponent<GamePanelExtender>();
                 }
@@ -293,21 +249,19 @@ namespace ModTools
             GUILayout.BeginHorizontal();
             if (debugRenderer == null)
             {
-                debugRenderer = GameObject.FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
+                debugRenderer = FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
             }
-            GUILayout.Label("Debug Renderer (Ctrl+R)");
-            debugRenderer.drawDebugInfo = GUILayout.Toggle(debugRenderer.drawDebugInfo, "");
-            GUILayout.EndHorizontal();
 
+            debugRenderer.DrawDebugInfo = GUILayout.Toggle(debugRenderer.DrawDebugInfo, "Debug Renderer (Ctrl+R)");
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Custom Prefabs Object");
-            var customPrefabsObject = GUILayout.Toggle(config.customPrefabsObject, "");
+            var customPrefabsObject = GUILayout.Toggle(Config.CustomPrefabsObject, "Custom Prefabs Object");
             GUILayout.EndHorizontal();
-            if (customPrefabsObject != config.customPrefabsObject)
+            if (customPrefabsObject != Config.CustomPrefabsObject)
             {
-                config.customPrefabsObject = customPrefabsObject;
-                if (config.customPrefabsObject)
+                Config.CustomPrefabsObject = customPrefabsObject;
+                if (Config.CustomPrefabsObject)
                 {
                     CustomPrefabs.Bootstrap();
                 }
@@ -315,6 +269,7 @@ namespace ModTools
                 {
                     CustomPrefabs.Revert();
                 }
+
                 SaveConfig();
             }
 
@@ -322,7 +277,7 @@ namespace ModTools
             {
                 if (console != null)
                 {
-                    console.visible = true;
+                    console.Visible = true;
                 }
                 else
                 {
@@ -334,23 +289,56 @@ namespace ModTools
 
             if (GUILayout.Button("Watches (Ctrl+W)"))
             {
-                watches.visible = !watches.visible;
+                Watches.Visible = !Watches.Visible;
             }
 
             if (GUILayout.Button("Scene explorer (Ctrl+E)"))
             {
-                sceneExplorer.visible = !sceneExplorer.visible;
-                if (sceneExplorer.visible)
+                SceneExplorer.Visible = !SceneExplorer.Visible;
+                if (SceneExplorer.Visible)
                 {
-                    sceneExplorer.Refresh();
+                    SceneExplorer.Refresh();
                 }
             }
 
             if (GUILayout.Button("Script editor (Ctrl+`)"))
             {
-                scriptEditor.visible = !scriptEditor.visible;
+                ScriptEditor.Visible = !ScriptEditor.Visible;
+            }
+        }
+
+        private void OnApplicationLogMessageReceivedThreaded(string condition, string trace, LogType type)
+        {
+            lock (LoggingLock)
+            {
+                if (Config.LogLevel > 2)
+                {
+                    return;
+                }
+
+                if (type == LogType.Exception)
+                {
+                    var message = condition;
+                    if (Config.LogExceptionsToConsole && trace != null)
+                    {
+                        message = $"{message}\n\n{trace}";
+                    }
+
+                    Log.Error(message);
+                }
+                else if (type == LogType.Error || type == LogType.Assert)
+                {
+                    Log.Error(condition);
+                }
+                else if (type == LogType.Warning && Config.LogLevel < 2)
+                {
+                    Log.Warning(condition);
+                }
+                else if (Config.LogLevel == 0)
+                {
+                    Log.Message(condition);
+                }
             }
         }
     }
-
 }

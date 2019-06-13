@@ -3,16 +3,19 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public class GUIRecursiveTree
+    internal static class GUIRecursiveTree
     {
         public static void OnSceneTreeRecursive(GameObject modToolsGo, SceneExplorerState state, ReferenceChain refChain, GameObject obj)
         {
-            if (obj == modToolsGo && !ModTools.DEBUG_MODTOOLS)
+            if (obj == modToolsGo && !ModTools.DEBUGMODTOOLS)
             {
                 return;
             }
 
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
+                return;
+            }
 
             if (obj == null)
             {
@@ -20,7 +23,7 @@ namespace ModTools.Explorer
                 return;
             }
 
-            if (obj.name == "_ModToolsInternal" && !ModTools.DEBUG_MODTOOLS)
+            if (obj.name == "_ModToolsInternal" && !ModTools.DEBUGMODTOOLS)
             {
                 return;
             }
@@ -37,7 +40,7 @@ namespace ModTools.Explorer
                         state.ExpandedGameObjects.Remove(refChain.UniqueId);
                     }
 
-                    GUI.contentColor = ModTools.Instance.config.gameObjectColor;
+                    GUI.contentColor = ModTools.Instance.Config.GameObjectColor;
                     GUILayout.Label(obj.name);
                     GUI.contentColor = Color.white;
 
@@ -45,7 +48,7 @@ namespace ModTools.Explorer
 
                     var components = obj.GetComponents(typeof(Component));
 
-                    if (ModTools.Instance.config.sceneExplorerSortAlphabetically)
+                    if (ModTools.Instance.Config.SceneExplorerSortAlphabetically)
                     {
                         Array.Sort(components, (component, component1) => component.GetType().ToString().CompareTo(component1.GetType().ToString()));
                     }
@@ -55,7 +58,7 @@ namespace ModTools.Explorer
                         GUIComponent.OnSceneTreeComponent(state, refChain.Add(component), component);
                     }
 
-                    for (int i = 0; i < obj.transform.childCount; i++)
+                    for (var i = 0; i < obj.transform.childCount; i++)
                     {
                         OnSceneTreeRecursive(modToolsGo, state, refChain.Add(obj.transform.GetChild(i)), obj.transform.GetChild(i).gameObject);
                     }
@@ -76,7 +79,7 @@ namespace ModTools.Explorer
                     state.ExpandedGameObjects.Add(refChain.UniqueId);
                 }
 
-                GUI.contentColor = ModTools.Instance.config.gameObjectColor;
+                GUI.contentColor = ModTools.Instance.Config.GameObjectColor;
                 GUILayout.Label(obj.name);
                 GUI.contentColor = Color.white;
                 GUILayout.EndHorizontal();

@@ -2,11 +2,14 @@
 
 namespace ModTools.Explorer
 {
-    public static class GUIComponent
+    internal static class GUIComponent
     {
         public static void OnSceneTreeComponent(SceneExplorerState state, ReferenceChain refChain, Component component)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
+                return;
+            }
 
             if (component == null)
             {
@@ -17,16 +20,11 @@ namespace ModTools.Explorer
             GUILayout.BeginHorizontal();
             SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-            if (Util.ComponentIsEnabled(component))
-            {
-                GUI.contentColor = ModTools.Instance.config.enabledComponentColor;
-            }
-            else
-            {
-                GUI.contentColor = ModTools.Instance.config.disabledComponentColor;
-            }
+            GUI.contentColor = Util.ComponentIsEnabled(component)
+                ? ModTools.Instance.Config.EnabledComponentColor
+                : ModTools.Instance.Config.DisabledComponentColor;
 
-            if (state.CurrentRefChain == null || !state.CurrentRefChain.Equals(refChain.Add(component)))
+            if (state.CurrentRefChain?.IsSameChain(refChain.Add(component)) != true)
             {
                 if (GUILayout.Button(">", GUILayout.ExpandWidth(false)))
                 {
@@ -36,7 +34,7 @@ namespace ModTools.Explorer
             }
             else
             {
-                GUI.contentColor = ModTools.Instance.config.selectedComponentColor;
+                GUI.contentColor = ModTools.Instance.Config.SelectedComponentColor;
                 if (GUILayout.Button("<", GUILayout.ExpandWidth(false)))
                 {
                     state.CurrentRefChain = null;

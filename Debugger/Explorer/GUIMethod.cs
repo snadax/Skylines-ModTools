@@ -1,14 +1,16 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public class GUIMethod
+    internal static class GUIMethod
     {
-        public static void OnSceneTreeReflectMethod(ReferenceChain refChain, System.Object obj, MethodInfo method)
+        public static void OnSceneTreeReflectMethod(ReferenceChain refChain, object obj, MethodInfo method)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
+                return;
+            }
 
             if (obj == null || method == null)
             {
@@ -19,15 +21,14 @@ namespace ModTools.Explorer
             GUILayout.BeginHorizontal();
             SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-            GUI.contentColor = ModTools.Instance.config.memberTypeColor;
+            GUI.contentColor = ModTools.Instance.Config.MemberTypeColor;
             GUILayout.Label("method ");
             GUI.contentColor = Color.white;
             GUILayout.Label(method.ReturnType.ToString() + " " + method.Name + "(");
-            GUI.contentColor = ModTools.Instance.config.nameColor;
+            GUI.contentColor = ModTools.Instance.Config.NameColor;
 
             var first = true;
-            var parameters = method.GetParameters();
-            foreach (var param in parameters)
+            foreach (var param in method.GetParameters())
             {
                 if (!first)
                 {
@@ -40,29 +41,30 @@ namespace ModTools.Explorer
 
                 GUILayout.Label(param.ParameterType.ToString() + " " + param.Name);
             }
+
             GUI.contentColor = Color.white;
             GUILayout.Label(")");
 
             GUILayout.FlexibleSpace();
             if (!method.IsGenericMethod)
             {
-                if (!method.GetParameters().Any())
+                if (method.GetParameters().Length == 0)
                 {
                     if (GUILayout.Button("Invoke", GUILayout.ExpandWidth(false)))
                     {
                         method.Invoke(method.IsStatic ? null : obj, new object[] { });
                     }
                 }
-                else if (method.GetParameters().Length == 1 &&
-                         method.GetParameters()[0].ParameterType.IsInstanceOfType(obj))
+                else if (method.GetParameters().Length == 1
+                         && method.GetParameters()[0].ParameterType.IsInstanceOfType(obj))
                 {
                     if (GUILayout.Button("Invoke", GUILayout.ExpandWidth(false)))
                     {
                         method.Invoke(method.IsStatic ? null : obj, new[] { obj });
                     }
                 }
-
             }
+
             GUILayout.EndHorizontal();
         }
     }

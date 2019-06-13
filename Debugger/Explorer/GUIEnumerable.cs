@@ -3,20 +3,21 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUIEnumerable
+    internal static class GUIEnumerable
     {
         public static void OnSceneTreeReflectIEnumerable(SceneExplorerState state, ReferenceChain refChain, object myProperty)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
-                return;
-
-            var enumerable = myProperty as IEnumerable;
-            if (enumerable == null)
             {
                 return;
             }
 
-            int count = 0;
+            if (!(myProperty is IEnumerable enumerable))
+            {
+                return;
+            }
+
+            var count = 0;
             var oldRefChain = refChain;
 
             foreach (var value in enumerable)
@@ -31,12 +32,12 @@ namespace ModTools.Explorer
                 {
                     GUIExpander.ExpanderControls(state, refChain, type);
 
-                    GUI.contentColor = ModTools.Instance.config.typeColor;
+                    GUI.contentColor = ModTools.Instance.Config.TypeColor;
 
                     GUILayout.Label(type.ToString() + " ");
                 }
 
-                GUI.contentColor = ModTools.Instance.config.nameColor;
+                GUI.contentColor = ModTools.Instance.Config.NameColor;
 
                 GUILayout.Label($"{oldRefChain.LastItemName}.[{count}]");
 
@@ -44,7 +45,7 @@ namespace ModTools.Explorer
 
                 GUILayout.Label(" = ");
 
-                GUI.contentColor = ModTools.Instance.config.valueColor;
+                GUI.contentColor = ModTools.Instance.Config.ValueColor;
 
                 GUILayout.Label(value == null ? "null" : value.ToString());
 
@@ -63,9 +64,9 @@ namespace ModTools.Explorer
                             GUIComponent.OnSceneTreeComponent(state, refChain, component);
                         }
                     }
-                    else if (value is Transform)
+                    else if (value is Transform transform)
                     {
-                        GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, (Transform)value);
+                        GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, transform);
                     }
                     else
                     {

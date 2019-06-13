@@ -4,11 +4,14 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUIReflect
+    internal static class GUIReflect
     {
-        public static void OnSceneTreeReflect(SceneExplorerState state, ReferenceChain refChain, System.Object obj, bool rawReflection = false)
+        public static void OnSceneTreeReflect(SceneExplorerState state, ReferenceChain refChain, object obj, bool rawReflection = false)
         {
-            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain)) return;
+            if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
+            {
+                return;
+            }
 
             if (obj == null)
             {
@@ -16,32 +19,30 @@ namespace ModTools.Explorer
                 return;
             }
 
-            Type type = obj.GetType();
+            var type = obj.GetType();
 
             if (!rawReflection)
             {
-                if (!type.IsValueType)
+                if (!type.IsValueType && state.PreventCircularReferences.Contains(obj))
                 {
-                    if (state.PreventCircularReferences.Contains(obj))
+                    try
                     {
-                        try
-                        {
-                            GUI.contentColor = Color.yellow;
-                            SceneExplorerCommon.OnSceneTreeMessage(refChain, "Circular reference detected");
-                        }
-                        finally
-                        {
-                            GUI.contentColor = Color.white;
-                        }
-                        return;
+                        GUI.contentColor = Color.yellow;
+                        SceneExplorerCommon.OnSceneTreeMessage(refChain, "Circular reference detected");
                     }
+                    finally
+                    {
+                        GUI.contentColor = Color.white;
+                    }
+
+                    return;
                 }
 
                 state.PreventCircularReferences.Add(obj);
 
-                if (type == typeof(UnityEngine.Transform))
+                if (type == typeof(Transform))
                 {
-                    GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, (UnityEngine.Transform)obj);
+                    GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, (Transform)obj);
                     return;
                 }
 
@@ -65,34 +66,31 @@ namespace ModTools.Explorer
 
                 if (type == typeof(Material))
                 {
-                    GUIMaterial.OnSceneReflectUnityEngineMaterial(state, refChain, (UnityEngine.Material)obj);
+                    GUIMaterial.OnSceneReflectUnityEngineMaterial(state, refChain, (Material)obj);
                     return;
                 }
-                if (type == typeof(Mesh))
+
+                if (type == typeof(Mesh) && !((Mesh)obj).isReadable)
                 {
-                    if (!((Mesh)obj).isReadable)
-                    {
-                        SceneExplorerCommon.OnSceneTreeMessage(refChain, "Mesh is not readable");
-                        return;
-                    }
+                    SceneExplorerCommon.OnSceneTreeMessage(refChain, "Mesh is not readable");
+                    return;
                 }
-
             }
 
-            var members = TypeUtil.GetAllMembers(type, ModTools.Instance.config.sceneExplorerShowInheritedMembers);
+            var members = TypeUtil.GetAllMembers(type, ModTools.Instance.Config.SceneExplorerShowInheritedMembers);
 
-            if (ModTools.Instance.config.sceneExplorerSortAlphabetically)
+            if (ModTools.Instance.Config.SceneExplorerSortAlphabetically)
             {
-                Array.Sort(members, (info, info1) => string.Compare(info.Name, info1.Name, StringComparison.Ordinal));
+                Array.Sort(members, (info, info1) => string.CompareOrdinal(info.Name, info1.Name));
             }
 
-            foreach (MemberInfo member in members)
+            foreach (var member in members)
             {
-                if (member.MemberType == MemberTypes.Field && ModTools.Instance.config.sceneExplorerShowFields)
+                if (member.MemberType == MemberTypes.Field && ModTools.Instance.Config.SceneExplorerShowFields)
                 {
                     var field = (FieldInfo)member;
 
-                    if (field.IsLiteral && !field.IsInitOnly && !ModTools.Instance.config.sceneExplorerShowConsts)
+                    if (field.IsLiteral && !field.IsInitOnly && !ModTools.Instance.Config.SceneExplorerShowConsts)
                     {
                         continue;
                     }
@@ -106,7 +104,7 @@ namespace ModTools.Explorer
                         SceneExplorerCommon.OnSceneTreeMessage(refChain, $"Exception when fetching field \"{field.Name}\" - {ex.Message}\n{ex.StackTrace}");
                     }
                 }
-                else if (member.MemberType == MemberTypes.Property && ModTools.Instance.config.sceneExplorerShowProperties)
+                else if (member.MemberType == MemberTypes.Property && ModTools.Instance.Config.SceneExplorerShowProperties)
                 {
                     var property = (PropertyInfo)member;
 
@@ -119,7 +117,7 @@ namespace ModTools.Explorer
                         SceneExplorerCommon.OnSceneTreeMessage(refChain, $"Exception when fetching property \"{property.Name}\" - {ex.Message}\n{ex.StackTrace}");
                     }
                 }
-                else if (member.MemberType == MemberTypes.Method && ModTools.Instance.config.sceneExplorerShowMethods)
+                else if (member.MemberType == MemberTypes.Method && ModTools.Instance.Config.SceneExplorerShowMethods)
                 {
                     var method = (MethodInfo)member;
 

@@ -6,9 +6,9 @@ using System.Reflection;
 
 namespace ModTools
 {
-
-    public static class TypeUtil
+    internal static class TypeUtil
     {
+        private static Dictionary<Type, MemberInfo[]> typeCache = new Dictionary<Type, MemberInfo[]>();
 
         public static bool IsSpecialType(Type t)
         {
@@ -23,63 +23,62 @@ namespace ModTools
                 || t == typeof(UnityEngine.Color32);
         }
 
-        public static bool IsBitmaskEnum(Type t)
-        {
-            return t.IsDefined(typeof(FlagsAttribute), false);
-        }
+        public static bool IsBitmaskEnum(Type t) => t.IsDefined(typeof(FlagsAttribute), false);
 
         public static bool IsTextureType(Type t)
         {
-            return t == typeof(UnityEngine.Texture) || t == typeof(UnityEngine.Texture2D) ||
-                   t == typeof(UnityEngine.RenderTexture) || t == typeof(UnityEngine.Texture3D) || t == typeof(UnityEngine.Cubemap);
+            return t == typeof(UnityEngine.Texture) || t == typeof(UnityEngine.Texture2D)
+                   || t == typeof(UnityEngine.RenderTexture) || t == typeof(UnityEngine.Texture3D) || t == typeof(UnityEngine.Cubemap);
         }
 
-        public static bool IsMeshType(Type t)
-        {
-            return t == typeof(UnityEngine.Mesh);
-        }
+        public static bool IsMeshType(Type t) => t == typeof(UnityEngine.Mesh);
 
         public static MemberInfo[] GetAllMembers(Type type, bool recursive = false)
-        {
-            return GetMembersInternal(type, recursive, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
-        }
+            => GetMembersInternal(type, recursive, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 
         public static MemberInfo[] GetPublicMembers(Type type, bool recursive = false)
-        {
-            return GetMembersInternal(type, recursive, BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
-        }
+            => GetMembersInternal(type, recursive, BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
 
         public static MemberInfo[] GetPrivateMembers(Type type, bool recursive = false)
+            => GetMembersInternal(type, recursive, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
+
+        public static void ClearTypeCache() => typeCache = new Dictionary<Type, MemberInfo[]>();
+
+        public static bool IsEnumerable(object myProperty)
         {
-            return GetMembersInternal(type, recursive, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
+            return typeof(IEnumerable).IsInstanceOfType(myProperty)
+                || typeof(IEnumerable<>).IsInstanceOfType(myProperty);
         }
 
-        public static void ClearTypeCache()
+        public static bool IsCollection(object myProperty)
         {
-            _typeCache = new Dictionary<Type, MemberInfo[]>();
+            return typeof(ICollection).IsAssignableFrom(myProperty.GetType())
+                || typeof(ICollection<>).IsAssignableFrom(myProperty.GetType());
         }
 
-        private static Dictionary<Type, MemberInfo[]> _typeCache = new Dictionary<Type, MemberInfo[]>(); 
+        public static bool IsList(object myProperty)
+        {
+            return typeof(IList).IsAssignableFrom(myProperty.GetType())
+                || typeof(IList<>).IsAssignableFrom(myProperty.GetType());
+        }
 
         private static MemberInfo[] GetMembersInternal(Type type, bool recursive, BindingFlags bindingFlags)
         {
-            if (_typeCache.ContainsKey(type))
+            if (typeCache.ContainsKey(type))
             {
-                return _typeCache[type];
+                return typeCache[type];
             }
 
             var results = new Dictionary<string, MemberInfo>();
             GetMembersInternal2(type, recursive, bindingFlags, results);
             var members = results.Values.ToArray();
-            _typeCache[type] = members;
+            typeCache[type] = members;
             return members;
         }
 
-        private static void GetMembersInternal2(Type type, bool recursive, BindingFlags bindingFlags,
-            Dictionary<string, MemberInfo> outResults)
+        private static void GetMembersInternal2(Type type, bool recursive, BindingFlags bindingFlags, Dictionary<string, MemberInfo> outResults)
         {
-            var selfMembers = type.GetMembers(bindingFlags);
-            foreach (var member in selfMembers)
+            foreach (var member in type.GetMembers(bindingFlags))
             {
                 if (!outResults.ContainsKey(member.Name))
                 {
@@ -87,41 +86,10 @@ namespace ModTools
                 }
             }
 
-            if (recursive)
+            if (recursive && type.BaseType != null)
             {
-                if (type.BaseType != null)
-                {
-                    GetMembersInternal2(type.BaseType, true, bindingFlags, outResults);
-                }
+                GetMembersInternal2(type.BaseType, true, bindingFlags, outResults);
             }
         }
-
-        public static bool IsEnumerable(object myProperty)
-        {
-            if (typeof(IEnumerable).IsInstanceOfType(myProperty)
-                || typeof(IEnumerable<>).IsInstanceOfType(myProperty))
-                return true;
-
-            return false;
-        }
-
-        public static bool IsCollection(object myProperty)
-        {
-            if (typeof(ICollection).IsAssignableFrom(myProperty.GetType())
-                || typeof(ICollection<>).IsAssignableFrom(myProperty.GetType()))
-                return true;
-
-            return false;
-        }
-
-        public static bool IsList(object myProperty)
-        {
-            if (typeof(IList).IsAssignableFrom(myProperty.GetType())
-                || typeof(IList<>).IsAssignableFrom(myProperty.GetType()))
-                return true;
-
-            return false;
-        }
     }
-
 }
