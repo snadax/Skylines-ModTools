@@ -60,8 +60,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleMessage.cs" />
     <Compile Include="GUICommon\ColorPicker.cs" />
     <Compile Include="GUICommon\GUIStackTrace.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="ScriptEditorFile.cs" />
     <Compile Include="Utils\ColorUtil.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Console.cs" />

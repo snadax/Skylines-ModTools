@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace ModTools
 {
-    public static class TypeUtil
+    internal static class TypeUtil
     {
         public static bool IsSpecialType(Type t)
         {
@@ -40,21 +40,21 @@ namespace ModTools
         public static MemberInfo[] GetPrivateMembers(Type type, bool recursive = false)
             => GetMembersInternal(type, recursive, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
 
-        public static void ClearTypeCache() => _typeCache = new Dictionary<Type, MemberInfo[]>();
+        public static void ClearTypeCache() => typeCache = new Dictionary<Type, MemberInfo[]>();
 
-        private static Dictionary<Type, MemberInfo[]> _typeCache = new Dictionary<Type, MemberInfo[]>();
+        private static Dictionary<Type, MemberInfo[]> typeCache = new Dictionary<Type, MemberInfo[]>();
 
         private static MemberInfo[] GetMembersInternal(Type type, bool recursive, BindingFlags bindingFlags)
         {
-            if (_typeCache.ContainsKey(type))
+            if (typeCache.ContainsKey(type))
             {
-                return _typeCache[type];
+                return typeCache[type];
             }
 
             var results = new Dictionary<string, MemberInfo>();
             GetMembersInternal2(type, recursive, bindingFlags, results);
             var members = results.Values.ToArray();
-            _typeCache[type] = members;
+            typeCache[type] = members;
             return members;
         }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class SceneExplorerCommon
+    internal static class SceneExplorerCommon
     {
         private static readonly Dictionary<int, string> indentStrings = new Dictionary<int, string>();
 
@@ -40,7 +40,7 @@ namespace ModTools.Explorer
                 indentStrings.Add(indent, indentString);
             }
 
-            GUILayout.Label(indentString, GUILayout.Width(ModTools.Instance.config.sceneExplorerTreeIdentSpacing * indent));
+            GUILayout.Label(indentString, GUILayout.Width(ModTools.Instance.config.SceneExplorerTreeIdentSpacing * indent));
         }
     }
 }

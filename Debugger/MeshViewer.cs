@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public sealed class MeshViewer : GUIWindow
+    internal sealed class MeshViewer : GUIWindow
     {
         private Mesh previewMesh;
         private Material previewMaterial;
@@ -13,8 +13,8 @@ namespace ModTools
 
         private readonly RenderTexture targetRT;
 
-        private float m_Distance = 4f;
-        private Vector2 m_PreviewDir = new Vector2(120f, -20f);
+        private float distance = 4f;
+        private Vector2 previewDir = new Vector2(120f, -20f);
         private Bounds bounds;
         private Vector2 lastLeftMousePos = Vector2.zero;
         private Vector2 lastRightMousePos = Vector2.zero;
@@ -27,21 +27,9 @@ namespace ModTools
 
         private bool useOriginalShader;
 
-        private MeshViewer()
-            : base("Mesh Viewer", new Rect(512, 128, 512, 512), skin)
+        public MeshViewer()
+            : base("Mesh Viewer", new Rect(512, 128, 512, 512), Skin)
         {
-            onDraw = DrawWindow;
-            onClose = () =>
-            {
-                SetCitizenInfoObjects(true);
-                Destroy(this);
-            };
-            onUnityDestroy = () =>
-            {
-                Destroy(meshViewerCamera);
-                Destroy(targetRT);
-            };
-
             try
             {
                 light = GameObject.Find("Directional Light").GetComponent<Light>();
@@ -79,7 +67,7 @@ namespace ModTools
                 meshViewer.previewMaterial.mainTexture = material.mainTexture;
             }
             meshViewer.Setup(calculateBounds);
-            meshViewer.visible = true;
+            meshViewer.Visible = true;
             meshViewer.SetCitizenInfoObjects(false);
             return meshViewer;
         }
@@ -107,13 +95,13 @@ namespace ModTools
 
             var magnitude = bounds.extents.magnitude;
             var num1 = magnitude + 16f;
-            var num2 = magnitude * m_Distance;
+            var num2 = magnitude * distance;
             meshViewerCamera.transform.position = -Vector3.forward * num2;
             meshViewerCamera.transform.rotation = Quaternion.identity;
             meshViewerCamera.nearClipPlane = Mathf.Max(num2 - num1 * 1.5f, 0.01f);
             meshViewerCamera.farClipPlane = num2 + num1 * 1.5f;
-            var q = Quaternion.Euler(m_PreviewDir.y, 0.0f, 0.0f)
-                           * Quaternion.Euler(0.0f, m_PreviewDir.x, 0.0f);
+            var q = Quaternion.Euler(previewDir.y, 0.0f, 0.0f)
+                           * Quaternion.Euler(0.0f, previewDir.x, 0.0f);
             var trs = Matrix4x4.TRS(q * -bounds.center, q, Vector3.one);
 
             var material1 = (useOriginalShader && material != null) ? material : previewMaterial;
@@ -128,111 +116,116 @@ namespace ModTools
             }
         }
 
-        private void DrawWindow()
+        protected override void OnWindowClosed()
         {
-            if (previewMesh != null)
+            SetCitizenInfoObjects(true);
+            Destroy(this);
+        }
+
+        protected override void OnWindowDestroyed()
+        {
+            Destroy(meshViewerCamera);
+            Destroy(targetRT);
+        }
+
+        protected override void DrawWindow()
+        {
+            if (previewMesh == null)
             {
-                title = $"Previewing \"{assetName ?? previewMesh.name}\"";
+                Title = "Mesh Viewer";
+                GUILayout.Label("Use the Scene Explorer to select a Mesh for preview");
+                return;
+            }
 
-                GUILayout.BeginHorizontal();
+            Title = $"Previewing \"{assetName ?? previewMesh.name}\"";
 
-                if (material != null)
-                {
-                    useOriginalShader = GUILayout.Toggle(useOriginalShader, "Original Shader");
-                    if (previewMesh.isReadable)
-                    {
-                        if (GUILayout.Button("Dump mesh+textures", GUILayout.Width(160)))
-                        {
-                            DumpUtil.DumpMeshAndTextures(assetName, previewMesh, material);
-                        }
-                    }
-                    else
-                    {
-                        if (GUILayout.Button("Dump textures", GUILayout.Width(160)))
-                        {
-                            DumpUtil.DumpTextures(assetName, material);
-                        }
-                    }
-                }
-                else
-                {
-                    useOriginalShader = false;
-                    if (previewMesh.isReadable)
-                    {
-                        if (GUILayout.Button("Dump mesh", GUILayout.Width(160)))
-                        {
-                            DumpUtil.DumpMeshAndTextures($"{previewMesh.name}", previewMesh);
-                        }
-                    }
-                }
+            GUILayout.BeginHorizontal();
+
+            if (material != null)
+            {
+                useOriginalShader = GUILayout.Toggle(useOriginalShader, "Original Shader");
                 if (previewMesh.isReadable)
                 {
-                    GUILayout.Label($"Triangles: {previewMesh.triangles.Length / 3}");
-                }
-                else
-                {
-                    var oldColor = GUI.color;
-                    GUI.color = Color.yellow;
-                    GUILayout.Label("Mesh isn't readable!");
-                    GUI.color = oldColor;
-                }
-                if (material?.mainTexture != null)
-                {
-                    GUILayout.Label($"Texture size: {material.mainTexture.width}x{material.mainTexture.height}");
-                }
-
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
-
-                if (Event.current.type == EventType.MouseDown)
-                {
-                    if (Event.current.button == 0 || Event.current.button == 2)
+                    if (GUILayout.Button("Dump mesh+textures", GUILayout.Width(160)))
                     {
-                        lastLeftMousePos = Event.current.mousePosition;
-                    }
-                    else
-                    {
-                        lastRightMousePos = Event.current.mousePosition;
+                        DumpUtil.DumpMeshAndTextures(assetName, previewMesh, material);
                     }
                 }
-                else if (Event.current.type == EventType.MouseDrag)
+                else if (GUILayout.Button("Dump textures", GUILayout.Width(160)))
                 {
-                    var pos = Event.current.mousePosition;
-                    if (Event.current.button == 0 || Event.current.button == 2)
-                    {
-                        if (lastLeftMousePos != Vector2.zero)
-                        {
-                            var moveDelta = (pos - lastLeftMousePos) * 2.0f;
-                            m_PreviewDir -= moveDelta / Mathf.Min(targetRT.width, targetRT.height)
-                                                 * UIView.GetAView().ratio * 140f;
-                            m_PreviewDir.y = Mathf.Clamp(m_PreviewDir.y, -90f, 90f);
-                        }
-                        lastLeftMousePos = pos;
-                    }
-                    else
-                    {
-                        if (lastRightMousePos != Vector2.zero)
-                        {
-                            var moveDelta1 = pos - lastRightMousePos;
-                            m_Distance += (float)(moveDelta1.y / (double)targetRT.height
-                                                         * UIView.GetAView().ratio * 40.0);
-                            const float num1 = 6f;
-                            var magnitude = bounds.extents.magnitude;
-                            var num2 = magnitude + 16f;
-                            m_Distance = Mathf.Min(m_Distance, 4f, num1 * (num2 / magnitude));
-                        }
-                        lastRightMousePos = pos;
-                    }
+                    DumpUtil.DumpTextures(assetName, material);
                 }
-
-                GUI.DrawTexture(new Rect(0.0f, 64.0f, rect.width, rect.height - 64.0f), targetRT,
-                    ScaleMode.StretchToFill, false);
             }
             else
             {
-                title = "Mesh Viewer";
-                GUILayout.Label("Use the Scene Explorer to select a Mesh for preview");
+                useOriginalShader = false;
+                if (previewMesh.isReadable && GUILayout.Button("Dump mesh", GUILayout.Width(160)))
+                {
+                    DumpUtil.DumpMeshAndTextures($"{previewMesh.name}", previewMesh);
+                }
             }
+            if (previewMesh.isReadable)
+            {
+                GUILayout.Label($"Triangles: {previewMesh.triangles.Length / 3}");
+            }
+            else
+            {
+                var oldColor = GUI.color;
+                GUI.color = Color.yellow;
+                GUILayout.Label("Mesh isn't readable!");
+                GUI.color = oldColor;
+            }
+            if (material?.mainTexture != null)
+            {
+                GUILayout.Label($"Texture size: {material.mainTexture.width}x{material.mainTexture.height}");
+            }
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            if (Event.current.type == EventType.MouseDown)
+            {
+                if (Event.current.button == 0 || Event.current.button == 2)
+                {
+                    lastLeftMousePos = Event.current.mousePosition;
+                }
+                else
+                {
+                    lastRightMousePos = Event.current.mousePosition;
+                }
+            }
+            else if (Event.current.type == EventType.MouseDrag)
+            {
+                var pos = Event.current.mousePosition;
+                if (Event.current.button == 0 || Event.current.button == 2)
+                {
+                    if (lastLeftMousePos != Vector2.zero)
+                    {
+                        var moveDelta = (pos - lastLeftMousePos) * 2.0f;
+                        previewDir -= moveDelta / Mathf.Min(targetRT.width, targetRT.height)
+                                             * UIView.GetAView().ratio * 140f;
+                        previewDir.y = Mathf.Clamp(previewDir.y, -90f, 90f);
+                    }
+                    lastLeftMousePos = pos;
+                }
+                else
+                {
+                    if (lastRightMousePos != Vector2.zero)
+                    {
+                        var moveDelta1 = pos - lastRightMousePos;
+                        distance += (float)(moveDelta1.y / (double)targetRT.height
+                                                     * UIView.GetAView().ratio * 40.0);
+                        const float num1 = 6f;
+                        var magnitude = bounds.extents.magnitude;
+                        var num2 = magnitude + 16f;
+                        distance = Mathf.Min(distance, 4f, num1 * (num2 / magnitude));
+                    }
+                    lastRightMousePos = pos;
+                }
+            }
+
+            GUI.DrawTexture(new Rect(0.0f, 64.0f, WindowRect.width, WindowRect.height - 64.0f), targetRT,
+                ScaleMode.StretchToFill, false);
         }
 
         public void Setup(bool calculateBounds)
@@ -254,7 +247,7 @@ namespace ModTools
             {
                 bounds = new Bounds(new Vector3(0, 0, 0), new Vector3(3, 3, 3));
             }
-            m_Distance = 4f;
+            distance = 4f;
         }
 
         public void SetCitizenInfoObjects(bool enabled)

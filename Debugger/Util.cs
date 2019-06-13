@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public static class Util
+    internal static class Util
     {
         public static void SetMouseScrolling(bool isEnabled)
         {

@@ -6,81 +6,97 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public class GUIWindow : MonoBehaviour
+    internal abstract class GUIWindow : MonoBehaviour
     {
-        private static Configuration config => ModTools.Instance.config;
+        protected const float UIScale = 1.0f;
 
-        public delegate void OnDraw();
+        private readonly int id;
 
-        public delegate void OnException(Exception ex);
+        private static Configuration Config => ModTools.Instance.config;
 
-        public delegate void OnUnityGUI();
+        protected abstract void DrawWindow();
 
-        public delegate void OnOpen();
-
-        public delegate void OnClose();
-
-        public delegate void OnResize(Vector2 size);
-
-        public delegate void OnMove(Vector2 position);
-
-        public delegate void OnUnityDestroy();
-
-        public OnDraw onDraw;
-        public OnException onException;
-        public OnUnityGUI onUnityGUI;
-        public OnOpen onOpen;
-        public OnClose onClose;
-        public OnResize onResize;
-        public OnMove onMove;
-        public OnUnityDestroy onUnityDestroy;
-
-        public Rect rect = new Rect(0, 0, 64, 64);
-
-        public static GUISkin skin;
-        public static Texture2D bgTexture;
-        public static Texture2D resizeNormalTexture;
-        public static Texture2D resizeHoverTexture;
-
-        public static Texture2D closeNormalTexture;
-        public static Texture2D closeHoverTexture;
-
-        public static Texture2D moveNormalTexture;
-        public static Texture2D moveHoverTexture;
-
-        public static GUIWindow resizingWindow;
-        public static Vector2 resizeDragHandle = Vector2.zero;
-
-        public static GUIWindow movingWindow;
-        public static Vector2 moveDragHandle = Vector2.zero;
-
-        public static float uiScale = 1.0f;
-        private bool _visible;
-
-        public bool visible
+        protected virtual void HandleException(Exception ex)
         {
-            get => _visible;
+        }
+
+        protected virtual void OnWindowDrawn()
+        {
+        }
+
+        protected virtual void OnWindowOpened()
+        {
+        }
+
+        protected virtual void OnWindowClosed()
+        {
+        }
+
+        protected virtual void OnWindowResized(Vector2 size)
+        {
+        }
+
+        protected virtual void OnWindowMoved(Vector2 position)
+        {
+        }
+
+        protected virtual void OnWindowDestroyed()
+        {
+        }
+
+        public Rect WindowRect => windowRect;
+        private Rect windowRect = new Rect(0, 0, 64, 64);
+
+        public void MoveResize(Rect newWindowRect) => windowRect = newWindowRect;
+
+        public static GUISkin Skin;
+
+        private static GUIWindow resizingWindow;
+        private static Vector2 resizeDragHandle = Vector2.zero;
+
+        private static GUIWindow movingWindow;
+        private static Vector2 moveDragHandle = Vector2.zero;
+
+        private bool visible;
+
+        public bool Visible
+        {
+            get => visible;
 
             set
             {
-                _visible = value;
-                GUI.BringWindowToFront(id);
-                UpdateClickCatcher();
-
-                if (_visible && onOpen != null)
+                var wasVisible = visible;
+                visible = value;
+                if (visible && !wasVisible)
                 {
-                    onOpen();
+                    GUI.BringWindowToFront(id);
+                    UpdateClickCatcher();
+                    OnWindowOpened();
                 }
             }
         }
 
-        public bool resizable = true;
-        public bool hasCloseButton = true;
-        public bool hasTitlebar = true;
+        public bool Resizable { get; set; } = true;
 
-        public string title = "Window";
+        public bool HasCloseButton { get; set; } = true;
 
-        private readonly int id;
+        public bool HasTitlebar { get; set; } = true;
+
+        protected static Texture2D BgTexture { get; set; }
+
+        protected static Texture2D ResizeNormalTexture { get; set; }
+
+        protected static Texture2D ResizeHoverTexture { get; set; }
+
+        protected static Texture2D CloseNormalTexture { get; set; }
+
+        protected static Texture2D CloseHoverTexture { get; set; }
+
+        protected static Texture2D MoveNormalTexture { get; set; }
+
+        protected static Texture2D MoveHoverTexture { get; set; }
+
+        protected string Title { get; set; }
 
         private Vector2 minSize = Vector2.zero;
 
@@ -88,12 +104,12 @@ namespace ModTools
 
         private readonly UIPanel clickCatcher;
 
-        public GUIWindow(string _title, Rect _rect, GUISkin _skin)
+        protected GUIWindow(string title, Rect rect, GUISkin skin)
         {
             id = UnityEngine.Random.Range(1024, int.MaxValue);
-            title = _title;
-            rect = _rect;
-            skin = _skin;
+            Title = title;
+            windowRect = rect;
+            Skin = skin;
             minSize = new Vector2(64.0f, 64.0f);
             windows.Add(this);
 
@@ -106,6 +122,7 @@ namespace ModTools
                     clickCatcher.name = "_ModToolsInternal";
                 }
             }
+
             UpdateClickCatcher();
         }
 
@@ -119,15 +136,15 @@ namespace ModTools
             // adjust rect from unity pixels to C:S pixels via GetUIView().ratio
             var ratio = UIView.GetAView().ratio;
 
-            clickCatcher.absolutePosition = new Vector3(rect.position.x * ratio, rect.position.y * ratio);
-            clickCatcher.size = new Vector2(rect.width * ratio, rect.height * ratio);
-            clickCatcher.isVisible = visible;
+            clickCatcher.absolutePosition = new Vector3(windowRect.position.x * ratio, windowRect.position.y * ratio);
+            clickCatcher.size = new Vector2(windowRect.width * ratio, windowRect.height * ratio);
+            clickCatcher.isVisible = Visible;
             clickCatcher.zOrder = int.MaxValue;
         }
 
         public void OnDestroy()
         {
-            onUnityDestroy?.Invoke();
+            OnWindowDestroyed();
 
             if (clickCatcher != null)
             {
@@ -139,7 +156,7 @@ namespace ModTools
 
         public static void UpdateFont()
         {
-            skin.font = Font.CreateDynamicFontFromOSFont(config.fontName, config.fontSize);
+            Skin.font = Font.CreateDynamicFontFromOSFont(Config.FontName, Config.FontSize);
             ModTools.Instance.sceneExplorer.RecalculateAreas();
         }
 
@@ -147,182 +164,176 @@ namespace ModTools
         {
             var mouse = Input.mousePosition;
             mouse.y = Screen.height - mouse.y;
-            var mouseInsideGuiWindow = windows.Any(window => window.visible && window.rect.Contains(mouse));
+            var mouseInsideGuiWindow = windows.Any(window => window.Visible && window.windowRect.Contains(mouse));
             Util.SetMouseScrolling(!mouseInsideGuiWindow);
         }
 
         public void OnGUI()
         {
-            if (skin == null)
+            if (Skin == null)
             {
-                bgTexture = new Texture2D(1, 1);
-                bgTexture.SetPixel(0, 0, config.backgroundColor);
-                bgTexture.Apply();
+                BgTexture = new Texture2D(1, 1);
+                BgTexture.SetPixel(0, 0, Config.BackgroundColor);
+                BgTexture.Apply();
 
-                resizeNormalTexture = new Texture2D(1, 1);
-                resizeNormalTexture.SetPixel(0, 0, Color.white);
-                resizeNormalTexture.Apply();
+                ResizeNormalTexture = new Texture2D(1, 1);
+                ResizeNormalTexture.SetPixel(0, 0, Color.white);
+                ResizeNormalTexture.Apply();
 
-                resizeHoverTexture = new Texture2D(1, 1);
-                resizeHoverTexture.SetPixel(0, 0, Color.blue);
-                resizeHoverTexture.Apply();
+                ResizeHoverTexture = new Texture2D(1, 1);
+                ResizeHoverTexture.SetPixel(0, 0, Color.blue);
+                ResizeHoverTexture.Apply();
 
-                closeNormalTexture = new Texture2D(1, 1);
-                closeNormalTexture.SetPixel(0, 0, Color.red);
-                closeNormalTexture.Apply();
+                CloseNormalTexture = new Texture2D(1, 1);
+                CloseNormalTexture.SetPixel(0, 0, Color.red);
+                CloseNormalTexture.Apply();
 
-                closeHoverTexture = new Texture2D(1, 1);
-                closeHoverTexture.SetPixel(0, 0, Color.white);
-                closeHoverTexture.Apply();
+                CloseHoverTexture = new Texture2D(1, 1);
+                CloseHoverTexture.SetPixel(0, 0, Color.white);
+                CloseHoverTexture.Apply();
 
-                moveNormalTexture = new Texture2D(1, 1);
-                moveNormalTexture.SetPixel(0, 0, config.titlebarColor);
-                moveNormalTexture.Apply();
+                MoveNormalTexture = new Texture2D(1, 1);
+                MoveNormalTexture.SetPixel(0, 0, Config.TitlebarColor);
+                MoveNormalTexture.Apply();
 
-                moveHoverTexture = new Texture2D(1, 1);
-                moveHoverTexture.SetPixel(0, 0, config.titlebarColor * 1.2f);
-                moveHoverTexture.Apply();
+                MoveHoverTexture = new Texture2D(1, 1);
+                MoveHoverTexture.SetPixel(0, 0, Config.TitlebarColor * 1.2f);
+                MoveHoverTexture.Apply();
 
-                skin = ScriptableObject.CreateInstance<GUISkin>();
-                skin.box = new GUIStyle(GUI.skin.box);
-                skin.button = new GUIStyle(GUI.skin.button);
-                skin.horizontalScrollbar = new GUIStyle(GUI.skin.horizontalScrollbar);
-                skin.horizontalScrollbarLeftButton = new GUIStyle(GUI.skin.horizontalScrollbarLeftButton);
-                skin.horizontalScrollbarRightButton = new GUIStyle(GUI.skin.horizontalScrollbarRightButton);
-                skin.horizontalScrollbarThumb = new GUIStyle(GUI.skin.horizontalScrollbarThumb);
-                skin.horizontalSlider = new GUIStyle(GUI.skin.horizontalSlider);
-                skin.horizontalSliderThumb = new GUIStyle(GUI.skin.horizontalSliderThumb);
-                skin.label = new GUIStyle(GUI.skin.label);
-                skin.scrollView = new GUIStyle(GUI.skin.scrollView);
-                skin.textArea = new GUIStyle(GUI.skin.textArea);
-                skin.textField = new GUIStyle(GUI.skin.textField);
-                skin.toggle = new GUIStyle(GUI.skin.toggle);
-                skin.verticalScrollbar = new GUIStyle(GUI.skin.verticalScrollbar);
-                skin.verticalScrollbarDownButton = new GUIStyle(GUI.skin.verticalScrollbarDownButton);
-                skin.verticalScrollbarThumb = new GUIStyle(GUI.skin.verticalScrollbarThumb);
-                skin.verticalScrollbarUpButton = new GUIStyle(GUI.skin.verticalScrollbarUpButton);
-                skin.verticalSlider = new GUIStyle(GUI.skin.verticalSlider);
-                skin.verticalSliderThumb = new GUIStyle(GUI.skin.verticalSliderThumb);
-                skin.window = new GUIStyle(GUI.skin.window);
-                skin.window.normal.background = bgTexture;
-                skin.window.onNormal.background = bgTexture;
+                Skin = ScriptableObject.CreateInstance<GUISkin>();
+                Skin.box = new GUIStyle(GUI.skin.box);
+                Skin.button = new GUIStyle(GUI.skin.button);
+                Skin.horizontalScrollbar = new GUIStyle(GUI.skin.horizontalScrollbar);
+                Skin.horizontalScrollbarLeftButton = new GUIStyle(GUI.skin.horizontalScrollbarLeftButton);
+                Skin.horizontalScrollbarRightButton = new GUIStyle(GUI.skin.horizontalScrollbarRightButton);
+                Skin.horizontalScrollbarThumb = new GUIStyle(GUI.skin.horizontalScrollbarThumb);
+                Skin.horizontalSlider = new GUIStyle(GUI.skin.horizontalSlider);
+                Skin.horizontalSliderThumb = new GUIStyle(GUI.skin.horizontalSliderThumb);
+                Skin.label = new GUIStyle(GUI.skin.label);
+                Skin.scrollView = new GUIStyle(GUI.skin.scrollView);
+                Skin.textArea = new GUIStyle(GUI.skin.textArea);
+                Skin.textField = new GUIStyle(GUI.skin.textField);
+                Skin.toggle = new GUIStyle(GUI.skin.toggle);
+                Skin.verticalScrollbar = new GUIStyle(GUI.skin.verticalScrollbar);
+                Skin.verticalScrollbarDownButton = new GUIStyle(GUI.skin.verticalScrollbarDownButton);
+                Skin.verticalScrollbarThumb = new GUIStyle(GUI.skin.verticalScrollbarThumb);
+                Skin.verticalScrollbarUpButton = new GUIStyle(GUI.skin.verticalScrollbarUpButton);
+                Skin.verticalSlider = new GUIStyle(GUI.skin.verticalSlider);
+                Skin.verticalSliderThumb = new GUIStyle(GUI.skin.verticalSliderThumb);
+                Skin.window = new GUIStyle(GUI.skin.window);
+                Skin.window.normal.background = BgTexture;
+                Skin.window.onNormal.background = BgTexture;
 
-                skin.settings.cursorColor = GUI.skin.settings.cursorColor;
-                skin.settings.cursorFlashSpeed = GUI.skin.settings.cursorFlashSpeed;
-                skin.settings.doubleClickSelectsWord = GUI.skin.settings.doubleClickSelectsWord;
-                skin.settings.selectionColor = GUI.skin.settings.selectionColor;
-                skin.settings.tripleClickSelectsLine = GUI.skin.settings.tripleClickSelectsLine;
+                Skin.settings.cursorColor = GUI.skin.settings.cursorColor;
+                Skin.settings.cursorFlashSpeed = GUI.skin.settings.cursorFlashSpeed;
+                Skin.settings.doubleClickSelectsWord = GUI.skin.settings.doubleClickSelectsWord;
+                Skin.settings.selectionColor = GUI.skin.settings.selectionColor;
+                Skin.settings.tripleClickSelectsLine = GUI.skin.settings.tripleClickSelectsLine;
 
                 UpdateFont();
             }
 
-            if (visible)
+            if (!Visible)
             {
-                var oldSkin = GUI.skin;
-                if (skin != null)
-                {
-                    GUI.skin = skin;
-                }
+                return;
+            }
 
-                var matrix = GUI.matrix;
-                GUI.matrix = Matrix4x4.Scale(new Vector3(uiScale, uiScale, uiScale));
+            var oldSkin = GUI.skin;
+            if (Skin != null)
+            {
+                GUI.skin = Skin;
+            }
 
-                rect = GUI.Window(id, rect, i =>
-                {
-                    if (onDraw != null)
-                    {
-                        GUILayout.Space(8.0f);
+            var matrix = GUI.matrix;
+            GUI.matrix = Matrix4x4.Scale(new Vector3(UIScale, UIScale, UIScale));
 
-                        try
-                        {
-                            onDraw();
-                        }
-                        catch (Exception ex)
-                        {
-                            if (onException != null)
-                            {
-                                onException(ex);
-                            }
-                            else
-                            {
-                                throw;
-                            }
-                        }
+            windowRect = GUI.Window(id, windowRect, WindowFunction, string.Empty);
 
-                        GUILayout.Space(16.0f);
+            OnWindowDrawn();
 
-                        var mouse = Input.mousePosition;
-                        mouse.y = Screen.height - mouse.y;
+            GUI.matrix = matrix;
 
-                        DrawBorder();
+            GUI.skin = oldSkin;
+        }
 
-                        if (hasTitlebar)
-                        {
-                            DrawTitlebar(mouse);
-                        }
+        private void WindowFunction(int id)
+        {
+            GUILayout.Space(8.0f);
 
-                        if (hasCloseButton)
-                        {
-                            DrawCloseButton(mouse);
-                        }
+            try
+            {
+                DrawWindow();
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
 
-                        if (resizable)
-                        {
-                            DrawResizeHandle(mouse);
-                        }
-                    }
-                }, string.Empty);
+            GUILayout.Space(16.0f);
 
-                onUnityGUI?.Invoke();
+            var mouse = Input.mousePosition;
+            mouse.y = Screen.height - mouse.y;
 
-                GUI.matrix = matrix;
+            DrawBorder();
 
-                GUI.skin = oldSkin;
+            if (HasTitlebar)
+            {
+                DrawTitlebar(mouse);
+            }
+
+            if (HasCloseButton)
+            {
+                DrawCloseButton(mouse);
+            }
+
+            if (Resizable)
+            {
+                DrawResizeHandle(mouse);
             }
         }
 
         private void DrawBorder()
         {
-            var leftRect = new Rect(0.0f, 0.0f, 1.0f, rect.height);
-            var rightRect = new Rect(rect.width - 1.0f, 0.0f, 1.0f, rect.height);
-            var bottomRect = new Rect(0.0f, rect.height - 1.0f, rect.width, 1.0f);
-            GUI.DrawTexture(leftRect, moveNormalTexture);
-            GUI.DrawTexture(rightRect, moveNormalTexture);
-            GUI.DrawTexture(bottomRect, moveNormalTexture);
+            var leftRect = new Rect(0.0f, 0.0f, 1.0f, windowRect.height);
+            var rightRect = new Rect(windowRect.width - 1.0f, 0.0f, 1.0f, windowRect.height);
+            var bottomRect = new Rect(0.0f, windowRect.height - 1.0f, windowRect.width, 1.0f);
+            GUI.DrawTexture(leftRect, MoveNormalTexture);
+            GUI.DrawTexture(rightRect, MoveNormalTexture);
+            GUI.DrawTexture(bottomRect, MoveNormalTexture);
         }
 
         private void DrawTitlebar(Vector3 mouse)
         {
-            var moveRect = new Rect(rect.x * uiScale, rect.y * uiScale, rect.width * uiScale, 20.0f);
-            var moveTex = moveNormalTexture;
+            var moveRect = new Rect(windowRect.x * UIScale, windowRect.y * UIScale, windowRect.width * UIScale, 20.0f);
+            var moveTex = MoveNormalTexture;
 
             if (movingWindow != null)
             {
                 if (movingWindow == this)
                 {
-                    moveTex = moveHoverTexture;
+                    moveTex = MoveHoverTexture;
 
                     if (Input.GetMouseButton(0))
                     {
                         var pos = new Vector2(mouse.x, mouse.y) + moveDragHandle;
-                        rect.x = pos.x;
-                        rect.y = pos.y;
-                        if (rect.x < 0.0f)
+                        windowRect.x = pos.x;
+                        windowRect.y = pos.y;
+                        if (windowRect.x < 0.0f)
                         {
-                            rect.x = 0.0f;
+                            windowRect.x = 0.0f;
                         }
-                        if (rect.x + rect.width > Screen.width)
+                        if (windowRect.x + windowRect.width > Screen.width)
                         {
-                            rect.x = Screen.width - rect.width;
+                            windowRect.x = Screen.width - windowRect.width;
                         }
 
-                        if (rect.y < 0.0f)
+                        if (windowRect.y < 0.0f)
                         {
-                            rect.y = 0.0f;
+                            windowRect.y = 0.0f;
                         }
-                        if (rect.y + rect.height > Screen.height)
+                        if (windowRect.y + windowRect.height > Screen.height)
                         {
-                            rect.y = Screen.height - rect.height;
+                            windowRect.y = Screen.height - windowRect.height;
                         }
                     }
                     else
@@ -331,66 +342,64 @@ namespace ModTools
                         ModTools.Instance.SaveConfig();
 
                         UpdateClickCatcher();
-
-                        onMove?.Invoke(rect.position);
+                        OnWindowMoved(windowRect.position);
                     }
                 }
             }
             else if (moveRect.Contains(mouse))
             {
-                moveTex = moveHoverTexture;
+                moveTex = MoveHoverTexture;
                 if (Input.GetMouseButton(0) && resizingWindow == null)
                 {
                     movingWindow = this;
-                    moveDragHandle = new Vector2(rect.x, rect.y) - new Vector2(mouse.x, mouse.y);
+                    moveDragHandle = new Vector2(windowRect.x, windowRect.y) - new Vector2(mouse.x, mouse.y);
                 }
             }
 
-            GUI.DrawTexture(new Rect(0.0f, 0.0f, rect.width * uiScale, 20.0f), moveTex, ScaleMode.StretchToFill);
-            GUI.contentColor = config.titlebarTextColor;
-            GUI.Label(new Rect(0.0f, 0.0f, rect.width * uiScale, 20.0f), title);
+            GUI.DrawTexture(new Rect(0.0f, 0.0f, windowRect.width * UIScale, 20.0f), moveTex, ScaleMode.StretchToFill);
+            GUI.contentColor = Config.TitlebarTextColor;
+            GUI.Label(new Rect(0.0f, 0.0f, windowRect.width * UIScale, 20.0f), Title);
             GUI.contentColor = Color.white;
         }
 
         private void DrawCloseButton(Vector3 mouse)
         {
-            var closeRect = new Rect(rect.x * uiScale + rect.width * uiScale - 20.0f, rect.y * uiScale, 16.0f, 8.0f);
-            var closeTex = closeNormalTexture;
+            var closeRect = new Rect(windowRect.x * UIScale + windowRect.width * UIScale - 20.0f, windowRect.y * UIScale, 16.0f, 8.0f);
+            var closeTex = CloseNormalTexture;
 
             if (closeRect.Contains(mouse))
             {
-                closeTex = closeHoverTexture;
+                closeTex = CloseHoverTexture;
 
                 if (Input.GetMouseButton(0))
                 {
                     resizingWindow = null;
                     movingWindow = null;
-                    visible = false;
+                    Visible = false;
                     ModTools.Instance.SaveConfig();
 
                     UpdateClickCatcher();
-
-                    onClose?.Invoke();
+                    OnWindowClosed();
                 }
             }
 
-            GUI.DrawTexture(new Rect(rect.width - 20.0f, 0.0f, 16.0f, 8.0f), closeTex, ScaleMode.StretchToFill);
+            GUI.DrawTexture(new Rect(windowRect.width - 20.0f, 0.0f, 16.0f, 8.0f), closeTex, ScaleMode.StretchToFill);
         }
 
         private void DrawResizeHandle(Vector3 mouse)
         {
-            var resizeRect = new Rect(rect.x * uiScale + rect.width * uiScale - 16.0f, rect.y * uiScale + rect.height * uiScale - 8.0f, 16.0f, 8.0f);
-            var resizeTex = resizeNormalTexture;
+            var resizeRect = new Rect(windowRect.x * UIScale + windowRect.width * UIScale - 16.0f, windowRect.y * UIScale + windowRect.height * UIScale - 8.0f, 16.0f, 8.0f);
+            var resizeTex = ResizeNormalTexture;
 
             if (resizingWindow != null)
             {
                 if (resizingWindow == this)
                 {
-                    resizeTex = resizeHoverTexture;
+                    resizeTex = ResizeHoverTexture;
 
                     if (Input.GetMouseButton(0))
                     {
-                        var size = new Vector2(mouse.x, mouse.y) + resizeDragHandle - new Vector2(rect.x, rect.y);
+                        var size = new Vector2(mouse.x, mouse.y) + resizeDragHandle - new Vector2(windowRect.x, windowRect.y);
 
                         if (size.x < minSize.x)
                         {
@@ -402,17 +411,17 @@ namespace ModTools
                             size.y = minSize.y;
                         }
 
-                        rect.width = size.x;
-                        rect.height = size.y;
+                        windowRect.width = size.x;
+                        windowRect.height = size.y;
 
-                        if (rect.x + rect.width >= Screen.width)
+                        if (windowRect.x + windowRect.width >= Screen.width)
                         {
-                            rect.width = Screen.width - rect.x;
+                            windowRect.width = Screen.width - windowRect.x;
                         }
 
-                        if (rect.y + rect.height >= Screen.height)
+                        if (windowRect.y + windowRect.height >= Screen.height)
                         {
-                            rect.height = Screen.height - rect.y;
+                            windowRect.height = Screen.height - windowRect.y;
                         }
                     }
                     else
@@ -421,22 +430,21 @@ namespace ModTools
                         ModTools.Instance.SaveConfig();
 
                         UpdateClickCatcher();
-
-                        onResize?.Invoke(rect.size);
+                        OnWindowResized(windowRect.size);
                     }
                 }
             }
             else if (resizeRect.Contains(mouse))
             {
-                resizeTex = resizeHoverTexture;
+                resizeTex = ResizeHoverTexture;
                 if (Input.GetMouseButton(0) && movingWindow == null)
                 {
                     resizingWindow = this;
-                    resizeDragHandle = new Vector2(rect.x + rect.width, rect.y + rect.height) - new Vector2(mouse.x, mouse.y);
+                    resizeDragHandle = new Vector2(windowRect.x + windowRect.width, windowRect.y + windowRect.height) - new Vector2(mouse.x, mouse.y);
                 }
             }
 
-            GUI.DrawTexture(new Rect(rect.width - 16.0f, rect.height - 8.0f, 16.0f, 8.0f), resizeTex, ScaleMode.StretchToFill);
+            GUI.DrawTexture(new Rect(windowRect.width - 16.0f, windowRect.height - 8.0f, 16.0f, 8.0f), resizeTex, ScaleMode.StretchToFill);
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUIProperty
+    internal static class GUIProperty
     {
         public static void OnSceneTreeReflectProperty(SceneExplorerState state, ReferenceChain refChain, object obj, PropertyInfo property)
         {
@@ -28,7 +28,7 @@ namespace ModTools.Explorer
 
             Exception exceptionOnGetting = null;
 
-            if (property.CanRead && ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically || state.EvaluatedProperties.Contains(refChain.UniqueId))
+            if (property.CanRead && ModTools.Instance.config.SceneExplorerEvaluatePropertiesAutomatically || state.EvaluatedProperties.Contains(refChain.UniqueId))
             {
                 try
                 {
@@ -53,31 +53,31 @@ namespace ModTools.Explorer
                 GUI.enabled = false;
             }
 
-            if (ModTools.Instance.config.sceneExplorerShowModifiers)
+            if (ModTools.Instance.config.SceneExplorerShowModifiers)
             {
-                GUI.contentColor = ModTools.Instance.config.memberTypeColor;
+                GUI.contentColor = ModTools.Instance.config.MemberTypeColor;
                 GUILayout.Label("property ");
 
                 if (!property.CanWrite)
                 {
-                    GUI.contentColor = ModTools.Instance.config.keywordColor;
+                    GUI.contentColor = ModTools.Instance.config.KeywordColor;
                     GUILayout.Label("const ");
                 }
             }
 
-            GUI.contentColor = ModTools.Instance.config.typeColor;
+            GUI.contentColor = ModTools.Instance.config.TypeColor;
 
             GUILayout.Label(property.PropertyType.ToString() + " ");
 
-            GUI.contentColor = ModTools.Instance.config.nameColor;
+            GUI.contentColor = ModTools.Instance.config.NameColor;
 
             GUILayout.Label(property.Name);
 
             GUI.contentColor = Color.white;
             GUILayout.Label(" = ");
-            GUI.contentColor = ModTools.Instance.config.valueColor;
+            GUI.contentColor = ModTools.Instance.config.ValueColor;
 
-            if (!ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically && !state.EvaluatedProperties.Contains(refChain.UniqueId))
+            if (!ModTools.Instance.config.SceneExplorerEvaluatePropertiesAutomatically && !state.EvaluatedProperties.Contains(refChain.UniqueId))
             {
                 GUI.enabled = true;
 

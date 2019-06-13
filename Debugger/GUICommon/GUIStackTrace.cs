@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public static class GUIStackTrace
+    internal static class GUIStackTrace
     {
         public static void StackTraceButton(StackTrace stackTrace)
         {
@@ -12,8 +12,12 @@ namespace ModTools
                 var viewer = StackTraceViewer.CreateStackTraceViewer(stackTrace);
                 var mouse = Input.mousePosition;
                 mouse.y = Screen.height - mouse.y;
-                viewer.rect.position = mouse;
-                viewer.visible = true;
+
+                var windowRect = viewer.WindowRect;
+                windowRect.position = mouse;
+                viewer.MoveResize(windowRect);
+
+                viewer.Visible = true;
             }
         }
     }

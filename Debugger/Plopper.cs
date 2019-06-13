@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class Plopper
+    internal static class Plopper
     {
         private static PrefabInfo ploppedPrefab;
 
@@ -100,7 +100,8 @@ namespace ModTools.Explorer
                     return;
                 }
                 Singleton<ToolManager>.instance.m_properties.CurrentTool = buildingTool;
-                ploppedPrefab = buildingTool.m_prefab = buildingInfo;
+                buildingTool.m_prefab = buildingInfo;
+                ploppedPrefab = buildingInfo;
                 buildingTool.m_relocate = 0;
             }
             else if (prefabInfo is NetInfo netInfo)
@@ -112,7 +113,8 @@ namespace ModTools.Explorer
                     return;
                 }
                 Singleton<ToolManager>.instance.m_properties.CurrentTool = netTool;
-                ploppedPrefab = netTool.m_prefab = netInfo;
+                netTool.m_prefab = netInfo;
+                ploppedPrefab = netInfo;
             }
             else if (prefabInfo is PropInfo propInfo)
             {
@@ -123,7 +125,8 @@ namespace ModTools.Explorer
                     return;
                 }
                 Singleton<ToolManager>.instance.m_properties.CurrentTool = propTool;
-                ploppedPrefab = propTool.m_prefab = propInfo;
+                propTool.m_prefab = propInfo;
+                ploppedPrefab = propInfo;
             }
             else if (prefabInfo is TreeInfo treeInfo)
             {
@@ -134,7 +137,8 @@ namespace ModTools.Explorer
                     return;
                 }
                 Singleton<ToolManager>.instance.m_properties.CurrentTool = treeTool;
-                ploppedPrefab = treeTool.m_prefab = treeInfo;
+                treeTool.m_prefab = treeInfo;
+                ploppedPrefab = treeInfo;
             }
         }
     }

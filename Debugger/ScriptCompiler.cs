@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace ModTools
 {
-    public static class ScriptCompiler
+    internal static class ScriptCompiler
     {
         private static readonly string workspacePath;
         private static readonly string sourcesPath;
@@ -101,8 +101,8 @@ namespace ModTools
 
             foreach (var file in sources)
             {
-                var sourceFilePath = Path.Combine(sourcePath, Path.GetFileName(file.path));
-                File.WriteAllText(sourceFilePath, file.source);
+                var sourceFilePath = Path.Combine(sourcePath, Path.GetFileName(file.Path));
+                File.WriteAllText(sourceFilePath, file.Source);
             }
 
             dllPath = Path.Combine(outputPath, Path.GetFileName(outputPath) + ".dll");

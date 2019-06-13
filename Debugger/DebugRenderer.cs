@@ -5,10 +5,8 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public class DebugRenderer : MonoBehaviour
+    internal sealed class DebugRenderer : MonoBehaviour
     {
-        public bool drawDebugInfo;
-
         private GUIStyle normalRectStyle;
         private GUIStyle hoveredRectStyle;
         private GUIStyle infoWindowStyle;
@@ -17,10 +15,12 @@ namespace ModTools
         private readonly List<UIComponent> hoveredComponents = new List<UIComponent>();
         private long previousHash = 0;
 
+        public bool DrawDebugInfo { get; set; }
+
         public void Update()
         {
             var hoveredLocal = hoveredComponent;
-            if (drawDebugInfo && hoveredLocal != null)
+            if (DrawDebugInfo && hoveredLocal != null)
             {
                 if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F))
                 {
@@ -43,7 +43,7 @@ namespace ModTools
 
                     var sceneExplorer = FindObjectOfType<SceneExplorer>();
                     sceneExplorer.ExpandFromRefChain(refChain.GetReversedCopy());
-                    sceneExplorer.visible = true;
+                    sceneExplorer.Visible = true;
                 }
                 if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G) && hoveredComponents.Count > 1 && hoveredComponent != null)
                 {
@@ -56,7 +56,7 @@ namespace ModTools
 
         public void OnGUI()
         {
-            if (!drawDebugInfo)
+            if (!DrawDebugInfo)
             {
                 return;
             }

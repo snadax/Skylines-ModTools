@@ -2,7 +2,7 @@
 
 namespace ModTools.Explorer
 {
-    public static class GUIComponent
+    internal static class GUIComponent
     {
         public static void OnSceneTreeComponent(SceneExplorerState state, ReferenceChain refChain, Component component)
         {
@@ -21,8 +21,8 @@ namespace ModTools.Explorer
             SceneExplorerCommon.InsertIndent(refChain.Ident);
 
             GUI.contentColor = Util.ComponentIsEnabled(component)
-                ? ModTools.Instance.config.enabledComponentColor
-                : ModTools.Instance.config.disabledComponentColor;
+                ? ModTools.Instance.config.EnabledComponentColor
+                : ModTools.Instance.config.DisabledComponentColor;
 
             if (state.CurrentRefChain?.Equals(refChain.Add(component)) != true)
             {
@@ -34,7 +34,7 @@ namespace ModTools.Explorer
             }
             else
             {
-                GUI.contentColor = ModTools.Instance.config.selectedComponentColor;
+                GUI.contentColor = ModTools.Instance.config.SelectedComponentColor;
                 if (GUILayout.Button("<", GUILayout.ExpandWidth(false)))
                 {
                     state.CurrentRefChain = null;

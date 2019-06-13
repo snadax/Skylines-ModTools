@@ -2,7 +2,7 @@
 
 namespace ModTools
 {
-    public static class HashUtil
+    internal static class HashUtil
     {
         public static long HashRect(Rect rect)
         {

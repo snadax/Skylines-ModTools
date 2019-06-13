@@ -4,7 +4,7 @@
 
 namespace ModTools
 {
-    public static class GUIComboBox
+    internal static class GUIComboBox
     {
         // Easy to use combobox class
         // ***** For users *****
@@ -33,7 +33,7 @@ namespace ModTools
         // ComboBox GUI Style
         private static readonly GUIStyle style;
 
-        private static GUIStyle _yellowOnHover;
+        private static GUIStyle yellowOnHover;
 
         static GUIComboBox()
         {
@@ -66,20 +66,20 @@ namespace ModTools
             style.padding.top = style.padding.bottom;
         }
 
-        public static GUIStyle yellowOnHover
+        public static GUIStyle YellowOnHover
         {
             get
             {
-                if (_yellowOnHover == null)
+                if (yellowOnHover == null)
                 {
-                    _yellowOnHover = new GUIStyle(GUI.skin.label);
-                    _yellowOnHover.hover.textColor = Color.yellow;
+                    yellowOnHover = new GUIStyle(GUI.skin.label);
+                    yellowOnHover.hover.textColor = Color.yellow;
                     var t = new Texture2D(1, 1);
                     t.SetPixel(0, 0, new Color(0, 0, 0, 0));
                     t.Apply();
-                    _yellowOnHover.hover.background = t;
+                    yellowOnHover.hover.background = t;
                 }
-                return _yellowOnHover;
+                return yellowOnHover;
             }
         }
 
@@ -97,7 +97,7 @@ namespace ModTools
                     comboBoxScroll = GUILayout.BeginScrollView(comboBoxScroll, false, false);
                 }
 
-                selectedItem = GUILayout.SelectionGrid(-1, entries, 1, yellowOnHover);
+                selectedItem = GUILayout.SelectionGrid(-1, entries, 1, YellowOnHover);
 
                 if (hasScrollbars)
                 {

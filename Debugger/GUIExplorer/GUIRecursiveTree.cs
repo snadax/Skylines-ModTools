@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUIRecursiveTree
+    internal static class GUIRecursiveTree
     {
         public static void OnSceneTreeRecursive(GameObject modToolsGo, SceneExplorerState state, ReferenceChain refChain, GameObject obj)
         {
@@ -40,7 +40,7 @@ namespace ModTools.Explorer
                         state.ExpandedGameObjects.Remove(refChain.UniqueId);
                     }
 
-                    GUI.contentColor = ModTools.Instance.config.gameObjectColor;
+                    GUI.contentColor = ModTools.Instance.config.GameObjectColor;
                     GUILayout.Label(obj.name);
                     GUI.contentColor = Color.white;
 
@@ -48,7 +48,7 @@ namespace ModTools.Explorer
 
                     var components = obj.GetComponents(typeof(Component));
 
-                    if (ModTools.Instance.config.sceneExplorerSortAlphabetically)
+                    if (ModTools.Instance.config.SceneExplorerSortAlphabetically)
                     {
                         Array.Sort(components, (component, component1) => component.GetType().ToString().CompareTo(component1.GetType().ToString()));
                     }
@@ -79,7 +79,7 @@ namespace ModTools.Explorer
                     state.ExpandedGameObjects.Add(refChain.UniqueId);
                 }
 
-                GUI.contentColor = ModTools.Instance.config.gameObjectColor;
+                GUI.contentColor = ModTools.Instance.config.GameObjectColor;
                 GUILayout.Label(obj.name);
                 GUI.contentColor = Color.white;
                 GUILayout.EndHorizontal();

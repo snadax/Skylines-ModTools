@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ModTools.Utils
 {
-    public static class MeshUtil
+    internal static class MeshUtil
     {
         public static void DumpMeshToOBJ(Mesh mesh, string fileName)
         {

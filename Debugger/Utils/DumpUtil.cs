@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ModTools.Utils
 {
-    public static class DumpUtil
+    internal static class DumpUtil
     {
         public static void DumpAsset(
             string assetName,

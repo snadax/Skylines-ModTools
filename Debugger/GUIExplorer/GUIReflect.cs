@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUIReflect
+    internal static class GUIReflect
     {
         public static void OnSceneTreeReflect(SceneExplorerState state, ReferenceChain refChain, object obj, bool rawReflection = false)
         {
@@ -75,20 +75,20 @@ namespace ModTools.Explorer
                 }
             }
 
-            var members = TypeUtil.GetAllMembers(type, ModTools.Instance.config.sceneExplorerShowInheritedMembers);
+            var members = TypeUtil.GetAllMembers(type, ModTools.Instance.config.SceneExplorerShowInheritedMembers);
 
-            if (ModTools.Instance.config.sceneExplorerSortAlphabetically)
+            if (ModTools.Instance.config.SceneExplorerSortAlphabetically)
             {
                 Array.Sort(members, (info, info1) => string.CompareOrdinal(info.Name, info1.Name));
             }
 
             foreach (var member in members)
             {
-                if (member.MemberType == MemberTypes.Field && ModTools.Instance.config.sceneExplorerShowFields)
+                if (member.MemberType == MemberTypes.Field && ModTools.Instance.config.SceneExplorerShowFields)
                 {
                     var field = (FieldInfo)member;
 
-                    if (field.IsLiteral && !field.IsInitOnly && !ModTools.Instance.config.sceneExplorerShowConsts)
+                    if (field.IsLiteral && !field.IsInitOnly && !ModTools.Instance.config.SceneExplorerShowConsts)
                     {
                         continue;
                     }
@@ -102,7 +102,7 @@ namespace ModTools.Explorer
                         SceneExplorerCommon.OnSceneTreeMessage(refChain, $"Exception when fetching field \"{field.Name}\" - {ex.Message}\n{ex.StackTrace}");
                     }
                 }
-                else if (member.MemberType == MemberTypes.Property && ModTools.Instance.config.sceneExplorerShowProperties)
+                else if (member.MemberType == MemberTypes.Property && ModTools.Instance.config.SceneExplorerShowProperties)
                 {
                     var property = (PropertyInfo)member;
 
@@ -115,7 +115,7 @@ namespace ModTools.Explorer
                         SceneExplorerCommon.OnSceneTreeMessage(refChain, $"Exception when fetching property \"{property.Name}\" - {ex.Message}\n{ex.StackTrace}");
                     }
                 }
-                else if (member.MemberType == MemberTypes.Method && ModTools.Instance.config.sceneExplorerShowMethods)
+                else if (member.MemberType == MemberTypes.Method && ModTools.Instance.config.SceneExplorerShowMethods)
                 {
                     var method = (MethodInfo)member;
 

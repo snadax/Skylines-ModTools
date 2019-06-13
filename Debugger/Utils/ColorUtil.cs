@@ -3,22 +3,25 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public static class ColorUtil
+    internal static class ColorUtil
     {
         public struct HSV
         {
-            public double h;
-            public double s;
-            public double v;
+            public double H;
+            public double S;
+            public double V;
 
-            public override string ToString() => $"H: {h.ToString("0.00")}, S: {s.ToString("0.00")}, V:{v.ToString("0.00")}";
+            public override string ToString() => $"H: {H.ToString("0.00")}, S: {S.ToString("0.00")}, V:{V.ToString("0.00")}";
 
             public static HSV RGB2HSV(Color color) => RGB2HSV((int)(color.r * 255), (int)(color.g * 255), (int)(color.b * 255));
 
             public static HSV RGB2HSV(double r, double b, double g)
             {
-                double delta, min;
-                double h = 0, s, v;
+                double delta;
+                double min;
+                double h = 0;
+                double s;
+                double v;
 
                 min = Math.Min(Math.Min(r, g), b);
                 v = Math.Max(Math.Max(r, g), b);
@@ -54,13 +57,13 @@ namespace ModTools
 
                 return new HSV
                 {
-                    h = h,
-                    s = s,
-                    v = v / 255
+                    H = h,
+                    S = s,
+                    V = v / 255
                 };
             }
 
-            public static Color HSV2RGB(HSV color) => HSV2RGB(color.h, color.s, color.v);
+            public static Color HSV2RGB(HSV color) => HSV2RGB(color.H, color.S, color.V);
 
             public static Color HSV2RGB(double h, double s, double v)
             {
@@ -77,7 +80,10 @@ namespace ModTools
                 else
                 {
                     int i;
-                    double f, p, q, t;
+                    double f;
+                    double p;
+                    double q;
+                    double t;
 
                     if (h == 360)
                     {

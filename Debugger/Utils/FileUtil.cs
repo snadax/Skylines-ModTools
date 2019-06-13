@@ -8,17 +8,18 @@ using ICities;
 
 namespace ModTools
 {
-    public static class FileUtil
+    internal static class FileUtil
     {
-        public static List<string> ListFilesInDirectory(string path, List<string> _filesMustBeNull = null)
+        public static List<string> ListFilesInDirectory(string path, List<string> filesMustBeNull = null)
         {
-            _filesMustBeNull = _filesMustBeNull ?? new List<string>();
+            filesMustBeNull = filesMustBeNull ?? new List<string>();
 
             foreach (var file in Directory.GetFiles(path))
             {
-                _filesMustBeNull.Add(file);
+                filesMustBeNull.Add(file);
             }
-            return _filesMustBeNull;
+
+            return filesMustBeNull;
         }
 
         public static string FindPluginPath(Type type)

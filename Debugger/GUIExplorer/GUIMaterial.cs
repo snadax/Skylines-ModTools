@@ -2,7 +2,7 @@
 
 namespace ModTools.Explorer
 {
-    public static class GUIMaterial
+    internal static class GUIMaterial
     {
         private static readonly string[] textureProps =
         {
@@ -107,11 +107,11 @@ namespace ModTools.Explorer
 
                 GUIExpander.ExpanderControls(state, refChain, type);
 
-                GUI.contentColor = ModTools.Instance.config.typeColor;
+                GUI.contentColor = ModTools.Instance.config.TypeColor;
 
                 GUILayout.Label(type.ToString() + " ");
 
-                GUI.contentColor = ModTools.Instance.config.nameColor;
+                GUI.contentColor = ModTools.Instance.config.NameColor;
 
                 GUILayout.Label(prop);
 
@@ -119,7 +119,7 @@ namespace ModTools.Explorer
 
                 GUILayout.Label(" = ");
 
-                GUI.contentColor = ModTools.Instance.config.valueColor;
+                GUI.contentColor = ModTools.Instance.config.ValueColor;
                 GUILayout.Label(value.ToString());
                 GUI.contentColor = Color.white;
 
@@ -156,11 +156,11 @@ namespace ModTools.Explorer
 
                 GUIExpander.ExpanderControls(state, refChain, type);
 
-                GUI.contentColor = ModTools.Instance.config.typeColor;
+                GUI.contentColor = ModTools.Instance.config.TypeColor;
 
                 GUILayout.Label(type.ToString() + " ");
 
-                GUI.contentColor = ModTools.Instance.config.nameColor;
+                GUI.contentColor = ModTools.Instance.config.NameColor;
 
                 GUILayout.Label(prop);
 
@@ -168,7 +168,7 @@ namespace ModTools.Explorer
 
                 GUILayout.Label(" = ");
 
-                GUI.contentColor = ModTools.Instance.config.valueColor;
+                GUI.contentColor = ModTools.Instance.config.ValueColor;
 
                 var newColor = GUIControls.CustomValueField(refChain.UniqueId, string.Empty, GUIControls.PresentColor, value);
                 if (newColor != value)

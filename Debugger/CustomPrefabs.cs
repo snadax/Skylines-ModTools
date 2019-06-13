@@ -5,19 +5,19 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public class CustomPrefabs : MonoBehaviour
+    internal sealed class CustomPrefabs : MonoBehaviour
     {
         private static bool bootstrapped;
         private static GameObject thisGameObject;
 
-        public VehicleInfo[] m_vehicles;
-        public BuildingInfo[] m_buildings;
-        public PropInfo[] m_props;
-        public TreeInfo[] m_trees;
-        public NetInfo[] m_nets;
-        public EventInfo[] m_events;
-        public TransportInfo[] m_transports;
-        public CitizenInfo[] m_citizens;
+        public VehicleInfo[] Vehicles;
+        public BuildingInfo[] Buildings;
+        public PropInfo[] Props;
+        public TreeInfo[] Trees;
+        public NetInfo[] Nets;
+        public EventInfo[] Events;
+        public TransportInfo[] Transports;
+        public CitizenInfo[] Citizens;
 
         public static void Bootstrap()
         {
@@ -50,26 +50,26 @@ namespace ModTools
 
         public void Awake()
         {
-            m_vehicles = GetCustomPrefabs<VehicleInfo>();
-            m_buildings = GetCustomPrefabs<BuildingInfo>();
-            m_props = GetCustomPrefabs<PropInfo>();
-            m_trees = GetCustomPrefabs<TreeInfo>();
-            m_nets = GetCustomPrefabs<NetInfo>();
-            m_events = GetCustomPrefabs<EventInfo>();
-            m_transports = GetCustomPrefabs<TransportInfo>();
-            m_citizens = GetCustomPrefabs<CitizenInfo>();
+            Vehicles = GetCustomPrefabs<VehicleInfo>();
+            Buildings = GetCustomPrefabs<BuildingInfo>();
+            Props = GetCustomPrefabs<PropInfo>();
+            Trees = GetCustomPrefabs<TreeInfo>();
+            Nets = GetCustomPrefabs<NetInfo>();
+            Events = GetCustomPrefabs<EventInfo>();
+            Transports = GetCustomPrefabs<TransportInfo>();
+            Citizens = GetCustomPrefabs<CitizenInfo>();
         }
 
         public void OnDestroy()
         {
-            m_vehicles = null;
-            m_buildings = null;
-            m_props = null;
-            m_trees = null;
-            m_nets = null;
-            m_events = null;
-            m_transports = null;
-            m_citizens = null;
+            Vehicles = null;
+            Buildings = null;
+            Props = null;
+            Trees = null;
+            Nets = null;
+            Events = null;
+            Transports = null;
+            Citizens = null;
         }
 
         private static T[] GetCustomPrefabs<T>() where T : PrefabInfo

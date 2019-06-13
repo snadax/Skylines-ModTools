@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ModTools.Utils
 {
-    public static class TextureUtil
+    internal static class TextureUtil
     {
         public static void DumpTexture2D(Texture2D texture, string filename)
         {
@@ -117,13 +117,11 @@ namespace ModTools.Utils
                     filename = $"{filenamePrefix}_{i}.png";
                 }
             }
-            else
+            else if (!filename.EndsWith(".png"))
             {
-                if (!filename.EndsWith(".png"))
-                {
-                    filename = $"{filename}.png";
-                }
+                filename = $"{filename}.png";
             }
+
             filename = Path.Combine(Path.Combine(DataLocation.addonsPath, "Import"), filename);
 
             if (File.Exists(filename))

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUICollection
+    internal static class GUICollection
     {
         public static void OnSceneTreeReflectICollection(SceneExplorerState state, ReferenceChain refChain, object myProperty)
         {
@@ -60,12 +60,12 @@ namespace ModTools.Explorer
                         GUIExpander.ExpanderControls(state, refChain, type);
                     }
 
-                    GUI.contentColor = ModTools.Instance.config.typeColor;
+                    GUI.contentColor = ModTools.Instance.config.TypeColor;
 
                     GUILayout.Label(type.ToString() + " ");
                 }
 
-                GUI.contentColor = ModTools.Instance.config.nameColor;
+                GUI.contentColor = ModTools.Instance.config.NameColor;
 
                 GUILayout.Label($"{oldRefChain.LastItemName}.[{count}]");
 
@@ -73,7 +73,7 @@ namespace ModTools.Explorer
 
                 GUILayout.Label(" = ");
 
-                GUI.contentColor = ModTools.Instance.config.valueColor;
+                GUI.contentColor = ModTools.Instance.config.ValueColor;
                 GUILayout.Label(value == null ? "null" : isNullOrEmpty ? "empty" : value.ToString());
 
                 GUI.contentColor = Color.white;

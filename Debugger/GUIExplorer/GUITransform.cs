@@ -2,7 +2,7 @@
 
 namespace ModTools.Explorer
 {
-    public static class GUITransform
+    internal static class GUITransform
     {
         public static void OnSceneTreeReflectUnityEngineTransform(ReferenceChain refChain, Transform transform)
         {
@@ -54,7 +54,7 @@ namespace ModTools.Explorer
                 name,
                 GUIControls.PresentQuaternion,
                 vec,
-                ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident);
+                ModTools.Instance.config.SceneExplorerTreeIdentSpacing * refChain.Ident);
         }
 
         private static void OnSceneTreeReflectUnityEngineVector3(ReferenceChain refChain, string name, ref Vector3 vec)
@@ -69,7 +69,7 @@ namespace ModTools.Explorer
                 name,
                 GUIControls.PresentVector3,
                 vec,
-                ModTools.Instance.config.sceneExplorerTreeIdentSpacing * refChain.Ident);
+                ModTools.Instance.config.SceneExplorerTreeIdentSpacing * refChain.Ident);
         }
     }
 }

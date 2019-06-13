@@ -2,30 +2,34 @@
 
 namespace ModTools
 {
-    public class GUIArea
+    internal sealed class GUIArea
     {
-        public Vector2 absolutePosition = Vector2.zero;
-        public Vector2 absoluteSize = Vector2.zero;
-        public Vector2 margin = new Vector2(8.0f, 8.0f);
-        public Vector2 relativePosition = Vector2.zero;
-        public Vector2 relativeSize = Vector2.zero;
-        public GUIWindow window;
+        public Vector2 AbsolutePosition = Vector2.zero;
 
-        public GUIArea(GUIWindow _window)
+        public Vector2 AbsoluteSize = Vector2.zero;
+
+        public Vector2 RelativePosition = Vector2.zero;
+
+        public Vector2 RelativeSize = Vector2.zero;
+
+        private readonly Vector2 margin = new Vector2(8.0f, 8.0f);
+        private readonly GUIWindow window;
+
+        public GUIArea(GUIWindow window)
         {
-            window = _window;
+            this.window = window;
         }
 
-        public Vector2 Position
-            => absolutePosition + new Vector2(relativePosition.x * window.rect.width, relativePosition.y * window.rect.height) + margin;
+        private Vector2 GetPosition()
+            => AbsolutePosition + new Vector2(RelativePosition.x * window.WindowRect.width, RelativePosition.y * window.WindowRect.height) + margin;
 
-        public Vector2 Size
-            => absoluteSize + new Vector2(relativeSize.x * window.rect.width, relativeSize.y * window.rect.height) - margin * 2.0f;
+        private Vector2 GetSize()
+            => AbsoluteSize + new Vector2(RelativeSize.x * window.WindowRect.width, RelativeSize.y * window.WindowRect.height) - margin * 2.0f;
 
         public void Begin()
         {
-            var position = Position;
-            var size = Size;
+            var position = GetPosition();
+            var size = GetSize();
             GUILayout.BeginArea(new Rect(position.x, position.y, size.x, size.y));
         }
 

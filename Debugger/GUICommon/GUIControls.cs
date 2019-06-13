@@ -55,11 +55,11 @@ namespace ModTools
 
             if (!string.IsNullOrEmpty(name))
             {
-                GUI.contentColor = Config.nameColor;
+                GUI.contentColor = Config.NameColor;
                 GUILayout.Label(name);
             }
 
-            GUI.contentColor = Config.valueColor;
+            GUI.contentColor = Config.ValueColor;
 
             var newText = BufferedTextField(id, value.ToString(), GetTextFieldSize(typeof(T)));
 
@@ -95,11 +95,11 @@ namespace ModTools
 
             if (!string.IsNullOrEmpty(name))
             {
-                GUI.contentColor = Config.nameColor;
+                GUI.contentColor = Config.NameColor;
                 GUILayout.Label(name);
             }
 
-            GUI.contentColor = Config.valueColor;
+            GUI.contentColor = Config.ValueColor;
 
             var valueType = value.GetType();
             var newText = BufferedTextField(id, value.ToString(), GetTextFieldSize(valueType));
@@ -167,11 +167,11 @@ namespace ModTools
 
             if (!string.IsNullOrEmpty(name))
             {
-                GUI.contentColor = Config.nameColor;
+                GUI.contentColor = Config.NameColor;
                 GUILayout.Label(name);
             }
 
-            GUI.contentColor = Config.valueColor;
+            GUI.contentColor = Config.ValueColor;
 
             value = GUILayout.Toggle(value, string.Empty);
 
@@ -192,11 +192,11 @@ namespace ModTools
 
                 if (!string.IsNullOrEmpty(name))
                 {
-                    GUI.contentColor = Config.nameColor;
+                    GUI.contentColor = Config.NameColor;
                     GUILayout.Label(name);
                 }
 
-                GUI.contentColor = Config.valueColor;
+                GUI.contentColor = Config.ValueColor;
 
                 if (TypeUtil.IsBitmaskEnum(enumType))
                 {
@@ -291,8 +291,10 @@ namespace ModTools
                     Vector2 mouse = Input.mousePosition;
                     mouse.y = Screen.height - mouse.y;
 
-                    picker.rect.position = mouse;
-                    picker.visible = true;
+                    var windowRect = picker.WindowRect;
+                    windowRect.position = mouse;
+                    picker.MoveResize(windowRect);
+                    picker.Visible = true;
                 }
             }
 
@@ -314,14 +316,14 @@ namespace ModTools
             if (ident != 0.0f)
             {
                 GUILayout.Space(ident);
-                GUI.contentColor = Config.typeColor;
+                GUI.contentColor = Config.TypeColor;
                 GUILayout.Label(value.GetType().Name);
             }
 
-            GUI.contentColor = Config.nameColor;
+            GUI.contentColor = Config.NameColor;
             GUILayout.Label(name);
 
-            GUI.contentColor = Config.valueColor;
+            GUI.contentColor = Config.ValueColor;
 
             if (ident != 0.0f)
             {

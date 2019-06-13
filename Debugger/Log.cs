@@ -2,13 +2,30 @@
 
 namespace ModTools
 {
-    public static class Log
+    internal static class Log
     {
+        private static readonly object syncObject = new object();
+        private static ILogger customLogger;
+
+        public static void SetCustomLogger(ILogger logger)
+        {
+            lock (syncObject)
+            {
+                customLogger = logger;
+            }
+        }
+
         public static void Message(string s)
         {
-            if (ModTools.Instance.console != null)
+            ILogger logger;
+            lock (syncObject)
             {
-                ModTools.Instance.console.AddMessage(s, LogType.Log, false);
+                logger = customLogger;
+            }
+
+            if (logger != null)
+            {
+                logger.Log(s, LogType.Log);
             }
             else
             {
@@ -18,9 +35,15 @@ namespace ModTools
 
         public static void Error(string s)
         {
-            if (ModTools.Instance.console != null)
+            ILogger logger;
+            lock (syncObject)
             {
-                ModTools.Instance.console.AddMessage(s, LogType.Error, false);
+                logger = customLogger;
+            }
+
+            if (logger != null)
+            {
+                logger.Log(s, LogType.Error);
             }
             else
             {
@@ -30,9 +53,15 @@ namespace ModTools
 
         public static void Warning(string s)
         {
-            if (ModTools.Instance.console != null)
+            ILogger logger;
+            lock (syncObject)
             {
-                ModTools.Instance.console.AddMessage(s, LogType.Warning, false);
+                logger = customLogger;
+            }
+
+            if (logger != null)
+            {
+                logger.Log(s, LogType.Warning);
             }
             else
             {

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    internal class GamePanelExtender : MonoBehaviour
+    internal sealed class GamePanelExtender : MonoBehaviour
     {
         private SceneExplorer sceneExplorer;
 
@@ -175,7 +175,7 @@ namespace ModTools
                 {
                     var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     sceneExplorer.ExpandFromRefChain(buildingsBufferRefChain.Add(instance.Building));
-                    sceneExplorer.visible = true;
+                    sceneExplorer.Visible = true;
                 }
             );
 
@@ -226,7 +226,7 @@ namespace ModTools
                         sceneExplorer.ExpandFromRefChain(vehiclesBufferRefChain.Add(instance.Vehicle));
                     }
 
-                    sceneExplorer.visible = true;
+                    sceneExplorer.Visible = true;
                 }
             );
 
@@ -282,7 +282,7 @@ namespace ModTools
                     {
                         sceneExplorer.ExpandFromRefChain(citizensBufferRefChain.Add((int)instance.Citizen));
                     }
-                    sceneExplorer.visible = true;
+                    sceneExplorer.Visible = true;
                 }
             );
 
@@ -298,7 +298,7 @@ namespace ModTools
                     if (instance.Type == InstanceType.CitizenInstance)
                     {
                         sceneExplorer.ExpandFromRefChain(citizenInstancesBufferRefChain.Add(instance.CitizenInstance));
-                        sceneExplorer.visible = true;
+                        sceneExplorer.Visible = true;
                     }
                     else if (instance.Type == InstanceType.Citizen)
                     {
@@ -310,7 +310,7 @@ namespace ModTools
                                 continue;
                             }
                             sceneExplorer.ExpandFromRefChain(citizenInstancesBufferRefChain.Add(index));
-                            sceneExplorer.visible = true;
+                            sceneExplorer.Visible = true;
                             break;
                         }
                     }
@@ -367,10 +367,10 @@ namespace ModTools
                                 continue;
                             }
                             sceneExplorer.ExpandFromRefChain(citizensUnitsBufferRefChain.Add(index));
-                            sceneExplorer.visible = true;
+                            sceneExplorer.Visible = true;
                             break;
                         }
-                        sceneExplorer.visible = true;
+                        sceneExplorer.Visible = true;
                     }
                     else if (instance.Type == InstanceType.Citizen)
                     {
@@ -411,7 +411,7 @@ namespace ModTools
                                 continue;
                             }
                             sceneExplorer.ExpandFromRefChain(citizensUnitsBufferRefChain.Add(index));
-                            sceneExplorer.visible = true;
+                            sceneExplorer.Visible = true;
                             break;
                         }
                     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUIMethod
+    internal static class GUIMethod
     {
         public static void OnSceneTreeReflectMethod(ReferenceChain refChain, object obj, MethodInfo method)
         {
@@ -21,11 +21,11 @@ namespace ModTools.Explorer
             GUILayout.BeginHorizontal();
             SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-            GUI.contentColor = ModTools.Instance.config.memberTypeColor;
+            GUI.contentColor = ModTools.Instance.config.MemberTypeColor;
             GUILayout.Label("method ");
             GUI.contentColor = Color.white;
             GUILayout.Label(method.ReturnType.ToString() + " " + method.Name + "(");
-            GUI.contentColor = ModTools.Instance.config.nameColor;
+            GUI.contentColor = ModTools.Instance.config.NameColor;
 
             var first = true;
             foreach (var param in method.GetParameters())

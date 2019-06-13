@@ -2,7 +2,7 @@
 
 namespace ModTools
 {
-    public sealed class SceneExplorerState
+    internal sealed class SceneExplorerState
     {
         public HashSet<string> ExpandedGameObjects { get; } = new HashSet<string>();
 

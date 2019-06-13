@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public class ReferenceChain : IEquatable<ReferenceChain>, ICloneable
+    internal sealed class ReferenceChain : IEquatable<ReferenceChain>, ICloneable
     {
         public enum ReferenceType
         {
@@ -20,8 +20,8 @@ namespace ModTools
             SpecialNamedProperty
         }
 
-        private readonly object[] chainObjects = new object[ModTools.Instance.config.sceneExplorerMaxHierarchyDepth];
-        private readonly ReferenceType[] chainTypes = new ReferenceType[ModTools.Instance.config.sceneExplorerMaxHierarchyDepth];
+        private readonly object[] chainObjects = new object[ModTools.Instance.config.SceneExplorerMaxHierarchyDepth];
+        private readonly ReferenceType[] chainTypes = new ReferenceType[ModTools.Instance.config.SceneExplorerMaxHierarchyDepth];
         private string uniqueId;
 
         public int IdentOffset { get; set; }
@@ -76,7 +76,7 @@ namespace ModTools
             return clone;
         }
 
-        public bool CheckDepth() => Length >= ModTools.Instance.config.sceneExplorerMaxHierarchyDepth;
+        public bool CheckDepth() => Length >= ModTools.Instance.config.SceneExplorerMaxHierarchyDepth;
 
         public ReferenceChain Add(GameObject go)
         {

@@ -3,23 +3,22 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public class SceneExplorerColorConfig : GUIWindow
+    internal sealed class SceneExplorerColorConfig : GUIWindow
     {
-        private static Configuration config => ModTools.Instance.config;
+        private static Configuration Config => ModTools.Instance.config;
 
         private readonly string[] availableFonts;
         private int selectedFont;
 
-        public SceneExplorerColorConfig() : base("Font/ color configuration", new Rect(16.0f, 16.0f, 600.0f, 490.0f), skin)
+        public SceneExplorerColorConfig()
+            : base("Font/ color configuration", new Rect(16.0f, 16.0f, 600.0f, 490.0f), Skin)
         {
-            onDraw = DrawWindow;
-            onException = HandleException;
-            visible = false;
-            resizable = false;
+            Visible = false;
+            Resizable = false;
 
             availableFonts = Font.GetOSInstalledFontNames();
             var c = 0;
-            var configFont = config.fontName;
+            var configFont = Config.FontName;
 
             foreach (var font in availableFonts)
             {
@@ -43,7 +42,7 @@ namespace ModTools
             return newColor;
         }
 
-        private void DrawWindow()
+        protected override void DrawWindow()
         {
             var config = ModTools.Instance.config;
 
@@ -53,7 +52,7 @@ namespace ModTools
             var newSelectedFont = GUIComboBox.Box(selectedFont, availableFonts, "SceneExplorerColorConfigFontsComboBox");
             if (newSelectedFont != selectedFont)
             {
-                config.fontName = availableFonts[newSelectedFont];
+                config.FontName = availableFonts[newSelectedFont];
                 selectedFont = newSelectedFont;
                 UpdateFont();
             }
@@ -63,47 +62,47 @@ namespace ModTools
 
             GUILayout.Label("Font size");
 
-            var newFontSize = (int)GUILayout.HorizontalSlider(config.fontSize, 13.0f, 39.0f, GUILayout.Width(256));
+            var newFontSize = (int)GUILayout.HorizontalSlider(config.FontSize, 13.0f, 39.0f, GUILayout.Width(256));
 
-            if (newFontSize != config.fontSize)
+            if (newFontSize != config.FontSize)
             {
-                config.fontSize = newFontSize;
+                config.FontSize = newFontSize;
                 UpdateFont();
             }
 
             GUILayout.EndHorizontal();
 
-            var newColor = DrawColorControl("Background", config.backgroundColor);
-            if (newColor != config.backgroundColor)
+            var newColor = DrawColorControl("Background", config.BackgroundColor);
+            if (newColor != config.BackgroundColor)
             {
-                config.backgroundColor = newColor;
-                bgTexture.SetPixel(0, 0, config.backgroundColor);
-                bgTexture.Apply();
+                config.BackgroundColor = newColor;
+                BgTexture.SetPixel(0, 0, config.BackgroundColor);
+                BgTexture.Apply();
             }
 
-            newColor = DrawColorControl("Titlebar", config.titlebarColor);
-            if (newColor != config.titlebarColor)
+            newColor = DrawColorControl("Titlebar", config.TitlebarColor);
+            if (newColor != config.TitlebarColor)
             {
-                config.titlebarColor = newColor;
-                moveNormalTexture.SetPixel(0, 0, config.titlebarColor);
-                moveNormalTexture.Apply();
+                config.TitlebarColor = newColor;
+                MoveNormalTexture.SetPixel(0, 0, config.TitlebarColor);
+                MoveNormalTexture.Apply();
 
-                moveHoverTexture.SetPixel(0, 0, config.titlebarColor * 1.2f);
-                moveHoverTexture.Apply();
+                MoveHoverTexture.SetPixel(0, 0, config.TitlebarColor * 1.2f);
+                MoveHoverTexture.Apply();
             }
 
-            config.titlebarTextColor = DrawColorControl("Titlebar text", config.titlebarTextColor);
+            config.TitlebarTextColor = DrawColorControl("Titlebar text", config.TitlebarTextColor);
 
-            config.gameObjectColor = DrawColorControl("GameObject", config.gameObjectColor);
-            config.enabledComponentColor = DrawColorControl("Component (enabled)", config.enabledComponentColor);
-            config.disabledComponentColor = DrawColorControl("Component (disabled)", config.disabledComponentColor);
-            config.selectedComponentColor = DrawColorControl("Selected component", config.selectedComponentColor);
-            config.keywordColor = DrawColorControl("Keyword", config.keywordColor);
-            config.nameColor = DrawColorControl("Member name", config.nameColor);
-            config.typeColor = DrawColorControl("Member type", config.typeColor);
-            config.modifierColor = DrawColorControl("Member modifier", config.modifierColor);
-            config.memberTypeColor = DrawColorControl("Field type", config.memberTypeColor);
-            config.valueColor = DrawColorControl("Member value", config.valueColor);
+            config.GameObjectColor = DrawColorControl("GameObject", config.GameObjectColor);
+            config.EnabledComponentColor = DrawColorControl("Component (enabled)", config.EnabledComponentColor);
+            config.DisabledComponentColor = DrawColorControl("Component (disabled)", config.DisabledComponentColor);
+            config.SelectedComponentColor = DrawColorControl("Selected component", config.SelectedComponentColor);
+            config.KeywordColor = DrawColorControl("Keyword", config.KeywordColor);
+            config.NameColor = DrawColorControl("Member name", config.NameColor);
+            config.TypeColor = DrawColorControl("Member type", config.TypeColor);
+            config.ModifierColor = DrawColorControl("Member modifier", config.ModifierColor);
+            config.MemberTypeColor = DrawColorControl("Field type", config.MemberTypeColor);
+            config.ValueColor = DrawColorControl("Member value", config.ValueColor);
 
             GUILayout.BeginHorizontal();
 
@@ -116,30 +115,30 @@ namespace ModTools
             {
                 var template = new Configuration();
 
-                config.backgroundColor = template.backgroundColor;
-                bgTexture.SetPixel(0, 0, config.backgroundColor);
-                bgTexture.Apply();
+                config.BackgroundColor = template.BackgroundColor;
+                BgTexture.SetPixel(0, 0, config.BackgroundColor);
+                BgTexture.Apply();
 
-                config.titlebarColor = template.titlebarColor;
-                moveNormalTexture.SetPixel(0, 0, config.titlebarColor);
-                moveNormalTexture.Apply();
+                config.TitlebarColor = template.TitlebarColor;
+                MoveNormalTexture.SetPixel(0, 0, config.TitlebarColor);
+                MoveNormalTexture.Apply();
 
-                moveHoverTexture.SetPixel(0, 0, config.titlebarColor * 1.2f);
-                moveHoverTexture.Apply();
+                MoveHoverTexture.SetPixel(0, 0, config.TitlebarColor * 1.2f);
+                MoveHoverTexture.Apply();
 
-                config.titlebarTextColor = template.titlebarTextColor;
+                config.TitlebarTextColor = template.TitlebarTextColor;
 
-                config.gameObjectColor = template.gameObjectColor;
-                config.enabledComponentColor = template.enabledComponentColor;
-                config.disabledComponentColor = template.disabledComponentColor;
-                config.selectedComponentColor = template.selectedComponentColor;
-                config.nameColor = template.nameColor;
-                config.typeColor = template.typeColor;
-                config.modifierColor = template.modifierColor;
-                config.memberTypeColor = template.memberTypeColor;
-                config.valueColor = template.valueColor;
-                config.fontName = template.fontName;
-                config.fontSize = template.fontSize;
+                config.GameObjectColor = template.GameObjectColor;
+                config.EnabledComponentColor = template.EnabledComponentColor;
+                config.DisabledComponentColor = template.DisabledComponentColor;
+                config.SelectedComponentColor = template.SelectedComponentColor;
+                config.NameColor = template.NameColor;
+                config.TypeColor = template.TypeColor;
+                config.ModifierColor = template.ModifierColor;
+                config.MemberTypeColor = template.MemberTypeColor;
+                config.ValueColor = template.ValueColor;
+                config.FontName = template.FontName;
+                config.FontSize = template.FontSize;
 
                 UpdateFont();
                 ModTools.Instance.SaveConfig();
@@ -149,10 +148,10 @@ namespace ModTools
             GUILayout.EndHorizontal();
         }
 
-        private void HandleException(Exception ex)
+        protected override void HandleException(Exception ex)
         {
             Log.Error("Exception in SceneExplorerColorConfig - " + ex.Message);
-            visible = false;
+            Visible = false;
         }
     }
 }

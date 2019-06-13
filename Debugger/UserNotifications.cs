@@ -2,9 +2,9 @@
 
 namespace ModTools
 {
-    public static class UserNotifications
+    internal static class UserNotifications
     {
-        private static Configuration config => ModTools.Instance.config;
+        private static Configuration Config => ModTools.Instance.config;
 
         private static readonly List<KeyValuePair<int, string>> notifications = new List<KeyValuePair<int, string>>
         {
@@ -18,7 +18,7 @@ namespace ModTools
 
             foreach (var item in notifications)
             {
-                if ((config.hiddenNotifications & (1 << item.Key)) == 0)
+                if ((Config.HiddenNotifications & (1 << item.Key)) == 0)
                 {
                     result.Add(item);
                 }
@@ -29,7 +29,7 @@ namespace ModTools
 
         public static void HideNotification(int index)
         {
-            config.hiddenNotifications |= 1 << index;
+            Config.HiddenNotifications |= 1 << index;
             ModTools.Instance.SaveConfig();
         }
 

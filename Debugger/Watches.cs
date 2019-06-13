@@ -5,24 +5,23 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public class Watches : GUIWindow
+    internal sealed class Watches : GUIWindow
     {
         private readonly List<ReferenceChain> watches = new List<ReferenceChain>();
 
-        private Configuration config => ModTools.Instance.config;
+        private Configuration Config => ModTools.Instance.config;
 
         private Vector2 watchesScroll = Vector2.zero;
 
         public Watches()
-            : base("Watches", new Rect(504, 128, 800, 300), skin)
+            : base("Watches", new Rect(504, 128, 800, 300), Skin)
         {
-            onDraw = DoWatchesWindow;
         }
 
         public void AddWatch(ReferenceChain refChain)
         {
             watches.Add(refChain);
-            visible = true;
+            Visible = true;
         }
 
         public void RemoveWatch(ReferenceChain refChain)
@@ -45,7 +44,7 @@ namespace ModTools
             return ret;
         }
 
-        private void DoWatchesWindow()
+        protected override void DrawWindow()
         {
             watchesScroll = GUILayout.BeginScrollView(watchesScroll);
 
@@ -55,9 +54,9 @@ namespace ModTools
 
                 var type = GetWatchType(watch);
 
-                GUI.contentColor = config.typeColor;
+                GUI.contentColor = Config.TypeColor;
                 GUILayout.Label(type.ToString());
-                GUI.contentColor = config.nameColor;
+                GUI.contentColor = Config.NameColor;
                 GUILayout.Label(watch.ToString());
                 GUI.contentColor = Color.white;
                 GUILayout.Label(" = ");
@@ -65,7 +64,7 @@ namespace ModTools
                 GUI.enabled = false;
 
                 var value = watch.Evaluate();
-                GUI.contentColor = config.valueColor;
+                GUI.contentColor = Config.ValueColor;
 
                 if (value == null || !TypeUtil.IsSpecialType(type))
                 {
@@ -93,7 +92,7 @@ namespace ModTools
                 {
                     var sceneExplorer = FindObjectOfType<SceneExplorer>();
                     sceneExplorer.ExpandFromRefChain(watch.Trim(watch.Length - 1));
-                    sceneExplorer.visible = true;
+                    sceneExplorer.Visible = true;
                 }
 
                 if (GUILayout.Button("x", GUILayout.Width(24)))

@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public sealed class StackTraceViewer : GUIWindow
+    internal sealed class StackTraceViewer : GUIWindow
     {
-        private static Configuration config => ModTools.Instance.config;
+        private static Configuration Config => ModTools.Instance.config;
 
         private StackTrace trace;
 
@@ -21,18 +21,16 @@ namespace ModTools
             return viewer;
         }
 
-        private StackTraceViewer() : base("Stack-trace viewer", new Rect(16.0f, 16.0f, 512.0f, 256.0f), skin)
+        private StackTraceViewer()
+            : base("Stack-trace viewer", new Rect(16.0f, 16.0f, 512.0f, 256.0f), Skin)
         {
-            onDraw = DrawWindow;
-            onException = HandleException;
-            onClose = HandleClosed;
         }
 
-        private void HandleClosed() => Destroy(this);
+        protected override void OnWindowClosed() => Destroy(this);
 
-        private void HandleException(Exception ex) => Log.Error("Exception in StackTraceViewer - " + ex.Message);
+        protected override void HandleException(Exception ex) => Log.Error("Exception in StackTraceViewer - " + ex.Message);
 
-        private void DrawWindow()
+        protected override void DrawWindow()
         {
             if (trace == null)
             {
@@ -50,16 +48,16 @@ namespace ModTools
             var count = 0;
             foreach (var frame in stackFrames)
             {
-                GUILayout.BeginHorizontal(skin.box);
+                GUILayout.BeginHorizontal(Skin.box);
                 var method = frame.GetMethod();
 
                 GUILayout.Label(count.ToString(), GUILayout.ExpandWidth(false));
 
-                GUI.contentColor = config.nameColor;
+                GUI.contentColor = Config.NameColor;
 
                 GUILayout.Label(method.ToString(), GUILayout.ExpandWidth(false));
 
-                GUI.contentColor = config.typeColor;
+                GUI.contentColor = Config.TypeColor;
 
                 if (method.DeclaringType != null)
                 {

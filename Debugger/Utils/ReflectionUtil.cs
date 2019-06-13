@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace ModTools.Utils
 {
-    public static class ReflectionUtil
+    internal static class ReflectionUtil
     {
         public static FieldInfo FindField<T>(string fieldName)
             => Array.Find(typeof(T).GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance), f => f.Name == fieldName);

@@ -2,7 +2,7 @@
 
 namespace ModTools.Explorer
 {
-    public static class GUICollectionNavigation
+    internal static class GUICollectionNavigation
     {
         public static void SetUpCollectionNavigation(
             string collectionLabel,

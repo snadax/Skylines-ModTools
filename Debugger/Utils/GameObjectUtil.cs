@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public static class GameObjectUtil
+    internal static class GameObjectUtil
     {
         public static Dictionary<GameObject, bool> FindSceneRoots()
         {

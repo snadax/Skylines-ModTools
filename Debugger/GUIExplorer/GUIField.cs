@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUIField
+    internal static class GUIField
     {
         public static void OnSceneTreeReflectField(SceneExplorerState state, ReferenceChain refChain, object obj, FieldInfo field)
         {
@@ -45,9 +45,9 @@ namespace ModTools.Explorer
                 GUI.enabled = false;
             }
 
-            if (ModTools.Instance.config.sceneExplorerShowModifiers)
+            if (ModTools.Instance.config.SceneExplorerShowModifiers)
             {
-                GUI.contentColor = ModTools.Instance.config.modifierColor;
+                GUI.contentColor = ModTools.Instance.config.ModifierColor;
 
                 if (field.IsPublic)
                 {
@@ -58,33 +58,33 @@ namespace ModTools.Explorer
                     GUILayout.Label("private ");
                 }
 
-                GUI.contentColor = ModTools.Instance.config.memberTypeColor;
+                GUI.contentColor = ModTools.Instance.config.MemberTypeColor;
 
                 GUILayout.Label("field ");
 
                 if (field.IsStatic)
                 {
-                    GUI.contentColor = ModTools.Instance.config.keywordColor;
+                    GUI.contentColor = ModTools.Instance.config.KeywordColor;
                     GUILayout.Label("static ");
                 }
 
                 if (field.IsInitOnly)
                 {
-                    GUI.contentColor = ModTools.Instance.config.keywordColor;
+                    GUI.contentColor = ModTools.Instance.config.KeywordColor;
                     GUILayout.Label("const ");
                 }
             }
 
-            GUI.contentColor = ModTools.Instance.config.typeColor;
+            GUI.contentColor = ModTools.Instance.config.TypeColor;
             GUILayout.Label(field.FieldType + " ");
 
-            GUI.contentColor = ModTools.Instance.config.nameColor;
+            GUI.contentColor = ModTools.Instance.config.NameColor;
 
             GUILayout.Label(field.Name);
 
             GUI.contentColor = Color.white;
             GUILayout.Label(" = ");
-            GUI.contentColor = ModTools.Instance.config.valueColor;
+            GUI.contentColor = ModTools.Instance.config.ValueColor;
 
             if (value == null || !TypeUtil.IsSpecialType(field.FieldType))
             {

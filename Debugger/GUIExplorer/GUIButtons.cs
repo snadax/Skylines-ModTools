@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUIButtons
+    internal static class GUIButtons
     {
-        private static object _buffer;
+        private static object buffer;
 
         public static void SetupButtons(Type type, object value, ReferenceChain refChain)
         {
@@ -115,7 +115,7 @@ namespace ModTools.Explorer
                 var texture = (Texture)value;
                 if (GUILayout.Button("Preview"))
                 {
-                    TextureViewer.CreateTextureViewer(refChain, texture);
+                    TextureViewer.CreateTextureViewer(texture);
                 }
 
                 if (GUILayout.Button("Dump .png"))
@@ -139,16 +139,16 @@ namespace ModTools.Explorer
 
             if (GUILayout.Button("Copy"))
             {
-                _buffer = value;
+                buffer = value;
             }
         }
 
         public static bool SetupPasteButon(Type type, out object paste)
         {
             paste = null;
-            if (_buffer != null && type.IsInstanceOfType(_buffer) && GUILayout.Button("Paste"))
+            if (buffer != null && type.IsInstanceOfType(buffer) && GUILayout.Button("Paste"))
             {
-                paste = _buffer;
+                paste = buffer;
                 return true;
             }
 

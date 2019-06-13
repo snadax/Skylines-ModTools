@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ModTools.Explorer
 {
-    public static class GUIExpander
+    internal static class GUIExpander
     {
         public static void ExpanderControls(SceneExplorerState state, ReferenceChain refChain, Type type, object o = null)
         {
@@ -20,12 +20,9 @@ namespace ModTools.Explorer
                     state.ExpandedObjects.Remove(refChain.UniqueId);
                 }
             }
-            else
+            else if (GUILayout.Button("+", GUILayout.ExpandWidth(false)))
             {
-                if (GUILayout.Button("+", GUILayout.ExpandWidth(false)))
-                {
-                    state.ExpandedObjects.Add(refChain.UniqueId);
-                }
+                state.ExpandedObjects.Add(refChain.UniqueId);
             }
         }
     }

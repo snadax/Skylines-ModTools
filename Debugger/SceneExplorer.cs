@@ -7,9 +7,10 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public class SceneExplorer : GUIWindow
+    internal sealed class SceneExplorer : GUIWindow
     {
-        public Dictionary<GameObject, bool> sceneRoots = new Dictionary<GameObject, bool>();
+        private Dictionary<GameObject, bool> sceneRoots = new Dictionary<GameObject, bool>();
+
         private string findGameObjectFilter = string.Empty;
         private string findObjectTypeFilter = string.Empty;
         private string searchDisplayString = string.Empty;
@@ -32,12 +33,8 @@ namespace ModTools
         private readonly float sceneTreeWidth = 320.0f;
 
         public SceneExplorer()
-            : base("Scene Explorer", new Rect(128, 440, 800, 500), skin)
+            : base("Scene Explorer", new Rect(128, 440, 800, 500), Skin)
         {
-            onDraw = DrawWindow;
-            onException = ExceptionHandler;
-            onUnityGUI = GUIComboBox.DrawGUI;
-
             headerArea = new GUIArea(this);
             sceneTreeArea = new GUIArea(this);
             componentArea = new GUIArea(this);
@@ -52,42 +49,44 @@ namespace ModTools
 
         public void RecalculateAreas()
         {
-            headerArea.absolutePosition.y = windowTopMargin;
-            headerArea.relativeSize.x = 1.0f;
+            headerArea.AbsolutePosition.y = windowTopMargin;
+            headerArea.RelativeSize.x = 1.0f;
 
-            if (rect.width < Screen.width / 4.0f && state.CurrentRefChain != null)
+            if (WindowRect.width < Screen.width / 4.0f && state.CurrentRefChain != null)
             {
-                sceneTreeArea.relativeSize = Vector2.zero;
-                sceneTreeArea.relativeSize = Vector2.zero;
+                sceneTreeArea.RelativeSize = Vector2.zero;
+                sceneTreeArea.RelativeSize = Vector2.zero;
 
-                componentArea.absolutePosition.x = 0.0f;
-                componentArea.relativeSize.x = 1.0f;
-                componentArea.relativeSize.y = 1.0f;
-                componentArea.absoluteSize.x = 0.0f;
+                componentArea.AbsolutePosition.x = 0.0f;
+                componentArea.RelativeSize.x = 1.0f;
+                componentArea.RelativeSize.y = 1.0f;
+                componentArea.AbsoluteSize.x = 0.0f;
             }
             else
             {
-                sceneTreeArea.relativeSize.y = 1.0f;
-                sceneTreeArea.absoluteSize.x = sceneTreeWidth;
+                sceneTreeArea.RelativeSize.y = 1.0f;
+                sceneTreeArea.AbsoluteSize.x = sceneTreeWidth;
 
-                componentArea.absolutePosition.x = sceneTreeWidth;
-                componentArea.relativeSize.x = 1.0f;
-                componentArea.relativeSize.y = 1.0f;
-                componentArea.absoluteSize.x = -sceneTreeWidth;
+                componentArea.AbsolutePosition.x = sceneTreeWidth;
+                componentArea.RelativeSize.x = 1.0f;
+                componentArea.RelativeSize.y = 1.0f;
+                componentArea.AbsoluteSize.x = -sceneTreeWidth;
             }
 
             var headerHeight = headerExpanded ? headerHeightExpanded : headerHeightCompact;
-            headerHeight *= ModTools.Instance.config.fontSize;
+            headerHeight *= ModTools.Instance.config.FontSize;
             headerHeight += 32.0f;
 
-            headerArea.absoluteSize.y = headerHeight - windowTopMargin;
-            sceneTreeArea.absolutePosition.y = headerHeight - windowTopMargin;
-            sceneTreeArea.absoluteSize.y = -(headerHeight - windowTopMargin) - windowBottomMargin;
-            componentArea.absolutePosition.y = headerHeight - windowTopMargin;
-            componentArea.absoluteSize.y = -(headerHeight - windowTopMargin) - windowBottomMargin;
+            headerArea.AbsoluteSize.y = headerHeight - windowTopMargin;
+            sceneTreeArea.AbsolutePosition.y = headerHeight - windowTopMargin;
+            sceneTreeArea.AbsoluteSize.y = -(headerHeight - windowTopMargin) - windowBottomMargin;
+            componentArea.AbsolutePosition.y = headerHeight - windowTopMargin;
+            componentArea.AbsoluteSize.y = -(headerHeight - windowTopMargin) - windowBottomMargin;
         }
 
-        private void ExceptionHandler(Exception ex)
+        protected override void OnWindowDrawn() => GUIComboBox.DrawGUI();
+
+        protected override void HandleException(Exception ex)
         {
             Debug.LogException(ex);
             state = new SceneExplorerState();
@@ -221,37 +220,37 @@ namespace ModTools
             GUILayout.Label("Show:", GUILayout.ExpandWidth(false));
             GUI.contentColor = Color.white;
 
-            var showFields = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowFields, string.Empty);
-            if (ModTools.Instance.config.sceneExplorerShowFields != showFields)
+            var showFields = GUILayout.Toggle(ModTools.Instance.config.SceneExplorerShowFields, string.Empty);
+            if (ModTools.Instance.config.SceneExplorerShowFields != showFields)
             {
-                ModTools.Instance.config.sceneExplorerShowFields = showFields;
+                ModTools.Instance.config.SceneExplorerShowFields = showFields;
                 ModTools.Instance.SaveConfig();
             }
             GUILayout.Label("Fields");
 
-            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing);
-            var showConsts = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowConsts, string.Empty);
-            if (ModTools.Instance.config.sceneExplorerShowConsts != showConsts)
+            GUILayout.Space(ModTools.Instance.config.SceneExplorerTreeIdentSpacing);
+            var showConsts = GUILayout.Toggle(ModTools.Instance.config.SceneExplorerShowConsts, string.Empty);
+            if (ModTools.Instance.config.SceneExplorerShowConsts != showConsts)
             {
-                ModTools.Instance.config.sceneExplorerShowConsts = showConsts;
+                ModTools.Instance.config.SceneExplorerShowConsts = showConsts;
                 ModTools.Instance.SaveConfig();
             }
             GUILayout.Label("Constants");
 
-            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing);
-            var showProperties = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowProperties, string.Empty);
-            if (ModTools.Instance.config.sceneExplorerShowProperties != showProperties)
+            GUILayout.Space(ModTools.Instance.config.SceneExplorerTreeIdentSpacing);
+            var showProperties = GUILayout.Toggle(ModTools.Instance.config.SceneExplorerShowProperties, string.Empty);
+            if (ModTools.Instance.config.SceneExplorerShowProperties != showProperties)
             {
-                ModTools.Instance.config.sceneExplorerShowProperties = showProperties;
+                ModTools.Instance.config.SceneExplorerShowProperties = showProperties;
                 ModTools.Instance.SaveConfig();
             }
             GUILayout.Label("Properties");
 
-            GUILayout.Space(ModTools.Instance.config.sceneExplorerTreeIdentSpacing);
-            var showMethods = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowMethods, string.Empty);
-            if (ModTools.Instance.config.sceneExplorerShowMethods != showMethods)
+            GUILayout.Space(ModTools.Instance.config.SceneExplorerTreeIdentSpacing);
+            var showMethods = GUILayout.Toggle(ModTools.Instance.config.SceneExplorerShowMethods, string.Empty);
+            if (ModTools.Instance.config.SceneExplorerShowMethods != showMethods)
             {
-                ModTools.Instance.config.sceneExplorerShowMethods = showMethods;
+                ModTools.Instance.config.SceneExplorerShowMethods = showMethods;
                 ModTools.Instance.SaveConfig();
             }
             GUILayout.Label("Methods");
@@ -263,8 +262,10 @@ namespace ModTools
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Configure font & colors", GUILayout.ExpandWidth(false)))
             {
-                ModTools.Instance.sceneExplorerColorConfig.visible = true;
-                ModTools.Instance.sceneExplorerColorConfig.rect.position = rect.position + new Vector2(32.0f, 32.0f);
+                ModTools.Instance.sceneExplorerColorConfig.Visible = true;
+                var windowRect = ModTools.Instance.sceneExplorerColorConfig.WindowRect;
+                windowRect.position = WindowRect.position + new Vector2(32.0f, 32.0f);
+                ModTools.Instance.sceneExplorerColorConfig.MoveResize(windowRect);
             }
 
             GUILayout.FlexibleSpace();
@@ -273,10 +274,10 @@ namespace ModTools
             GUILayout.BeginHorizontal();
             GUI.contentColor = Color.green;
             GUILayout.Label("Show field/ property modifiers:", GUILayout.ExpandWidth(false));
-            var showModifiers = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowModifiers, string.Empty);
-            if (showModifiers != ModTools.Instance.config.sceneExplorerShowModifiers)
+            var showModifiers = GUILayout.Toggle(ModTools.Instance.config.SceneExplorerShowModifiers, string.Empty);
+            if (showModifiers != ModTools.Instance.config.SceneExplorerShowModifiers)
             {
-                ModTools.Instance.config.sceneExplorerShowModifiers = showModifiers;
+                ModTools.Instance.config.SceneExplorerShowModifiers = showModifiers;
                 ModTools.Instance.SaveConfig();
             }
 
@@ -287,10 +288,10 @@ namespace ModTools
             GUILayout.BeginHorizontal();
             GUI.contentColor = Color.green;
             GUILayout.Label("Show inherited members:", GUILayout.ExpandWidth(false));
-            var showInheritedMembers = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerShowInheritedMembers, string.Empty);
-            if (showInheritedMembers != ModTools.Instance.config.sceneExplorerShowInheritedMembers)
+            var showInheritedMembers = GUILayout.Toggle(ModTools.Instance.config.SceneExplorerShowInheritedMembers, string.Empty);
+            if (showInheritedMembers != ModTools.Instance.config.SceneExplorerShowInheritedMembers)
             {
-                ModTools.Instance.config.sceneExplorerShowInheritedMembers = showInheritedMembers;
+                ModTools.Instance.config.SceneExplorerShowInheritedMembers = showInheritedMembers;
                 ModTools.Instance.SaveConfig();
                 TypeUtil.ClearTypeCache();
             }
@@ -302,10 +303,10 @@ namespace ModTools
             GUILayout.BeginHorizontal();
             GUI.contentColor = Color.green;
             GUILayout.Label("Evaluate properties automatically:", GUILayout.ExpandWidth(false));
-            var evaluatePropertiesAutomatically = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically, string.Empty);
-            if (evaluatePropertiesAutomatically != ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically)
+            var evaluatePropertiesAutomatically = GUILayout.Toggle(ModTools.Instance.config.SceneExplorerEvaluatePropertiesAutomatically, string.Empty);
+            if (evaluatePropertiesAutomatically != ModTools.Instance.config.SceneExplorerEvaluatePropertiesAutomatically)
             {
-                ModTools.Instance.config.sceneExplorerEvaluatePropertiesAutomatically = evaluatePropertiesAutomatically;
+                ModTools.Instance.config.SceneExplorerEvaluatePropertiesAutomatically = evaluatePropertiesAutomatically;
                 ModTools.Instance.SaveConfig();
             }
 
@@ -317,10 +318,10 @@ namespace ModTools
             GUI.contentColor = Color.green;
             GUILayout.Label("Sort alphabetically:", GUILayout.ExpandWidth(false));
             GUI.contentColor = Color.white;
-            var sortAlphabetically = GUILayout.Toggle(ModTools.Instance.config.sceneExplorerSortAlphabetically, string.Empty);
-            if (sortAlphabetically != ModTools.Instance.config.sceneExplorerSortAlphabetically)
+            var sortAlphabetically = GUILayout.Toggle(ModTools.Instance.config.SceneExplorerSortAlphabetically, string.Empty);
+            if (sortAlphabetically != ModTools.Instance.config.SceneExplorerSortAlphabetically)
             {
-                ModTools.Instance.config.sceneExplorerSortAlphabetically = sortAlphabetically;
+                ModTools.Instance.config.SceneExplorerSortAlphabetically = sortAlphabetically;
                 ModTools.Instance.SaveConfig();
             }
             GUILayout.FlexibleSpace();
@@ -446,7 +447,7 @@ namespace ModTools
 
             var gameObjects = sceneRoots.Keys.ToArray();
 
-            if (ModTools.Instance.config.sceneExplorerSortAlphabetically)
+            if (ModTools.Instance.config.SceneExplorerSortAlphabetically)
             {
                 try
                 {
@@ -493,7 +494,7 @@ namespace ModTools
             componentArea.End();
         }
 
-        public void DrawWindow()
+        protected override void DrawWindow()
         {
             RecalculateAreas();
 
