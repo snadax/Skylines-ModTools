@@ -53,21 +53,6 @@ namespace ModTools
 
         internal AppearanceConfig AppearanceConfig { get; private set; }
 
-        public void LoadConfig()
-        {
-            Config = ModConfiguration.Deserialize(ConfigPath);
-            if (Config == null)
-            {
-                Config = new ModConfiguration();
-                SaveConfig();
-            }
-
-            console?.MoveResize(Config.ConsoleRect);
-            Watches.MoveResize(Config.WatchesRect);
-            SceneExplorer.MoveResize(Config.SceneExplorerRect);
-            ScriptEditor.ReloadProjectWorkspace();
-        }
-
         public void SaveConfig()
         {
             if (Config == null)
@@ -82,6 +67,7 @@ namespace ModTools
 
             Config.WatchesRect = Watches.WindowRect;
             Config.SceneExplorerRect = SceneExplorer.WindowRect;
+            Config.MainWindowVisible = Visible;
             Config.Serialize(ConfigPath);
         }
 
@@ -107,6 +93,11 @@ namespace ModTools
             {
                 console = gameObject.AddComponent<Console>();
                 Log.SetCustomLogger(console);
+            }
+
+            if (Config.MainWindowVisible)
+            {
+                Visible = true;
             }
         }
 
@@ -322,6 +313,21 @@ namespace ModTools
                     Log.Message(condition);
                 }
             }
+        }
+
+        private void LoadConfig()
+        {
+            Config = ModConfiguration.Deserialize(ConfigPath);
+            if (Config == null)
+            {
+                Config = new ModConfiguration();
+                SaveConfig();
+            }
+
+            console?.MoveResize(Config.ConsoleRect);
+            Watches.MoveResize(Config.WatchesRect);
+            SceneExplorer.MoveResize(Config.SceneExplorerRect);
+            ScriptEditor.ReloadProjectWorkspace();
         }
     }
 }
