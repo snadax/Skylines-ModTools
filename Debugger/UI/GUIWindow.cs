@@ -96,7 +96,7 @@ namespace ModTools.UI
         public static void UpdateFont()
         {
             Skin.font = Font.CreateDynamicFontFromOSFont(Config.FontName, Config.FontSize);
-            ModTools.Instance.SceneExplorer.RecalculateAreas();
+            ModTools.Instance?.SceneExplorer?.RecalculateAreas();
         }
 
         public void OnDestroy()
