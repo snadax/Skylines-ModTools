@@ -21,6 +21,8 @@ namespace ModTools
         private static bool loggingInitialized;
 
         private Console console;
+        private ScriptEditor scriptEditor;
+        private AppearanceConfig appearanceConfig;
         private DebugRenderer debugRenderer;
 
         public ModTools()
@@ -48,10 +50,6 @@ namespace ModTools
         internal ColorPicker ColorPicker { get; private set; }
 
         internal Watches Watches { get; private set; }
-
-        internal ScriptEditor ScriptEditor { get; private set; }
-
-        internal AppearanceConfig AppearanceConfig { get; private set; }
 
         public void SaveConfig()
         {
@@ -82,8 +80,8 @@ namespace ModTools
             SceneExplorer = gameObject.AddComponent<SceneExplorer>();
             Watches = gameObject.AddComponent<Watches>();
             ColorPicker = gameObject.AddComponent<ColorPicker>();
-            ScriptEditor = gameObject.AddComponent<ScriptEditor>();
-            AppearanceConfig = gameObject.AddComponent<AppearanceConfig>();
+            scriptEditor = gameObject.AddComponent<ScriptEditor>();
+            appearanceConfig = gameObject.AddComponent<AppearanceConfig>();
 
             LoadConfig();
 
@@ -134,7 +132,7 @@ namespace ModTools
 
             if (Input.GetKeyDown(KeyCode.BackQuote))
             {
-                ScriptEditor.Visible = !ScriptEditor.Visible;
+                scriptEditor.Visible = !scriptEditor.Visible;
             }
         }
 
@@ -142,8 +140,8 @@ namespace ModTools
         {
             Destroy(console);
             Destroy(SceneExplorer);
-            Destroy(AppearanceConfig);
-            Destroy(ScriptEditor);
+            Destroy(appearanceConfig);
+            Destroy(scriptEditor);
             Destroy(Watches);
             Destroy(ColorPicker);
         }
@@ -259,17 +257,17 @@ namespace ModTools
 
             if (GUILayout.Button("Script editor (Ctrl + `)"))
             {
-                ScriptEditor.Visible = !ScriptEditor.Visible;
+                scriptEditor.Visible = !scriptEditor.Visible;
             }
 
             GUILayout.FlexibleSpace();
 
             if (GUILayout.Button("Appearance settings"))
             {
-                AppearanceConfig.Visible = true;
-                var windowRect = AppearanceConfig.WindowRect;
+                appearanceConfig.Visible = true;
+                var windowRect = appearanceConfig.WindowRect;
                 windowRect.position = WindowRect.position + new Vector2(32.0f, 32.0f);
-                AppearanceConfig.MoveResize(windowRect);
+                appearanceConfig.MoveResize(windowRect);
             }
         }
 
@@ -319,7 +317,7 @@ namespace ModTools
             console?.MoveResize(Config.ConsoleRect);
             Watches.MoveResize(Config.WatchesRect);
             SceneExplorer.MoveResize(Config.SceneExplorerRect);
-            ScriptEditor.ReloadProjectWorkspace();
+            scriptEditor.ReloadProjectWorkspace();
         }
     }
 }
