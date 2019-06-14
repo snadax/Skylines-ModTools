@@ -5,26 +5,26 @@ using UnityEngine;
 
 namespace ModTools
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0052", Justification = "Intended for self-reflection in-game")]
     internal sealed class CustomPrefabs : MonoBehaviour
     {
-        private static bool bootstrapped;
         private static GameObject thisGameObject;
 
-        public VehicleInfo[] Vehicles { get; private set; }
+        private VehicleInfo[] vehicles;
 
-        public BuildingInfo[] Buildings { get; private set; }
+        private BuildingInfo[] buildings;
 
-        public PropInfo[] Props { get; private set; }
+        private PropInfo[] props;
 
-        public TreeInfo[] Trees { get; private set; }
+        private TreeInfo[] trees;
 
-        public NetInfo[] Nets { get; private set; }
+        private NetInfo[] nets;
 
-        public EventInfo[] Events { get; private set; }
+        private EventInfo[] events;
 
-        public TransportInfo[] Transports { get; private set; }
+        private TransportInfo[] transports;
 
-        public CitizenInfo[] Citizens { get; private set; }
+        private CitizenInfo[] citizens;
 
         public static void Bootstrap()
         {
@@ -33,13 +33,6 @@ namespace ModTools
                 thisGameObject = new GameObject("Custom Prefabs");
                 thisGameObject.AddComponent<CustomPrefabs>();
             }
-
-            if (bootstrapped)
-            {
-                return;
-            }
-
-            bootstrapped = true;
         }
 
         public static void Revert()
@@ -49,44 +42,37 @@ namespace ModTools
                 Destroy(thisGameObject);
                 thisGameObject = null;
             }
-
-            if (!bootstrapped)
-            {
-                return;
-            }
-
-            bootstrapped = false;
         }
 
         public void Awake()
         {
-            Vehicles = GetCustomPrefabs<VehicleInfo>();
-            Buildings = GetCustomPrefabs<BuildingInfo>();
-            Props = GetCustomPrefabs<PropInfo>();
-            Trees = GetCustomPrefabs<TreeInfo>();
-            Nets = GetCustomPrefabs<NetInfo>();
-            Events = GetCustomPrefabs<EventInfo>();
-            Transports = GetCustomPrefabs<TransportInfo>();
-            Citizens = GetCustomPrefabs<CitizenInfo>();
+            vehicles = GetCustomPrefabs<VehicleInfo>();
+            buildings = GetCustomPrefabs<BuildingInfo>();
+            props = GetCustomPrefabs<PropInfo>();
+            trees = GetCustomPrefabs<TreeInfo>();
+            nets = GetCustomPrefabs<NetInfo>();
+            events = GetCustomPrefabs<EventInfo>();
+            transports = GetCustomPrefabs<TransportInfo>();
+            citizens = GetCustomPrefabs<CitizenInfo>();
         }
 
         public void OnDestroy()
         {
-            Vehicles = null;
-            Buildings = null;
-            Props = null;
-            Trees = null;
-            Nets = null;
-            Events = null;
-            Transports = null;
-            Citizens = null;
+            vehicles = null;
+            buildings = null;
+            props = null;
+            trees = null;
+            nets = null;
+            events = null;
+            transports = null;
+            citizens = null;
         }
 
         private static T[] GetCustomPrefabs<T>()
             where T : PrefabInfo
         {
-            var result = new List<T>();
             var count = PrefabCollection<T>.LoadedCount();
+            var result = new List<T>(count);
             for (uint i = 0; i < count; i++)
             {
                 var prefab = PrefabCollection<T>.GetPrefab(i);
@@ -98,7 +84,8 @@ namespace ModTools
                 result.Add(prefab);
             }
 
-            return result.OrderBy(p => p.name).ToArray();
+            result.Sort((x, y) => string.CompareOrdinal(x?.name, y?.name));
+            return result.ToArray();
         }
     }
 }
