@@ -19,18 +19,18 @@ namespace ModTools
                 return;
             }
 
-            if (!mouseOverWindow)
+            if (mouseOverWindow)
             {
-                if (UIView.ModalInputCount() > 0 && UIView.GetModalComponent() == modalView)
+                if (!isModal)
                 {
-                    isModal = false;
-                    UIView.PopModal();
+                    isModal = true;
+                    UIView.PushModal(modalView);
                 }
             }
-            else if (!isModal)
+            else if (isModal && UIView.GetModalComponent() == modalView)
             {
-                isModal = true;
-                UIView.PushModal(modalView);
+                isModal = false;
+                UIView.PopModal();
             }
         }
     }
