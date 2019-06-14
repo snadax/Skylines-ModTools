@@ -12,11 +12,10 @@ namespace ModTools
             if (modalView == null)
             {
                 modalView = UIView.GetAView()?.AddUIComponent(typeof(UILabel));
-            }
-
-            if (modalView == null)
-            {
-                return;
+                if (modalView == null)
+                {
+                    return;
+                }
             }
 
             if (mouseOverWindow)
