@@ -54,23 +54,6 @@ namespace ModTools.Explorer
             "_ColorV3",
         };
 
-        private static readonly string[] VectorProps =
-        {
-            "_FloorParams",
-            "_UvAnimation",
-            "_WindAnimation",
-            "_WindAnimationB",
-            "_TyreLocation0",
-            "_TyreLocation1",
-            "_TyreLocation2",
-            "_TyreLocation3",
-            "_TyreLocation4",
-            "_TyreLocation5",
-            "_TyreLocation6",
-            "_TyreLocation7",
-            "_TyreParams",
-        };
-
         public static void OnSceneReflectUnityEngineMaterial(SceneExplorerState state, ReferenceChain refChain, Material material)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
