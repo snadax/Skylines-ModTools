@@ -67,7 +67,6 @@ namespace ModTools
 
             Config.WatchesRect = Watches.WindowRect;
             Config.SceneExplorerRect = SceneExplorer.WindowRect;
-            Config.MainWindowVisible = Visible;
             Config.Serialize(ConfigPath);
         }
 
@@ -84,7 +83,6 @@ namespace ModTools
             Watches = gameObject.AddComponent<Watches>();
             ColorPicker = gameObject.AddComponent<ColorPicker>();
             ScriptEditor = gameObject.AddComponent<ScriptEditor>();
-            ScriptEditor.Visible = false;
             AppearanceConfig = gameObject.AddComponent<AppearanceConfig>();
 
             LoadConfig();
@@ -93,11 +91,6 @@ namespace ModTools
             {
                 console = gameObject.AddComponent<Console>();
                 Log.SetCustomLogger(console);
-            }
-
-            if (Config.MainWindowVisible)
-            {
-                Visible = true;
             }
         }
 

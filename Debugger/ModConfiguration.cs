@@ -42,9 +42,6 @@ namespace ModTools
 
         #region Window state
 
-        [XmlElement("mainWindowVisible")]
-        public bool MainWindowVisible { get; set; }
-
         [XmlElement("mainWindowRect")]
         public Rect MainWindowRect { get; set; } = new Rect(128, 128, 356, 300);
 
