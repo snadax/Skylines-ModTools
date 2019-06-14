@@ -48,20 +48,11 @@ namespace ModTools
         [XmlElement("mainWindowRect")]
         public Rect MainWindowRect { get; set; } = new Rect(128, 128, 356, 300);
 
-        [XmlElement("consoleVisible")]
-        public bool ConsoleVisible { get; set; }
-
         [XmlElement("consoleRect")]
         public Rect ConsoleRect { get; set; } = new Rect(16.0f, 16.0f, 512.0f, 256.0f);
 
-        [XmlElement("sceneExplorerVisible")]
-        public bool SceneExplorerVisible { get; set; }
-
         [XmlElement("sceneExplorerRect")]
         public Rect SceneExplorerRect { get; set; } = new Rect(128, 440, 800, 500);
-
-        [XmlElement("watchesVisible")]
-        public bool WatchesVisible { get; set; }
 
         [XmlElement("watchesRect")]
         public Rect WatchesRect { get; set; } = new Rect(504, 128, 800, 300);

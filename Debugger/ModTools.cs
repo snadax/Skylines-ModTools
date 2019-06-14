@@ -62,44 +62,27 @@ namespace ModTools
                 SaveConfig();
             }
 
-            if (console != null)
-            {
-                console.MoveResize(Config.ConsoleRect);
-                console.Visible = Config.ConsoleVisible;
-            }
-
+            console?.MoveResize(Config.ConsoleRect);
             Watches.MoveResize(Config.WatchesRect);
-            Watches.Visible = Config.WatchesVisible;
-
             SceneExplorer.MoveResize(Config.SceneExplorerRect);
-            SceneExplorer.Visible = Config.SceneExplorerVisible;
-
-            if (SceneExplorer.Visible)
-            {
-                SceneExplorer.Refresh();
-            }
-
             ScriptEditor.ReloadProjectWorkspace();
         }
 
         public void SaveConfig()
         {
-            if (Config != null)
+            if (Config == null)
             {
-                if (console != null)
-                {
-                    Config.ConsoleRect = console.WindowRect;
-                    Config.ConsoleVisible = console.Visible;
-                }
-
-                Config.WatchesRect = Watches.WindowRect;
-                Config.WatchesVisible = Watches.Visible;
-
-                Config.SceneExplorerRect = SceneExplorer.WindowRect;
-                Config.SceneExplorerVisible = SceneExplorer.Visible;
-
-                Config.Serialize(ConfigPath);
+                return;
             }
+
+            if (console != null)
+            {
+                Config.ConsoleRect = console.WindowRect;
+            }
+
+            Config.WatchesRect = Watches.WindowRect;
+            Config.SceneExplorerRect = SceneExplorer.WindowRect;
+            Config.Serialize(ConfigPath);
         }
 
         public void Initialize()
