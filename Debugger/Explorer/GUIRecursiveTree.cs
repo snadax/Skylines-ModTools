@@ -50,7 +50,7 @@ namespace ModTools.Explorer
 
                     if (ModTools.Instance.Config.SceneExplorerSortAlphabetically)
                     {
-                        Array.Sort(components, (component, component1) => component.GetType().ToString().CompareTo(component1.GetType().ToString()));
+                        Array.Sort(components, (x, y) => string.CompareOrdinal(x.GetType().ToString(), y.GetType().ToString()));
                     }
 
                     foreach (var component in components)

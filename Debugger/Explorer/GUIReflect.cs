@@ -81,7 +81,7 @@ namespace ModTools.Explorer
 
             if (ModTools.Instance.Config.SceneExplorerSortAlphabetically)
             {
-                Array.Sort(members, (info, info1) => string.CompareOrdinal(info.Name, info1.Name));
+                Array.Sort(members, (x, y) => string.CompareOrdinal(x.Name, y.Name));
             }
 
             foreach (var member in members)

@@ -368,6 +368,13 @@ namespace ModTools
 
         public void DrawSceneTree()
         {
+            var gameObjects = sceneRoots.Keys.ToArray();
+
+            if (ModTools.Instance.Config.SceneExplorerSortAlphabetically)
+            {
+                Array.Sort(gameObjects, (x, y) => string.CompareOrdinal(x?.name, y?.name));
+            }
+
             sceneTreeArea.Begin();
 
             if (!string.IsNullOrEmpty(searchDisplayString))
@@ -378,20 +385,6 @@ namespace ModTools
             }
 
             sceneTreeScrollPosition = GUILayout.BeginScrollView(sceneTreeScrollPosition);
-
-            var gameObjects = sceneRoots.Keys.ToArray();
-
-            if (ModTools.Instance.Config.SceneExplorerSortAlphabetically)
-            {
-                try
-                {
-                    Array.Sort(gameObjects, (o, o1) => o?.name == null ? 1 : o1?.name == null ? -1 : o.name.CompareTo(o1.name));
-                }
-                catch (Exception e)
-                {
-                    Debug.LogException(e);
-                }
-            }
 
             foreach (var obj in gameObjects)
             {
