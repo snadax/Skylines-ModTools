@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("ModTools")]
-[assembly: AssemblyDescription("Debugging toolkit for modders")]
+[assembly: AssemblyDescription("Debugging toolkit for modders of Cities: Skylines")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ModTools")]
