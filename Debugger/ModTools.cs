@@ -153,7 +153,6 @@ namespace ModTools
             Destroy(ScriptEditor);
             Destroy(Watches);
             Destroy(ColorPicker);
-            instance = null;
         }
 
         protected override void DrawWindow()
