@@ -43,7 +43,7 @@ namespace ModTools
 
         public void ReloadProjectWorkspace()
         {
-            projectWorkspacePath = ModTools.Instance.Config.ScriptEditorWorkspacePath;
+            projectWorkspacePath = ModTools.Instance.Config.ScriptWorkspacePath;
             if (projectWorkspacePath.Length == 0)
             {
                 lastError = "Invalid project workspace path";
@@ -160,7 +160,7 @@ namespace ModTools
             if (!newProjectWorkspacePath.Equals(projectWorkspacePath))
             {
                 projectWorkspacePath = newProjectWorkspacePath.Trim();
-                ModTools.Instance.Config.ScriptEditorWorkspacePath = projectWorkspacePath;
+                ModTools.Instance.Config.ScriptWorkspacePath = projectWorkspacePath;
                 ModTools.Instance.SaveConfig();
             }
 

@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace ModTools
 {
-    internal sealed class SceneExplorerColorConfig : GUIWindow
+    internal sealed class AppearanceConfig : GUIWindow
     {
         private readonly string[] availableFonts;
         private int selectedFont;
 
-        public SceneExplorerColorConfig()
-            : base("Font/ color configuration", new Rect(16.0f, 16.0f, 600.0f, 490.0f), Skin)
+        public AppearanceConfig()
+            : base("Appearance configuration", new Rect(16.0f, 16.0f, 600.0f, 490.0f), Skin)
         {
             Visible = false;
             Resizable = false;
@@ -40,7 +40,7 @@ namespace ModTools
             GUILayout.BeginHorizontal();
             GUILayout.Label("Font");
 
-            var newSelectedFont = GUIComboBox.Box(selectedFont, availableFonts, "SceneExplorerColorConfigFontsComboBox");
+            var newSelectedFont = GUIComboBox.Box(selectedFont, availableFonts, "AppearanceConfigFontsComboBox");
             if (newSelectedFont != selectedFont)
             {
                 config.FontName = availableFonts[newSelectedFont];
@@ -71,18 +71,18 @@ namespace ModTools
                 BgTexture.Apply();
             }
 
-            newColor = DrawColorControl("Titlebar", config.TitlebarColor);
-            if (newColor != config.TitlebarColor)
+            newColor = DrawColorControl("Title bar", config.TitleBarColor);
+            if (newColor != config.TitleBarColor)
             {
-                config.TitlebarColor = newColor;
-                MoveNormalTexture.SetPixel(0, 0, config.TitlebarColor);
+                config.TitleBarColor = newColor;
+                MoveNormalTexture.SetPixel(0, 0, config.TitleBarColor);
                 MoveNormalTexture.Apply();
 
-                MoveHoverTexture.SetPixel(0, 0, config.TitlebarColor * 1.2f);
+                MoveHoverTexture.SetPixel(0, 0, config.TitleBarColor * 1.2f);
                 MoveHoverTexture.Apply();
             }
 
-            config.TitlebarTextColor = DrawColorControl("Titlebar text", config.TitlebarTextColor);
+            config.TitleBarTextColor = DrawColorControl("Title bar text", config.TitleBarTextColor);
 
             config.GameObjectColor = DrawColorControl("GameObject", config.GameObjectColor);
             config.EnabledComponentColor = DrawColorControl("Component (enabled)", config.EnabledComponentColor);
@@ -110,14 +110,14 @@ namespace ModTools
                 BgTexture.SetPixel(0, 0, config.BackgroundColor);
                 BgTexture.Apply();
 
-                config.TitlebarColor = template.TitlebarColor;
-                MoveNormalTexture.SetPixel(0, 0, config.TitlebarColor);
+                config.TitleBarColor = template.TitleBarColor;
+                MoveNormalTexture.SetPixel(0, 0, config.TitleBarColor);
                 MoveNormalTexture.Apply();
 
-                MoveHoverTexture.SetPixel(0, 0, config.TitlebarColor * 1.2f);
+                MoveHoverTexture.SetPixel(0, 0, config.TitleBarColor * 1.2f);
                 MoveHoverTexture.Apply();
 
-                config.TitlebarTextColor = template.TitlebarTextColor;
+                config.TitleBarTextColor = template.TitleBarTextColor;
 
                 config.GameObjectColor = template.GameObjectColor;
                 config.EnabledComponentColor = template.EnabledComponentColor;
@@ -141,7 +141,7 @@ namespace ModTools
 
         protected override void HandleException(Exception ex)
         {
-            Log.Error("Exception in SceneExplorerColorConfig - " + ex.Message);
+            Log.Error("Exception in AppearanceConfig - " + ex.Message);
             Visible = false;
         }
 

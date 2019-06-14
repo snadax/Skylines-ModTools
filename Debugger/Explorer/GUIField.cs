@@ -46,7 +46,7 @@ namespace ModTools.Explorer
                 GUI.enabled = false;
             }
 
-            if (ModTools.Instance.Config.SceneExplorerShowModifiers)
+            if (ModTools.Instance.Config.ShowModifiers)
             {
                 GUI.contentColor = ModTools.Instance.Config.ModifierColor;
 

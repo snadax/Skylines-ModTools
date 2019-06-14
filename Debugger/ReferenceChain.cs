@@ -8,8 +8,8 @@ namespace ModTools
 {
     internal sealed class ReferenceChain : ICloneable
     {
-        private readonly object[] chainObjects = new object[ModTools.Instance.Config.SceneExplorerMaxHierarchyDepth];
-        private readonly ReferenceType[] chainTypes = new ReferenceType[ModTools.Instance.Config.SceneExplorerMaxHierarchyDepth];
+        private readonly object[] chainObjects = new object[ModTools.Instance.Config.MaxHierarchyDepth];
+        private readonly ReferenceType[] chainTypes = new ReferenceType[ModTools.Instance.Config.MaxHierarchyDepth];
         private string uniqueId;
 
         public enum ReferenceType
@@ -76,7 +76,7 @@ namespace ModTools
             return clone;
         }
 
-        public bool CheckDepth() => Length >= ModTools.Instance.Config.SceneExplorerMaxHierarchyDepth;
+        public bool CheckDepth() => Length >= ModTools.Instance.Config.MaxHierarchyDepth;
 
         public ReferenceChain Add(GameObject go)
         {

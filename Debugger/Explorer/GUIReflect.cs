@@ -77,20 +77,20 @@ namespace ModTools.Explorer
                 }
             }
 
-            var members = TypeUtil.GetAllMembers(type, ModTools.Instance.Config.SceneExplorerShowInheritedMembers);
+            var members = TypeUtil.GetAllMembers(type, ModTools.Instance.Config.ShowInheritedMembers);
 
-            if (ModTools.Instance.Config.SceneExplorerSortAlphabetically)
+            if (ModTools.Instance.Config.SortItemsAlphabetically)
             {
                 Array.Sort(members, (x, y) => string.CompareOrdinal(x.Name, y.Name));
             }
 
             foreach (var member in members)
             {
-                if (member.MemberType == MemberTypes.Field && ModTools.Instance.Config.SceneExplorerShowFields)
+                if (member.MemberType == MemberTypes.Field && ModTools.Instance.Config.ShowFields)
                 {
                     var field = (FieldInfo)member;
 
-                    if (field.IsLiteral && !field.IsInitOnly && !ModTools.Instance.Config.SceneExplorerShowConsts)
+                    if (field.IsLiteral && !field.IsInitOnly && !ModTools.Instance.Config.ShowConsts)
                     {
                         continue;
                     }
@@ -104,7 +104,7 @@ namespace ModTools.Explorer
                         SceneExplorerCommon.OnSceneTreeMessage(refChain, $"Exception when fetching field \"{field.Name}\" - {ex.Message}\n{ex.StackTrace}");
                     }
                 }
-                else if (member.MemberType == MemberTypes.Property && ModTools.Instance.Config.SceneExplorerShowProperties)
+                else if (member.MemberType == MemberTypes.Property && ModTools.Instance.Config.ShowProperties)
                 {
                     var property = (PropertyInfo)member;
 
@@ -117,7 +117,7 @@ namespace ModTools.Explorer
                         SceneExplorerCommon.OnSceneTreeMessage(refChain, $"Exception when fetching property \"{property.Name}\" - {ex.Message}\n{ex.StackTrace}");
                     }
                 }
-                else if (member.MemberType == MemberTypes.Method && ModTools.Instance.Config.SceneExplorerShowMethods)
+                else if (member.MemberType == MemberTypes.Method && ModTools.Instance.Config.ShowMethods)
                 {
                     var method = (MethodInfo)member;
 

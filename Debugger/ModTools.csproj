@@ -101,7 +101,7 @@
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceChain.cs" />
-    <Compile Include="SceneExplorerColorConfig.cs" />
+    <Compile Include="AppearanceConfig.cs" />
     <Compile Include="Explorer\GUIMethod.cs" />
     <Compile Include="SceneExplorerState.cs" />
     <Compile Include="ScriptCompiler.cs" />

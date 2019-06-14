@@ -144,11 +144,11 @@ namespace ModTools.UI
                 CloseHoverTexture.Apply();
 
                 MoveNormalTexture = new Texture2D(1, 1);
-                MoveNormalTexture.SetPixel(0, 0, Config.TitlebarColor);
+                MoveNormalTexture.SetPixel(0, 0, Config.TitleBarColor);
                 MoveNormalTexture.Apply();
 
                 MoveHoverTexture = new Texture2D(1, 1);
-                MoveHoverTexture.SetPixel(0, 0, Config.TitlebarColor * 1.2f);
+                MoveHoverTexture.SetPixel(0, 0, Config.TitleBarColor * 1.2f);
                 MoveHoverTexture.Apply();
 
                 Skin = ScriptableObject.CreateInstance<GUISkin>();
@@ -358,8 +358,8 @@ namespace ModTools.UI
             }
 
             GUI.DrawTexture(new Rect(0.0f, 0.0f, windowRect.width * UIScale, 20.0f), moveTex, ScaleMode.StretchToFill);
-            GUI.contentColor = Config.TitlebarTextColor;
-            GUI.Label(new Rect(0.0f, 0.0f, windowRect.width * UIScale, 20.0f), Title);
+            GUI.contentColor = Config.TitleBarTextColor;
+            GUI.Label(new Rect(8.0f, 0.0f, windowRect.width * UIScale, 20.0f), Title);
             GUI.contentColor = Color.white;
         }
 

@@ -29,7 +29,7 @@ namespace ModTools.Explorer
 
             Exception exceptionOnGetting = null;
 
-            if (property.CanRead && ModTools.Instance.Config.SceneExplorerEvaluatePropertiesAutomatically || state.EvaluatedProperties.Contains(refChain.UniqueId))
+            if (property.CanRead && ModTools.Instance.Config.EvaluateProperties || state.EvaluatedProperties.Contains(refChain.UniqueId))
             {
                 try
                 {
@@ -54,7 +54,7 @@ namespace ModTools.Explorer
                 GUI.enabled = false;
             }
 
-            if (ModTools.Instance.Config.SceneExplorerShowModifiers)
+            if (ModTools.Instance.Config.ShowModifiers)
             {
                 GUI.contentColor = ModTools.Instance.Config.MemberTypeColor;
                 GUILayout.Label("property ");
@@ -78,7 +78,7 @@ namespace ModTools.Explorer
             GUILayout.Label(" = ");
             GUI.contentColor = ModTools.Instance.Config.ValueColor;
 
-            if (!ModTools.Instance.Config.SceneExplorerEvaluatePropertiesAutomatically && !state.EvaluatedProperties.Contains(refChain.UniqueId))
+            if (!ModTools.Instance.Config.EvaluateProperties && !state.EvaluatedProperties.Contains(refChain.UniqueId))
             {
                 GUI.enabled = true;
 

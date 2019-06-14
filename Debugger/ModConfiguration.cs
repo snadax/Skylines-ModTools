@@ -33,10 +33,10 @@ namespace ModTools
         public Color BackgroundColor { get; set; } = new Color(0.321f, 0.321f, 0.321f, 1.0f);
 
         [XmlElement("titlebarColor")]
-        public Color TitlebarColor { get; set; } = new Color(0.247f, 0.282f, 0.364f, 1.0f);
+        public Color TitleBarColor { get; set; } = new Color(0.247f, 0.282f, 0.364f, 1.0f);
 
         [XmlElement("titlebarTextColor")]
-        public Color TitlebarTextColor { get; set; } = new Color(0.85f, 0.85f, 0.85f, 1.0f);
+        public Color TitleBarTextColor { get; set; } = new Color(0.85f, 0.85f, 0.85f, 1.0f);
 
         #endregion
 
@@ -109,35 +109,36 @@ namespace ModTools
         #region Scene explorer
 
         [XmlElement("sceneExplorerSortAlphabetically")]
-        public bool SceneExplorerSortAlphabetically { get; set; } = true;
+        public bool SortItemsAlphabetically { get; set; } = true;
 
         [XmlElement("sceneExplorerMaxHierarchyDepth")]
-        public int SceneExplorerMaxHierarchyDepth { get; set; } = 32;
+        public int MaxHierarchyDepth { get; set; } = 32;
 
         [XmlElement("sceneExplorerEvaluatePropertiesAutomatically")]
-        public bool SceneExplorerEvaluatePropertiesAutomatically { get; set; } = true;
+        public bool EvaluateProperties { get; set; } = true;
 
         [XmlElement("sceneExplorerShowFields")]
-        public bool SceneExplorerShowFields { get; set; } = true;
+        public bool ShowFields { get; set; } = true;
 
-        public bool SceneExplorerShowConsts { get; set; }
+        [XmlElement("sceneExplorerShowConsts")]
+        public bool ShowConsts { get; set; }
 
         [XmlElement("sceneExplorerShowProperties")]
-        public bool SceneExplorerShowProperties { get; set; } = true;
+        public bool ShowProperties { get; set; } = true;
 
         [XmlElement("sceneExplorerShowMethods")]
-        public bool SceneExplorerShowMethods { get; set; }
+        public bool ShowMethods { get; set; }
 
         [XmlElement("sceneExplorerShowModifiers")]
-        public bool SceneExplorerShowModifiers { get; set; }
+        public bool ShowModifiers { get; set; }
 
         [XmlElement("sceneExplorerShowInheritedMembers")]
-        public bool SceneExplorerShowInheritedMembers { get; set; }
+        public bool ShowInheritedMembers { get; set; }
 
         #region Appearance
 
         [XmlElement("sceneExplorerTreeIdentSpacing")]
-        public float SceneExplorerTreeIdentSpacing { get; set; } = 16.0f;
+        public float TreeIdentSpacing { get; set; } = 16.0f;
 
         [XmlElement("gameObjectColor")]
         public Color GameObjectColor { get; set; } = new Color(165.0f / 255.0f, 186.0f / 255.0f, 229.0f / 255.0f, 1.0f);
@@ -176,7 +177,7 @@ namespace ModTools
         #region Script editor
 
         [XmlElement("scriptEditorWorkspacePath")]
-        public string ScriptEditorWorkspacePath { get; set; } = string.Empty;
+        public string ScriptWorkspacePath { get; set; } = string.Empty;
 
         #endregion
 

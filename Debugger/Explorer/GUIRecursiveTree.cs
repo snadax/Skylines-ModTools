@@ -48,7 +48,7 @@ namespace ModTools.Explorer
 
                     var components = obj.GetComponents(typeof(Component));
 
-                    if (ModTools.Instance.Config.SceneExplorerSortAlphabetically)
+                    if (ModTools.Instance.Config.SortItemsAlphabetically)
                     {
                         Array.Sort(components, (x, y) => string.CompareOrdinal(x.GetType().ToString(), y.GetType().ToString()));
                     }
