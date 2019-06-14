@@ -20,6 +20,8 @@ namespace ModTools
         private static ModTools instance;
         private static bool loggingInitialized;
 
+        private readonly ModalUI modalUI = new ModalUI();
+
         private Console console;
         private ScriptEditor scriptEditor;
         private AppearanceConfig appearanceConfig;
@@ -100,7 +102,7 @@ namespace ModTools
 
         public void Update()
         {
-            UpdateMouseScrolling();
+            modalUI.Update(IsMouseOverWindow());
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Q))
             {

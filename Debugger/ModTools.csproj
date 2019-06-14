@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleMessage.cs" />
+    <Compile Include="ModalUI.cs" />
     <Compile Include="UI\ColorPicker.cs" />
     <Compile Include="UI\GUIStackTrace.cs" />
     <Compile Include="ILogger.cs" />

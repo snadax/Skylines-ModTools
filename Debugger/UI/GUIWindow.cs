@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ColossalFramework.UI;
 using UnityEngine;
 
@@ -98,14 +97,6 @@ namespace ModTools.UI
         {
             Skin.font = Font.CreateDynamicFontFromOSFont(Config.FontName, Config.FontSize);
             ModTools.Instance.SceneExplorer.RecalculateAreas();
-        }
-
-        public static void UpdateMouseScrolling()
-        {
-            var mouse = Input.mousePosition;
-            mouse.y = Screen.height - mouse.y;
-            var mouseInsideGuiWindow = Windows.Any(window => window.Visible && window.windowRect.Contains(mouse));
-            Util.SetMouseScrolling(!mouseInsideGuiWindow);
         }
 
         public void OnDestroy()
@@ -209,6 +200,13 @@ namespace ModTools.UI
         }
 
         public void MoveResize(Rect newWindowRect) => windowRect = newWindowRect;
+
+        protected static bool IsMouseOverWindow()
+        {
+            var mouse = Input.mousePosition;
+            mouse.y = Screen.height - mouse.y;
+            return Windows.FindIndex(window => window.Visible && window.windowRect.Contains(mouse)) >= 0;
+        }
 
         protected abstract void DrawWindow();
 
