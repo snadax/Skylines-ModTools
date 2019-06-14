@@ -31,6 +31,7 @@ namespace ModTools
             Resizable = false;
         }
 
+        // TODO: remove the singleton
         public static ModTools Instance
         {
             get
@@ -43,14 +44,19 @@ namespace ModTools
             }
         }
 
+        // TODO: refactor the configuration access
         public ModConfiguration Config { get; set; } = new ModConfiguration();
 
+        // TODO: refactor and remove this property
         internal SceneExplorer SceneExplorer { get; private set; }
 
+        // TODO: refactor and remove this property
         internal ColorPicker ColorPicker { get; private set; }
 
+        // TODO: refactor and remove this property
         internal Watches Watches { get; private set; }
 
+        // TODO: refactor and move this functionality to a dedicated service
         public void SaveConfig()
         {
             if (Config == null)

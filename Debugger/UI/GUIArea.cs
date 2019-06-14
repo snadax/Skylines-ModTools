@@ -4,6 +4,7 @@ namespace ModTools.UI
 {
     internal sealed class GUIArea
     {
+        // TODO: convert these fields to properties or refactor the functionality
         public Vector2 AbsolutePosition = Vector2.zero;
 
         public Vector2 AbsoluteSize = Vector2.zero;
@@ -27,6 +28,7 @@ namespace ModTools.UI
             GUILayout.BeginArea(new Rect(position.x, position.y, size.x, size.y));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822", Justification = "Better logical structure")]
         public void End() => GUILayout.EndArea();
 
         private Vector2 GetPosition()

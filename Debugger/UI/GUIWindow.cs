@@ -8,6 +8,7 @@ namespace ModTools.UI
 {
     internal abstract class GUIWindow : MonoBehaviour
     {
+        // TODO: make this field to private-instance
         public static GUISkin Skin;
 
         protected const float UIScale = 1.0f;
