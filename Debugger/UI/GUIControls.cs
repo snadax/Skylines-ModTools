@@ -234,17 +234,14 @@ namespace ModTools.UI
             if (GUILayout.Button(string.Empty, GUILayout.Width(72)))
             {
                 var picker = ModTools.Instance.ColorPicker;
-                if (picker != null)
+                picker?.Show(id, value);
+            }
+            else
+            {
+                var picker = ModTools.Instance.ColorPicker;
+                if (picker?.Visible == true && picker.CurrentValueId == id)
                 {
-                    picker.SetColor(value);
-
-                    Vector2 mouse = Input.mousePosition;
-                    mouse.y = Screen.height - mouse.y;
-
-                    var windowRect = picker.WindowRect;
-                    windowRect.position = mouse;
-                    picker.MoveResize(windowRect);
-                    picker.Visible = true;
+                    value = picker.SelectedColor;
                 }
             }
 
