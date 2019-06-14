@@ -255,12 +255,12 @@ namespace ModTools.UI
             return value;
         }
 
-        public static T CustomValueField<T>(string id, string name, ValuePresenterDelegate<T> presenter, T value, float ident = 0.0f)
+        public static T CustomValueField<T>(string id, string name, ValuePresenterDelegate<T> presenter, T value, float ident = float.NaN)
             where T : struct
         {
             GUILayout.BeginHorizontal();
 
-            if (ident != 0.0f)
+            if (!float.IsNaN(ident))
             {
                 GUILayout.Space(ident);
                 GUI.contentColor = Config.TypeColor;
@@ -272,7 +272,7 @@ namespace ModTools.UI
 
             GUI.contentColor = Config.ValueColor;
 
-            if (ident != 0.0f)
+            if (!float.IsNaN(ident))
             {
                 GUILayout.FlexibleSpace();
             }
