@@ -94,6 +94,7 @@
     <Compile Include="UI\GUIArea.cs" />
     <Compile Include="UI\GUIComboBox.cs" />
     <Compile Include="UI\GUIWindow.cs" />
+    <Compile Include="Utils\GitVersion.cs" />
     <Compile Include="Utils\HashUtil.cs" />
     <Compile Include="IModEntryPoint.cs" />
     <Compile Include="MeshViewer.cs" />
@@ -129,6 +130,11 @@
     <Content Include="lib\ObjUnity3D.dll" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="GitVersionTask">
+      <Version>4.0.0</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
       <Version>2.9.3</Version>
     </PackageReference>

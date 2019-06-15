@@ -14,7 +14,7 @@ namespace ModTools
 
         public string Name => ModToolsName;
 
-        public string Description => "Debugging toolkit for modders";
+        public string Description => "Debugging toolkit for modders, version " + GitVersion.GetAssemblyVersion(typeof(EntryPoint).Assembly);
 
         public void OnEnabled()
         {
