@@ -36,8 +36,6 @@ namespace ModTools
 
         public ReferenceType FirstItemType => chainTypes[0];
 
-        public ReferenceType LastItemType => chainTypes[Length - 1];
-
         public string UniqueId
         {
             get
@@ -242,70 +240,6 @@ namespace ModTools
             }
 
             return current;
-        }
-
-        public bool SetValue(object value)
-        {
-            object current = null;
-            for (var i = 0; i < Length - 1; i++)
-            {
-                switch (chainTypes[i])
-                {
-                    case ReferenceType.GameObject:
-                    case ReferenceType.Component:
-                        current = chainObjects[i];
-                        break;
-
-                    case ReferenceType.Field:
-                        current = ((FieldInfo)chainObjects[i]).GetValue(current);
-                        break;
-
-                    case ReferenceType.Property:
-                        current = ((PropertyInfo)chainObjects[i]).GetValue(current, null);
-                        break;
-
-                    case ReferenceType.Method:
-                        break;
-
-                    case ReferenceType.EnumerableItem:
-                        var collection = current as IEnumerable;
-                        var itemCount = 0;
-                        foreach (var item in collection)
-                        {
-                            if (itemCount == (int)chainObjects[i])
-                            {
-                                current = item;
-                                break;
-                            }
-
-                            itemCount++;
-                        }
-
-                        break;
-
-                    case ReferenceType.SpecialNamedProperty:
-                        break;
-                }
-            }
-
-            if (LastItemType == ReferenceType.Field)
-            {
-                ((FieldInfo)LastItem).SetValue(current, value);
-                return true;
-            }
-
-            if (LastItemType == ReferenceType.Property)
-            {
-                var propertyInfo = (PropertyInfo)LastItem;
-                if (propertyInfo.CanWrite)
-                {
-                    propertyInfo.SetValue(current, value, null);
-                }
-
-                return true;
-            }
-
-            return false;
         }
 
         public bool IsSameChain(ReferenceChain other)

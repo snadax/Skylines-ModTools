@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using ColossalFramework;
 using UnityEngine;
 
@@ -69,85 +68,57 @@ namespace ModTools.Explorer
                 return;
             }
 
-            Type toolType;
-            if (prefabInfo is BuildingInfo)
+            var defaultToolActive = currentTool is DefaultTool;
+
+            switch (prefabInfo)
             {
-                toolType = typeof(BuildingTool);
-            }
-            else if (prefabInfo is NetInfo)
-            {
-                toolType = typeof(NetTool);
-            }
-            else if (prefabInfo is PropInfo)
-            {
-                toolType = typeof(PropTool);
-            }
-            else if (prefabInfo is TreeInfo)
-            {
-                toolType = typeof(TreeTool);
-            }
-            else
-            {
-                toolType = null;
+                case BuildingInfo buildingInfo when defaultToolActive || currentTool is BuildingTool:
+                    var buildingTool = ToolsModifierControl.GetTool<BuildingTool>();
+                    if (buildingTool != null)
+                    {
+                        buildingTool.m_prefab = buildingInfo;
+                        buildingTool.m_relocate = 0;
+
+                        SetCurrentTool(buildingTool);
+                    }
+
+                    break;
+
+                case NetInfo netInfo when defaultToolActive || currentTool is NetTool:
+                    var netTool = ToolsModifierControl.GetTool<NetTool>();
+                    if (netTool != null)
+                    {
+                        netTool.m_prefab = netInfo;
+                        SetCurrentTool(netTool);
+                    }
+
+                    break;
+
+                case PropInfo propInfo when defaultToolActive || currentTool is PropTool:
+                    var propTool = ToolsModifierControl.GetTool<PropTool>();
+                    if (propTool != null)
+                    {
+                        propTool.m_prefab = propInfo;
+                        SetCurrentTool(propTool);
+                    }
+
+                    break;
+
+                case TreeInfo treeInfo when defaultToolActive || currentTool is TreeTool:
+                    var treeTool = ToolsModifierControl.GetTool<TreeTool>();
+                    if (treeTool != null)
+                    {
+                        ploppedPrefab = treeInfo;
+                        SetCurrentTool(treeTool);
+                    }
+
+                    break;
             }
 
-            if (toolType == null || currentTool.GetType() != toolType && !(currentTool is DefaultTool))
+            void SetCurrentTool(ToolBase tool)
             {
-                return;
-            }
-
-            if (prefabInfo is BuildingInfo buildingInfo)
-            {
-                var buildingTool = ToolsModifierControl.GetTool<BuildingTool>();
-                if (buildingTool == null)
-                {
-                    Log.Warning("BuildingTool not found!");
-                    return;
-                }
-
-                Singleton<ToolManager>.instance.m_properties.CurrentTool = buildingTool;
-                buildingTool.m_prefab = buildingInfo;
-                ploppedPrefab = buildingInfo;
-                buildingTool.m_relocate = 0;
-            }
-            else if (prefabInfo is NetInfo netInfo)
-            {
-                var netTool = ToolsModifierControl.GetTool<NetTool>();
-                if (netTool == null)
-                {
-                    Log.Warning("NetTool not found!");
-                    return;
-                }
-
-                Singleton<ToolManager>.instance.m_properties.CurrentTool = netTool;
-                netTool.m_prefab = netInfo;
-                ploppedPrefab = netInfo;
-            }
-            else if (prefabInfo is PropInfo propInfo)
-            {
-                var propTool = ToolsModifierControl.GetTool<PropTool>();
-                if (propTool == null)
-                {
-                    Log.Warning("PropTool not found!");
-                    return;
-                }
-
-                Singleton<ToolManager>.instance.m_properties.CurrentTool = propTool;
-                propTool.m_prefab = propInfo;
-                ploppedPrefab = propInfo;
-            }
-            else if (prefabInfo is TreeInfo treeInfo)
-            {
-                var treeTool = ToolsModifierControl.GetTool<TreeTool>();
-                if (treeTool == null)
-                {
-                    Log.Warning("TreeTool not found!");
-                    return;
-                }
-
-                Singleton<ToolManager>.instance.m_properties.CurrentTool = treeTool;
-                treeTool.m_prefab = treeInfo;
-                ploppedPrefab = treeInfo;
+                Singleton<ToolManager>.instance.m_properties.CurrentTool = tool;
+                ploppedPrefab = prefabInfo;
             }
         }
     }

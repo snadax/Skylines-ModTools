@@ -56,9 +56,8 @@ namespace ModTools.Explorer
 
                 if (type != null && !TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
                 {
-                    if (value is GameObject)
+                    if (value is GameObject go)
                     {
-                        var go = value as GameObject;
                         foreach (var component in go.GetComponents<Component>())
                         {
                             GUIComponent.OnSceneTreeComponent(state, refChain, component);

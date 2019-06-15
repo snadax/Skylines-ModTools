@@ -28,9 +28,8 @@ namespace ModTools
         private DebugRenderer debugRenderer;
 
         public ModTools()
-            : base("Mod Tools", new Rect(128, 128, 356, 320), Skin)
+            : base("Mod Tools", new Rect(128, 128, 356, 320), Skin, resizable: false)
         {
-            Resizable = false;
         }
 
         // TODO: remove the singleton

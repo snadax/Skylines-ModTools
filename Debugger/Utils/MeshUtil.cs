@@ -47,7 +47,6 @@ namespace ModTools.Utils
                 using (var stream = new FileStream(fileName, FileMode.Create))
                 {
                     OBJLoader.ExportOBJ(meshToDump.EncodeOBJ(), stream);
-                    stream.Close();
                     Log.Warning($"Dumped mesh \"{mesh.name}\" to \"{fileName}\"");
                 }
             }

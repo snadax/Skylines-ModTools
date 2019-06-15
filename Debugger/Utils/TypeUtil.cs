@@ -36,12 +36,6 @@ namespace ModTools
         public static MemberInfo[] GetAllMembers(Type type, bool recursive = false)
             => GetMembersInternal(type, recursive, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 
-        public static MemberInfo[] GetPublicMembers(Type type, bool recursive = false)
-            => GetMembersInternal(type, recursive, BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static);
-
-        public static MemberInfo[] GetPrivateMembers(Type type, bool recursive = false)
-            => GetMembersInternal(type, recursive, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
-
         public static void ClearTypeCache() => typeCache = new Dictionary<Type, MemberInfo[]>();
 
         public static bool IsEnumerable(object myProperty)

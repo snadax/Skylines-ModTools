@@ -127,9 +127,8 @@ namespace ModTools.Explorer
             GUILayout.EndHorizontal();
             if (value != null && !TypeUtil.IsSpecialType(field.FieldType) && state.ExpandedObjects.Contains(refChain.UniqueId))
             {
-                if (value is GameObject)
+                if (value is GameObject go)
                 {
-                    var go = value as GameObject;
                     foreach (var component in go.GetComponents<Component>())
                     {
                         GUIComponent.OnSceneTreeComponent(state, refChain, component);

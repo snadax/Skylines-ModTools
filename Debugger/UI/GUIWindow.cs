@@ -22,18 +22,23 @@ namespace ModTools.UI
 
         private readonly int id;
         private readonly UIPanel clickCatcher;
+        private readonly bool resizable;
+        private readonly bool hasTitlebar;
 
         private Vector2 minSize = Vector2.zero;
         private Rect windowRect = new Rect(0, 0, 64, 64);
 
         private bool visible;
 
-        protected GUIWindow(string title, Rect rect, GUISkin skin)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811", Justification = ".ctor of a Unity component")]
+        protected GUIWindow(string title, Rect rect, GUISkin skin, bool resizable = true, bool hasTitlebar = true)
         {
             id = UnityEngine.Random.Range(1024, int.MaxValue);
             Title = title;
             windowRect = rect;
             Skin = skin;
+            this.resizable = resizable;
+            this.hasTitlebar = hasTitlebar;
             minSize = new Vector2(64.0f, 64.0f);
             Windows.Add(this);
 
@@ -68,12 +73,6 @@ namespace ModTools.UI
                 }
             }
         }
-
-        public bool Resizable { get; set; } = true;
-
-        public bool HasCloseButton { get; set; } = true;
-
-        public bool HasTitlebar { get; set; } = true;
 
         protected static Texture2D BgTexture { get; set; }
 
@@ -254,7 +253,7 @@ namespace ModTools.UI
             clickCatcher.zOrder = int.MaxValue;
         }
 
-        private void WindowFunction(int id)
+        private void WindowFunction(int windowId)
         {
             GUILayout.Space(8.0f);
 
@@ -274,17 +273,13 @@ namespace ModTools.UI
 
             DrawBorder();
 
-            if (HasTitlebar)
+            if (hasTitlebar)
             {
                 DrawTitlebar(mouse);
-            }
-
-            if (HasCloseButton)
-            {
                 DrawCloseButton(mouse);
             }
 
-            if (Resizable)
+            if (resizable)
             {
                 DrawResizeHandle(mouse);
             }

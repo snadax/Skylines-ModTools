@@ -99,7 +99,6 @@
     <Rule Id="CA1901" Action="Warning" />
     <Rule Id="CA1903" Action="Warning" />
     <Rule Id="CA2000" Action="Warning" />
-    <Rule Id="CA2001" Action="Warning" />
     <Rule Id="CA2002" Action="Error" />
     <Rule Id="CA2003" Action="Warning" />
     <Rule Id="CA2006" Action="Warning" />

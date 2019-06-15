@@ -11,12 +11,10 @@ namespace ModTools
         private const string TextAreaControlName = "ModToolsScriptEditorTextArea";
         private const string ExampleScriptFileName = "ExampleScript.cs";
 
-        private const float CompactHeaderHeight = 50.0f;
-        private const float ExpandedHeaderHeight = 120.0f;
+        private const float HeaderHeight = 120.0f;
         private const float FooterHeight = 60.0f;
 
         private readonly List<ScriptEditorFile> projectFiles = new List<ScriptEditorFile>();
-        private readonly bool headerExpanded = true;
 
         private readonly GUIArea headerArea;
         private readonly GUIArea editorArea;
@@ -36,9 +34,21 @@ namespace ModTools
             : base("Script Editor", new Rect(16.0f, 16.0f, 640.0f, 480.0f), Skin)
         {
             headerArea = new GUIArea(this);
+            headerArea.AbsolutePosition.y = 32.0f;
+            headerArea.RelativeSize.x = 1.0f;
+            headerArea.AbsoluteSize.y = HeaderHeight;
+
             editorArea = new GUIArea(this);
+            editorArea.AbsolutePosition.y = 32.0f + HeaderHeight;
+            editorArea.RelativeSize.x = 1.0f;
+            editorArea.RelativeSize.y = 1.0f;
+            editorArea.AbsoluteSize.y = -(32.0f + HeaderHeight + FooterHeight);
+
             footerArea = new GUIArea(this);
-            RecalculateAreas();
+            footerArea.RelativePosition.y = 1.0f;
+            footerArea.AbsolutePosition.y = -FooterHeight;
+            footerArea.AbsoluteSize.y = FooterHeight;
+            footerArea.RelativeSize.x = 1.0f;
         }
 
         public void ReloadProjectWorkspace()
@@ -109,25 +119,6 @@ namespace ModTools
         }
 
         private static void SaveProjectFile(ScriptEditorFile file) => File.WriteAllText(file.Path, file.Source);
-
-        private void RecalculateAreas()
-        {
-            var headerHeight = headerExpanded ? ExpandedHeaderHeight : CompactHeaderHeight;
-
-            headerArea.AbsolutePosition.y = 32.0f;
-            headerArea.RelativeSize.x = 1.0f;
-            headerArea.AbsoluteSize.y = headerHeight;
-
-            editorArea.AbsolutePosition.y = 32.0f + headerHeight;
-            editorArea.RelativeSize.x = 1.0f;
-            editorArea.RelativeSize.y = 1.0f;
-            editorArea.AbsoluteSize.y = -(32.0f + headerHeight + FooterHeight);
-
-            footerArea.RelativePosition.y = 1.0f;
-            footerArea.AbsolutePosition.y = -FooterHeight;
-            footerArea.AbsoluteSize.y = FooterHeight;
-            footerArea.RelativeSize.x = 1.0f;
-        }
 
         private void SaveAllProjectFiles()
         {

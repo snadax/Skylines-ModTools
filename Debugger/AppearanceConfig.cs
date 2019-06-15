@@ -10,14 +10,11 @@ namespace ModTools
         private int selectedFont;
 
         public AppearanceConfig()
-            : base("Appearance configuration", new Rect(16.0f, 16.0f, 600.0f, 490.0f), Skin)
+            : base("Appearance configuration", new Rect(16.0f, 16.0f, 600.0f, 490.0f), Skin, resizable: false)
         {
-            Visible = false;
-            Resizable = false;
-
             availableFonts = Font.GetOSInstalledFontNames();
             var c = 0;
-            var configFont = Config.FontName;
+            var configFont = ModTools.Instance.Config.FontName;
 
             foreach (var font in availableFonts)
             {
@@ -30,8 +27,6 @@ namespace ModTools
                 c++;
             }
         }
-
-        private static ModConfiguration Config => ModTools.Instance.Config;
 
         protected override void DrawWindow()
         {

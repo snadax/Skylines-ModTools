@@ -170,15 +170,17 @@ namespace ModTools.Explorer
             }
             else if (TypeUtil.IsMeshType(type))
             {
+                var mesh = (Mesh)value;
+
                 if (GUILayout.Button("Preview"))
                 {
-                    MeshViewer.CreateMeshViewer(null, (Mesh)value, null);
+                    MeshViewer.CreateMeshViewer(null, mesh, null);
                 }
 
-                if (((Mesh)value).isReadable && GUILayout.Button("Dump .obj"))
+                if (mesh.isReadable && GUILayout.Button("Dump .obj"))
                 {
                     var outPath = refChain.ToString().Replace(' ', '_');
-                    DumpUtil.DumpMeshAndTextures(outPath, value as Mesh);
+                    DumpUtil.DumpMeshAndTextures(outPath, mesh);
                 }
             }
         }

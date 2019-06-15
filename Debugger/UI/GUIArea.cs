@@ -16,6 +16,7 @@ namespace ModTools.UI
         private readonly Vector2 margin = new Vector2(8.0f, 8.0f);
         private readonly GUIWindow window;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811", Justification = "Used by Unity components")]
         public GUIArea(GUIWindow window)
         {
             this.window = window;
