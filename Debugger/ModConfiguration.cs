@@ -33,7 +33,7 @@ namespace ModTools
         public int FontSize { get; set; } = 14;
 
         [XmlElement("backgroundColor")]
-        public Color BackgroundColor { get; set; } = new Color(40 / RGB, 40 / RGB, 40 / RGB, 235 / RGB);
+        public Color BackgroundColor { get; set; } = new Color(100 / RGB, 100 / RGB, 110 / RGB, 235 / RGB);
 
         [XmlElement("titlebarColor")]
         public Color TitleBarColor { get; set; } = new Color(0 / RGB, 0 / RGB, 0 / RGB, Opaque);
