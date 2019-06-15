@@ -13,19 +13,7 @@ namespace ModTools
             : base("Appearance configuration", new Rect(16.0f, 16.0f, 600.0f, 490.0f), Skin, resizable: false)
         {
             availableFonts = Font.GetOSInstalledFontNames();
-            var c = 0;
-            var configFont = ModTools.Instance.Config.FontName;
-
-            foreach (var font in availableFonts)
-            {
-                if (font == configFont)
-                {
-                    selectedFont = c;
-                    break;
-                }
-
-                c++;
-            }
+            selectedFont = Array.IndexOf(availableFonts, ModTools.Instance.Config.FontName);
         }
 
         protected override void DrawWindow()
@@ -34,9 +22,10 @@ namespace ModTools
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Font");
+            GUILayout.FlexibleSpace();
 
-            var newSelectedFont = GUIComboBox.Box(selectedFont, availableFonts, "AppearanceConfigFontsComboBox");
-            if (newSelectedFont != selectedFont)
+            var newSelectedFont = GUIComboBox.Box(selectedFont, availableFonts, "AppearanceSettingsFonts");
+            if (newSelectedFont != selectedFont && newSelectedFont >= 0)
             {
                 config.FontName = availableFonts[newSelectedFont];
                 selectedFont = newSelectedFont;
@@ -90,47 +79,24 @@ namespace ModTools
             config.MemberTypeColor = DrawColorControl("Field type", config.MemberTypeColor);
             config.ValueColor = DrawColorControl("Member value", config.ValueColor);
 
+            GUILayout.FlexibleSpace();
+
             GUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Save", GUILayout.Width(128)))
-            {
-                ModTools.Instance.SaveConfig();
-            }
-
-            if (GUILayout.Button("Reset", GUILayout.Width(128)))
-            {
-                var template = new ModConfiguration();
-
-                config.BackgroundColor = template.BackgroundColor;
-                BgTexture.SetPixel(0, 0, config.BackgroundColor);
-                BgTexture.Apply();
-
-                config.TitleBarColor = template.TitleBarColor;
-                MoveNormalTexture.SetPixel(0, 0, config.TitleBarColor);
-                MoveNormalTexture.Apply();
-
-                MoveHoverTexture.SetPixel(0, 0, config.TitleBarColor * 1.2f);
-                MoveHoverTexture.Apply();
-
-                config.TitleBarTextColor = template.TitleBarTextColor;
-
-                config.GameObjectColor = template.GameObjectColor;
-                config.EnabledComponentColor = template.EnabledComponentColor;
-                config.DisabledComponentColor = template.DisabledComponentColor;
-                config.SelectedComponentColor = template.SelectedComponentColor;
-                config.NameColor = template.NameColor;
-                config.TypeColor = template.TypeColor;
-                config.ModifierColor = template.ModifierColor;
-                config.MemberTypeColor = template.MemberTypeColor;
-                config.ValueColor = template.ValueColor;
-                config.FontName = template.FontName;
-                config.FontSize = template.FontSize;
-
-                UpdateFont();
-                ModTools.Instance.SaveConfig();
-            }
-
             GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("OK", GUILayout.Width(100)))
+            {
+                ModTools.Instance.SaveConfig();
+                Visible = false;
+            }
+
+            if (GUILayout.Button("Defaults", GUILayout.Width(100)))
+            {
+                ResetDoDefault(config);
+                selectedFont = Array.IndexOf(availableFonts, config.FontName);
+            }
+
             GUILayout.EndHorizontal();
         }
 
@@ -138,6 +104,38 @@ namespace ModTools
         {
             Log.Error("Exception in AppearanceConfig - " + ex.Message);
             Visible = false;
+        }
+
+        private static void ResetDoDefault(ModConfiguration config)
+        {
+            var template = new ModConfiguration();
+
+            config.BackgroundColor = template.BackgroundColor;
+            BgTexture.SetPixel(0, 0, config.BackgroundColor);
+            BgTexture.Apply();
+
+            config.TitleBarColor = template.TitleBarColor;
+            MoveNormalTexture.SetPixel(0, 0, config.TitleBarColor);
+            MoveNormalTexture.Apply();
+
+            MoveHoverTexture.SetPixel(0, 0, config.TitleBarColor * 1.2f);
+            MoveHoverTexture.Apply();
+
+            config.TitleBarTextColor = template.TitleBarTextColor;
+
+            config.GameObjectColor = template.GameObjectColor;
+            config.EnabledComponentColor = template.EnabledComponentColor;
+            config.DisabledComponentColor = template.DisabledComponentColor;
+            config.SelectedComponentColor = template.SelectedComponentColor;
+            config.NameColor = template.NameColor;
+            config.TypeColor = template.TypeColor;
+            config.ModifierColor = template.ModifierColor;
+            config.MemberTypeColor = template.MemberTypeColor;
+            config.ValueColor = template.ValueColor;
+            config.FontName = template.FontName;
+            config.FontSize = template.FontSize;
+
+            UpdateFont();
         }
 
         private Color DrawColorControl(string name, Color value)
