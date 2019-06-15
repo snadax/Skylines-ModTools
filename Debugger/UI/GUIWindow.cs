@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ColossalFramework.UI;
 using UnityEngine;
 
 namespace ModTools.UI
@@ -21,7 +20,6 @@ namespace ModTools.UI
         private static Vector2 moveDragHandle = Vector2.zero;
 
         private readonly int id;
-        private readonly UIPanel clickCatcher;
         private readonly bool resizable;
         private readonly bool hasTitlebar;
 
@@ -41,18 +39,6 @@ namespace ModTools.UI
             this.hasTitlebar = hasTitlebar;
             minSize = new Vector2(64.0f, 64.0f);
             Windows.Add(this);
-
-            var uiView = FindObjectOfType<UIView>();
-            if (uiView != null)
-            {
-                clickCatcher = uiView.AddUIComponent(typeof(UIPanel)) as UIPanel;
-                if (clickCatcher != null)
-                {
-                    clickCatcher.name = "_ModToolsInternal";
-                }
-            }
-
-            UpdateClickCatcher();
         }
 
         public Rect WindowRect => windowRect;
@@ -68,7 +54,6 @@ namespace ModTools.UI
                 if (visible && !wasVisible)
                 {
                     GUI.BringWindowToFront(id);
-                    UpdateClickCatcher();
                     OnWindowOpened();
                 }
             }
@@ -101,12 +86,6 @@ namespace ModTools.UI
         public void OnDestroy()
         {
             OnWindowDestroyed();
-
-            if (clickCatcher != null)
-            {
-                Destroy(clickCatcher.gameObject);
-            }
-
             Windows.Remove(this);
         }
 
@@ -237,22 +216,6 @@ namespace ModTools.UI
         {
         }
 
-        private void UpdateClickCatcher()
-        {
-            if (clickCatcher == null)
-            {
-                return;
-            }
-
-            // adjust rect from unity pixels to C:S pixels via GetUIView().ratio
-            var ratio = UIView.GetAView().ratio;
-
-            clickCatcher.absolutePosition = new Vector3(windowRect.position.x * ratio, windowRect.position.y * ratio);
-            clickCatcher.size = new Vector2(windowRect.width * ratio, windowRect.height * ratio);
-            clickCatcher.isVisible = Visible;
-            clickCatcher.zOrder = int.MaxValue;
-        }
-
         private void WindowFunction(int windowId)
         {
             GUILayout.Space(8.0f);
@@ -339,7 +302,6 @@ namespace ModTools.UI
                             movingWindow = null;
                             ModTools.Instance.SaveConfig();
 
-                            UpdateClickCatcher();
                             OnWindowMoved(windowRect.position);
                         }
                     }
@@ -375,8 +337,6 @@ namespace ModTools.UI
                     resizingWindow = null;
                     movingWindow = null;
                     Visible = false;
-
-                    UpdateClickCatcher();
                     OnWindowClosed();
                 }
             }
@@ -429,8 +389,6 @@ namespace ModTools.UI
                         {
                             resizingWindow = null;
                             ModTools.Instance.SaveConfig();
-
-                            UpdateClickCatcher();
                             OnWindowResized(windowRect.size);
                         }
                     }

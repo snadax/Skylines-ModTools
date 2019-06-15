@@ -6,13 +6,6 @@ namespace ModTools
 {
     internal sealed class ModTools : GUIWindow, IGameObject
     {
-#if DEBUG
-        public const bool DEBUGMODTOOLS = true;
-#else
-        public const bool DEBUGMODTOOLS = false;
-
-#endif
-
         private const string ConfigPath = "ModToolsConfig.xml";
         private static readonly object LoggingLock = new object();
         private static readonly object InstanceLock = new object();

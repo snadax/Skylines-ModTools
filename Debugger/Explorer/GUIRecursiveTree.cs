@@ -7,10 +7,12 @@ namespace ModTools.Explorer
     {
         public static void OnSceneTreeRecursive(GameObject modToolsGo, SceneExplorerState state, ReferenceChain refChain, GameObject obj)
         {
-            if (obj == modToolsGo && !ModTools.DEBUGMODTOOLS)
+#if !DEBUG
+            if (obj == modToolsGo)
             {
                 return;
             }
+#endif
 
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {
@@ -20,11 +22,6 @@ namespace ModTools.Explorer
             if (obj == null)
             {
                 SceneExplorerCommon.OnSceneTreeMessage(refChain, "null");
-                return;
-            }
-
-            if (obj.name == "_ModToolsInternal" && !ModTools.DEBUGMODTOOLS)
-            {
                 return;
             }
 
