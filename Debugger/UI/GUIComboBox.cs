@@ -1,191 +1,234 @@
 ﻿using UnityEngine;
 
-// Taken from the MechJeb2 (https://github.com/MuMech/MechJeb2) source, see MECHJEB-LICENSE for license info
 namespace ModTools.UI
 {
     internal static class GUIComboBox
     {
-        // Unity identifier of the window, just needs to be unique
-        private static readonly int Id = GUIUtility.GetControlID(FocusType.Passive);
+        private const string ExpandDownButtonText = " ▼ ";
+        private static PopupWindow popupWindow;
 
-        // ComboBox GUI Style
-        private static readonly GUIStyle Style;
-
-        private static Vector2 comboBoxScroll = Vector2.zero;
-
-        // Easy to use combobox class
-        // ***** For users *****
-        // Call the Box method with the latest selected item, list of text entries
-        // and an object identifying who is making the request.
-        // The result is the newly selected item.
-        // There is currently no way of knowing when a choice has been made
-
-        // Position of the popuprect
-        private static Rect rect;
-
-        private static bool hasScrollbars;
-
-        // Identifier of the caller of the popup, null if nobody is waiting for a value
-        private static string popupOwner;
-
-        private static string[] entries;
-        private static bool popupActive;
-
-        // Result to be returned to the owner
-        private static int selectedItem;
-
-        private static GUIStyle yellowOnHover;
-
-        static GUIComboBox()
+        public static int Box(int itemIndex, string[] items, string callerId)
         {
-            var background = new Texture2D(16, 16, TextureFormat.RGBA32, false)
+            switch (items.Length)
             {
-                wrapMode = TextureWrapMode.Clamp,
-            };
+                case 0:
+                    return -1;
 
-            for (var x = 0; x < background.width; x++)
-            {
-                for (var y = 0; y < background.height; y++)
-                {
-                    if (x == 0 || x == background.width - 1 || y == 0 || y == background.height - 1)
-                    {
-                        background.SetPixel(x, y, new Color(0, 0, 0, 1));
-                    }
-                    else
-                    {
-                        background.SetPixel(x, y, new Color(0.05f, 0.05f, 0.05f, 0.95f));
-                    }
-                }
+                case 1:
+                    GUILayout.Label(items[0]);
+                    return 0;
             }
 
-            background.Apply();
+            if (popupWindow != null
+                && callerId == popupWindow.OwnerId
+                && popupWindow.CloseAndGetSelection(out var newSelectedIndex))
+            {
+                itemIndex = newSelectedIndex;
+                Object.Destroy(popupWindow);
+                popupWindow = null;
+            }
 
-            Style = new GUIStyle(GUI.skin.window);
-            Style.normal.background = background;
-            Style.onNormal.background = background;
-            Style.border.top = Style.border.bottom;
-            Style.padding.top = Style.padding.bottom;
+            var popupSize = GetPopupDimensions(items);
+
+            GUILayout.Box(items[itemIndex], GUILayout.Width(popupSize.x));
+            var popupPusition = GUIUtility.GUIToScreenPoint(GUILayoutUtility.GetLastRect().position);
+            if (GUILayout.Button(ExpandDownButtonText, GUILayout.Width(24f)) && EnsurePopupWindow())
+            {
+                popupWindow.Show(callerId, items, itemIndex, popupPusition, popupSize);
+            }
+
+            return itemIndex;
         }
 
-        public static GUIStyle YellowOnHover
+        private static bool EnsurePopupWindow()
         {
-            get
+            if (popupWindow != null)
             {
-                if (yellowOnHover == null)
-                {
-                    yellowOnHover = new GUIStyle(GUI.skin.label);
-                    yellowOnHover.hover.textColor = Color.yellow;
-                    var t = new Texture2D(1, 1);
-                    t.SetPixel(0, 0, new Color(0, 0, 0, 0));
-                    t.Apply();
-                    yellowOnHover.hover.background = t;
-                }
-
-                return yellowOnHover;
+                return true;
             }
+
+            var modTools = GameObject.Find("ModTools");
+            if (modTools == null)
+            {
+                return false;
+            }
+
+            if (modTools.GetComponent<PopupWindow>() == null)
+            {
+                popupWindow = modTools.AddComponent<PopupWindow>();
+            }
+
+            return popupWindow != null;
         }
 
-        public static void DrawGUI()
+        private static Vector2 GetPopupDimensions(string[] items)
         {
-            if (popupOwner == null || rect.height == 0 || !popupActive)
-            {
-                return;
-            }
-
-            rect = GUILayout.Window(Id, rect, WindowFunction, string.Empty, Style);
-
-            // Cancel the popup if we click outside
-            if (Event.current.type == EventType.MouseDown && !rect.Contains(Event.current.mousePosition))
-            {
-                popupOwner = null;
-            }
-        }
-
-        public static int Box(int selectedItem, string[] entries, string caller)
-        {
-            // Trivial cases (0-1 items)
-            if (entries.Length == 0)
-            {
-                return 0;
-            }
-
-            if (entries.Length == 1)
-            {
-                GUILayout.Label(entries[0]);
-                return 0;
-            }
-
-            // A choice has been made, update the return value
-            if (popupOwner == caller && !popupActive)
-            {
-                popupOwner = null;
-                selectedItem = GUIComboBox.selectedItem;
-                GUI.changed = true;
-            }
-
-            var guiChanged = GUI.changed;
-
             float width = 0;
-            foreach (var entry in entries)
+            float height = 0;
+
+            for (var i = 0; i < items.Length; ++i)
             {
-                var len = GUI.skin.button.CalcSize(new GUIContent(entry)).x;
-                if (len > width)
+                var itemSize = GUI.skin.button.CalcSize(new GUIContent(items[i]));
+                if (itemSize.x > width)
                 {
-                    width = len;
+                    width = itemSize.x;
+                }
+
+                height += itemSize.y;
+            }
+
+            return new Vector2(width + 36, height + 36);
+        }
+
+        private sealed class PopupWindow : MonoBehaviour, IUIObject, IGameObject
+        {
+            private const float MaxPopupHeight = 400f;
+
+            private readonly int popupWindowId = GUIUtility.GetControlID(FocusType.Passive);
+
+            private readonly GUIStyle windowStyle;
+            private readonly GUIStyle hoverStyle;
+
+            private Vector2 popupScrollPosition = Vector2.zero;
+
+            private Rect popupRect;
+            private Vector2? mouseClickPoint;
+            private bool readyToClose;
+            private int selectedIndex;
+
+            private string[] items;
+
+            public PopupWindow()
+            {
+                hoverStyle = CreateHoverStyle();
+                windowStyle = CreateWindowStyle();
+            }
+
+            public string OwnerId { get; private set; }
+
+            public void Show(string ownerId, string[] items, int selectedIndex, Vector2 position, Vector2 popupSize)
+            {
+                OwnerId = ownerId;
+                this.items = items;
+                this.selectedIndex = selectedIndex;
+                popupRect = new Rect(position, new Vector2(popupSize.x, Mathf.Min(MaxPopupHeight, popupSize.y)));
+                popupScrollPosition = default;
+                mouseClickPoint = null;
+                readyToClose = false;
+            }
+
+            public bool CloseAndGetSelection(out int selectedIndex)
+            {
+                if (readyToClose)
+                {
+                    selectedIndex = this.selectedIndex;
+                    Close();
+                    return true;
+                }
+
+                selectedIndex = -1;
+                return false;
+            }
+
+            public void OnGUI()
+            {
+                if (OwnerId != null)
+                {
+                    GUI.ModalWindow(popupWindowId, popupRect, WindowFunction, string.Empty, windowStyle);
                 }
             }
 
-            if (GUILayout.Button("↓ " + entries[selectedItem] + " ↓", GUILayout.Width(width + 24)))
+            public void Update()
             {
-                // We will set the changed status when we return from the menu instead
-                GUI.changed = guiChanged;
+                if (OwnerId == null)
+                {
+                    return;
+                }
 
-                // Update the global state with the new items
-                popupOwner = caller;
-                popupActive = true;
-                GUIComboBox.entries = entries;
-
-                // Magic value to force position update during repaint event
-                rect = new Rect(0, 0, 0, 0);
+                if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
+                {
+                    var mousePos = Input.mousePosition;
+                    mousePos.y = Screen.height - mousePos.y;
+                    mouseClickPoint = mousePos;
+                }
+                else
+                {
+                    mouseClickPoint = null;
+                }
             }
 
-            // The GetLastRect method only works during repaint event, but the Button will return false during repaint
-            if (Event.current.type == EventType.Repaint && popupOwner == caller && rect.height == 0)
+            private static GUIStyle CreateHoverStyle()
             {
-                rect = GUILayoutUtility.GetLastRect();
+                var result = new GUIStyle(GUI.skin.label);
+                result.hover.textColor = Color.yellow;
+                var t = new Texture2D(1, 1);
+                t.SetPixel(0, 0, default);
+                t.Apply();
+                result.hover.background = t;
+                result.font = GUIWindow.Skin.font;
 
-                // But even worse, I can't find a clean way to convert from relative to absolute coordinates
-                Vector2 mousePos = Input.mousePosition;
-                mousePos.y = Screen.height - mousePos.y;
-                var clippedMousePos = Event.current.mousePosition;
-                rect.x = rect.x + mousePos.x - clippedMousePos.x;
-                rect.y = rect.y + mousePos.y - clippedMousePos.y;
-                var targetHeight = rect.height * entries.Length;
-                hasScrollbars = targetHeight >= 400.0f;
-                rect.height = Mathf.Min(targetHeight, 400.0f);
-                comboBoxScroll = Vector2.zero;
+                return result;
             }
 
-            return selectedItem;
-        }
-
-        private static void WindowFunction(int id)
-        {
-            if (hasScrollbars)
+            private static GUIStyle CreateWindowStyle()
             {
-                comboBoxScroll = GUILayout.BeginScrollView(comboBoxScroll, false, false);
+                var background = new Texture2D(16, 16, TextureFormat.RGBA32, mipmap: false)
+                {
+                    wrapMode = TextureWrapMode.Clamp,
+                };
+
+                for (var x = 0; x < background.width; x++)
+                {
+                    for (var y = 0; y < background.height; y++)
+                    {
+                        if (x == 0 || x == background.width - 1 || y == 0 || y == background.height - 1)
+                        {
+                            background.SetPixel(x, y, new Color(0, 0, 0, 1));
+                        }
+                        else
+                        {
+                            background.SetPixel(x, y, new Color(0.05f, 0.05f, 0.05f, 0.95f));
+                        }
+                    }
+                }
+
+                background.Apply();
+
+                var result = new GUIStyle(GUI.skin.window);
+                result.normal.background = background;
+                result.onNormal.background = background;
+                result.border.top = result.border.bottom;
+                result.padding.top = result.padding.bottom;
+
+                return result;
             }
 
-            selectedItem = GUILayout.SelectionGrid(-1, entries, 1, YellowOnHover);
-
-            if (hasScrollbars)
+            private void WindowFunction(int windowId)
             {
+                if (OwnerId == null)
+                {
+                    return;
+                }
+
+                popupScrollPosition = GUILayout.BeginScrollView(popupScrollPosition, false, false);
+
+                var oldSelectedIndex = selectedIndex;
+                selectedIndex = GUILayout.SelectionGrid(selectedIndex, items, xCount: 1, hoverStyle);
+
                 GUILayout.EndScrollView();
+
+                if (oldSelectedIndex != selectedIndex || mouseClickPoint.HasValue && !popupRect.Contains(mouseClickPoint.Value))
+                {
+                    readyToClose = true;
+                }
             }
 
-            if (GUI.changed)
+            private void Close()
             {
-                popupActive = false;
+                OwnerId = null;
+                items = null;
+                selectedIndex = -1;
+                mouseClickPoint = null;
             }
         }
     }

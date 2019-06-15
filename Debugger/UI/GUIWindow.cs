@@ -300,54 +300,58 @@ namespace ModTools.UI
             var moveRect = new Rect(windowRect.x * UIScale, windowRect.y * UIScale, windowRect.width * UIScale, 20.0f);
             var moveTex = MoveNormalTexture;
 
-            if (movingWindow != null)
+            // TODO: reduce nesting
+            if (!GUIUtility.hasModalWindow)
             {
-                if (movingWindow == this)
+                if (movingWindow != null)
                 {
-                    moveTex = MoveHoverTexture;
-
-                    if (Input.GetMouseButton(0))
+                    if (movingWindow == this)
                     {
-                        var pos = new Vector2(mouse.x, mouse.y) + moveDragHandle;
-                        windowRect.x = pos.x;
-                        windowRect.y = pos.y;
-                        if (windowRect.x < 0.0f)
-                        {
-                            windowRect.x = 0.0f;
-                        }
+                        moveTex = MoveHoverTexture;
 
-                        if (windowRect.x + windowRect.width > Screen.width)
+                        if (Input.GetMouseButton(0))
                         {
-                            windowRect.x = Screen.width - windowRect.width;
-                        }
+                            var pos = new Vector2(mouse.x, mouse.y) + moveDragHandle;
+                            windowRect.x = pos.x;
+                            windowRect.y = pos.y;
+                            if (windowRect.x < 0.0f)
+                            {
+                                windowRect.x = 0.0f;
+                            }
 
-                        if (windowRect.y < 0.0f)
+                            if (windowRect.x + windowRect.width > Screen.width)
+                            {
+                                windowRect.x = Screen.width - windowRect.width;
+                            }
+
+                            if (windowRect.y < 0.0f)
+                            {
+                                windowRect.y = 0.0f;
+                            }
+
+                            if (windowRect.y + windowRect.height > Screen.height)
+                            {
+                                windowRect.y = Screen.height - windowRect.height;
+                            }
+                        }
+                        else
                         {
-                            windowRect.y = 0.0f;
-                        }
+                            movingWindow = null;
+                            ModTools.Instance.SaveConfig();
 
-                        if (windowRect.y + windowRect.height > Screen.height)
-                        {
-                            windowRect.y = Screen.height - windowRect.height;
+                            UpdateClickCatcher();
+                            OnWindowMoved(windowRect.position);
                         }
-                    }
-                    else
-                    {
-                        movingWindow = null;
-                        ModTools.Instance.SaveConfig();
-
-                        UpdateClickCatcher();
-                        OnWindowMoved(windowRect.position);
                     }
                 }
-            }
-            else if (moveRect.Contains(mouse))
-            {
-                moveTex = MoveHoverTexture;
-                if (Input.GetMouseButton(0) && resizingWindow == null)
+                else if (moveRect.Contains(mouse))
                 {
-                    movingWindow = this;
-                    moveDragHandle = new Vector2(windowRect.x, windowRect.y) - new Vector2(mouse.x, mouse.y);
+                    moveTex = MoveHoverTexture;
+                    if (Input.GetMouseButton(0) && resizingWindow == null)
+                    {
+                        movingWindow = this;
+                        moveDragHandle = new Vector2(windowRect.x, windowRect.y) - new Vector2(mouse.x, mouse.y);
+                    }
                 }
             }
 
@@ -362,7 +366,7 @@ namespace ModTools.UI
             var closeRect = new Rect(windowRect.x * UIScale + windowRect.width * UIScale - 20.0f, windowRect.y * UIScale, 16.0f, 8.0f);
             var closeTex = CloseNormalTexture;
 
-            if (closeRect.Contains(mouse))
+            if (!GUIUtility.hasModalWindow && closeRect.Contains(mouse))
             {
                 closeTex = CloseHoverTexture;
 
@@ -371,7 +375,6 @@ namespace ModTools.UI
                     resizingWindow = null;
                     movingWindow = null;
                     Visible = false;
-                    ModTools.Instance.SaveConfig();
 
                     UpdateClickCatcher();
                     OnWindowClosed();
@@ -386,56 +389,60 @@ namespace ModTools.UI
             var resizeRect = new Rect(windowRect.x * UIScale + windowRect.width * UIScale - 16.0f, windowRect.y * UIScale + windowRect.height * UIScale - 8.0f, 16.0f, 8.0f);
             var resizeTex = ResizeNormalTexture;
 
-            if (resizingWindow != null)
+            // TODO: reduce nesting
+            if (!GUIUtility.hasModalWindow)
             {
-                if (resizingWindow == this)
+                if (resizingWindow != null)
                 {
-                    resizeTex = ResizeHoverTexture;
-
-                    if (Input.GetMouseButton(0))
+                    if (resizingWindow == this)
                     {
-                        var size = new Vector2(mouse.x, mouse.y) + resizeDragHandle - new Vector2(windowRect.x, windowRect.y);
+                        resizeTex = ResizeHoverTexture;
 
-                        if (size.x < minSize.x)
+                        if (Input.GetMouseButton(0))
                         {
-                            size.x = minSize.x;
-                        }
+                            var size = new Vector2(mouse.x, mouse.y) + resizeDragHandle - new Vector2(windowRect.x, windowRect.y);
 
-                        if (size.y < minSize.y)
+                            if (size.x < minSize.x)
+                            {
+                                size.x = minSize.x;
+                            }
+
+                            if (size.y < minSize.y)
+                            {
+                                size.y = minSize.y;
+                            }
+
+                            windowRect.width = size.x;
+                            windowRect.height = size.y;
+
+                            if (windowRect.x + windowRect.width >= Screen.width)
+                            {
+                                windowRect.width = Screen.width - windowRect.x;
+                            }
+
+                            if (windowRect.y + windowRect.height >= Screen.height)
+                            {
+                                windowRect.height = Screen.height - windowRect.y;
+                            }
+                        }
+                        else
                         {
-                            size.y = minSize.y;
+                            resizingWindow = null;
+                            ModTools.Instance.SaveConfig();
+
+                            UpdateClickCatcher();
+                            OnWindowResized(windowRect.size);
                         }
-
-                        windowRect.width = size.x;
-                        windowRect.height = size.y;
-
-                        if (windowRect.x + windowRect.width >= Screen.width)
-                        {
-                            windowRect.width = Screen.width - windowRect.x;
-                        }
-
-                        if (windowRect.y + windowRect.height >= Screen.height)
-                        {
-                            windowRect.height = Screen.height - windowRect.y;
-                        }
-                    }
-                    else
-                    {
-                        resizingWindow = null;
-                        ModTools.Instance.SaveConfig();
-
-                        UpdateClickCatcher();
-                        OnWindowResized(windowRect.size);
                     }
                 }
-            }
-            else if (resizeRect.Contains(mouse))
-            {
-                resizeTex = ResizeHoverTexture;
-                if (Input.GetMouseButton(0) && movingWindow == null)
+                else if (resizeRect.Contains(mouse))
                 {
-                    resizingWindow = this;
-                    resizeDragHandle = new Vector2(windowRect.x + windowRect.width, windowRect.y + windowRect.height) - new Vector2(mouse.x, mouse.y);
+                    resizeTex = ResizeHoverTexture;
+                    if (Input.GetMouseButton(0))
+                    {
+                        resizingWindow = this;
+                        resizeDragHandle = new Vector2(windowRect.x + windowRect.width, windowRect.y + windowRect.height) - new Vector2(mouse.x, mouse.y);
+                    }
                 }
             }
 

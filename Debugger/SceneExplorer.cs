@@ -351,8 +351,6 @@ namespace ModTools
             componentArea.End();
         }
 
-        protected override void OnWindowDrawn() => GUIComboBox.DrawGUI();
-
         protected override void HandleException(Exception ex)
         {
             Debug.LogException(ex);
