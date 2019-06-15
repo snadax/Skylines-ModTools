@@ -84,9 +84,9 @@ namespace ModTools.UI
         {
             private const float MaxPopupHeight = 400f;
 
-            private readonly int popupWindowId = GUIUtility.GetControlID(FocusType.Passive);
+            private static readonly GUIStyle WindowStyle = CreateWindowStyle();
 
-            private readonly GUIStyle windowStyle;
+            private readonly int popupWindowId = GUIUtility.GetControlID(FocusType.Passive);
             private readonly GUIStyle hoverStyle;
 
             private Vector2 popupScrollPosition = Vector2.zero;
@@ -96,37 +96,36 @@ namespace ModTools.UI
             private bool readyToClose;
             private int selectedIndex;
 
-            private string[] items;
+            private string[] popupItems;
 
             public PopupWindow()
             {
                 hoverStyle = CreateHoverStyle();
-                windowStyle = CreateWindowStyle();
             }
 
             public string OwnerId { get; private set; }
 
-            public void Show(string ownerId, string[] items, int selectedIndex, Vector2 position, Vector2 popupSize)
+            public void Show(string ownerId, string[] items, int currentIndex, Vector2 position, Vector2 popupSize)
             {
                 OwnerId = ownerId;
-                this.items = items;
-                this.selectedIndex = selectedIndex;
+                popupItems = items;
+                selectedIndex = currentIndex;
                 popupRect = new Rect(position, new Vector2(popupSize.x, Mathf.Min(MaxPopupHeight, popupSize.y)));
                 popupScrollPosition = default;
                 mouseClickPoint = null;
                 readyToClose = false;
             }
 
-            public bool CloseAndGetSelection(out int selectedIndex)
+            public bool CloseAndGetSelection(out int currentIndex)
             {
                 if (readyToClose)
                 {
-                    selectedIndex = this.selectedIndex;
+                    currentIndex = selectedIndex;
                     Close();
                     return true;
                 }
 
-                selectedIndex = -1;
+                currentIndex = -1;
                 return false;
             }
 
@@ -134,7 +133,7 @@ namespace ModTools.UI
             {
                 if (OwnerId != null)
                 {
-                    GUI.ModalWindow(popupWindowId, popupRect, WindowFunction, string.Empty, windowStyle);
+                    GUI.ModalWindow(popupWindowId, popupRect, WindowFunction, string.Empty, WindowStyle);
                 }
             }
 
@@ -213,7 +212,7 @@ namespace ModTools.UI
                 popupScrollPosition = GUILayout.BeginScrollView(popupScrollPosition, false, false);
 
                 var oldSelectedIndex = selectedIndex;
-                selectedIndex = GUILayout.SelectionGrid(selectedIndex, items, xCount: 1, hoverStyle);
+                selectedIndex = GUILayout.SelectionGrid(selectedIndex, popupItems, xCount: 1, hoverStyle);
 
                 GUILayout.EndScrollView();
 
@@ -226,7 +225,7 @@ namespace ModTools.UI
             private void Close()
             {
                 OwnerId = null;
-                items = null;
+                popupItems = null;
                 selectedIndex = -1;
                 mouseClickPoint = null;
             }
