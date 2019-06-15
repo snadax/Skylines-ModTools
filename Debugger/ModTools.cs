@@ -234,6 +234,8 @@ namespace ModTools
                 SaveConfig();
             }
 
+            GUILayout.Space(Config.TreeIdentSpacing);
+
             if (GUILayout.Button("Debug console (F7)"))
             {
                 if (console != null)
