@@ -8,6 +8,9 @@ namespace ModTools
     [XmlRoot("Configuration")]
     public sealed class ModConfiguration
     {
+        private const float RGB = 255f;
+        private const float Opaque = 1f;
+
         #region General
 
         [XmlElement("customPrefabsObject")]
@@ -30,13 +33,13 @@ namespace ModTools
         public int FontSize { get; set; } = 14;
 
         [XmlElement("backgroundColor")]
-        public Color BackgroundColor { get; set; } = new Color(0.321f, 0.321f, 0.321f, 1.0f);
+        public Color BackgroundColor { get; set; } = new Color(40 / RGB, 40 / RGB, 40 / RGB, 235 / RGB);
 
         [XmlElement("titlebarColor")]
-        public Color TitleBarColor { get; set; } = new Color(0.247f, 0.282f, 0.364f, 1.0f);
+        public Color TitleBarColor { get; set; } = new Color(0 / RGB, 0 / RGB, 0 / RGB, Opaque);
 
         [XmlElement("titlebarTextColor")]
-        public Color TitleBarTextColor { get; set; } = new Color(0.85f, 0.85f, 0.85f, 1.0f);
+        public Color TitleBarTextColor { get; set; } = new Color(255 / RGB, 255 / RGB, 255 / RGB, Opaque);
 
         #endregion
 
@@ -46,7 +49,7 @@ namespace ModTools
         public Rect MainWindowRect { get; set; } = new Rect(128, 128, 356, 300);
 
         [XmlElement("consoleRect")]
-        public Rect ConsoleRect { get; set; } = new Rect(16.0f, 16.0f, 512.0f, 256.0f);
+        public Rect ConsoleRect { get; set; } = new Rect(16f, 16f, 512f, 256f);
 
         [XmlElement("sceneExplorerRect")]
         public Rect SceneExplorerRect { get; set; } = new Rect(128, 440, 800, 500);
@@ -94,10 +97,10 @@ namespace ModTools
         public Color ConsoleWarningColor { get; set; } = Color.yellow;
 
         [XmlElement("consoleErrorColor")]
-        public Color ConsoleErrorColor { get; set; } = new Color(0.7f, 0.1f, 0.1f, 1.0f);
+        public Color ConsoleErrorColor { get; set; } = new Color(0.7f, 0.1f, 0.1f, 1f);
 
         [XmlElement("consoleExceptionColor")]
-        public Color ConsoleExceptionColor { get; set; } = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+        public Color ConsoleExceptionColor { get; set; } = new Color(1f, 0f, 0f, 1f);
 
         #endregion
 
@@ -135,37 +138,37 @@ namespace ModTools
         #region Appearance
 
         [XmlElement("sceneExplorerTreeIdentSpacing")]
-        public float TreeIdentSpacing { get; set; } = 16.0f;
+        public float TreeIdentSpacing { get; set; } = 16f;
 
         [XmlElement("gameObjectColor")]
-        public Color GameObjectColor { get; set; } = new Color(165.0f / 255.0f, 186.0f / 255.0f, 229.0f / 255.0f, 1.0f);
+        public Color GameObjectColor { get; set; } = new Color(80 / RGB, 200 / RGB, 180 / RGB, Opaque);
 
         [XmlElement("enabledComponentColor")]
-        public Color EnabledComponentColor { get; set; } = Color.white;
+        public Color EnabledComponentColor { get; set; } = new Color(220 / RGB, 220 / RGB, 170 / RGB, Opaque);
 
         [XmlElement("disabledComponentColor")]
-        public Color DisabledComponentColor { get; set; } = new Color(127.0f / 255.0f, 127.0f / 255.0f, 127.0f / 255.0f, 1.0f);
+        public Color DisabledComponentColor { get; set; } = new Color(180 / RGB, 180 / RGB, 190 / RGB, Opaque);
 
         [XmlElement("selectedComponentColor")]
-        public Color SelectedComponentColor { get; set; } = new Color(233.0f / 255.0f, 138.0f / 255.0f, 23.0f / 255.0f, 1.0f);
+        public Color SelectedComponentColor { get; set; } = new Color(80 / RGB, 160 / RGB, 220 / RGB, Opaque);
 
         [XmlElement("nameColor")]
-        public Color NameColor { get; set; } = new Color(148.0f / 255.0f, 196.0f / 255.0f, 238.0f / 255.0f, 1.0f);
+        public Color NameColor { get; set; } = new Color(220 / RGB, 220 / RGB, 170 / RGB, Opaque);
 
         [XmlElement("typeColor")]
-        public Color TypeColor { get; set; } = new Color(58.0f / 255.0f, 179.0f / 255.0f, 58.0f / 255.0f, 1.0f);
+        public Color TypeColor { get; set; } = new Color(80 / RGB, 200 / RGB, 180 / RGB, Opaque);
 
         [XmlElement("keywordColor")]
-        public Color KeywordColor { get; set; } = new Color(233.0f / 255.0f, 102.0f / 255.0f, 47.0f / 255.0f, 1.0f);
+        public Color KeywordColor { get; set; } = new Color(220 / RGB, 160 / RGB, 220 / RGB, Opaque);
 
         [XmlElement("modifierColor")]
-        public Color ModifierColor { get; set; } = new Color(84.0f / 255.0f, 109.0f / 255.0f, 57.0f / 255.0f, 1.0f);
+        public Color ModifierColor { get; set; } = new Color(80 / RGB, 160 / RGB, 220 / RGB, Opaque);
 
         [XmlElement("memberTypeColor")]
-        public Color MemberTypeColor { get; set; } = new Color(86.0f / 255.0f, 127.0f / 255.0f, 68.0f / 255.0f, 1.0f);
+        public Color MemberTypeColor { get; set; } = new Color(220 / RGB, 160 / RGB, 220 / RGB, Opaque);
 
         [XmlElement("valueColor")]
-        public Color ValueColor { get; set; } = Color.white;
+        public Color ValueColor { get; set; } = new Color(160 / RGB, 220 / RGB, 255 / RGB, Opaque);
 
         #endregion
 
