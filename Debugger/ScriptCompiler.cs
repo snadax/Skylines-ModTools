@@ -101,7 +101,7 @@ namespace ModTools
 
             dllPath = Path.Combine(outputPath, Path.GetFileName(outputPath) + ".dll");
 
-            var modToolsAssembly = FileUtil.FindPluginPath(typeof(EntryPoint));
+            var modToolsAssembly = FileUtil.FindPluginPath(typeof(ModToolsMod));
             var additionalAssemblies = GameAssemblies.Concat(new[] { modToolsAssembly }).ToArray();
 
             PluginManager.CompileSourceInFolder(sourcePath, outputPath, additionalAssemblies);

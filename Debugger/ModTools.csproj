@@ -100,8 +100,8 @@
     <Compile Include="MeshViewer.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="UI\GUIControls.cs" />
-    <Compile Include="EntryPoint.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="ModToolsMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceChain.cs" />
     <Compile Include="AppearanceConfig.cs" />

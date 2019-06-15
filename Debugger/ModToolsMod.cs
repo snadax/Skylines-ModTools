@@ -6,15 +6,17 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public sealed class EntryPoint : IUserMod
+    public sealed class ModToolsMod : IUserMod
     {
         private const string ModToolsName = "ModTools";
 
         private GameObject mainObject;
 
+        public static string Version { get; } = GitVersion.GetAssemblyVersion(typeof(ModToolsMod).Assembly);
+
         public string Name => ModToolsName;
 
-        public string Description => "Debugging toolkit for modders, version " + GitVersion.GetAssemblyVersion(typeof(EntryPoint).Assembly);
+        public string Description => "Debugging toolkit for modders, version " + Version;
 
         public void OnEnabled()
         {
@@ -31,7 +33,7 @@ namespace ModTools
                 mainObject = new GameObject(ModToolsName);
                 UnityEngine.Object.DontDestroyOnLoad(mainObject);
 
-                var modTools = mainObject.AddComponent<ModTools>();
+                var modTools = mainObject.AddComponent<MainWindow>();
                 modTools.Initialize();
             }
             catch (Exception e)
