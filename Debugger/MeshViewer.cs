@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    internal sealed class MeshViewer : GUIWindow
+    internal sealed class MeshViewer : GUIWindow, IGameObject
     {
         private readonly RenderTexture targetRT;
         private readonly Camera meshViewerCamera;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    internal sealed class GamePanelExtender : MonoBehaviour
+    internal sealed class GamePanelExtender : MonoBehaviour, IGameObject, IDestroyableObject
     {
         private SceneExplorer sceneExplorer;
 

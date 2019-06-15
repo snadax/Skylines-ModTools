@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    internal sealed class SceneExplorer : GUIWindow
+    internal sealed class SceneExplorer : GUIWindow, IGameObject, IAwakingObject
     {
         private const float WindowTopMargin = 16.0f;
         private const float WindowBottomMargin = 8.0f;

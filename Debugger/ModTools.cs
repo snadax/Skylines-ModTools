@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    internal sealed class ModTools : GUIWindow
+    internal sealed class ModTools : GUIWindow, IGameObject
     {
 #if DEBUG
         public const bool DEBUGMODTOOLS = true;

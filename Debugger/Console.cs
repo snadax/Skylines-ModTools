@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    internal sealed class Console : GUIWindow, ILogger
+    internal sealed class Console : GUIWindow, ILogger, IGameObject
     {
         public const string DefaultSource = @"
 using System;

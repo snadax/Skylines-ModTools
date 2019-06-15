@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ModTools
 {
-    internal sealed class DebugRenderer : MonoBehaviour
+    internal sealed class DebugRenderer : MonoBehaviour, IGameObject, IUIObject
     {
         private readonly List<UIComponent> hoveredComponents = new List<UIComponent>();
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ModTools.UI
 {
-    internal abstract class GUIWindow : MonoBehaviour
+    internal abstract class GUIWindow : MonoBehaviour, IDestroyableObject, IUIObject
     {
         // TODO: make this field to private-instance
         public static GUISkin Skin;

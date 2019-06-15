@@ -6,7 +6,7 @@ using UnityEngine;
 namespace ModTools
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0052", Justification = "Intended for self-reflection in-game")]
-    internal sealed class CustomPrefabs : MonoBehaviour
+    internal sealed class CustomPrefabs : MonoBehaviour, IDestroyableObject, IAwakingObject
     {
         private static GameObject thisGameObject;
 

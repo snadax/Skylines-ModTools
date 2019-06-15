@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ModTools.UI
 {
-    internal sealed class ColorPicker : GUIWindow
+    internal sealed class ColorPicker : GUIWindow, IGameObject
     {
         private static readonly Dictionary<string, Texture2D> TextureCache = new Dictionary<string, Texture2D>();
         private static readonly Color LineColor = Color.white;
