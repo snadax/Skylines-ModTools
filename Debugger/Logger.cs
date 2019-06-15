@@ -2,7 +2,7 @@
 
 namespace ModTools
 {
-    internal static class Log
+    internal static class Logger
     {
         private static readonly object SyncObject = new object();
         private static ILogger customLogger;

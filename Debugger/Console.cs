@@ -559,16 +559,16 @@ namespace ModTools
             var file = new ScriptEditorFile(source, "ModToolsCommandLineScript.cs");
             if (!ScriptCompiler.RunSource(new List<ScriptEditorFile>() { file }, out _, out var instance))
             {
-                global::ModTools.Log.Error("Failed to compile command-line!");
+                Logger.Error("Failed to compile command-line!");
             }
             else if (instance != null)
             {
-                global::ModTools.Log.Message("Executing command-line..");
+                Logger.Message("Executing command-line..");
                 instance.OnModLoaded();
             }
             else
             {
-                global::ModTools.Log.Error("Error executing command-line..");
+                Logger.Error("Error executing command-line..");
             }
 
             focusCommandLineArea = true;

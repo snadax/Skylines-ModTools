@@ -114,7 +114,7 @@ namespace ModTools
 
         protected override void HandleException(Exception ex)
         {
-            Log.Error("Exception in ScriptEditor - " + ex.Message);
+            Logger.Error("Exception in ScriptEditor - " + ex.Message);
             Visible = false;
         }
 
@@ -227,11 +227,11 @@ namespace ModTools
             {
                 if (ScriptCompiler.CompileSource(projectFiles, out var dllPath))
                 {
-                    Log.Message("Source compiled to \"" + dllPath + "\"");
+                    Logger.Message("Source compiled to \"" + dllPath + "\"");
                 }
                 else
                 {
-                    Log.Error("Failed to compile script!");
+                    Logger.Error("Failed to compile script!");
                 }
             }
 
@@ -239,7 +239,7 @@ namespace ModTools
             {
                 if (ScriptCompiler.RunSource(projectFiles, out var errorMessage, out currentMod))
                 {
-                    Log.Message("Running IModEntryPoint.OnModLoaded()");
+                    Logger.Message("Running IModEntryPoint.OnModLoaded()");
 
                     try
                     {
@@ -247,13 +247,13 @@ namespace ModTools
                     }
                     catch (Exception ex)
                     {
-                        Log.Error($"Exception while calling IModEntryPoint.OnModLoaded() - {ex.Message}");
+                        Logger.Error($"Exception while calling IModEntryPoint.OnModLoaded() - {ex.Message}");
                     }
                 }
                 else
                 {
                     lastError = errorMessage;
-                    Log.Error("Failed to compile or run source, reason: " + errorMessage);
+                    Logger.Error("Failed to compile or run source, reason: " + errorMessage);
                 }
             }
 
@@ -265,14 +265,14 @@ namespace ModTools
 
             if (GUILayout.Button("Stop"))
             {
-                Log.Message("Running IModEntryPoint.OnModUnloaded()");
+                Logger.Message("Running IModEntryPoint.OnModUnloaded()");
                 try
                 {
                     currentMod.OnModUnloaded();
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"Exception while calling IModEntryPoint.OnModUnloaded() - {ex.Message}");
+                    Logger.Error($"Exception while calling IModEntryPoint.OnModUnloaded() - {ex.Message}");
                 }
 
                 currentMod = null;

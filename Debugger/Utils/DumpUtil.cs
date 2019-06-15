@@ -15,10 +15,10 @@ namespace ModTools.Utils
             Material lodMaterial = null)
         {
             assetName = assetName.Replace("_Data", string.Empty);
-            Log.Warning($"Dumping asset \"{assetName}\"...");
+            Logger.Warning($"Dumping asset \"{assetName}\"...");
             DumpMeshAndTextures(assetName, mesh, material);
             DumpMeshAndTextures($"{assetName}_lod", lodMesh, lodMaterial);
-            Log.Warning($"Successfully dumped asset \"{assetName}\"");
+            Logger.Warning($"Successfully dumped asset \"{assetName}\"");
             var path = Path.Combine(DataLocation.addonsPath, "Import");
             UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
                 "Asset dump completed",

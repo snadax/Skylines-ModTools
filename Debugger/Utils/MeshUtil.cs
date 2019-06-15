@@ -20,7 +20,7 @@ namespace ModTools.Utils
 
             if (!mesh.isReadable)
             {
-                Log.Warning($"Mesh \"{mesh.name}\" is marked as non-readable, running workaround..");
+                Logger.Warning($"Mesh \"{mesh.name}\" is marked as non-readable, running workaround..");
 
                 try
                 {
@@ -37,7 +37,7 @@ namespace ModTools.Utils
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"Workaround failed with error - {ex.Message}");
+                    Logger.Error($"Workaround failed with error - {ex.Message}");
                     return;
                 }
             }
@@ -47,12 +47,12 @@ namespace ModTools.Utils
                 using (var stream = new FileStream(fileName, FileMode.Create))
                 {
                     OBJLoader.ExportOBJ(meshToDump.EncodeOBJ(), stream);
-                    Log.Warning($"Dumped mesh \"{mesh.name}\" to \"{fileName}\"");
+                    Logger.Warning($"Dumped mesh \"{mesh.name}\" to \"{fileName}\"");
                 }
             }
             catch (Exception ex)
             {
-                Log.Error($"There was an error while trying to dump mesh \"{mesh.name}\" - {ex.Message}");
+                Logger.Error($"There was an error while trying to dump mesh \"{mesh.name}\" - {ex.Message}");
             }
         }
     }

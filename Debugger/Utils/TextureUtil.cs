@@ -22,13 +22,13 @@ namespace ModTools.Utils
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("There was an error while dumping the texture - " + ex.Message);
+                    Logger.Error("There was an error while dumping the texture - " + ex.Message);
                     return;
                 }
             }
 
             File.WriteAllBytes(filename, bytes);
-            Log.Warning($"Texture dumped to \"{filename}\"");
+            Logger.Warning($"Texture dumped to \"{filename}\"");
         }
 
         public static Texture2D ToTexture2D(this Texture3D t3d)
@@ -105,7 +105,7 @@ namespace ModTools.Utils
             else if (previewTexture is RenderTexture renderTexture)
             {
                 DumpTexture2D(renderTexture.ToTexture2D(), filename);
-                Log.Warning($"Texture dumped to \"{filename}\"");
+                Logger.Warning($"Texture dumped to \"{filename}\"");
             }
             else if (previewTexture is Texture3D texture3D)
             {
@@ -117,7 +117,7 @@ namespace ModTools.Utils
             }
             else
             {
-                Log.Error($"Don't know how to dump type \"{previewTexture.GetType()}\"");
+                Logger.Error($"Don't know how to dump type \"{previewTexture.GetType()}\"");
             }
         }
 
@@ -240,7 +240,7 @@ namespace ModTools.Utils
 
         private static Texture2D MakeReadable(this Texture texture)
         {
-            Log.Warning($"Texture \"{texture.name}\" is marked as read-only, running workaround..");
+            Logger.Warning($"Texture \"{texture.name}\" is marked as read-only, running workaround..");
             var rt = RenderTexture.GetTemporary(texture.width, texture.height, 0);
             Graphics.Blit(texture, rt);
             var tex = ToTexture2D(rt);

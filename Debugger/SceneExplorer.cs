@@ -102,19 +102,19 @@ namespace ModTools
         {
             if (refChain == null)
             {
-                Log.Error("SceneExplorer: ExpandFromRefChain(): Null refChain");
+                Logger.Error("SceneExplorer: ExpandFromRefChain(): Null refChain");
                 return;
             }
 
             if (refChain.Length == 0)
             {
-                Log.Error("SceneExplorer: ExpandFromRefChain(): Invalid refChain, expected Length >= 0");
+                Logger.Error("SceneExplorer: ExpandFromRefChain(): Invalid refChain, expected Length >= 0");
                 return;
             }
 
             if (refChain.FirstItemType != ReferenceChain.ReferenceType.GameObject)
             {
-                Log.Error($"SceneExplorer: ExpandFromRefChain(): invalid chain type for element [0] - expected {ReferenceChain.ReferenceType.GameObject}, got {refChain.FirstItemType}");
+                Logger.Error($"SceneExplorer: ExpandFromRefChain(): invalid chain type for element [0] - expected {ReferenceChain.ReferenceType.GameObject}, got {refChain.FirstItemType}");
                 return;
             }
 

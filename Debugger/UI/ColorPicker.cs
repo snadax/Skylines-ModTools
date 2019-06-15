@@ -112,7 +112,7 @@ namespace ModTools.UI
 
         protected override void HandleException(Exception ex)
         {
-            Log.Error("Exception in ColorPicker - " + ex.Message);
+            Logger.Error("Exception in ColorPicker - " + ex.Message);
             Visible = false;
         }
 

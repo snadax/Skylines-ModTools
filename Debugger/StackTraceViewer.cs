@@ -29,7 +29,7 @@ namespace ModTools
 
         protected override void OnWindowClosed() => Destroy(this);
 
-        protected override void HandleException(Exception ex) => Log.Error("Exception in StackTraceViewer - " + ex.Message);
+        protected override void HandleException(Exception ex) => Logger.Error("Exception in StackTraceViewer - " + ex.Message);
 
         protected override void DrawWindow()
         {

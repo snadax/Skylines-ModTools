@@ -102,7 +102,7 @@ namespace ModTools
 
         protected override void HandleException(Exception ex)
         {
-            Log.Error("Exception in AppearanceConfig - " + ex.Message);
+            Logger.Error("Exception in AppearanceConfig - " + ex.Message);
             Visible = false;
         }
 

@@ -41,14 +41,14 @@ namespace ModTools
 
             if (gitVersionInformationType == null)
             {
-                Log.Error("Attempting to retrieve the assembly version of an assembly that is built without GitVersion support.");
+                Logger.Error("Attempting to retrieve the assembly version of an assembly that is built without GitVersion support.");
                 return "?";
             }
 
             var versionField = gitVersionInformationType.GetField(VersionFieldName);
             if (versionField == null)
             {
-                Log.Error($"Internal error: the '{GitVersionTypeName}' type has no field '{VersionFieldName}'.");
+                Logger.Error($"Internal error: the '{GitVersionTypeName}' type has no field '{VersionFieldName}'.");
                 return "?";
             }
 
@@ -57,7 +57,7 @@ namespace ModTools
                 var version = versionField.GetValue(null) as string;
                 if (string.IsNullOrEmpty(version))
                 {
-                    Log.Warning($"The '{GitVersionTypeName}.{VersionFieldName}' value is empty.");
+                    Logger.Warning($"The '{GitVersionTypeName}.{VersionFieldName}' value is empty.");
                     return "?";
                 }
 
@@ -65,12 +65,12 @@ namespace ModTools
             }
             catch (TargetException)
             {
-                Log.Warning($"The API of GitVersion has changed: '{GitVersionTypeName}.{VersionFieldName}' is not static.");
+                Logger.Warning($"The API of GitVersion has changed: '{GitVersionTypeName}.{VersionFieldName}' is not static.");
                 return "?";
             }
             catch (FieldAccessException)
             {
-                Log.Warning($"We are in restricted security context, the field '{GitVersionTypeName}.{VersionFieldName}' cannot be accessed.");
+                Logger.Warning($"We are in restricted security context, the field '{GitVersionTypeName}.{VersionFieldName}' cannot be accessed.");
                 return "?";
             }
         }

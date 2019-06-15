@@ -108,7 +108,7 @@ namespace ModTools
             }
             catch (Exception ex)
             {
-                Log.Error($"Failed to destroy '{this}', exception: {ex}");
+                Logger.Error($"Failed to destroy '{this}', exception: {ex}");
             }
         }
 

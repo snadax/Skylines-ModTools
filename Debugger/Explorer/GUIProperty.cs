@@ -201,7 +201,7 @@ namespace ModTools.Explorer
                 }
                 catch (Exception e)
                 {
-                    Log.Warning(e.Message);
+                    Logger.Warning(e.Message);
                 }
             }
         }
