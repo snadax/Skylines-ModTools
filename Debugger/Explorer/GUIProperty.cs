@@ -29,7 +29,7 @@ namespace ModTools.Explorer
 
             Exception exceptionOnGetting = null;
 
-            if (property.CanRead && ModTools.Instance.Config.EvaluateProperties || state.EvaluatedProperties.Contains(refChain.UniqueId))
+            if (property.CanRead && MainWindow.Instance.Config.EvaluateProperties || state.EvaluatedProperties.Contains(refChain.UniqueId))
             {
                 try
                 {
@@ -54,31 +54,31 @@ namespace ModTools.Explorer
                 GUI.enabled = false;
             }
 
-            if (ModTools.Instance.Config.ShowModifiers)
+            if (MainWindow.Instance.Config.ShowModifiers)
             {
-                GUI.contentColor = ModTools.Instance.Config.MemberTypeColor;
+                GUI.contentColor = MainWindow.Instance.Config.MemberTypeColor;
                 GUILayout.Label("property ");
 
                 if (!property.CanWrite)
                 {
-                    GUI.contentColor = ModTools.Instance.Config.KeywordColor;
+                    GUI.contentColor = MainWindow.Instance.Config.KeywordColor;
                     GUILayout.Label("const ");
                 }
             }
 
-            GUI.contentColor = ModTools.Instance.Config.TypeColor;
+            GUI.contentColor = MainWindow.Instance.Config.TypeColor;
 
             GUILayout.Label(property.PropertyType.ToString() + " ");
 
-            GUI.contentColor = ModTools.Instance.Config.NameColor;
+            GUI.contentColor = MainWindow.Instance.Config.NameColor;
 
             GUILayout.Label(property.Name);
 
             GUI.contentColor = Color.white;
             GUILayout.Label(" = ");
-            GUI.contentColor = ModTools.Instance.Config.ValueColor;
+            GUI.contentColor = MainWindow.Instance.Config.ValueColor;
 
-            if (!ModTools.Instance.Config.EvaluateProperties && !state.EvaluatedProperties.Contains(refChain.UniqueId))
+            if (!MainWindow.Instance.Config.EvaluateProperties && !state.EvaluatedProperties.Contains(refChain.UniqueId))
             {
                 GUI.enabled = true;
 
@@ -161,7 +161,7 @@ namespace ModTools.Explorer
 
             if (GUILayout.Button("Watch"))
             {
-                ModTools.Instance.Watches.AddWatch(refChain);
+                MainWindow.Instance.Watches.AddWatch(refChain);
             }
 
             GUIButtons.SetupButtons(refChain, property.PropertyType, value, valueIndex: -1);

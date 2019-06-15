@@ -17,7 +17,7 @@ namespace ModTools.UI
         public delegate T ValuePresenterDelegate<T>(string id, T value)
             where T : struct;
 
-        private static ModConfiguration Config => ModTools.Instance.Config;
+        private static ModConfiguration Config => MainWindow.Instance.Config;
 
         public static T PrimitiveValueField<T>(string id, string name, T value)
             where T : struct
@@ -233,12 +233,12 @@ namespace ModTools.UI
 
             if (GUILayout.Button(string.Empty, GUILayout.Width(72)))
             {
-                var picker = ModTools.Instance.ColorPicker;
+                var picker = MainWindow.Instance.ColorPicker;
                 picker?.Show(id, value);
             }
             else
             {
-                var picker = ModTools.Instance.ColorPicker;
+                var picker = MainWindow.Instance.ColorPicker;
                 if (picker?.Visible == true && picker.CurrentValueId == id)
                 {
                     value = picker.SelectedColor;

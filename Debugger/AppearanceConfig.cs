@@ -13,12 +13,12 @@ namespace ModTools
             : base("Appearance configuration", new Rect(16.0f, 16.0f, 600.0f, 490.0f), Skin, resizable: false)
         {
             availableFonts = Font.GetOSInstalledFontNames();
-            selectedFont = Array.IndexOf(availableFonts, ModTools.Instance.Config.FontName);
+            selectedFont = Array.IndexOf(availableFonts, MainWindow.Instance.Config.FontName);
         }
 
         protected override void DrawWindow()
         {
-            var config = ModTools.Instance.Config;
+            var config = MainWindow.Instance.Config;
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Font");
@@ -87,7 +87,7 @@ namespace ModTools
 
             if (GUILayout.Button("OK", GUILayout.Width(100)))
             {
-                ModTools.Instance.SaveConfig();
+                MainWindow.Instance.SaveConfig();
                 Visible = false;
             }
 

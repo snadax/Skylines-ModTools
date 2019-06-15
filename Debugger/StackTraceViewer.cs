@@ -16,12 +16,12 @@ namespace ModTools
         {
         }
 
-        private static ModConfiguration Config => ModTools.Instance.Config;
+        private static ModConfiguration Config => MainWindow.Instance.Config;
 
         public static StackTraceViewer CreateStackTraceViewer(StackTrace trace)
         {
             var go = new GameObject("StackTraceViewer");
-            go.transform.parent = ModTools.Instance.transform;
+            go.transform.parent = MainWindow.Instance.transform;
             var viewer = go.AddComponent<StackTraceViewer>();
             viewer.trace = trace;
             return viewer;

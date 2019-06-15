@@ -37,7 +37,7 @@ namespace ModTools.Explorer
                         state.ExpandedGameObjects.Remove(refChain.UniqueId);
                     }
 
-                    GUI.contentColor = ModTools.Instance.Config.GameObjectColor;
+                    GUI.contentColor = MainWindow.Instance.Config.GameObjectColor;
                     GUILayout.Label(obj.name);
                     GUI.contentColor = Color.white;
 
@@ -45,7 +45,7 @@ namespace ModTools.Explorer
 
                     var components = obj.GetComponents(typeof(Component));
 
-                    if (ModTools.Instance.Config.SortItemsAlphabetically)
+                    if (MainWindow.Instance.Config.SortItemsAlphabetically)
                     {
                         Array.Sort(components, (x, y) => string.CompareOrdinal(x.GetType().ToString(), y.GetType().ToString()));
                     }
@@ -76,7 +76,7 @@ namespace ModTools.Explorer
                     state.ExpandedGameObjects.Add(refChain.UniqueId);
                 }
 
-                GUI.contentColor = ModTools.Instance.Config.GameObjectColor;
+                GUI.contentColor = MainWindow.Instance.Config.GameObjectColor;
                 GUILayout.Label(obj.name);
                 GUI.contentColor = Color.white;
                 GUILayout.EndHorizontal();

@@ -40,7 +40,7 @@ namespace ModTools.Explorer
                 IndentStrings.Add(indent, indentString);
             }
 
-            GUILayout.Label(indentString, GUILayout.Width(ModTools.Instance.Config.TreeIdentSpacing * indent));
+            GUILayout.Label(indentString, GUILayout.Width(MainWindow.Instance.Config.TreeIdentSpacing * indent));
         }
     }
 }

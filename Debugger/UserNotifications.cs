@@ -19,7 +19,7 @@ It is recommended that you enable this (as it will probably become the default m
             new KeyValuePair<int, string>(1, UnityLoggingHookNotification),
         };
 
-        private static ModConfiguration Config => ModTools.Instance.Config;
+        private static ModConfiguration Config => MainWindow.Instance.Config;
 
         public static List<KeyValuePair<int, string>> GetNotifications()
         {
@@ -39,7 +39,7 @@ It is recommended that you enable this (as it will probably become the default m
         public static void HideNotification(int index)
         {
             Config.HiddenNotifications |= 1 << index;
-            ModTools.Instance.SaveConfig();
+            MainWindow.Instance.SaveConfig();
         }
     }
 }

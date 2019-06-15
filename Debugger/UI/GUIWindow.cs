@@ -75,12 +75,12 @@ namespace ModTools.UI
 
         protected string Title { get; set; }
 
-        private static ModConfiguration Config => ModTools.Instance.Config;
+        private static ModConfiguration Config => MainWindow.Instance.Config;
 
         public static void UpdateFont()
         {
             Skin.font = Font.CreateDynamicFontFromOSFont(Config.FontName, Config.FontSize);
-            ModTools.Instance?.SceneExplorer?.RecalculateAreas();
+            MainWindow.Instance?.SceneExplorer?.RecalculateAreas();
         }
 
         public void OnDestroy()
@@ -300,7 +300,7 @@ namespace ModTools.UI
                         else
                         {
                             movingWindow = null;
-                            ModTools.Instance.SaveConfig();
+                            MainWindow.Instance.SaveConfig();
 
                             OnWindowMoved(windowRect.position);
                         }
@@ -388,7 +388,7 @@ namespace ModTools.UI
                         else
                         {
                             resizingWindow = null;
-                            ModTools.Instance.SaveConfig();
+                            MainWindow.Instance.SaveConfig();
                             OnWindowResized(windowRect.size);
                         }
                     }

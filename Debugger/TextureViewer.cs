@@ -16,7 +16,7 @@ namespace ModTools
         public static TextureViewer CreateTextureViewer(Texture texture)
         {
             var go = new GameObject("TextureViewer");
-            go.transform.parent = ModTools.Instance.transform;
+            go.transform.parent = MainWindow.Instance.transform;
             var textureViewer = go.AddComponent<TextureViewer>();
             var texture3D = texture as Texture3D;
             textureViewer.previewTexture = texture3D == null ? texture : texture3D.ToTexture2D();

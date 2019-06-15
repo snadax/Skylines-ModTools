@@ -54,7 +54,7 @@ namespace ModTools
         public static MeshViewer CreateMeshViewer(string assetName, Mesh mesh, Material material, bool calculateBounds = true)
         {
             var go = new GameObject("MeshViewer");
-            go.transform.parent = ModTools.Instance.transform;
+            go.transform.parent = MainWindow.Instance.transform;
             var meshViewer = go.AddComponent<MeshViewer>();
             meshViewer.assetName = assetName;
             meshViewer.previewMesh = mesh;

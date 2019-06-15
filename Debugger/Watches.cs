@@ -17,7 +17,7 @@ namespace ModTools
         {
         }
 
-        private static ModConfiguration Config => ModTools.Instance.Config;
+        private static ModConfiguration Config => MainWindow.Instance.Config;
 
         public void AddWatch(ReferenceChain refChain)
         {

@@ -21,11 +21,11 @@ namespace ModTools.Explorer
             GUILayout.BeginHorizontal();
             SceneExplorerCommon.InsertIndent(refChain.Ident);
 
-            GUI.contentColor = ModTools.Instance.Config.MemberTypeColor;
+            GUI.contentColor = MainWindow.Instance.Config.MemberTypeColor;
             GUILayout.Label("method ");
             GUI.contentColor = Color.white;
             GUILayout.Label(method.ReturnType.ToString() + " " + method.Name + "(");
-            GUI.contentColor = ModTools.Instance.Config.NameColor;
+            GUI.contentColor = MainWindow.Instance.Config.NameColor;
 
             var first = true;
             foreach (var param in method.GetParameters())

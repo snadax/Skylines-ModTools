@@ -46,9 +46,9 @@ namespace ModTools.Explorer
                 GUI.enabled = false;
             }
 
-            if (ModTools.Instance.Config.ShowModifiers)
+            if (MainWindow.Instance.Config.ShowModifiers)
             {
-                GUI.contentColor = ModTools.Instance.Config.ModifierColor;
+                GUI.contentColor = MainWindow.Instance.Config.ModifierColor;
 
                 if (field.IsPublic)
                 {
@@ -59,33 +59,33 @@ namespace ModTools.Explorer
                     GUILayout.Label("private ");
                 }
 
-                GUI.contentColor = ModTools.Instance.Config.MemberTypeColor;
+                GUI.contentColor = MainWindow.Instance.Config.MemberTypeColor;
 
                 GUILayout.Label("field ");
 
                 if (field.IsStatic)
                 {
-                    GUI.contentColor = ModTools.Instance.Config.KeywordColor;
+                    GUI.contentColor = MainWindow.Instance.Config.KeywordColor;
                     GUILayout.Label("static ");
                 }
 
                 if (field.IsInitOnly)
                 {
-                    GUI.contentColor = ModTools.Instance.Config.KeywordColor;
+                    GUI.contentColor = MainWindow.Instance.Config.KeywordColor;
                     GUILayout.Label("const ");
                 }
             }
 
-            GUI.contentColor = ModTools.Instance.Config.TypeColor;
+            GUI.contentColor = MainWindow.Instance.Config.TypeColor;
             GUILayout.Label(field.FieldType + " ");
 
-            GUI.contentColor = ModTools.Instance.Config.NameColor;
+            GUI.contentColor = MainWindow.Instance.Config.NameColor;
 
             GUILayout.Label(field.Name);
 
             GUI.contentColor = Color.white;
             GUILayout.Label(" = ");
-            GUI.contentColor = ModTools.Instance.Config.ValueColor;
+            GUI.contentColor = MainWindow.Instance.Config.ValueColor;
 
             if (value == null || !TypeUtil.IsSpecialType(field.FieldType))
             {
@@ -113,7 +113,7 @@ namespace ModTools.Explorer
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Watch"))
             {
-                ModTools.Instance.Watches.AddWatch(refChain);
+                MainWindow.Instance.Watches.AddWatch(refChain);
             }
 
             GUIButtons.SetupButtons(refChain, field.FieldType, value, valueIndex: -1);

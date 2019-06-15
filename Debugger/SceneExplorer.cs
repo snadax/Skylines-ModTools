@@ -82,7 +82,7 @@ namespace ModTools
             }
 
             var headerHeight = headerExpanded ? HeaderHeightExpanded : HeaderHeightCompact;
-            headerHeight *= ModTools.Instance.Config.FontSize;
+            headerHeight *= MainWindow.Instance.Config.FontSize;
             headerHeight += 32.0f;
 
             headerArea.AbsoluteSize.y = headerHeight - WindowTopMargin;
@@ -187,7 +187,7 @@ namespace ModTools
                 RecalculateAreas();
             }
 
-            GUILayout.Space(ModTools.Instance.Config.TreeIdentSpacing);
+            GUILayout.Space(MainWindow.Instance.Config.TreeIdentSpacing);
 
             if (GUILayout.Button(headerExpanded ? CollapseUpButtonText : ExpandDownButtonText))
             {
@@ -209,72 +209,72 @@ namespace ModTools
 
             var configChanged = false;
 
-            var showFields = GUILayout.Toggle(ModTools.Instance.Config.ShowFields, " Fields");
-            if (ModTools.Instance.Config.ShowFields != showFields)
+            var showFields = GUILayout.Toggle(MainWindow.Instance.Config.ShowFields, " Fields");
+            if (MainWindow.Instance.Config.ShowFields != showFields)
             {
-                ModTools.Instance.Config.ShowFields = showFields;
+                MainWindow.Instance.Config.ShowFields = showFields;
                 configChanged = true;
             }
 
-            GUILayout.Space(ModTools.Instance.Config.TreeIdentSpacing);
-            var showConsts = GUILayout.Toggle(ModTools.Instance.Config.ShowConsts, " Constants");
-            if (ModTools.Instance.Config.ShowConsts != showConsts)
+            GUILayout.Space(MainWindow.Instance.Config.TreeIdentSpacing);
+            var showConsts = GUILayout.Toggle(MainWindow.Instance.Config.ShowConsts, " Constants");
+            if (MainWindow.Instance.Config.ShowConsts != showConsts)
             {
-                ModTools.Instance.Config.ShowConsts = showConsts;
+                MainWindow.Instance.Config.ShowConsts = showConsts;
                 configChanged = true;
             }
 
-            GUILayout.Space(ModTools.Instance.Config.TreeIdentSpacing);
-            var showProperties = GUILayout.Toggle(ModTools.Instance.Config.ShowProperties, " Properties");
-            if (ModTools.Instance.Config.ShowProperties != showProperties)
+            GUILayout.Space(MainWindow.Instance.Config.TreeIdentSpacing);
+            var showProperties = GUILayout.Toggle(MainWindow.Instance.Config.ShowProperties, " Properties");
+            if (MainWindow.Instance.Config.ShowProperties != showProperties)
             {
-                ModTools.Instance.Config.ShowProperties = showProperties;
+                MainWindow.Instance.Config.ShowProperties = showProperties;
                 configChanged = true;
             }
 
-            GUILayout.Space(ModTools.Instance.Config.TreeIdentSpacing);
-            var showMethods = GUILayout.Toggle(ModTools.Instance.Config.ShowMethods, " Methods");
-            if (ModTools.Instance.Config.ShowMethods != showMethods)
+            GUILayout.Space(MainWindow.Instance.Config.TreeIdentSpacing);
+            var showMethods = GUILayout.Toggle(MainWindow.Instance.Config.ShowMethods, " Methods");
+            if (MainWindow.Instance.Config.ShowMethods != showMethods)
             {
-                ModTools.Instance.Config.ShowMethods = showMethods;
+                MainWindow.Instance.Config.ShowMethods = showMethods;
                 configChanged = true;
             }
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            var showModifiers = GUILayout.Toggle(ModTools.Instance.Config.ShowModifiers, " Show field / property modifiers");
-            if (showModifiers != ModTools.Instance.Config.ShowModifiers)
+            var showModifiers = GUILayout.Toggle(MainWindow.Instance.Config.ShowModifiers, " Show field / property modifiers");
+            if (showModifiers != MainWindow.Instance.Config.ShowModifiers)
             {
-                ModTools.Instance.Config.ShowModifiers = showModifiers;
+                MainWindow.Instance.Config.ShowModifiers = showModifiers;
                 configChanged = true;
             }
 
-            var showInheritedMembers = GUILayout.Toggle(ModTools.Instance.Config.ShowInheritedMembers, " Show inherited members");
-            if (showInheritedMembers != ModTools.Instance.Config.ShowInheritedMembers)
+            var showInheritedMembers = GUILayout.Toggle(MainWindow.Instance.Config.ShowInheritedMembers, " Show inherited members");
+            if (showInheritedMembers != MainWindow.Instance.Config.ShowInheritedMembers)
             {
-                ModTools.Instance.Config.ShowInheritedMembers = showInheritedMembers;
+                MainWindow.Instance.Config.ShowInheritedMembers = showInheritedMembers;
                 configChanged = true;
                 TypeUtil.ClearTypeCache();
             }
 
-            var evaluatePropertiesAutomatically = GUILayout.Toggle(ModTools.Instance.Config.EvaluateProperties, " Evaluate properties automatically");
-            if (evaluatePropertiesAutomatically != ModTools.Instance.Config.EvaluateProperties)
+            var evaluatePropertiesAutomatically = GUILayout.Toggle(MainWindow.Instance.Config.EvaluateProperties, " Evaluate properties automatically");
+            if (evaluatePropertiesAutomatically != MainWindow.Instance.Config.EvaluateProperties)
             {
-                ModTools.Instance.Config.EvaluateProperties = evaluatePropertiesAutomatically;
+                MainWindow.Instance.Config.EvaluateProperties = evaluatePropertiesAutomatically;
                 configChanged = true;
             }
 
-            var sortAlphabetically = GUILayout.Toggle(ModTools.Instance.Config.SortItemsAlphabetically, " Sort alphabetically");
-            if (sortAlphabetically != ModTools.Instance.Config.SortItemsAlphabetically)
+            var sortAlphabetically = GUILayout.Toggle(MainWindow.Instance.Config.SortItemsAlphabetically, " Sort alphabetically");
+            if (sortAlphabetically != MainWindow.Instance.Config.SortItemsAlphabetically)
             {
-                ModTools.Instance.Config.SortItemsAlphabetically = sortAlphabetically;
+                MainWindow.Instance.Config.SortItemsAlphabetically = sortAlphabetically;
                 configChanged = true;
             }
 
             if (configChanged)
             {
-                ModTools.Instance.SaveConfig();
+                MainWindow.Instance.SaveConfig();
             }
 
             GUI.contentColor = Color.white;
@@ -285,7 +285,7 @@ namespace ModTools
         {
             var gameObjects = sceneRoots.Keys.ToArray();
 
-            if (ModTools.Instance.Config.SortItemsAlphabetically)
+            if (MainWindow.Instance.Config.SortItemsAlphabetically)
             {
                 Array.Sort(gameObjects, (x, y) => string.CompareOrdinal(x?.name, y?.name));
             }

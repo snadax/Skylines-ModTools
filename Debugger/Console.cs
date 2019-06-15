@@ -77,7 +77,7 @@ namespace ModTools
             RecalculateAreas();
         }
 
-        private static ModConfiguration Config => ModTools.Instance.Config;
+        private static ModConfiguration Config => MainWindow.Instance.Config;
 
         private bool CommandLineAreaExpanded
         {
@@ -349,7 +349,7 @@ namespace ModTools
 
             if (GUILayout.Button("Save"))
             {
-                ModTools.Instance.SaveConfig();
+                MainWindow.Instance.SaveConfig();
             }
 
             if (GUILayout.Button("Reset"))
@@ -361,7 +361,7 @@ namespace ModTools
                 Config.ShowConsoleOnWarning = template.ShowConsoleOnWarning;
                 Config.ShowConsoleOnError = template.ShowConsoleOnError;
 
-                ModTools.Instance.SaveConfig();
+                MainWindow.Instance.SaveConfig();
             }
 
             if (GUILayout.Button("Clear", GUILayout.ExpandWidth(false)))

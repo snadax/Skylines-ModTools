@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace ModTools
 {
-    internal sealed class ModTools : GUIWindow, IGameObject
+    internal sealed class MainWindow : GUIWindow, IGameObject
     {
         private const string ConfigPath = "ModToolsConfig.xml";
         private static readonly object LoggingLock = new object();
         private static readonly object InstanceLock = new object();
 
-        private static ModTools instance;
+        private static MainWindow instance;
         private static bool loggingInitialized;
 
         private readonly ModalUI modalUI = new ModalUI();
@@ -20,19 +20,19 @@ namespace ModTools
         private AppearanceConfig appearanceConfig;
         private DebugRenderer debugRenderer;
 
-        public ModTools()
-            : base("Mod Tools", new Rect(128, 128, 356, 320), Skin, resizable: false)
+        public MainWindow()
+            : base("Mod Tools " + ModToolsMod.Version, new Rect(128, 128, 356, 320), Skin, resizable: false)
         {
         }
 
         // TODO: remove the singleton
-        public static ModTools Instance
+        public static MainWindow Instance
         {
             get
             {
                 lock (InstanceLock)
                 {
-                    instance = instance ?? FindObjectOfType<ModTools>();
+                    instance = instance ?? FindObjectOfType<MainWindow>();
                     return instance;
                 }
             }
@@ -88,7 +88,7 @@ namespace ModTools
             if (Config.UseModToolsConsole)
             {
                 console = gameObject.AddComponent<Console>();
-                Log.SetCustomLogger(console);
+                Logger.SetCustomLogger(console);
             }
         }
 
@@ -157,13 +157,13 @@ namespace ModTools
                 if (Config.UseModToolsConsole)
                 {
                     console = gameObject.AddComponent<Console>();
-                    Log.SetCustomLogger(console);
+                    Logger.SetCustomLogger(console);
                 }
                 else
                 {
                     Destroy(console);
                     console = null;
-                    Log.SetCustomLogger(null);
+                    Logger.SetCustomLogger(null);
                 }
 
                 SaveConfig();
@@ -290,19 +290,19 @@ namespace ModTools
                         message = $"{message}\n\n{trace}";
                     }
 
-                    Log.Error(message);
+                    Logger.Error(message);
                 }
                 else if (type == LogType.Error || type == LogType.Assert)
                 {
-                    Log.Error(condition);
+                    Logger.Error(condition);
                 }
                 else if (type == LogType.Warning && Config.LogLevel < 2)
                 {
-                    Log.Warning(condition);
+                    Logger.Warning(condition);
                 }
                 else if (Config.LogLevel == 0)
                 {
-                    Log.Message(condition);
+                    Logger.Message(condition);
                 }
             }
         }

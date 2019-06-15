@@ -32,12 +32,12 @@ namespace ModTools.Explorer
                 {
                     GUIExpander.ExpanderControls(state, refChain, type);
 
-                    GUI.contentColor = ModTools.Instance.Config.TypeColor;
+                    GUI.contentColor = MainWindow.Instance.Config.TypeColor;
 
                     GUILayout.Label(type.ToString() + " ");
                 }
 
-                GUI.contentColor = ModTools.Instance.Config.NameColor;
+                GUI.contentColor = MainWindow.Instance.Config.NameColor;
 
                 GUILayout.Label($"{oldRefChain.LastItemName}.[{count}]");
 
@@ -45,7 +45,7 @@ namespace ModTools.Explorer
 
                 GUILayout.Label(" = ");
 
-                GUI.contentColor = ModTools.Instance.Config.ValueColor;
+                GUI.contentColor = MainWindow.Instance.Config.ValueColor;
 
                 GUILayout.Label(value == null ? "null" : value.ToString());
 

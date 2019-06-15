@@ -98,7 +98,7 @@
     <Compile Include="Utils\HashUtil.cs" />
     <Compile Include="IModEntryPoint.cs" />
     <Compile Include="MeshViewer.cs" />
-    <Compile Include="ModTools.cs" />
+    <Compile Include="MainWindow.cs" />
     <Compile Include="UI\GUIControls.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Logger.cs" />

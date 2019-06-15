@@ -10,7 +10,7 @@ namespace ModTools
             base.OnLevelLoaded(mode);
             CustomPrefabs.Bootstrap();
             var appMode = Singleton<ToolManager>.instance.m_properties.m_mode;
-            var modTools = ModTools.Instance;
+            var modTools = MainWindow.Instance;
             if (modTools == null)
             {
                 UnityEngine.Debug.LogError("ModTools instance wasn't present");
