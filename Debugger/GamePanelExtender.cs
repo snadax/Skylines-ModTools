@@ -184,8 +184,7 @@ namespace ModTools
                 (component, param) =>
                 {
                     var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
-                    sceneExplorer.ExpandFromRefChain(buildingsBufferRefChain.Add(instance.Building));
-                    sceneExplorer.Visible = true;
+                    sceneExplorer.Show(buildingsBufferRefChain.Add(instance.Building));
                 });
 
             dumpMeshTextureButton = CreateButton(
@@ -229,14 +228,12 @@ namespace ModTools
 
                     if (instance.Vehicle == 0)
                     {
-                        sceneExplorer.ExpandFromRefChain(vehiclesParkedBufferRefChain.Add(instance.ParkedVehicle));
+                        sceneExplorer.Show(vehiclesParkedBufferRefChain.Add(instance.ParkedVehicle));
                     }
                     else
                     {
-                        sceneExplorer.ExpandFromRefChain(vehiclesBufferRefChain.Add(instance.Vehicle));
+                        sceneExplorer.Show(vehiclesBufferRefChain.Add(instance.Vehicle));
                     }
-
-                    sceneExplorer.Visible = true;
                 });
 
             dumpMeshTextureButton = CreateButton(
@@ -291,14 +288,12 @@ namespace ModTools
                             return;
                         }
 
-                        sceneExplorer.ExpandFromRefChain(citizenInstancesBufferRefChain.Add((int)ci.m_citizen));
+                        sceneExplorer.Show(citizenInstancesBufferRefChain.Add((int)ci.m_citizen));
                     }
                     else if (instance.Type == InstanceType.Citizen)
                     {
-                        sceneExplorer.ExpandFromRefChain(citizensBufferRefChain.Add((int)instance.Citizen));
+                        sceneExplorer.Show(citizensBufferRefChain.Add((int)instance.Citizen));
                     }
-
-                    sceneExplorer.Visible = true;
                 });
 
             showInstanceButton = CreateButton(
@@ -313,8 +308,7 @@ namespace ModTools
                     var instance = ReflectionUtil.GetPrivate<InstanceID>(infoPanel, "m_InstanceID");
                     if (instance.Type == InstanceType.CitizenInstance)
                     {
-                        sceneExplorer.ExpandFromRefChain(citizenInstancesBufferRefChain.Add(instance.CitizenInstance));
-                        sceneExplorer.Visible = true;
+                        sceneExplorer.Show(citizenInstancesBufferRefChain.Add(instance.CitizenInstance));
                     }
                     else if (instance.Type == InstanceType.Citizen)
                     {
@@ -326,8 +320,7 @@ namespace ModTools
                                 continue;
                             }
 
-                            sceneExplorer.ExpandFromRefChain(citizenInstancesBufferRefChain.Add(index));
-                            sceneExplorer.Visible = true;
+                            sceneExplorer.Show(citizenInstancesBufferRefChain.Add(index));
                             break;
                         }
                     }
@@ -387,12 +380,9 @@ namespace ModTools
                                 continue;
                             }
 
-                            sceneExplorer.ExpandFromRefChain(citizensUnitsBufferRefChain.Add(index));
-                            sceneExplorer.Visible = true;
+                            sceneExplorer.Show(citizensUnitsBufferRefChain.Add(index));
                             break;
                         }
-
-                        sceneExplorer.Visible = true;
                     }
                     else if (instance.Type == InstanceType.Citizen)
                     {
@@ -436,8 +426,7 @@ namespace ModTools
                                 continue;
                             }
 
-                            sceneExplorer.ExpandFromRefChain(citizensUnitsBufferRefChain.Add(index));
-                            sceneExplorer.Visible = true;
+                            sceneExplorer.Show(citizensUnitsBufferRefChain.Add(index));
                             break;
                         }
                     }

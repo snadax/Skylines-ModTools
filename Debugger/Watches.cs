@@ -93,8 +93,7 @@ namespace ModTools
                 if (GUILayout.Button("Find in Scene Explorer"))
                 {
                     var sceneExplorer = FindObjectOfType<SceneExplorer>();
-                    sceneExplorer.ExpandFromRefChain(watch.Trim(watch.Length - 1));
-                    sceneExplorer.Visible = true;
+                    sceneExplorer.Show(watch.Trim(watch.Length - 1));
                 }
 
                 if (GUILayout.Button("x", GUILayout.Width(24)))

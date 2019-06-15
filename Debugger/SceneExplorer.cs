@@ -98,7 +98,7 @@ namespace ModTools
             TypeUtil.ClearTypeCache();
         }
 
-        public void ExpandFromRefChain(ReferenceChain refChain)
+        public void Show(ReferenceChain refChain)
         {
             if (refChain == null)
             {
@@ -168,6 +168,7 @@ namespace ModTools
 
             state.CurrentRefChain = refChain.Clone();
             state.CurrentRefChain.IdentOffset = -state.CurrentRefChain.Length;
+            Visible = true;
         }
 
         public void DrawHeader()
