@@ -1,4 +1,5 @@
 ﻿using ColossalFramework.UI;
+using ModTools.GamePanels;
 using ModTools.UI;
 using UnityEngine;
 
@@ -194,13 +195,20 @@ namespace ModTools
                 Config.ExtendGamePanels = newExtendGamePanels;
                 SaveConfig();
 
-                if (Config.ExtendGamePanels)
+                if (ToolManager.instance.m_properties.m_mode == ItemClass.Availability.Game)
                 {
-                    gameObject.AddComponent<GamePanelExtender>();
-                }
-                else
-                {
-                    Destroy(gameObject.GetComponent<GamePanelExtender>());
+                    var gamePanelExtender = gameObject.GetComponent<GamePanelExtension>();
+                    if (Config.ExtendGamePanels)
+                    {
+                        if (gamePanelExtender == null)
+                        {
+                            gameObject.AddComponent<GamePanelExtension>();
+                        }
+                    }
+                    else if (gamePanelExtender != null)
+                    {
+                        Destroy(gamePanelExtender);
+                    }
                 }
             }
 

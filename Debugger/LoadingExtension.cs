@@ -1,5 +1,6 @@
 ﻿using ColossalFramework;
 using ICities;
+using ModTools.GamePanels;
 
 namespace ModTools
 {
@@ -19,7 +20,7 @@ namespace ModTools
 
             if (modTools.Config.ExtendGamePanels && appMode == ItemClass.Availability.Game)
             {
-                modTools.gameObject.AddComponent<GamePanelExtender>();
+                modTools.gameObject.AddComponent<GamePanelExtension>();
             }
         }
 
