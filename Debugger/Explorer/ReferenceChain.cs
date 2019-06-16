@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.Explorer
 {
     internal sealed class ReferenceChain : ICloneable
     {

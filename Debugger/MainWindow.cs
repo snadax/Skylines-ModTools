@@ -1,5 +1,8 @@
 ﻿using ColossalFramework.UI;
+using ModTools.Console;
+using ModTools.Explorer;
 using ModTools.GamePanels;
+using ModTools.Scripting;
 using ModTools.UI;
 using UnityEngine;
 
@@ -16,7 +19,7 @@ namespace ModTools
 
         private readonly ModalUI modalUI = new ModalUI();
 
-        private Console console;
+        private CustomConsole console;
         private ScriptEditor scriptEditor;
         private AppearanceConfig appearanceConfig;
         private DebugRenderer debugRenderer;
@@ -88,7 +91,7 @@ namespace ModTools
 
             if (Config.UseModToolsConsole)
             {
-                console = gameObject.AddComponent<Console>();
+                console = gameObject.AddComponent<CustomConsole>();
                 Logger.SetCustomLogger(console);
             }
         }
@@ -173,7 +176,7 @@ namespace ModTools
 
                 if (Config.UseModToolsConsole)
                 {
-                    console = gameObject.AddComponent<Console>();
+                    console = gameObject.AddComponent<CustomConsole>();
                     Logger.SetCustomLogger(console);
                 }
                 else

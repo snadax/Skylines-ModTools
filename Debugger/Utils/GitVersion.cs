@@ -5,7 +5,7 @@
 using System;
 using System.Reflection;
 
-namespace ModTools
+namespace ModTools.Utils
 {
     /// <summary>
     /// A helper class that interacts with the special types injected by the GitVersion toolset.

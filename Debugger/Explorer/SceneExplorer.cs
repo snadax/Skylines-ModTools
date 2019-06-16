@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ModTools.Explorer;
 using ModTools.UI;
+using ModTools.Utils;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.Explorer
 {
     internal sealed class SceneExplorer : GUIWindow, IGameObject, IAwakingObject
     {

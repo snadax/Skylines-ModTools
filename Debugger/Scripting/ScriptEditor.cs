@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using ModTools.UI;
+using ModTools.Utils;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.Scripting
 {
     internal sealed class ScriptEditor : GUIWindow
     {

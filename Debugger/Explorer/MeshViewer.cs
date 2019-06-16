@@ -4,7 +4,7 @@ using ModTools.UI;
 using ModTools.Utils;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.Explorer
 {
     internal sealed class MeshViewer : GUIWindow, IGameObject
     {

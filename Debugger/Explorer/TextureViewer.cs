@@ -2,7 +2,7 @@
 using ModTools.Utils;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.Explorer
 {
     internal sealed class TextureViewer : GUIWindow
     {

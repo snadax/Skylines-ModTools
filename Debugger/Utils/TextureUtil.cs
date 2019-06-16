@@ -70,7 +70,7 @@ namespace ModTools.Utils
         {
             if (string.IsNullOrEmpty(filename))
             {
-                var filenamePrefix = $"rt_dump_{previewTexture.name.LegalizeFileName()}";
+                var filenamePrefix = $"rt_dump_{FileUtil.LegalizeFileName(previewTexture.name)}";
                 if (!File.Exists($"{filenamePrefix}.png"))
                 {
                     filename = $"{filenamePrefix}.png";

@@ -1,4 +1,4 @@
-﻿namespace ModTools
+﻿namespace ModTools.Scripting
 {
     public interface IModEntryPoint
     {

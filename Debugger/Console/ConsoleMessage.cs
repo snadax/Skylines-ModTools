@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.Console
 {
     internal sealed class ConsoleMessage
     {

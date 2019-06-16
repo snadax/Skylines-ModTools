@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using ModTools.Console;
 using UnityEngine;
 
 namespace ModTools.UI

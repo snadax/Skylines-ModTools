@@ -43,7 +43,7 @@ namespace ModTools.GamePanels
             showInExplorer = displayAction ?? throw new ArgumentNullException(nameof(displayAction));
 
             this.infoPanelName = infoPanelName;
-            instanceField = ReflectionUtil.FindField(typeof(T), "m_InstanceID");
+            instanceField = TypeUtil.FindField(typeof(T), "m_InstanceID");
         }
 
         /// <summary>

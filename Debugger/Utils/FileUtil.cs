@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using ColossalFramework.Plugins;
 using ICities;
 
-namespace ModTools
+namespace ModTools.Utils
 {
     internal static class FileUtil
     {
@@ -45,7 +45,7 @@ namespace ModTools
             throw new FileNotFoundException("Failed to find assembly!");
         }
 
-        public static string LegalizeFileName(this string illegal)
+        public static string LegalizeFileName(string illegal)
         {
             if (string.IsNullOrEmpty(illegal))
             {

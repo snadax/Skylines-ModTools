@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace ModTools
+namespace ModTools.Utils
 {
     internal static class TypeUtil
     {
@@ -55,6 +55,9 @@ namespace ModTools
             return typeof(IList).IsAssignableFrom(myProperty.GetType())
                 || typeof(IList<>).IsAssignableFrom(myProperty.GetType());
         }
+
+        public static FieldInfo FindField(Type type, string fieldName)
+            => Array.Find(type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance), f => f.Name == fieldName);
 
         private static MemberInfo[] GetMembersInternal(Type type, bool recursive, BindingFlags bindingFlags)
         {

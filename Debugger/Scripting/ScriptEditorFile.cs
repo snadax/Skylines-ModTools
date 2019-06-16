@@ -1,4 +1,4 @@
-﻿namespace ModTools
+﻿namespace ModTools.Scripting
 {
     internal sealed class ScriptEditorFile
     {
@@ -12,7 +12,7 @@ using System.Linq;
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.Scripting
 {
     class ExampleScript : IModEntryPoint
     {

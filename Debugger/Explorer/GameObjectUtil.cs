@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.Explorer
 {
     internal static class GameObjectUtil
     {
@@ -44,6 +44,12 @@ namespace ModTools
             {
                 FindComponentsOfType(typeName, gameObject.transform.GetChild(i).gameObject, list);
             }
+        }
+
+        public static bool ComponentIsEnabled(Component component)
+        {
+            var prop = component.GetType().GetProperty("enabled");
+            return prop == null || (bool)prop.GetValue(component, null);
         }
     }
 }

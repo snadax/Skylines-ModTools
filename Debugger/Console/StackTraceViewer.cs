@@ -3,7 +3,7 @@ using System.Diagnostics;
 using ModTools.UI;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.Console
 {
     internal sealed class StackTraceViewer : GUIWindow
     {

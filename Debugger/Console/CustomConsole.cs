@@ -4,12 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using ColossalFramework.UI;
+using ModTools.Scripting;
 using ModTools.UI;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.Console
 {
-    internal sealed class Console : GUIWindow, ILogger, IGameObject
+    internal sealed class CustomConsole : GUIWindow, ILogger, IGameObject
     {
         public const string DefaultSource = @"
 using System;
@@ -67,7 +68,7 @@ namespace ModTools
 
         private List<KeyValuePair<int, string>> userNotifications;
 
-        public Console()
+        public CustomConsole()
             : base("Debug console", Config.ConsoleRect, Skin)
         {
             headerArea = new GUIArea(this)

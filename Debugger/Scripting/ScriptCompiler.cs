@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ColossalFramework.Plugins;
+using ModTools.Utils;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace ModTools
+namespace ModTools.Scripting
 {
     internal static class ScriptCompiler
     {

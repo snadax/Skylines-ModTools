@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ModTools
+namespace ModTools.Explorer
 {
     internal sealed class SceneExplorerState
     {

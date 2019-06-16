@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ModTools
+namespace ModTools.Utils
 {
     internal static class HashUtil
     {
