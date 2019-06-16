@@ -22,37 +22,39 @@ namespace ModTools
         public void Update()
         {
             var hoveredLocal = hoveredComponent;
-            if (DrawDebugInfo && hoveredLocal != null)
+            if (!DrawDebugInfo || hoveredLocal == null)
             {
-                if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F))
+                return;
+            }
+
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F))
+            {
+                var uiView = FindObjectOfType<UIView>();
+                if (uiView == null)
                 {
-                    var uiView = FindObjectOfType<UIView>();
-                    if (uiView == null)
-                    {
-                        return;
-                    }
-
-                    var current = hoveredLocal;
-                    var refChain = new ReferenceChain();
-                    refChain = refChain.Add(current);
-                    while (current != null)
-                    {
-                        refChain = refChain.Add(current.gameObject);
-                        current = current.parent;
-                    }
-
-                    refChain = refChain.Add(uiView.gameObject);
-
-                    var sceneExplorer = FindObjectOfType<SceneExplorer>();
-                    sceneExplorer.Show(refChain.GetReversedCopy());
+                    return;
                 }
 
-                if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G) && hoveredComponents.Count > 1 && hoveredComponent != null)
+                var current = hoveredLocal;
+                var refChain = new ReferenceChain();
+                refChain = refChain.Add(current);
+                while (current != null)
                 {
-                    var index = hoveredComponents.IndexOf(hoveredComponent);
-                    var newIndex = (index + hoveredComponents.Count + 1) % hoveredComponents.Count;
-                    hoveredComponent = hoveredComponents[newIndex];
+                    refChain = refChain.Add(current.gameObject);
+                    current = current.parent;
                 }
+
+                refChain = refChain.Add(uiView.gameObject);
+
+                var sceneExplorer = FindObjectOfType<SceneExplorer>();
+                sceneExplorer.Show(refChain.GetReversedCopy());
+            }
+
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G) && hoveredComponents.Count > 1 && hoveredComponent != null)
+            {
+                var index = hoveredComponents.IndexOf(hoveredComponent);
+                var newIndex = (index + hoveredComponents.Count + 1) % hoveredComponents.Count;
+                hoveredComponent = hoveredComponents[newIndex];
             }
         }
 
