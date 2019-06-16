@@ -111,12 +111,22 @@ namespace ModTools
 
             modalUI.Update(IsMouseOverWindow(), middleButtonState);
 
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Q))
+            if (!Input.GetKey(KeyCode.LeftControl))
+            {
+                if (Config.UseModToolsConsole && Input.GetKeyDown(KeyCode.F7))
+                {
+                    console.Visible = !console.Visible;
+                }
+
+                return;
+            }
+
+            // The shortcuts below are 'Ctrl' + key
+            if (Input.GetKeyDown(KeyCode.Q))
             {
                 Visible = !Visible;
             }
-
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.E))
+            else if (Input.GetKeyDown(KeyCode.E))
             {
                 SceneExplorer.Visible = !SceneExplorer.Visible;
                 if (SceneExplorer.Visible)
@@ -124,8 +134,7 @@ namespace ModTools
                     SceneExplorer.Refresh();
                 }
             }
-
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
+            else if (Input.GetKeyDown(KeyCode.R))
             {
                 if (debugRenderer == null)
                 {
@@ -134,18 +143,11 @@ namespace ModTools
 
                 debugRenderer.DrawDebugInfo = !debugRenderer.DrawDebugInfo;
             }
-
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.W))
+            else if (Input.GetKeyDown(KeyCode.W))
             {
                 Watches.Visible = !Watches.Visible;
             }
-
-            if (Config.UseModToolsConsole && Input.GetKeyDown(KeyCode.F7))
-            {
-                console.Visible = !console.Visible;
-            }
-
-            if (Input.GetKeyDown(KeyCode.BackQuote))
+            else if (Input.GetKeyDown(KeyCode.S))
             {
                 scriptEditor.Visible = !scriptEditor.Visible;
             }
@@ -279,7 +281,7 @@ namespace ModTools
                 }
             }
 
-            if (GUILayout.Button("Script editor (Ctrl + `)"))
+            if (GUILayout.Button("Script editor (Ctrl + S)"))
             {
                 scriptEditor.Visible = !scriptEditor.Visible;
             }
