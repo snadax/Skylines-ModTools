@@ -216,16 +216,22 @@ namespace ModTools.GamePanels
 
             var parentPanel = infoPanelContainer;
 
-            // This magic is required because the 'city service info panel' has a different layout.
-            // But there are other panels with a 'wrapper' too, so we check the 'autoFitChildrenVertically' flag
-            // which seems to be only set for that 'special' panel.
-            if (infoPanelContainer.autoFitChildrenVertically)
+            if (typeof(T) == typeof(CityServiceWorldInfoPanel))
             {
-                var wrapperPanel = (UIPanel)infoPanelContainer.components.FirstOrDefault(c => c.name == "Wrapper" && c is UIPanel);
+                // This magic is required because the 'city service info panel' has a different layout,
+                // so the standard AlignTo won't do - we must align not to the panel itself, but to its child panel.
+                var wrapperPanel = infoPanelContainer.components.OfType<UIPanel>().FirstOrDefault(c => c.name == "Wrapper");
                 if (wrapperPanel != null)
                 {
                     parentPanel = wrapperPanel;
                 }
+            }
+            else if (typeof(T) == typeof(FestivalPanel))
+            {
+                // This magic is required because the 'festival panel' is buggy,
+                // it grows unlimitedly on performing auto layout - so restrict its size.
+                infoPanelContainer.maximumSize = infoPanelContainer.size;
+                infoPanelContainer.clipChildren = false;
             }
 
             var itemsPanel = parentPanel.AddUIComponent<UIPanel>();
