@@ -43,9 +43,18 @@ namespace ModTools
         public SceneExplorer()
             : base("Scene Explorer", new Rect(128, 440, 800, 500), Skin)
         {
-            headerArea = new GUIArea(this);
-            sceneTreeArea = new GUIArea(this);
-            componentArea = new GUIArea(this);
+            headerArea = new GUIArea(this)
+                .ChangeSizeRelative(height: 0)
+                .OffsetBy(vertical: WindowTopMargin);
+
+            sceneTreeArea = new GUIArea(this)
+                .ChangeSizeRelative(width: 0)
+                .ChangeSizeBy(width: SceneTreeWidth);
+
+            componentArea = new GUIArea(this)
+                .OffsetBy(horizontal: SceneTreeWidth)
+                .ChangeSizeBy(width: -SceneTreeWidth);
+
             state = new SceneExplorerState();
 
             RecalculateAreas();
@@ -57,39 +66,39 @@ namespace ModTools
 
         public void RecalculateAreas()
         {
-            headerArea.AbsolutePosition.y = WindowTopMargin;
-            headerArea.RelativeSize.x = 1.0f;
-
-            if (WindowRect.width < Screen.width / 4.0f && state.CurrentRefChain != null || !treeExpanded)
+            if (!treeExpanded || WindowRect.width < Screen.width / 4)
             {
-                sceneTreeArea.RelativeSize = Vector2.zero;
-                sceneTreeArea.RelativeSize = Vector2.zero;
+                sceneTreeArea.ChangeSizeBy(width: 0);
 
-                componentArea.AbsolutePosition.x = 0.0f;
-                componentArea.RelativeSize.x = 1.0f;
-                componentArea.RelativeSize.y = 1.0f;
-                componentArea.AbsoluteSize.x = 0.0f;
+                componentArea
+                    .OffsetBy(horizontal: 0)
+                    .ChangeSizeBy(width: 0f);
             }
             else
             {
-                sceneTreeArea.RelativeSize.y = 1.0f;
-                sceneTreeArea.AbsoluteSize.x = SceneTreeWidth;
+                sceneTreeArea.ChangeSizeBy(width: SceneTreeWidth);
 
-                componentArea.AbsolutePosition.x = SceneTreeWidth;
-                componentArea.RelativeSize.x = 1.0f;
-                componentArea.RelativeSize.y = 1.0f;
-                componentArea.AbsoluteSize.x = -SceneTreeWidth;
+                componentArea
+                    .OffsetBy(horizontal: SceneTreeWidth)
+                    .ChangeSizeBy(width: -SceneTreeWidth);
             }
 
             var headerHeight = headerExpanded ? HeaderHeightExpanded : HeaderHeightCompact;
             headerHeight *= MainWindow.Instance.Config.FontSize;
             headerHeight += 32.0f;
 
-            headerArea.AbsoluteSize.y = headerHeight - WindowTopMargin;
-            sceneTreeArea.AbsolutePosition.y = headerHeight - WindowTopMargin;
-            sceneTreeArea.AbsoluteSize.y = -(headerHeight - WindowTopMargin) - WindowBottomMargin;
-            componentArea.AbsolutePosition.y = headerHeight - WindowTopMargin;
-            componentArea.AbsoluteSize.y = -(headerHeight - WindowTopMargin) - WindowBottomMargin;
+            var verticalOffset = headerHeight - WindowTopMargin;
+            var verticalSizeOffset = -(verticalOffset + WindowBottomMargin);
+
+            headerArea.ChangeSizeBy(height: verticalOffset);
+
+            sceneTreeArea
+                .OffsetBy(vertical: verticalOffset)
+                .ChangeSizeBy(height: verticalSizeOffset);
+
+            componentArea
+                .OffsetBy(vertical: verticalOffset)
+                .ChangeSizeBy(height: verticalSizeOffset);
         }
 
         public void Refresh()
@@ -291,7 +300,10 @@ namespace ModTools
                 Array.Sort(gameObjects, (x, y) => string.CompareOrdinal(x?.name, y?.name));
             }
 
-            sceneTreeArea.Begin();
+            if (!sceneTreeArea.Begin())
+            {
+                return;
+            }
 
             GUILayout.BeginHorizontal();
 

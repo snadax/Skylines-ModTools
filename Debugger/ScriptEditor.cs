@@ -33,22 +33,20 @@ namespace ModTools
         public ScriptEditor()
             : base("Script Editor", new Rect(16.0f, 16.0f, 640.0f, 480.0f), Skin)
         {
-            headerArea = new GUIArea(this);
-            headerArea.AbsolutePosition.y = 32.0f;
-            headerArea.RelativeSize.x = 1.0f;
-            headerArea.AbsoluteSize.y = HeaderHeight;
+            headerArea = new GUIArea(this)
+                .OffsetBy(vertical: 32f)
+                .ChangeSizeRelative(height: 0)
+                .ChangeSizeBy(height: HeaderHeight);
 
-            editorArea = new GUIArea(this);
-            editorArea.AbsolutePosition.y = 32.0f + HeaderHeight;
-            editorArea.RelativeSize.x = 1.0f;
-            editorArea.RelativeSize.y = 1.0f;
-            editorArea.AbsoluteSize.y = -(32.0f + HeaderHeight + FooterHeight);
+            editorArea = new GUIArea(this)
+                .OffsetBy(vertical: 32.0f + HeaderHeight)
+                .ChangeSizeBy(height: -(32.0f + HeaderHeight + FooterHeight));
 
-            footerArea = new GUIArea(this);
-            footerArea.RelativePosition.y = 1.0f;
-            footerArea.AbsolutePosition.y = -FooterHeight;
-            footerArea.AbsoluteSize.y = FooterHeight;
-            footerArea.RelativeSize.x = 1.0f;
+            footerArea = new GUIArea(this)
+                .OffsetRelative(vertical: 1f)
+                .OffsetBy(vertical: -FooterHeight)
+                .ChangeSizeRelative(height: 0)
+                .ChangeSizeBy(height: FooterHeight);
         }
 
         public void ReloadProjectWorkspace()

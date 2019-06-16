@@ -70,9 +70,14 @@ namespace ModTools
         public Console()
             : base("Debug console", Config.ConsoleRect, Skin)
         {
-            headerArea = new GUIArea(this);
+            headerArea = new GUIArea(this)
+                .OffsetBy(vertical: 16f)
+                .ChangeSizeRelative(height: 0);
+
             consoleArea = new GUIArea(this);
-            commandLineArea = new GUIArea(this);
+
+            commandLineArea = new GUIArea(this)
+                .ChangeSizeRelative(height: 0);
 
             RecalculateAreas();
         }
@@ -258,23 +263,20 @@ namespace ModTools
             headerHeight *= Config.FontSize;
             headerHeight += 32.0f;
 
-            headerArea.RelativeSize.x = 1.0f;
-            headerArea.AbsolutePosition.y = 16.0f;
-            headerArea.AbsoluteSize.y = headerHeight;
+            headerArea.ChangeSizeBy(height: headerHeight);
 
             var commandLineAreaHeight = CommandLineAreaExpanded
                 ? CommandLineAreaHeightExpanded
                 : CommandLineAreaHeightCompact;
 
-            consoleArea.AbsolutePosition.y = 16.0f + headerHeight;
-            consoleArea.RelativeSize.x = 1.0f;
-            consoleArea.RelativeSize.y = 1.0f;
-            consoleArea.AbsoluteSize.y = -(commandLineAreaHeight + headerHeight + 16.0f);
+            consoleArea
+                .OffsetBy(vertical: 16f + headerHeight)
+                .ChangeSizeBy(height: -(commandLineAreaHeight + headerHeight + 16f));
 
-            commandLineArea.RelativePosition.y = 1.0f;
-            commandLineArea.AbsolutePosition.y = -commandLineAreaHeight;
-            commandLineArea.RelativeSize.x = 1.0f;
-            commandLineArea.AbsoluteSize.y = commandLineAreaHeight;
+            commandLineArea
+                .OffsetRelative(vertical: 1f)
+                .OffsetBy(vertical: -commandLineAreaHeight)
+                .ChangeSizeBy(height: commandLineAreaHeight);
         }
 
         private void DrawCompactHeader()
