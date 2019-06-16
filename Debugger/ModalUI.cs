@@ -2,12 +2,20 @@
 
 namespace ModTools
 {
+    internal enum MouseButtonState
+    {
+        None,
+        Pressed,
+        Held,
+        Released,
+    }
+
     internal sealed class ModalUI
     {
         private UIComponent modalView;
         private bool isModal;
 
-        public void Update(bool mouseOverWindow)
+        public void Update(bool mouseOverWindow, MouseButtonState middleButtonState)
         {
             if (modalView == null)
             {
@@ -16,6 +24,11 @@ namespace ModTools
                 {
                     return;
                 }
+            }
+
+            if (middleButtonState != MouseButtonState.None)
+            {
+                return;
             }
 
             if (mouseOverWindow)

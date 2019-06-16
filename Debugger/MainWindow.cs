@@ -95,7 +95,21 @@ namespace ModTools
 
         public void Update()
         {
-            modalUI.Update(IsMouseOverWindow());
+            var middleButtonState = MouseButtonState.None;
+            if (Input.GetMouseButtonDown(2))
+            {
+                middleButtonState = MouseButtonState.Pressed;
+            }
+            else if (Input.GetMouseButtonUp(2))
+            {
+                middleButtonState = MouseButtonState.Released;
+            }
+            else if (Input.GetMouseButton(2))
+            {
+                middleButtonState = MouseButtonState.Held;
+            }
+
+            modalUI.Update(IsMouseOverWindow(), middleButtonState);
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.Q))
             {
