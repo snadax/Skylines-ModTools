@@ -1,21 +1,26 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System;
+using System.IO;
 using ColossalFramework.IO;
 using ColossalFramework.UI;
+using ObjUnity3D;
 using UnityEngine;
 
 namespace ModTools.Utils
 {
-    public static class DumpUtil
+    internal static class DumpUtil
     {
-        public static void DumpAsset(string assetName, Mesh mesh, Material material,
-            Mesh lodMesh = null, Material lodMaterial = null)
+        public static void DumpAsset(
+            string assetName,
+            Mesh mesh,
+            Material material,
+            Mesh lodMesh = null,
+            Material lodMaterial = null)
         {
-            assetName = assetName.Replace("_Data", "");
-            Log.Warning($"Dumping asset \"{assetName}\"...");
+            assetName = assetName.Replace("_Data", string.Empty);
+            Logger.Warning($"Dumping asset \"{assetName}\"...");
             DumpMeshAndTextures(assetName, mesh, material);
             DumpMeshAndTextures($"{assetName}_lod", lodMesh, lodMaterial);
-            Log.Warning($"Successfully dumped asset \"{assetName}\"");
+            Logger.Warning($"Successfully dumped asset \"{assetName}\"");
             var path = Path.Combine(DataLocation.addonsPath, "Import");
             UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
                 "Asset dump completed",
@@ -25,12 +30,13 @@ namespace ModTools.Utils
 
         public static void DumpMeshAndTextures(string assetName, Mesh mesh, Material material = null)
         {
-            assetName = assetName.Replace("_Data", "").LegalizeFileName();
+            assetName = FileUtil.LegalizeFileName(assetName.Replace("_Data", string.Empty));
 
-            if (mesh != null && mesh.isReadable)
+            if (mesh?.isReadable == true)
             {
-                MeshUtil.DumpMeshToOBJ(mesh, $"{assetName}.obj");
+                DumpMeshToOBJ(mesh, $"{assetName}.obj");
             }
+
             if (material != null)
             {
                 DumpTextures(assetName, material);
@@ -39,12 +45,60 @@ namespace ModTools.Utils
 
         public static void DumpTextures(string assetName, Material material)
         {
-            assetName = assetName.Replace("_Data", "").LegalizeFileName();
-            DumpMainTex(assetName, (Texture2D) material.GetTexture("_MainTex"));
-            DumpACI(assetName, (Texture2D) material.GetTexture("_ACIMap"));
-            DumpXYS(assetName, (Texture2D) material.GetTexture("_XYSMap"));
-            DumpXYCA(assetName, (Texture2D) material.GetTexture("_XYCAMap"));
+            assetName = FileUtil.LegalizeFileName(assetName.Replace("_Data", string.Empty));
+            DumpMainTex(assetName, (Texture2D)material.GetTexture("_MainTex"));
+            DumpACI(assetName, (Texture2D)material.GetTexture("_ACIMap"));
+            DumpXYS(assetName, (Texture2D)material.GetTexture("_XYSMap"));
+            DumpXYCA(assetName, (Texture2D)material.GetTexture("_XYCAMap"));
             DumpAPR(assetName, (Texture2D)material.GetTexture("_APRMap"));
+        }
+
+        public static void DumpMeshToOBJ(Mesh mesh, string fileName)
+        {
+            fileName = Path.Combine(Path.Combine(DataLocation.addonsPath, "Import"), fileName);
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
+
+            var meshToDump = mesh;
+
+            if (!mesh.isReadable)
+            {
+                Logger.Warning($"Mesh \"{mesh.name}\" is marked as non-readable, running workaround..");
+
+                try
+                {
+                    // copy the relevant data to the temporary mesh
+                    meshToDump = new Mesh
+                    {
+                        vertices = mesh.vertices,
+                        colors = mesh.colors,
+                        triangles = mesh.triangles,
+                        normals = mesh.normals,
+                        tangents = mesh.tangents,
+                    };
+                    meshToDump.RecalculateBounds();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error($"Workaround failed with error - {ex.Message}");
+                    return;
+                }
+            }
+
+            try
+            {
+                using (var stream = new FileStream(fileName, FileMode.Create))
+                {
+                    OBJLoader.ExportOBJ(meshToDump.EncodeOBJ(), stream);
+                    Logger.Warning($"Dumped mesh \"{mesh.name}\" to \"{fileName}\"");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"There was an error while trying to dump mesh \"{mesh.name}\" - {ex.Message}");
+            }
         }
 
         private static void DumpMainTex(string assetName, Texture2D mainTex, bool extract = true)
@@ -53,6 +107,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = mainTex.width * mainTex.height;
@@ -64,7 +119,6 @@ namespace ModTools.Utils
             {
                 TextureUtil.DumpTextureToPNG(mainTex, $"{assetName}_MainTex");
             }
-
         }
 
         private static void DumpACI(string assetName, Texture2D aciMap, bool extract = true)
@@ -73,6 +127,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = aciMap.width * aciMap.height;
@@ -96,6 +151,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = xysMap.width * xysMap.height;
@@ -117,6 +173,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = xycaMap.width * xycaMap.height;

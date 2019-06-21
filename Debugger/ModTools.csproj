@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ModTools</RootNamespace>
-    <AssemblyName>000_ModTools</AssemblyName>
+    <AssemblyName>ModTools</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>ModTools.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>ModTools.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -58,75 +60,93 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GUICommon\ColorPicker.cs" />
-    <Compile Include="GUICommon\GUIStackTrace.cs" />
+    <Compile Include="Console\ConsoleMessage.cs" />
+    <Compile Include="GamePanels\ButtonsInfoPanelExtension.cs" />
+    <Compile Include="GamePanels\GamePanelExtension.cs" />
+    <Compile Include="GamePanels\InfoPanelExtensionBase.cs" />
+    <Compile Include="GamePanels\IInfoPanelExtension.cs" />
+    <Compile Include="IGameObject.cs" />
+    <Compile Include="ModalUI.cs" />
+    <Compile Include="UI\ColorPicker.cs" />
+    <Compile Include="UI\GUIStackTrace.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="Scripting\ScriptEditorFile.cs" />
     <Compile Include="Utils\ColorUtil.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="Console.cs" />
+    <Compile Include="ModConfiguration.cs" />
+    <Compile Include="Console\CustomConsole.cs" />
     <Compile Include="CustomPrefabs.cs" />
-    <Compile Include="Utils\DateTimeUtil.cs" />
     <Compile Include="DebugRenderer.cs" />
-    <Compile Include="GUIExplorer\GUIButtons.cs" />
-    <Compile Include="GUIExplorer\GUICollection.cs" />
-    <Compile Include="GUIExplorer\GUICollectionNavigation.cs" />
-    <Compile Include="GUIExplorer\GUIComponent.cs" />
-    <Compile Include="GUIExplorer\GUIEnumerable.cs" />
-    <Compile Include="GUIExplorer\GUIExpander.cs" />
-    <Compile Include="GUIExplorer\GUIField.cs" />
-    <Compile Include="GUIExplorer\GUIList.cs" />
-    <Compile Include="GUIExplorer\GUIMaterial.cs" />
-    <Compile Include="GUIExplorer\GUIProperty.cs" />
-    <Compile Include="GUIExplorer\GUIRecursiveTree.cs" />
-    <Compile Include="GUIExplorer\GUIReflect.cs" />
-    <Compile Include="GUIExplorer\GUITransform.cs" />
-    <Compile Include="GUIExplorer\SceneExplorerCommon.cs" />
-    <Compile Include="Plopper.cs" />
+    <Compile Include="Explorer\GUIButtons.cs" />
+    <Compile Include="Explorer\GUICollection.cs" />
+    <Compile Include="Explorer\GUICollectionNavigation.cs" />
+    <Compile Include="Explorer\GUIComponent.cs" />
+    <Compile Include="Explorer\GUIEnumerable.cs" />
+    <Compile Include="Explorer\GUIExpander.cs" />
+    <Compile Include="Explorer\GUIField.cs" />
+    <Compile Include="Explorer\GUIList.cs" />
+    <Compile Include="Explorer\GUIMaterial.cs" />
+    <Compile Include="Explorer\GUIProperty.cs" />
+    <Compile Include="Explorer\GUIRecursiveTree.cs" />
+    <Compile Include="Explorer\GUIReflect.cs" />
+    <Compile Include="Explorer\GUITransform.cs" />
+    <Compile Include="Explorer\SceneExplorerCommon.cs" />
+    <Compile Include="Explorer\Plopper.cs" />
     <Compile Include="LoadingExtension.cs" />
-    <Compile Include="ModToolsBootstrap.cs" />
     <Compile Include="Utils\FileUtil.cs" />
-    <Compile Include="Utils\GameObjectUtil.cs" />
-    <Compile Include="GamePanelExtender.cs" />
-    <Compile Include="GUICommon\GUIArea.cs" />
-    <Compile Include="GUICommon\GUIComboBox.cs" />
-    <Compile Include="GUICommon\GUIWindow.cs" />
-    <Compile Include="Utils\HashCodeUtil.cs" />
+    <Compile Include="Explorer\GameObjectUtil.cs" />
+    <Compile Include="UI\GUIArea.cs" />
+    <Compile Include="UI\GUIComboBox.cs" />
+    <Compile Include="UI\GUIWindow.cs" />
+    <Compile Include="Utils\GitVersion.cs" />
     <Compile Include="Utils\HashUtil.cs" />
-    <Compile Include="IModEntryPoint.cs" />
-    <Compile Include="MeshViewer.cs" />
-    <Compile Include="ModTools.cs" />
-    <Compile Include="GUICommon\GUIControls.cs" />
-    <Compile Include="Log.cs" />
-    <Compile Include="Mod.cs" />
+    <Compile Include="Scripting\IModEntryPoint.cs" />
+    <Compile Include="Explorer\MeshViewer.cs" />
+    <Compile Include="MainWindow.cs" />
+    <Compile Include="UI\GUIControls.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="ModToolsMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReferenceChain.cs" />
-    <Compile Include="SceneExplorerColorConfig.cs" />
-    <Compile Include="GUIExplorer\GUIMethod.cs" />
-    <Compile Include="SceneExplorerState.cs" />
-    <Compile Include="ScriptCompiler.cs" />
-    <Compile Include="ScriptEditor.cs" />
-    <Compile Include="StackTraceViewer.cs" />
-    <Compile Include="TextureViewer.cs" />
-    <Compile Include="SceneExplorer.cs" />
+    <Compile Include="Explorer\ReferenceChain.cs" />
+    <Compile Include="AppearanceConfig.cs" />
+    <Compile Include="Explorer\GUIMethod.cs" />
+    <Compile Include="Explorer\SceneExplorerState.cs" />
+    <Compile Include="Scripting\ScriptCompiler.cs" />
+    <Compile Include="Scripting\ScriptEditor.cs" />
+    <Compile Include="Console\StackTraceViewer.cs" />
+    <Compile Include="Explorer\TextureViewer.cs" />
+    <Compile Include="Explorer\SceneExplorer.cs" />
+    <Compile Include="Utils\ParseHelper.cs" />
     <Compile Include="Utils\TypeUtil.cs" />
-    <Compile Include="UpdateHook.cs" />
     <Compile Include="UserNotifications.cs" />
-    <Compile Include="Util.cs" />
     <Compile Include="Utils\DumpUtil.cs" />
-    <Compile Include="Utils\MeshUtil.cs" />
-    <Compile Include="Utils\ReflectionUtil.cs" />
     <Compile Include="Utils\TextureUtil.cs" />
-    <Compile Include="Watches.cs" />
+    <Compile Include="Explorer\Watches.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ModTools.ruleset" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="lib\ObjUnity3D.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GitVersionTask">
+      <Version>4.0.0</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+      <Version>2.9.3</Version>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers">
+      <Version>1.1.118</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
-del "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)\$(TargetFileName)"
+    <PostBuildEvent>if not exist "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)" mkdir "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
 xcopy /y "$(TargetPath)" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)"
 xcopy /y "$(ProjectDir)\lib" "$(LOCALAPPDATA)\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)" /s /e</PostBuildEvent>
   </PropertyGroup>

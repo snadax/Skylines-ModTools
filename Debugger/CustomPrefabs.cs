@@ -5,20 +5,26 @@ using UnityEngine;
 
 namespace ModTools
 {
-    public class CustomPrefabs : MonoBehaviour
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0052", Justification = "Intended for self-reflection in-game")]
+    internal sealed class CustomPrefabs : MonoBehaviour, IDestroyableObject, IAwakingObject
     {
-
-        private static bool bootstrapped = false;
         private static GameObject thisGameObject;
 
-        public VehicleInfo[] m_vehicles;
-        public BuildingInfo[] m_buildings;
-        public PropInfo[] m_props;
-        public TreeInfo[] m_trees;
-        public NetInfo[] m_nets;
-        public EventInfo[] m_events;
-        public TransportInfo[] m_transports;
-        public CitizenInfo[] m_citizens;
+        private VehicleInfo[] vehicles;
+
+        private BuildingInfo[] buildings;
+
+        private PropInfo[] props;
+
+        private TreeInfo[] trees;
+
+        private NetInfo[] nets;
+
+        private EventInfo[] events;
+
+        private TransportInfo[] transports;
+
+        private CitizenInfo[] citizens;
 
         public static void Bootstrap()
         {
@@ -27,11 +33,6 @@ namespace ModTools
                 thisGameObject = new GameObject("Custom Prefabs");
                 thisGameObject.AddComponent<CustomPrefabs>();
             }
-            if (bootstrapped)
-            {
-                return;
-            }
-            bootstrapped = true;
         }
 
         public static void Revert()
@@ -41,53 +42,50 @@ namespace ModTools
                 Destroy(thisGameObject);
                 thisGameObject = null;
             }
-
-            if (!bootstrapped)
-            {
-                return;
-            }
-            bootstrapped = false;
         }
-
 
         public void Awake()
         {
-            m_vehicles = GetCustomPrefabs<VehicleInfo>();
-            m_buildings = GetCustomPrefabs<BuildingInfo>();
-            m_props = GetCustomPrefabs<PropInfo>();
-            m_trees = GetCustomPrefabs<TreeInfo>();
-            m_nets = GetCustomPrefabs<NetInfo>();
-            m_events = GetCustomPrefabs<EventInfo>();
-            m_transports = GetCustomPrefabs<TransportInfo>();
-            m_citizens = GetCustomPrefabs<CitizenInfo>();
+            vehicles = GetCustomPrefabs<VehicleInfo>();
+            buildings = GetCustomPrefabs<BuildingInfo>();
+            props = GetCustomPrefabs<PropInfo>();
+            trees = GetCustomPrefabs<TreeInfo>();
+            nets = GetCustomPrefabs<NetInfo>();
+            events = GetCustomPrefabs<EventInfo>();
+            transports = GetCustomPrefabs<TransportInfo>();
+            citizens = GetCustomPrefabs<CitizenInfo>();
         }
 
         public void OnDestroy()
         {
-            m_vehicles = null;
-            m_buildings = null;
-            m_props = null;
-            m_trees = null;
-            m_nets = null;
-            m_events = null;
-            m_transports = null;
-            m_citizens = null;
+            vehicles = null;
+            buildings = null;
+            props = null;
+            trees = null;
+            nets = null;
+            events = null;
+            transports = null;
+            citizens = null;
         }
 
-        private static T[] GetCustomPrefabs<T>() where T: PrefabInfo
+        private static T[] GetCustomPrefabs<T>()
+            where T : PrefabInfo
         {
-            var result = new List<T>();
             var count = PrefabCollection<T>.LoadedCount();
+            var result = new List<T>(count);
             for (uint i = 0; i < count; i++)
             {
                 var prefab = PrefabCollection<T>.GetPrefab(i);
-                if(prefab == null || (!prefab.m_isCustomContent && prefab.name != null && !prefab.name.Contains('.')))
+                if (prefab == null || !prefab.m_isCustomContent && prefab.name?.Contains('.') == false)
                 {
                     continue;
                 }
+
                 result.Add(prefab);
             }
-            return result.OrderBy(p => p.name).ToArray();
-        } 
+
+            result.Sort((x, y) => string.CompareOrdinal(x?.name, y?.name));
+            return result.ToArray();
+        }
     }
 }

@@ -6,28 +6,25 @@ using System.Text.RegularExpressions;
 using ColossalFramework.Plugins;
 using ICities;
 
-namespace ModTools
+namespace ModTools.Utils
 {
-    public static class FileUtil
+    internal static class FileUtil
     {
-
-        public static List<string> ListFilesInDirectory(string path, List<string> _filesMustBeNull = null)
+        public static List<string> ListFilesInDirectory(string path, List<string> filesMustBeNull = null)
         {
-            _filesMustBeNull = _filesMustBeNull ?? new List<string>();
+            filesMustBeNull = filesMustBeNull ?? new List<string>();
 
-            foreach (string file in Directory.GetFiles(path))
+            foreach (var file in Directory.GetFiles(path))
             {
-                _filesMustBeNull.Add(file);
+                filesMustBeNull.Add(file);
             }
-            return _filesMustBeNull;
+
+            return filesMustBeNull;
         }
 
         public static string FindPluginPath(Type type)
         {
-            var pluginManager = PluginManager.instance;
-            var plugins = pluginManager.GetPluginsInfo();
-
-            foreach (var item in plugins)
+            foreach (var item in PluginManager.instance.GetPluginsInfo())
             {
                 var instances = item.GetInstances<IUserMod>();
                 var instance = instances.FirstOrDefault();
@@ -35,6 +32,7 @@ namespace ModTools
                 {
                     continue;
                 }
+
                 foreach (var file in Directory.GetFiles(item.modPath))
                 {
                     if (Path.GetExtension(file) == ".dll")
@@ -43,19 +41,20 @@ namespace ModTools
                     }
                 }
             }
-            throw new Exception("Failed to find assembly!");
+
+            throw new FileNotFoundException("Failed to find assembly!");
         }
 
-        public static string LegalizeFileName(this string illegal)
+        public static string LegalizeFileName(string illegal)
         {
             if (string.IsNullOrEmpty(illegal))
             {
                 return DateTime.Now.ToString("yyyyMMddhhmmss");
             }
-            var regexSearch = new string(Path.GetInvalidFileNameChars()/* + new string(Path.GetInvalidPathChars()*/);
+
+            var regexSearch = new string(Path.GetInvalidFileNameChars());
             var r = new Regex($"[{Regex.Escape(regexSearch)}]");
             return r.Replace(illegal, "_");
         }
     }
-
 }

@@ -1,31 +1,26 @@
-﻿using System;
-using ColossalFramework;
+﻿using ColossalFramework;
 using ICities;
+using ModTools.GamePanels;
 
 namespace ModTools
 {
-    public class LoadingExtension : LoadingExtensionBase
+    public sealed class LoadingExtension : LoadingExtensionBase
     {
-        public override void OnCreated(ILoading loading)
-        {
-            base.OnCreated(loading);
-            ModToolsBootstrap.Bootstrap();
-        }
-
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
             CustomPrefabs.Bootstrap();
             var appMode = Singleton<ToolManager>.instance.m_properties.m_mode;
-            var modTools = ModTools.Instance;
+            var modTools = MainWindow.Instance;
             if (modTools == null)
             {
                 UnityEngine.Debug.LogError("ModTools instance wasn't present");
                 return;
             }
-            if (modTools.config.extendGamePanels && appMode == ItemClass.Availability.Game)
+
+            if (modTools.Config.ExtendGamePanels && appMode == ItemClass.Availability.Game)
             {
-                modTools.gameObject.AddComponent<GamePanelExtender>();
+                modTools.gameObject.AddComponent<GamePanelExtension>();
             }
         }
 
