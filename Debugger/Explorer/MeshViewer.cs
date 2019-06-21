@@ -179,7 +179,7 @@ namespace ModTools.Explorer
                 {
                     if (GUILayout.Button("Dump mesh+textures", GUILayout.Width(160)))
                     {
-                        DumpUtil.DumpMeshAndTextures(assetName, previewMesh, material);
+                        DumpUtil.DumpMeshAndTextures(assetName ?? previewMesh.name, previewMesh, material);
                     }
                 }
                 else if (GUILayout.Button("Dump textures", GUILayout.Width(160)))
