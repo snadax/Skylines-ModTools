@@ -197,6 +197,7 @@ namespace ModTools.Utils
             {
                 return;
             }
+
             if (extract)
             {
                 var length = aprMap.width * aprMap.height;
@@ -213,6 +214,5 @@ namespace ModTools.Utils
                 TextureUtil.DumpTextureToPNG(aprMap, $"{assetName}_APR");
             }
         }
-
     }
 }
