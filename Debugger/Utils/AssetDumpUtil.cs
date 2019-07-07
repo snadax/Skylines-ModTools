@@ -45,7 +45,7 @@ namespace ModTools.Utils
                     }
                 }
             }
-
+            Logger.Warning($"Successfully dumped asset \"{assetName}\"");
             return assetName;
         }
 
@@ -91,7 +91,7 @@ namespace ModTools.Utils
                     }
                 }
             }
-
+            Logger.Warning($"Successfully dumped asset \"{assetName}\"");
             return assetName;
         }
 
@@ -129,7 +129,7 @@ namespace ModTools.Utils
                     DumpUtil.DumpMeshAndTextures($"{assetName}_node_{index}_lod", node.m_lodMesh, node.m_lodMaterial);
                 }
             }
-
+            Logger.Warning($"Successfully dumped asset \"{assetName}\"");
             return assetName;
         }
     }
