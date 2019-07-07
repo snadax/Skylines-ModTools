@@ -73,6 +73,7 @@
     <Compile Include="UI\GUIStackTrace.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="Scripting\ScriptEditorFile.cs" />
+    <Compile Include="Utils\AssetDumpUtil.cs" />
     <Compile Include="Utils\ColorUtil.cs" />
     <Compile Include="ModConfiguration.cs" />
     <Compile Include="Console\CustomConsole.cs" />

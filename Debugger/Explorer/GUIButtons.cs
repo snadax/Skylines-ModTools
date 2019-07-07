@@ -131,7 +131,7 @@ namespace ModTools.Explorer
                     SetupPlopButton(prefabInfo);
                     SetupMeshPreviewButtons(buildingInfo.name, buildingInfo.m_mesh, buildingInfo.m_material, buildingInfo.m_lodMesh, buildingInfo.m_lodMaterial);
                     SetupBuildingFullDumpButton(buildingInfo.name, buildingInfo.m_mesh, buildingInfo.m_material, buildingInfo.m_lodMesh, buildingInfo.m_lodMaterial,
-                        buildingInfo.m_subMeshes);
+                        buildingInfo.m_subMeshes, buildingInfo.m_subBuildings);
                     break;
 
                 case PropInfo propInfo:
@@ -155,51 +155,20 @@ namespace ModTools.Explorer
             }
         }
         
-        private static void SetupBuildingFullDumpButton(string prefabName,
+        private static void SetupBuildingFullDumpButton(string assetName,
             Mesh mesh, Material material,
             Mesh lodMesh, Material lodMaterial,
-            BuildingInfo.MeshInfo[] subMeshes)
+            BuildingInfo.MeshInfo[] subMeshes,
+            BuildingInfo.SubInfo[] subInfos)
         {
             if (!GUILayout.Button("Full dump"))
             {
                 return;
             }
-
-            if (mesh != null)
-            {
-                DumpUtil.DumpMeshAndTextures(prefabName, mesh, material);
-            }
-            
-            if (lodMesh != null)
-            {
-                DumpUtil.DumpMeshAndTextures(prefabName + "_lod", lodMesh, lodMaterial);
-            }
-
-            if (subMeshes == null)
-            {
-                return;
-            }
-            for (var i = 0; i < subMeshes.Length; i++)
-            {
-                var subInfo = subMeshes[i]?.m_subInfo;
-                if (subInfo == null)
-                {
-                    continue;
-                }
-                if (subInfo.m_mesh != null)
-                {
-                    DumpUtil.DumpMeshAndTextures($"{prefabName}_sub_mesh_{i}", subInfo.m_mesh, subInfo.m_material);
-                }
-            
-                if (subInfo.m_lodMesh != null)
-                {
-                    DumpUtil.DumpMeshAndTextures($"{prefabName}_sub_mesh_{i}_lod", subInfo.m_lodMesh, subInfo.m_lodMaterial);
-                }    
-            }
-           
+            AssetDumpUtil.DumpBuilding(assetName, mesh, material, lodMesh, lodMaterial, subMeshes);
         }
 
-        private static void SetupVehicleFullDumpButton(string prefabName,
+        private static void SetupVehicleFullDumpButton(string assetName,
             Mesh mesh, Material material,
             Mesh lodMesh, Material lodMaterial,
             VehicleInfo.MeshInfo[] subMeshes)
@@ -208,75 +177,16 @@ namespace ModTools.Explorer
             {
                 return;
             }
-
-            if (mesh != null)
-            {
-                DumpUtil.DumpMeshAndTextures(prefabName, mesh, material);
-            }
-            
-            if (lodMesh != null)
-            {
-                DumpUtil.DumpMeshAndTextures(prefabName + "_lod", lodMesh, lodMaterial);
-            }
-
-            if (subMeshes == null)
-            {
-                return;
-            }
-            for (var i = 0; i < subMeshes.Length; i++)
-            {
-                var subInfo = subMeshes[i]?.m_subInfo;
-                if (subInfo == null)
-                {
-                    continue;
-                }
-                if (subInfo.m_mesh != null)
-                {
-                    DumpUtil.DumpMeshAndTextures($"{prefabName}_sub_mesh_{i}", subInfo.m_mesh, subInfo.m_material);
-                }
-            
-                if (subInfo.m_lodMesh != null)
-                {
-                    DumpUtil.DumpMeshAndTextures($"{prefabName}_sub_mesh_{i}_lod", subInfo.m_lodMesh, subInfo.m_lodMaterial);
-                }    
-            }
-           
+            AssetDumpUtil.DumpVehicle(assetName, mesh, material, lodMesh, lodMaterial, subMeshes);
         }
 
-        private static void SetupNetworkFullDumpButton(string netInfoName, NetInfo.Segment[] segments, NetInfo.Node[] nodes)
+        private static void SetupNetworkFullDumpButton(string assetName, NetInfo.Segment[] segments, NetInfo.Node[] nodes)
         {
             if (!GUILayout.Button("Full dump"))
             {
                 return;
             }
-            if (segments != null)
-            {
-                for (var index = 0; index < segments.Length; index++)
-                {
-                    var segment = segments[index];
-                    if (segment == null)
-                    {
-                        continue;
-                    }
-                    DumpUtil.DumpMeshAndTextures($"{netInfoName}_segment_{index}", segment.m_mesh,
-                        segment.m_material);
-                    DumpUtil.DumpMeshAndTextures($"{netInfoName}_segment_{index}_lod", segment.m_lodMesh,
-                        segment.m_lodMaterial);
-                }
-            }
-            if (nodes != null)
-            {
-                for (var index = 0; index < nodes.Length; index++)
-                {
-                    var node = nodes[index];
-                    if (node == null)
-                    {
-                        continue;
-                    }
-                    DumpUtil.DumpMeshAndTextures($"{netInfoName}_node_{index}", node.m_mesh, node.m_material);
-                    DumpUtil.DumpMeshAndTextures($"{netInfoName}_node_{index}_lod", node.m_lodMesh, node.m_lodMaterial);
-                }
-            }
+            AssetDumpUtil.DumpNetwork(assetName, segments, nodes);
         }
 
         private static void SetupMeshPreviewButtons(string name, Mesh mesh, Material material, Mesh lodMesh, Material lodMaterial)

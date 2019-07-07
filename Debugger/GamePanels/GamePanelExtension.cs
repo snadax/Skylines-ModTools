@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using ColossalFramework.IO;
+using ColossalFramework.UI;
 using ModTools.Explorer;
 using ModTools.Utils;
 using UnityEngine;
+using static System.IO.Path;
 
 namespace ModTools.GamePanels
 {
@@ -165,13 +168,24 @@ namespace ModTools.GamePanels
             var buildingInfo = BuildingManager.instance.m_buildings.m_buffer[buildingId].Info;
             if (buildingInfo != null)
             {
-                DumpUtil.DumpAsset(
+                var assetName = AssetDumpUtil.DumpBuilding(
                     buildingInfo.name,
                     buildingInfo.m_mesh,
                     buildingInfo.m_material,
                     buildingInfo.m_lodMesh,
-                    buildingInfo.m_lodMaterial);
+                    buildingInfo.m_lodMaterial,
+                    buildingInfo.m_subMeshes);
+                ShowAssetDumpModal(assetName);
             }
+        }
+
+        private static void ShowAssetDumpModal(string assetName)
+        {
+            var path = Combine(DataLocation.addonsPath, "Import");
+            UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
+                "Asset dump completed",
+                $"Asset \"{assetName}\" was successfully dumped to:\n{path}",
+                false);
         }
 
         private static void DumpVehicle(InstanceID instanceId)
@@ -194,12 +208,14 @@ namespace ModTools.GamePanels
 
             if (vehicleInfo != null)
             {
-                DumpUtil.DumpAsset(
+                var assetName = AssetDumpUtil.DumpVehicle(
                     vehicleInfo.name,
                     vehicleInfo.m_mesh,
                     vehicleInfo.m_material,
                     vehicleInfo.m_lodMesh,
-                    vehicleInfo.m_lodMaterial);
+                    vehicleInfo.m_lodMaterial,
+                    vehicleInfo.m_subMeshes);
+                ShowAssetDumpModal(assetName);
             }
         }
 
@@ -238,7 +254,7 @@ namespace ModTools.GamePanels
             var name = "(Library) " + typeof(T).Name;
             var buttons = new Dictionary<string, Action<InstanceID>>
             {
-                ["Dump asset"] = DumpBuilding,
+                ["Dump asset (without sub-buildings)"] = DumpBuilding,
             };
 
             var buildingPanel = ButtonsInfoPanelExtension<T>.Create(name, GetBuildingAssetName, ShowBuilding, buttons);
@@ -251,7 +267,7 @@ namespace ModTools.GamePanels
             var name = "(Library) " + typeof(T).Name;
             var buttons = new Dictionary<string, Action<InstanceID>>
             {
-                ["Dump asset"] = DumpVehicle,
+                ["Dump asset (without trailers)"] = DumpVehicle,
             };
 
             var vehiclePanel = ButtonsInfoPanelExtension<T>.Create(name, GetVehicleAssetName, ShowVehicle, buttons);
@@ -265,7 +281,7 @@ namespace ModTools.GamePanels
             var buttons = new Dictionary<string, Action<InstanceID>>
             {
                 ["Show instance in Scene Explorer"] = ShowCitizenInstance,
-                ["Show unit in Scene Explorer"] = ShowCitizenUnit,
+                ["Show unit in Scene Explorer"] = ShowCitizenUnit
             };
 
             var vehiclePanel = ButtonsInfoPanelExtension<T>.Create(name, GetCitizenAssetName, ShowCitizen, buttons);

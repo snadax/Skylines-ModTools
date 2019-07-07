@@ -9,24 +9,7 @@ namespace ModTools.Utils
 {
     internal static class DumpUtil
     {
-        public static void DumpAsset(
-            string assetName,
-            Mesh mesh,
-            Material material,
-            Mesh lodMesh = null,
-            Material lodMaterial = null)
-        {
-            assetName = assetName.Replace("_Data", string.Empty);
-            Logger.Warning($"Dumping asset \"{assetName}\"...");
-            DumpMeshAndTextures(assetName, mesh, material);
-            DumpMeshAndTextures($"{assetName}_lod", lodMesh, lodMaterial);
-            Logger.Warning($"Successfully dumped asset \"{assetName}\"");
-            var path = Path.Combine(DataLocation.addonsPath, "Import");
-            UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage(
-                "Asset dump completed",
-                $"Asset \"{assetName}\" was successfully dumped to:\n{path}",
-                false);
-        }
+
 
         public static void DumpMeshAndTextures(string assetName, Mesh mesh, Material material = null)
         {
