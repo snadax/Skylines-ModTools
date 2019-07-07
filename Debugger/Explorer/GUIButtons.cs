@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ModTools.Utils;
 using UnityEngine;
 
@@ -29,11 +30,11 @@ namespace ModTools.Explorer
                     return;
 
                 case NetInfo.Segment segmentInfo:
-                    SetupMeshPreviewButton(name: null, segmentInfo.m_mesh, segmentInfo.m_material, segmentInfo.m_lodMesh, segmentInfo.m_lodMaterial);
+                    SetupMeshPreviewButtons(name: null, segmentInfo.m_mesh, segmentInfo.m_material, segmentInfo.m_lodMesh, segmentInfo.m_lodMaterial);
                     goto default;
 
                 case NetInfo.Node nodeInfo:
-                    SetupMeshPreviewButton(name: null, nodeInfo.m_mesh, nodeInfo.m_material, nodeInfo.m_lodMesh, nodeInfo.m_lodMaterial);
+                    SetupMeshPreviewButtons(name: null, nodeInfo.m_mesh, nodeInfo.m_material, nodeInfo.m_lodMesh, nodeInfo.m_lodMaterial);
                     goto default;
 
                 case CitizenInstance instance
@@ -107,30 +108,44 @@ namespace ModTools.Explorer
             switch (prefabInfo)
             {
                 case VehicleInfo vehicleInfo:
-                    SetupMeshPreviewButton(vehicleInfo.name, vehicleInfo.m_mesh, vehicleInfo.m_material, vehicleInfo.m_lodMesh, vehicleInfo.m_lodMaterial);
+                    SetupMeshPreviewButtons(vehicleInfo.name, vehicleInfo.m_mesh, vehicleInfo.m_material, vehicleInfo.m_lodMesh, vehicleInfo.m_lodMaterial);
+                    SetupVehicleFullDumpButton(vehicleInfo.name, vehicleInfo.m_mesh, vehicleInfo.m_material, vehicleInfo.m_lodMesh, vehicleInfo.m_lodMaterial,
+                        vehicleInfo.m_subMeshes);
                     break;
 
-                case NetInfo _:
+                case NetInfo netInfo:
                     SetupPlopButton(prefabInfo);
+                    if (netInfo.m_segments != null && netInfo.m_segments.Length > 0)
+                    {
+                        var previewSegment = netInfo.m_segments.FirstOrDefault(s => s != null);
+                        if (previewSegment != null)
+                        {
+                            SetupMeshPreviewButtons(netInfo.name, previewSegment.m_mesh,
+                                previewSegment.m_material, previewSegment.m_lodMesh, previewSegment.m_lodMaterial);
+                        }
+                    }
+                    SetupNetworkFullDumpButton(netInfo.name, netInfo.m_segments, netInfo.m_nodes);
                     break;
 
                 case BuildingInfo buildingInfo:
                     SetupPlopButton(prefabInfo);
-                    SetupMeshPreviewButton(buildingInfo.name, buildingInfo.m_mesh, buildingInfo.m_material, buildingInfo.m_lodMesh, buildingInfo.m_lodMaterial);
+                    SetupMeshPreviewButtons(buildingInfo.name, buildingInfo.m_mesh, buildingInfo.m_material, buildingInfo.m_lodMesh, buildingInfo.m_lodMaterial);
+                    SetupBuildingFullDumpButton(buildingInfo.name, buildingInfo.m_mesh, buildingInfo.m_material, buildingInfo.m_lodMesh, buildingInfo.m_lodMaterial,
+                        buildingInfo.m_subMeshes);
                     break;
 
                 case PropInfo propInfo:
                     SetupPlopButton(prefabInfo);
-                    SetupMeshPreviewButton(propInfo.name, propInfo.m_mesh, propInfo.m_material, propInfo.m_lodMesh, propInfo.m_lodMaterial);
+                    SetupMeshPreviewButtons(propInfo.name, propInfo.m_mesh, propInfo.m_material, propInfo.m_lodMesh, propInfo.m_lodMaterial);
                     break;
 
                 case TreeInfo treeInfo:
                     SetupPlopButton(prefabInfo);
-                    SetupMeshPreviewButton(treeInfo.name, treeInfo.m_mesh, treeInfo.m_material, lodMesh: null, lodMaterial: null);
+                    SetupMeshPreviewButtons(treeInfo.name, treeInfo.m_mesh, treeInfo.m_material, lodMesh: null, lodMaterial: null);
                     break;
 
                 case CitizenInfo citizenInfo:
-                    SetupMeshPreviewButton(
+                    SetupMeshPreviewButtons(
                         citizenInfo.name,
                         citizenInfo.m_skinRenderer?.sharedMesh,
                         citizenInfo.m_skinRenderer?.material,
@@ -139,8 +154,132 @@ namespace ModTools.Explorer
                     break;
             }
         }
+        
+        private static void SetupBuildingFullDumpButton(string prefabName,
+            Mesh mesh, Material material,
+            Mesh lodMesh, Material lodMaterial,
+            BuildingInfo.MeshInfo[] subMeshes)
+        {
+            if (!GUILayout.Button("Full dump"))
+            {
+                return;
+            }
 
-        private static void SetupMeshPreviewButton(string name, Mesh mesh, Material material, Mesh lodMesh, Material lodMaterial)
+            if (mesh != null)
+            {
+                DumpUtil.DumpMeshAndTextures(prefabName, mesh, material);
+            }
+            
+            if (lodMesh != null)
+            {
+                DumpUtil.DumpMeshAndTextures(prefabName + "_lod", lodMesh, lodMaterial);
+            }
+
+            if (subMeshes == null)
+            {
+                return;
+            }
+            for (var i = 0; i < subMeshes.Length; i++)
+            {
+                var subInfo = subMeshes[i]?.m_subInfo;
+                if (subInfo == null)
+                {
+                    continue;
+                }
+                if (subInfo.m_mesh != null)
+                {
+                    DumpUtil.DumpMeshAndTextures($"{prefabName}_sub_mesh_{i}", subInfo.m_mesh, subInfo.m_material);
+                }
+            
+                if (subInfo.m_lodMesh != null)
+                {
+                    DumpUtil.DumpMeshAndTextures($"{prefabName}_sub_mesh_{i}_lod", subInfo.m_lodMesh, subInfo.m_lodMaterial);
+                }    
+            }
+           
+        }
+
+        private static void SetupVehicleFullDumpButton(string prefabName,
+            Mesh mesh, Material material,
+            Mesh lodMesh, Material lodMaterial,
+            VehicleInfo.MeshInfo[] subMeshes)
+        {
+            if (!GUILayout.Button("Full dump"))
+            {
+                return;
+            }
+
+            if (mesh != null)
+            {
+                DumpUtil.DumpMeshAndTextures(prefabName, mesh, material);
+            }
+            
+            if (lodMesh != null)
+            {
+                DumpUtil.DumpMeshAndTextures(prefabName + "_lod", lodMesh, lodMaterial);
+            }
+
+            if (subMeshes == null)
+            {
+                return;
+            }
+            for (var i = 0; i < subMeshes.Length; i++)
+            {
+                var subInfo = subMeshes[i]?.m_subInfo;
+                if (subInfo == null)
+                {
+                    continue;
+                }
+                if (subInfo.m_mesh != null)
+                {
+                    DumpUtil.DumpMeshAndTextures($"{prefabName}_sub_mesh_{i}", subInfo.m_mesh, subInfo.m_material);
+                }
+            
+                if (subInfo.m_lodMesh != null)
+                {
+                    DumpUtil.DumpMeshAndTextures($"{prefabName}_sub_mesh_{i}_lod", subInfo.m_lodMesh, subInfo.m_lodMaterial);
+                }    
+            }
+           
+        }
+
+        private static void SetupNetworkFullDumpButton(string netInfoName, NetInfo.Segment[] segments, NetInfo.Node[] nodes)
+        {
+            if (!GUILayout.Button("Full dump"))
+            {
+                return;
+            }
+            if (segments != null)
+            {
+                for (var index = 0; index < segments.Length; index++)
+                {
+                    var segment = segments[index];
+                    if (segment == null)
+                    {
+                        continue;
+                    }
+                    DumpUtil.DumpMeshAndTextures($"{netInfoName}_segment_{index}", segment.m_mesh,
+                        segment.m_material);
+                    DumpUtil.DumpMeshAndTextures($"{netInfoName}_segment_{index}_lod", segment.m_lodMesh,
+                        segment.m_lodMaterial);
+                }
+            }
+            if (nodes != null)
+            {
+                for (var index = 0; index < nodes.Length; index++)
+                {
+                    var node = nodes[index];
+                    if (node == null)
+                    {
+                        continue;
+                    }
+                    DumpUtil.DumpMeshAndTextures($"{netInfoName}_node_{index}", node.m_mesh, node.m_material);
+                    DumpUtil.DumpMeshAndTextures($"{netInfoName}_node_{index}_lod", node.m_lodMesh, node.m_lodMaterial);
+                }
+            }
+        }
+
+        private static void SetupMeshPreviewButtons(string name, Mesh mesh, Material material, Mesh lodMesh, Material lodMaterial)
         {
             if (mesh != null && GUILayout.Button("Preview"))
             {
