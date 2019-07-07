@@ -179,11 +179,13 @@ namespace ModTools.Explorer
                 case PropInfo propInfo:
                     SetupPlopButton(prefabInfo);
                     SetupMeshPreviewButtons(propInfo.name, propInfo.m_mesh, propInfo.m_material, propInfo.m_lodMesh, propInfo.m_lodMaterial);
+                    SetupGenericAssetFullDumpButton(propInfo.name, propInfo.m_mesh, propInfo.m_material, propInfo.m_lodMesh, propInfo.m_lodMaterial);
                     break;
 
                 case TreeInfo treeInfo:
                     SetupPlopButton(prefabInfo);
                     SetupMeshPreviewButtons(treeInfo.name, treeInfo.m_mesh, treeInfo.m_material, lodMesh: null, lodMaterial: null);
+                    SetupGenericAssetFullDumpButton(treeInfo.name, treeInfo.m_mesh, treeInfo.m_material, lodMesh: null, lodMaterial: null);
                     break;
 
                 case CitizenInfo citizenInfo:
@@ -193,8 +195,29 @@ namespace ModTools.Explorer
                         citizenInfo.m_skinRenderer?.material,
                         citizenInfo.m_lodMesh,
                         citizenInfo.m_lodMaterial);
+                    SetupGenericAssetFullDumpButton(
+                        citizenInfo.name,
+                        citizenInfo.m_skinRenderer?.sharedMesh,
+                        citizenInfo.m_skinRenderer?.material,
+                        citizenInfo.m_lodMesh,
+                        citizenInfo.m_lodMaterial);
                     break;
             }
+        }
+        
+        private static void SetupGenericAssetFullDumpButton(
+            string assetName,
+            Mesh mesh,
+            Material material,
+            Mesh lodMesh,
+            Material lodMaterial)
+        {
+            if (!GUILayout.Button("Full dump"))
+            {
+                return;
+            }
+
+            AssetDumpUtil.DumpGenericAsset(assetName, mesh, material, lodMesh, lodMaterial);
         }
 
         private static void SetupBuildingFullDumpButton(
