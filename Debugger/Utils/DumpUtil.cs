@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using ColossalFramework.IO;
-using ColossalFramework.UI;
 using ObjUnity3D;
 using UnityEngine;
 
@@ -9,8 +8,6 @@ namespace ModTools.Utils
 {
     internal static class DumpUtil
     {
-
-
         public static void DumpMeshAndTextures(string assetName, Mesh mesh, Material material = null)
         {
             assetName = FileUtil.LegalizeFileName(assetName.Replace("_Data", string.Empty));

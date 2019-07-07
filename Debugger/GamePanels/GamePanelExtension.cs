@@ -281,7 +281,7 @@ namespace ModTools.GamePanels
             var buttons = new Dictionary<string, Action<InstanceID>>
             {
                 ["Show instance in Scene Explorer"] = ShowCitizenInstance,
-                ["Show unit in Scene Explorer"] = ShowCitizenUnit
+                ["Show unit in Scene Explorer"] = ShowCitizenUnit,
             };
 
             var vehiclePanel = ButtonsInfoPanelExtension<T>.Create(name, GetCitizenAssetName, ShowCitizen, buttons);

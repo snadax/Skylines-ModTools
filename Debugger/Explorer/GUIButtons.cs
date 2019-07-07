@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using ModTools.Utils;
 using UnityEngine;
 
@@ -137,29 +136,44 @@ namespace ModTools.Explorer
             {
                 case VehicleInfo vehicleInfo:
                     SetupMeshPreviewButtons(vehicleInfo.name, vehicleInfo.m_mesh, vehicleInfo.m_material, vehicleInfo.m_lodMesh, vehicleInfo.m_lodMaterial);
-                    SetupVehicleFullDumpButton(vehicleInfo.name, vehicleInfo.m_mesh, vehicleInfo.m_material, vehicleInfo.m_lodMesh, vehicleInfo.m_lodMaterial,
+                    SetupVehicleFullDumpButton(
+                        vehicleInfo.name,
+                        vehicleInfo.m_mesh,
+                        vehicleInfo.m_material,
+                        vehicleInfo.m_lodMesh,
+                        vehicleInfo.m_lodMaterial,
                         vehicleInfo.m_subMeshes);
                     break;
 
                 case NetInfo netInfo:
                     SetupPlopButton(prefabInfo);
-                    if (netInfo.m_segments != null && netInfo.m_segments.Length > 0)
+                    if (netInfo.m_segments?.Length > 0)
                     {
                         var previewSegment = netInfo.m_segments.FirstOrDefault(s => s != null);
                         if (previewSegment != null)
                         {
-                            SetupMeshPreviewButtons(netInfo.name, previewSegment.m_mesh,
-                                previewSegment.m_material, previewSegment.m_lodMesh, previewSegment.m_lodMaterial);
+                            SetupMeshPreviewButtons(
+                                netInfo.name,
+                                previewSegment.m_mesh,
+                                previewSegment.m_material,
+                                previewSegment.m_lodMesh,
+                                previewSegment.m_lodMaterial);
                         }
                     }
+
                     SetupNetworkFullDumpButton(netInfo.name, netInfo.m_segments, netInfo.m_nodes);
                     break;
 
                 case BuildingInfo buildingInfo:
                     SetupPlopButton(prefabInfo);
                     SetupMeshPreviewButtons(buildingInfo.name, buildingInfo.m_mesh, buildingInfo.m_material, buildingInfo.m_lodMesh, buildingInfo.m_lodMaterial);
-                    SetupBuildingFullDumpButton(buildingInfo.name, buildingInfo.m_mesh, buildingInfo.m_material, buildingInfo.m_lodMesh, buildingInfo.m_lodMaterial,
-                        buildingInfo.m_subMeshes, buildingInfo.m_subBuildings);
+                    SetupBuildingFullDumpButton(
+                        buildingInfo.name,
+                        buildingInfo.m_mesh,
+                        buildingInfo.m_material,
+                        buildingInfo.m_lodMesh,
+                        buildingInfo.m_lodMaterial,
+                        buildingInfo.m_subMeshes);
                     break;
 
                 case PropInfo propInfo:
@@ -182,29 +196,36 @@ namespace ModTools.Explorer
                     break;
             }
         }
-        
-        private static void SetupBuildingFullDumpButton(string assetName,
-            Mesh mesh, Material material,
-            Mesh lodMesh, Material lodMaterial,
-            BuildingInfo.MeshInfo[] subMeshes,
-            BuildingInfo.SubInfo[] subInfos)
+
+        private static void SetupBuildingFullDumpButton(
+            string assetName,
+            Mesh mesh,
+            Material material,
+            Mesh lodMesh,
+            Material lodMaterial,
+            BuildingInfo.MeshInfo[] subMeshes)
         {
             if (!GUILayout.Button("Full dump"))
             {
                 return;
             }
+
             AssetDumpUtil.DumpBuilding(assetName, mesh, material, lodMesh, lodMaterial, subMeshes);
         }
 
-        private static void SetupVehicleFullDumpButton(string assetName,
-            Mesh mesh, Material material,
-            Mesh lodMesh, Material lodMaterial,
+        private static void SetupVehicleFullDumpButton(
+            string assetName,
+            Mesh mesh,
+            Material material,
+            Mesh lodMesh,
+            Material lodMaterial,
             VehicleInfo.MeshInfo[] subMeshes)
         {
             if (!GUILayout.Button("Full dump"))
             {
                 return;
             }
+
             AssetDumpUtil.DumpVehicle(assetName, mesh, material, lodMesh, lodMaterial, subMeshes);
         }
 
@@ -214,6 +235,7 @@ namespace ModTools.Explorer
             {
                 return;
             }
+
             AssetDumpUtil.DumpNetwork(assetName, segments, nodes);
         }
 
