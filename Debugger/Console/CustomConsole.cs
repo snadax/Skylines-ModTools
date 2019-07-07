@@ -22,7 +22,7 @@ using System.Linq;
 using ColossalFramework.UI;
 using UnityEngine;
 
-namespace ModTools
+namespace ModTools.Scripting
 {{
     class ModToolsCommandLineRunner : IModEntryPoint
     {{
