@@ -74,20 +74,21 @@ namespace ModTools.Explorer
                     SetupGotoButton(buildingInst, building.m_position);
                     goto default;
 
+                case Texture texture:
+                    SetupTexturePreviewButtons(texture);
+                    goto default;
+
+                case Mesh mesh:
+                    SetupMeshPreviewButtons(refChain, mesh);
+                    goto default;
+
                 default:
                     if (GUILayout.Button("Copy"))
                     {
                         buffer = value;
                     }
 
-                    return;
-            }
-
-            SetupTextureOrMeshButtons(type, value, refChain);
-
-            if (GUILayout.Button("Copy"))
-            {
-                buffer = value;
+                    break;
             }
         }
 
@@ -101,6 +102,33 @@ namespace ModTools.Explorer
             }
 
             return GUILayout.Button("Unset");
+        }
+
+        private static void SetupMeshPreviewButtons(ReferenceChain refChain, Mesh mesh)
+        {
+            if (GUILayout.Button("Preview"))
+            {
+                MeshViewer.CreateMeshViewer(null, mesh, null);
+            }
+
+            if (mesh.isReadable && GUILayout.Button("Dump .obj"))
+            {
+                var outPath = refChain.ToString().Replace(' ', '_');
+                DumpUtil.DumpMeshAndTextures(outPath, mesh);
+            }
+        }
+
+        private static void SetupTexturePreviewButtons(Texture texture)
+        {
+            if (GUILayout.Button("Preview"))
+            {
+                TextureViewer.CreateTextureViewer(texture);
+            }
+
+            if (GUILayout.Button("Dump .png"))
+            {
+                TextureUtil.DumpTextureToPNG(texture);
+            }
         }
 
         private static void SetupButtonsForPrefab(PrefabInfo prefabInfo)
@@ -199,38 +227,6 @@ namespace ModTools.Explorer
             if (lodMesh != null && GUILayout.Button("Preview LOD"))
             {
                 MeshViewer.CreateMeshViewer(name + "_LOD", lodMesh, lodMaterial);
-            }
-        }
-
-        private static void SetupTextureOrMeshButtons(Type type, object value, ReferenceChain refChain)
-        {
-            if (TypeUtil.IsTextureType(type))
-            {
-                var texture = (Texture)value;
-                if (GUILayout.Button("Preview"))
-                {
-                    TextureViewer.CreateTextureViewer(texture);
-                }
-
-                if (GUILayout.Button("Dump .png"))
-                {
-                    TextureUtil.DumpTextureToPNG(texture);
-                }
-            }
-            else if (TypeUtil.IsMeshType(type))
-            {
-                var mesh = (Mesh)value;
-
-                if (GUILayout.Button("Preview"))
-                {
-                    MeshViewer.CreateMeshViewer(null, mesh, null);
-                }
-
-                if (mesh.isReadable && GUILayout.Button("Dump .obj"))
-                {
-                    var outPath = refChain.ToString().Replace(' ', '_');
-                    DumpUtil.DumpMeshAndTextures(outPath, mesh);
-                }
             }
         }
 
