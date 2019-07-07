@@ -149,7 +149,7 @@ namespace ModTools.Explorer
                     SetupPlopButton(prefabInfo);
                     if (netInfo.m_segments?.Length > 0)
                     {
-                        var previewSegment = netInfo.m_segments.FirstOrDefault(s => s != null);
+                        var previewSegment = Array.Find(netInfo.m_segments, s => s != null);
                         if (previewSegment != null)
                         {
                             SetupMeshPreviewButtons(
