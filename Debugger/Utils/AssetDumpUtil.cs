@@ -4,22 +4,6 @@ namespace ModTools.Utils
 {
     internal static class AssetDumpUtil
     {
-        public static string DumpGenericAsset(
-            string assetName,
-            Mesh mesh,
-            Material material,
-            Mesh lodMesh = null,
-            Material lodMaterial = null)
-        {
-            assetName = assetName.Replace("_Data", string.Empty);
-            Logger.Warning($"Dumping asset \"{assetName}\"...");
-
-            DumpUtil.DumpMeshAndTextures(assetName, mesh, material);
-            DumpUtil.DumpMeshAndTextures($"{assetName}_lod", lodMesh, lodMaterial);
-            Logger.Warning($"Successfully dumped asset \"{assetName}\"");
-            return assetName;
-        }
-
         public static string DumpBuilding(
             string assetName,
             Mesh mesh,
