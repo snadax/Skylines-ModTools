@@ -204,7 +204,7 @@ namespace ModTools.Explorer
                     break;
             }
         }
-        
+
         private static void SetupGenericAssetFullDumpButton(
             string assetName,
             Mesh mesh,
