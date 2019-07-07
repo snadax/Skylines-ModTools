@@ -79,7 +79,7 @@ namespace ModTools.Explorer
 
                 if (!isNullOrEmpty)
                 {
-                    GUIButtons.SetupButtons(refChain, type, value, i);
+                    GUIButtons.SetupButtons(refChain, value, i);
                 }
 
                 GUILayout.EndHorizontal();

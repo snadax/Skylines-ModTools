@@ -9,7 +9,7 @@ namespace ModTools.Explorer
     {
         private static object buffer;
 
-        public static void SetupButtons(ReferenceChain refChain, Type type, object value, int valueIndex)
+        public static void SetupButtons(ReferenceChain refChain, object value, int valueIndex)
         {
             switch (value)
             {
