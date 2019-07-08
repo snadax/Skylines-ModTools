@@ -219,6 +219,27 @@ namespace ModTools.GamePanels
             }
         }
 
+        private static void DumpCitizen(InstanceID instanceId)
+        {
+            var citizenId = instanceId.Citizen;
+            if (citizenId == 0)
+            {
+                return;
+            }
+
+            var citizenInfo = CitizenManager.instance.m_instances.m_buffer[GetCitizenInstanceId(instanceId)].Info;
+            if (citizenInfo != null)
+            {
+                var assetName = AssetDumpUtil.DumpGenericAsset(
+                    citizenInfo.name,
+                    citizenInfo.m_skinRenderer?.sharedMesh,
+                    citizenInfo.m_skinRenderer?.material,
+                    citizenInfo.m_lodMesh,
+                    citizenInfo.m_lodMaterial);
+                ShowAssetDumpModal(assetName);
+            }
+        }
+
         private void CreateBuildingsPanels()
         {
             CreateBuildingPanel<ZonedBuildingWorldInfoPanel>();
@@ -282,6 +303,7 @@ namespace ModTools.GamePanels
             {
                 ["Show instance in Scene Explorer"] = ShowCitizenInstance,
                 ["Show unit in Scene Explorer"] = ShowCitizenUnit,
+                ["Dump asset"] = DumpCitizen,
             };
 
             var vehiclePanel = ButtonsInfoPanelExtension<T>.Create(name, GetCitizenAssetName, ShowCitizen, buttons);
