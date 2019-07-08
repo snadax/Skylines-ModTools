@@ -10,6 +10,8 @@ namespace ModTools.Explorer
 {
     internal sealed class SceneExplorer : GUIWindow, IGameObject, IAwakingObject
     {
+        private readonly ReferenceChain editPrefabInfoRefChain;
+        
         private const float WindowTopMargin = 16.0f;
         private const float WindowBottomMargin = 8.0f;
 
@@ -43,6 +45,13 @@ namespace ModTools.Explorer
         public SceneExplorer()
             : base("Scene Explorer", new Rect(128, 440, 800, 500), Skin)
         {
+            editPrefabInfoRefChain =
+                new ReferenceChain()
+                    .Add(ToolManager.instance.gameObject)
+                    .Add(ToolManager.instance)
+                    .Add(typeof(ToolManager).GetField("m_properties"))
+                    .Add(typeof(ToolController).GetField("m_editPrefabInfo"));
+            
             headerArea = new GUIArea(this)
                 .ChangeSizeRelative(height: 0)
                 .OffsetBy(vertical: WindowTopMargin);
@@ -319,6 +328,17 @@ namespace ModTools.Explorer
             }
 
             GUILayout.EndHorizontal();
+            
+            if (ToolManager.exists && ToolManager.instance?.m_properties?.m_editPrefabInfo != null)
+            {
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Show edited prefab", GUILayout.ExpandWidth(false)))
+                {
+                    Show(editPrefabInfoRefChain);
+                }
+
+                GUILayout.EndHorizontal();
+            }
 
             if (!string.IsNullOrEmpty(searchDisplayString))
             {
