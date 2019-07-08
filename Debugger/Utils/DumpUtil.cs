@@ -91,7 +91,7 @@ namespace ModTools.Utils
             if (extract)
             {
                 var length = mainTex.width * mainTex.height;
-                var r = new Color32[length].Invert();
+                var r = TextureUtil.BuildBlankTextureColors(length);
                 mainTex.ExtractChannels(r, r, r, null, false, false, false, false, false, false, false);
                 TextureUtil.DumpTextureToPNG(r.ColorsToTexture(mainTex.width, mainTex.height), $"{assetName}_d");
             }
@@ -111,9 +111,9 @@ namespace ModTools.Utils
             if (extract)
             {
                 var length = aciMap.width * aciMap.height;
-                var r = new Color32[length].Invert();
-                var g = new Color32[length].Invert();
-                var b = new Color32[length].Invert();
+                var r = TextureUtil.BuildBlankTextureColors(length);
+                var g = TextureUtil.BuildBlankTextureColors(length);
+                var b = TextureUtil.BuildBlankTextureColors(length);
                 aciMap.ExtractChannels(r, g, b, null, true, true, true, true, true, false, false);
                 TextureUtil.DumpTextureToPNG(r.ColorsToTexture(aciMap.width, aciMap.height), $"{assetName}_a");
                 TextureUtil.DumpTextureToPNG(g.ColorsToTexture(aciMap.width, aciMap.height), $"{assetName}_c");
@@ -135,8 +135,8 @@ namespace ModTools.Utils
             if (extract)
             {
                 var length = xysMap.width * xysMap.height;
-                var r1 = new Color32[length].Invert();
-                var b1 = new Color32[length].Invert();
+                var r1 = TextureUtil.BuildBlankTextureColors(length);
+                var b1 = TextureUtil.BuildBlankTextureColors(length);
                 xysMap.ExtractChannels(r1, r1, b1, null, false, false, true, false, false, true, false);
                 TextureUtil.DumpTextureToPNG(r1.ColorsToTexture(xysMap.width, xysMap.height), $"{assetName}_n");
                 TextureUtil.DumpTextureToPNG(b1.ColorsToTexture(xysMap.width, xysMap.height), $"{assetName}_s");
@@ -157,9 +157,9 @@ namespace ModTools.Utils
             if (extract)
             {
                 var length = xycaMap.width * xycaMap.height;
-                var r1 = new Color32[length].Invert();
-                var b1 = new Color32[length].Invert();
-                var a1 = new Color32[length].Invert();
+                var r1 = TextureUtil.BuildBlankTextureColors(length);
+                var b1 = TextureUtil.BuildBlankTextureColors(length);
+                var a1 = TextureUtil.BuildBlankTextureColors(length);
                 xycaMap.ExtractChannels(r1, r1, b1, a1, false, false, true, false, true, true, true);
                 TextureUtil.DumpTextureToPNG(r1.ColorsToTexture(xycaMap.width, xycaMap.height), $"{assetName}_n");
                 TextureUtil.DumpTextureToPNG(b1.ColorsToTexture(xycaMap.width, xycaMap.height), $"{assetName}_c");
@@ -181,9 +181,9 @@ namespace ModTools.Utils
             if (extract)
             {
                 var length = aprMap.width * aprMap.height;
-                var a1 = new Color32[length].Invert();
-                var p1 = new Color32[length].Invert();
-                var r1 = new Color32[length].Invert();
+                var a1 = TextureUtil.BuildBlankTextureColors(length);
+                var p1 = TextureUtil.BuildBlankTextureColors(length);
+                var r1 = TextureUtil.BuildBlankTextureColors(length);
                 aprMap.ExtractChannels(a1, p1, r1, null, true, true, true, true, true, false, false);
                 TextureUtil.DumpTextureToPNG(a1.ColorsToTexture(aprMap.width, aprMap.height), $"{assetName}_a");
                 TextureUtil.DumpTextureToPNG(p1.ColorsToTexture(aprMap.width, aprMap.height), $"{assetName}_p");

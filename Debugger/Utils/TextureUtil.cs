@@ -144,15 +144,15 @@ namespace ModTools.Utils
             return texture2D;
         }
 
-        public static Color32[] Invert(this Color32[] colors)
+        public static Color32[] BuildBlankTextureColors(int length)
         {
-            var result = new Color32[colors.Length];
-            for (var i = 0; i < colors.Length; i++)
+            var result = new Color32[length];
+            for (var i = 0; i < length; i++)
             {
-                result[i].r = (byte)(byte.MaxValue - colors[i].r);
-                result[i].g = (byte)(byte.MaxValue - colors[i].g);
-                result[i].b = (byte)(byte.MaxValue - colors[i].b);
-                result[i].a = (byte)(byte.MaxValue - colors[i].a);
+                result[i].r = byte.MaxValue;
+                result[i].g = byte.MaxValue;
+                result[i].b = byte.MaxValue;
+                result[i].a = byte.MaxValue;
             }
 
             return result;
