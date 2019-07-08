@@ -10,6 +10,7 @@ namespace ModTools.Explorer
 {
     internal sealed class SceneExplorer : GUIWindow, IGameObject, IAwakingObject
     {
+        private static readonly Queue<ReferenceChain> ShowRequests = new Queue<ReferenceChain>();
         private readonly ReferenceChain editPrefabInfoRefChain;
         
         private const float WindowTopMargin = 16.0f;
@@ -115,8 +116,16 @@ namespace ModTools.Explorer
             sceneRoots = GameObjectUtil.FindSceneRoots();
             TypeUtil.ClearTypeCache();
         }
+        
+        
 
         public void Show(ReferenceChain refChain)
+        {
+            ShowRequests.Enqueue(refChain);
+            Visible = true;
+        }        
+         
+        private void ProcessShowRequest(ReferenceChain refChain)
         {
             if (refChain == null)
             {
@@ -186,7 +195,6 @@ namespace ModTools.Explorer
 
             state.CurrentRefChain = refChain.Clone();
             state.CurrentRefChain.IdentOffset = -state.CurrentRefChain.Length;
-            Visible = true;
         }
 
         public void DrawHeader()
@@ -405,6 +413,12 @@ namespace ModTools.Explorer
 
             state.PreventCircularReferences.Clear();
 
+            lock(ShowRequests) {
+                while (ShowRequests.Count > 0) {
+                    ProcessShowRequest(ShowRequests.Dequeue());
+                }
+            }
+            
             DrawHeader();
             DrawSceneTree();
             DrawComponent();
