@@ -18,6 +18,7 @@ namespace ModTools.GamePanels
         private readonly ReferenceChain lineBufferRefChain;
         private readonly ReferenceChain citizensBufferRefChain;
         private readonly ReferenceChain citizensUnitsBufferRefChain;
+        private readonly ReferenceChain pathsBufferRefChain;
 
         private readonly List<IInfoPanelExtension> customPanels = new List<IInfoPanelExtension>();
 
@@ -73,6 +74,13 @@ namespace ModTools.GamePanels
                     .Add(TransportManager.instance)
                     .Add(typeof(TransportManager).GetField("m_lines"))
                     .Add(typeof(Array16<TransportLine>).GetField("m_buffer"));
+            
+            pathsBufferRefChain =
+                new ReferenceChain()
+                    .Add(PathManager.instance.gameObject)
+                    .Add(PathManager.instance)
+                    .Add(typeof(PathManager).GetField("m_pathUnits"))
+                    .Add(typeof(Array32<PathUnit>).GetField("m_buffer"));
         }
 
         public void OnDestroy()
@@ -314,6 +322,7 @@ namespace ModTools.GamePanels
             var name = "(Library) " + typeof(T).Name;
             var buttons = new Dictionary<string, Action<InstanceID>>
             {
+                ["Show path in SceneExplorer"] = ShowVehiclePath,
                 ["Dump asset (without trailers)"] = DumpVehicle,
             };
 
@@ -329,6 +338,7 @@ namespace ModTools.GamePanels
             {
                 ["Show instance in Scene Explorer"] = ShowCitizenInstance,
                 ["Show unit in Scene Explorer"] = ShowCitizenUnit,
+                ["Show path in SceneExplorer"] = ShowCitizenPath,
                 ["Dump asset"] = DumpCitizen,
             };
 
@@ -411,6 +421,17 @@ namespace ModTools.GamePanels
                 sceneExplorer.Show(citizenInstancesBufferRefChain.Add(citizenInstanceId));
             }
         }
+        
+        private void ShowCitizenPath(InstanceID instanceId)
+        {
+            var citizenInstanceId = GetCitizenInstanceId(instanceId);
+            var pathUnitId = citizenInstanceId == 0 ? 0 : CitizenManager.instance.m_instances.m_buffer[citizenInstanceId].m_path;
+
+            if (pathUnitId != 0)
+            {
+                sceneExplorer.Show(pathsBufferRefChain.Add((int)pathUnitId));
+            }
+        }
 
         private void ShowLine(InstanceID instanceId)
         {
@@ -418,6 +439,17 @@ namespace ModTools.GamePanels
             if (lineId != 0)
             {
                 sceneExplorer.Show(lineBufferRefChain.Add(lineId));    
+            }
+        }
+        
+        private void ShowVehiclePath(InstanceID instanceId)
+        {
+            var vehicleId = instanceId.Vehicle;
+            var pathUnitId = vehicleId == 0 ? 0 : VehicleManager.instance.m_vehicles.m_buffer[vehicleId].m_path;
+
+            if (pathUnitId != 0)
+            {
+                sceneExplorer.Show(pathsBufferRefChain.Add((int)pathUnitId));
             }
         }
     }
