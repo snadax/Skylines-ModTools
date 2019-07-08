@@ -15,6 +15,7 @@ namespace ModTools.GamePanels
         private readonly ReferenceChain vehiclesBufferRefChain;
         private readonly ReferenceChain vehiclesParkedBufferRefChain;
         private readonly ReferenceChain citizenInstancesBufferRefChain;
+        private readonly ReferenceChain lineBufferRefChain;
         private readonly ReferenceChain citizensBufferRefChain;
         private readonly ReferenceChain citizensUnitsBufferRefChain;
 
@@ -65,6 +66,13 @@ namespace ModTools.GamePanels
                 .Add(CitizenManager.instance)
                 .Add(typeof(CitizenManager).GetField("m_units"))
                 .Add(typeof(Array32<CitizenUnit>).GetField("m_buffer"));
+            
+            lineBufferRefChain =
+                new ReferenceChain()
+                    .Add(TransportManager.instance.gameObject)
+                    .Add(TransportManager.instance)
+                    .Add(typeof(TransportManager).GetField("m_lines"))
+                    .Add(typeof(Array16<TransportLine>).GetField("m_buffer"));
         }
 
         public void OnDestroy()
@@ -88,6 +96,7 @@ namespace ModTools.GamePanels
                 CreateBuildingsPanels();
                 CreateVehiclePanels();
                 CreateCitizenPanels();
+                CreateLinePanel();
             }
         }
 
@@ -119,6 +128,14 @@ namespace ModTools.GamePanels
             }
 
             return result;
+        }
+
+        private static string GetLineName(InstanceID instanceId)
+        {
+            var lineId = instanceId.TransportLine;
+            return lineId != 0
+                   ? TransportManager.instance.GetLineName(lineId) ?? "N/A"
+                : "N/A";
         }
 
         private static string GetBuildingAssetName(InstanceID instanceId)
@@ -269,6 +286,15 @@ namespace ModTools.GamePanels
             CreateCitizenPanel<AnimalWorldInfoPanel>();
         }
 
+        private void CreateLinePanel()
+        {
+            var name = "(Library) " + typeof(PublicTransportWorldInfoPanel).Name;
+            var buttons = new Dictionary<string, Action<InstanceID>>();
+
+            var linePanel = ButtonsInfoPanelExtension<PublicTransportWorldInfoPanel>.Create(name, GetLineName, ShowLine, buttons);
+            customPanels.Add(linePanel);
+        }
+
         private void CreateBuildingPanel<T>()
             where T : BuildingWorldInfoPanel
         {
@@ -383,6 +409,15 @@ namespace ModTools.GamePanels
             if (citizenInstanceId != 0)
             {
                 sceneExplorer.Show(citizenInstancesBufferRefChain.Add(citizenInstanceId));
+            }
+        }
+
+        private void ShowLine(InstanceID instanceId)
+        {
+            var lineId = instanceId.TransportLine;
+            if (lineId != 0)
+            {
+                sceneExplorer.Show(lineBufferRefChain.Add(lineId));    
             }
         }
     }
