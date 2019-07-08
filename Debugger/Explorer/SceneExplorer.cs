@@ -410,7 +410,7 @@ namespace ModTools.Explorer
             DrawComponent();
         }
 
-        private void ClearExpanded()
+        public void ClearExpanded()
         {
             state.ExpandedGameObjects.Clear();
             state.ExpandedComponents.Clear();

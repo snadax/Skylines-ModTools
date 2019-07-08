@@ -1,6 +1,8 @@
 ﻿using ColossalFramework;
 using ICities;
+using ModTools.Explorer;
 using ModTools.GamePanels;
+using UnityEngine;
 
 namespace ModTools
 {
@@ -21,6 +23,16 @@ namespace ModTools
             if (modTools.Config.ExtendGamePanels && appMode == ItemClass.Availability.Game)
             {
                 modTools.gameObject.AddComponent<GamePanelExtension>();
+            }
+        }
+        
+        public override void OnLevelUnloading()
+        {
+            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+
+            if (sceneExplorer != null)
+            {
+                sceneExplorer.ClearExpanded();
             }
         }
 
