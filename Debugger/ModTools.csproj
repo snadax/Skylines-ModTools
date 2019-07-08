@@ -70,11 +70,14 @@
     <Compile Include="GamePanels\IInfoPanelExtension.cs" />
     <Compile Include="IGameObject.cs" />
     <Compile Include="ModalUI.cs" />
+    <Compile Include="SelectionToolControl.cs" />
+    <Compile Include="SelectionTool.cs" />
     <Compile Include="UI\ColorPicker.cs" />
     <Compile Include="UI\GUIStackTrace.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="Scripting\ScriptEditorFile.cs" />
     <Compile Include="Utils\AssetDumpUtil.cs" />
+    <Compile Include="Utils\InstanceUtil.cs" />
     <Compile Include="Utils\ColorUtil.cs" />
     <Compile Include="ModConfiguration.cs" />
     <Compile Include="Console\CustomConsole.cs" />
@@ -122,6 +125,7 @@
     <Compile Include="Utils\ParseHelper.cs" />
     <Compile Include="Utils\ReferenceChainBuilder.cs" />
     <Compile Include="Utils\ShaderUtil.cs" />
+    <Compile Include="Utils\ToolUtil.cs" />
     <Compile Include="Utils\TypeUtil.cs" />
     <Compile Include="UserNotifications.cs" />
     <Compile Include="Utils\DumpUtil.cs" />

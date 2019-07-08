@@ -42,104 +42,6 @@ namespace ModTools.GamePanels
             }
         }
 
-        private static ushort GetCitizenInstanceId(InstanceID instanceId)
-        {
-            var result = instanceId.CitizenInstance;
-            if (result == 0)
-            {
-                var citizenId = instanceId.Citizen;
-                if (citizenId != 0)
-                {
-                    result = CitizenManager.instance.m_citizens.m_buffer[citizenId].m_instance;
-                }
-            }
-
-            return result;
-        }
-
-        private static uint GetCitizenId(InstanceID instanceId)
-        {
-            var result = instanceId.Citizen;
-            if (result == 0)
-            {
-                var citizenInstanceId = instanceId.CitizenInstance;
-                if (citizenInstanceId != 0)
-                {
-                    result = CitizenManager.instance.m_instances.m_buffer[citizenInstanceId].m_citizen;
-                }
-            }
-
-            return result;
-        }
-
-        private static string GetLineName(InstanceID instanceId)
-        {
-            var lineId = instanceId.TransportLine;
-            return lineId != 0
-                   ? TransportManager.instance.GetLineName(lineId) ?? "N/A"
-                : "N/A";
-        }
-        
-        private static string GetSegmentName(InstanceID instanceId)
-        {
-            var segmentId = instanceId.NetSegment;
-            return segmentId != 0
-                ? NetManager.instance.m_segments.m_buffer[segmentId].Info?.name ?? "N/A"
-                : "N/A";
-        }
-        
-        private static string GetParkName(InstanceID instanceId)
-        {
-            var parkId = instanceId.Park;
-            return parkId != 0
-                ? DistrictManager.instance.GetParkName(parkId) ?? "N/A"
-                : "N/A";
-        }
-        
-        private static string GetDistrictName(InstanceID instanceId)
-        {
-            var districtId = instanceId.District;
-            return districtId != 0
-                ? DistrictManager.instance.GetDistrictName(districtId) ?? "N/A"
-                : "N/A";
-        }
-
-        private static string GetBuildingAssetName(InstanceID instanceId)
-        {
-            var buildingId = instanceId.Building;
-            return buildingId != 0
-                ? BuildingManager.instance.m_buildings.m_buffer[buildingId].Info?.name ?? "N/A"
-                : "N/A";
-        }
-
-        private static string GetVehicleAssetName(InstanceID instanceId)
-        {
-            var vehicleId = instanceId.Vehicle;
-            if (vehicleId != 0)
-            {
-                return VehicleManager.instance.m_vehicles.m_buffer[vehicleId].Info?.name ?? "N/A";
-            }
-
-            vehicleId = instanceId.ParkedVehicle;
-            if (vehicleId != 0)
-            {
-                return VehicleManager.instance.m_parkedVehicles.m_buffer[vehicleId].Info?.name ?? "N/A";
-            }
-
-            return "N/A";
-        }
-
-        private static string GetCitizenAssetName(InstanceID instanceId)
-        {
-            var citizenInstanceId = GetCitizenInstanceId(instanceId);
-            if (citizenInstanceId != 0)
-            {
-                return CitizenManager.instance.m_instances.m_buffer[citizenInstanceId].Info?.name ?? "N/A";
-            }
-
-            return "N/A";
-        }
-
         private static void DumpBuilding(InstanceID instanceId)
         {
             var buildingId = instanceId.Building;
@@ -229,7 +131,7 @@ namespace ModTools.GamePanels
                 return;
             }
 
-            var citizenInfo = CitizenManager.instance.m_instances.m_buffer[GetCitizenInstanceId(instanceId)].Info;
+            var citizenInfo = CitizenManager.instance.m_instances.m_buffer[InstanceUtil.GetCitizenInstanceId(instanceId)].Info;
             if (citizenInfo != null)
             {
                 var assetName = AssetDumpUtil.DumpGenericAsset(
@@ -284,7 +186,7 @@ namespace ModTools.GamePanels
             var name = "(Library) " + typeof(DistrictWorldInfoPanel).Name;
             var buttons = new Dictionary<string, Action<InstanceID>>();
 
-            var districtPanel = ButtonsInfoPanelExtension<DistrictWorldInfoPanel>.Create(name, GetDistrictName, ShowDistrict, buttons);
+            var districtPanel = ButtonsInfoPanelExtension<DistrictWorldInfoPanel>.Create(name, InstanceUtil.GetDistrictName, ShowDistrict, buttons);
             customPanels.Add(districtPanel);
         }
 
@@ -294,7 +196,7 @@ namespace ModTools.GamePanels
             var name = "(Library) " + typeof(T).Name;
             var buttons = new Dictionary<string, Action<InstanceID>>();
 
-            var parkPanel = ButtonsInfoPanelExtension<T>.Create(name, GetParkName, ShowPark, buttons);
+            var parkPanel = ButtonsInfoPanelExtension<T>.Create(name, InstanceUtil.GetParkName, ShowPark, buttons);
             customPanels.Add(parkPanel);
         }
 
@@ -303,7 +205,7 @@ namespace ModTools.GamePanels
             var name = "(Library) " + typeof(PublicTransportWorldInfoPanel).Name;
             var buttons = new Dictionary<string, Action<InstanceID>>();
 
-            var linePanel = ButtonsInfoPanelExtension<PublicTransportWorldInfoPanel>.Create(name, GetLineName, ShowLine, buttons);
+            var linePanel = ButtonsInfoPanelExtension<PublicTransportWorldInfoPanel>.Create(name, InstanceUtil.GetLineName, ShowLine, buttons);
             customPanels.Add(linePanel);
         }
         
@@ -316,7 +218,7 @@ namespace ModTools.GamePanels
                 ["Dump asset"] = DumpNetwork,
             };
 
-            var linePanel = ButtonsInfoPanelExtension<RoadWorldInfoPanel>.Create(name, GetSegmentName, ShowSegment, buttons);
+            var linePanel = ButtonsInfoPanelExtension<RoadWorldInfoPanel>.Create(name, InstanceUtil.GetNetworkAssetName, ShowSegment, buttons);
             customPanels.Add(linePanel);
         }
 
@@ -329,7 +231,7 @@ namespace ModTools.GamePanels
                 ["Dump asset (without sub-buildings)"] = DumpBuilding,
             };
 
-            var buildingPanel = ButtonsInfoPanelExtension<T>.Create(name, GetBuildingAssetName, ShowBuilding, buttons);
+            var buildingPanel = ButtonsInfoPanelExtension<T>.Create(name, InstanceUtil.GetBuildingAssetName, ShowBuilding, buttons);
             customPanels.Add(buildingPanel);
         }
 
@@ -343,7 +245,7 @@ namespace ModTools.GamePanels
                 ["Dump asset (without trailers)"] = DumpVehicle,
             };
 
-            var vehiclePanel = ButtonsInfoPanelExtension<T>.Create(name, GetVehicleAssetName, ShowVehicle, buttons);
+            var vehiclePanel = ButtonsInfoPanelExtension<T>.Create(name, InstanceUtil.GetVehicleAssetName, ShowVehicle, buttons);
             customPanels.Add(vehiclePanel);
         }
 
@@ -359,7 +261,7 @@ namespace ModTools.GamePanels
                 ["Dump asset"] = DumpCitizen,
             };
 
-            var vehiclePanel = ButtonsInfoPanelExtension<T>.Create(name, GetCitizenAssetName, ShowCitizen, buttons);
+            var vehiclePanel = ButtonsInfoPanelExtension<T>.Create(name, InstanceUtil.GetCitizenAssetName, ShowCitizen, buttons);
             customPanels.Add(vehiclePanel);
         }
 
@@ -390,7 +292,7 @@ namespace ModTools.GamePanels
 
         private void ShowCitizen(InstanceID instanceId)
         {
-            var citizenId = GetCitizenId(instanceId);
+            var citizenId = InstanceUtil.GetCitizenId(instanceId);
 
             if (citizenId != 0)
             {
@@ -400,7 +302,7 @@ namespace ModTools.GamePanels
 
         private void ShowCitizenUnit(InstanceID instanceId)
         {
-            var citizenId = GetCitizenId(instanceId);
+            var citizenId = InstanceUtil.GetCitizenId(instanceId);
             if (citizenId == 0)
             {
                 return;
@@ -432,7 +334,7 @@ namespace ModTools.GamePanels
 
         private void ShowCitizenInstance(InstanceID instanceId)
         {
-            var citizenInstanceId = GetCitizenInstanceId(instanceId);
+            var citizenInstanceId = InstanceUtil.GetCitizenInstanceId(instanceId);
             if (citizenInstanceId != 0)
             {
                 sceneExplorer.Show(ReferenceChainBuilder.ForCitizenInstance(citizenInstanceId));
@@ -441,7 +343,7 @@ namespace ModTools.GamePanels
         
         private void ShowCitizenPath(InstanceID instanceId)
         {
-            var citizenInstanceId = GetCitizenInstanceId(instanceId);
+            var citizenInstanceId = InstanceUtil.GetCitizenInstanceId(instanceId);
             var pathUnitId = citizenInstanceId == 0 ? 0 : CitizenManager.instance.m_instances.m_buffer[citizenInstanceId].m_path;
 
             if (pathUnitId != 0)

@@ -1,4 +1,5 @@
-﻿using ColossalFramework;
+﻿using System.Reflection;
+using ColossalFramework;
 using ICities;
 using ModTools.Explorer;
 using ModTools.GamePanels;
@@ -33,15 +34,28 @@ namespace ModTools
             {
                 modTools.gameObject.AddComponent<GamePanelExtension>();
             }
+            
+            var toolController = Object.FindObjectOfType<ToolManager>().m_properties;
+            if (toolController == null)
+            {
+                return;
+            }
+            toolController.AddTool<SelectionTool>();
+            new GameObject("SelectionToolControl").AddComponent<SelectionToolControl>();
         }
         
         public override void OnLevelUnloading()
         {
-            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+            var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
 
             if (sceneExplorer != null)
             {
                 sceneExplorer.ClearExpanded();
+            }
+            var go = GameObject.Find("SelectionToolControl");
+            if (go != null)
+            {
+                Object.Destroy(go);
             }
         }
 
@@ -52,5 +66,6 @@ namespace ModTools
             ShaderUtil.ClearShaderCache();
             CustomPrefabs.Revert();
         }
+      
     }
 }

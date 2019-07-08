@@ -206,11 +206,10 @@ namespace ModTools
                 return;
             }
 
-            GUI.color = Color.red;
-            GUILayout.Label("[Press Ctrl+F to open it in SceneExplorer]");
-            GUI.color = Color.blue;
+            GUI.color = Color.cyan;
+            GUILayout.Label("[Press Ctrl+F to show in SceneExplorer]");
             GUILayout.Label("[Press Ctrl+G to iterate]");
-            GUI.color = Color.white;
+
             GUILayout.Label($"name: {hoveredComponent.name}");
             GUILayout.Label($"type: {hoveredComponent.GetType().Name}");
 

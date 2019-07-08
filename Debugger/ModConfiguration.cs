@@ -21,6 +21,9 @@ namespace ModTools
 
         [XmlElement("logLevel")]
         public int LogLevel { get; set; }
+        
+        [XmlElement("selectionTool")]
+        public bool SelectionTool { get; set; } = true;
 
         #endregion
 
