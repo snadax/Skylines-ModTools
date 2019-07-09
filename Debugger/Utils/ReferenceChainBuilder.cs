@@ -92,5 +92,55 @@ namespace ModTools.Utils
                 .Add(typeof(Array32<PathUnit>).GetField("m_buffer"))
                 .Add(pathUnitId);
         }
+
+        public static ReferenceChain ForNode(ushort nodeId)
+        {
+            return new ReferenceChain()
+                .Add(NetManager.instance.gameObject)
+                .Add(NetManager.instance)
+                .Add(typeof(NetManager).GetField("m_nodes"))
+                .Add(typeof(Array16<NetNode>).GetField("m_buffer"))
+                .Add(nodeId);
+        }
+        
+        public static ReferenceChain ForSegment(ushort segmentId)
+        {
+            return new ReferenceChain()
+                .Add(NetManager.instance.gameObject)
+                .Add(NetManager.instance)
+                .Add(typeof(NetManager).GetField("m_segments"))
+                .Add(typeof(Array16<NetSegment>).GetField("m_buffer"))
+                .Add(segmentId);
+        }
+        
+        public static ReferenceChain ForLane(uint laneId)
+        {
+            return new ReferenceChain()
+                .Add(NetManager.instance.gameObject)
+                .Add(NetManager.instance)
+                .Add(typeof(NetManager).GetField("m_lanes"))
+                .Add(typeof(Array32<NetLane>).GetField("m_buffer"))
+                .Add(laneId);
+        }
+        
+        public static ReferenceChain ForDistrict(byte districtId)
+        {
+            return new ReferenceChain()
+                .Add(DistrictManager.instance.gameObject)
+                .Add(DistrictManager.instance)
+                .Add(typeof(DistrictManager).GetField("m_districts"))
+                .Add(typeof(Array8<District>).GetField("m_buffer"))
+                .Add(districtId);
+        }
+        
+        public static ReferenceChain ForPark(byte parkId)
+        {
+            return new ReferenceChain()
+                .Add(DistrictManager.instance.gameObject)
+                .Add(DistrictManager.instance)
+                .Add(typeof(DistrictManager).GetField("m_parks"))
+                .Add(typeof(Array8<DistrictPark>).GetField("m_buffer"))
+                .Add(parkId);
+        }
     }
 }

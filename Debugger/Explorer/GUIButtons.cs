@@ -83,6 +83,10 @@ namespace ModTools.Explorer
 
                 default:
                     SetupSmartShowButtons(value, fieldName);
+                    if (GUILayout.Button("Watch"))
+                    {
+                        MainWindow.Instance.Watches.AddWatch(refChain);
+                    }
                     if (GUILayout.Button("Copy"))
                     {
                         buffer = value;
@@ -99,6 +103,7 @@ namespace ModTools.Explorer
                 if (fieldName != null &&
                     fieldName.IndexOf("count", StringComparison.OrdinalIgnoreCase) < 0 &&
                     fieldName.IndexOf("type", StringComparison.OrdinalIgnoreCase) < 0 &&
+                    fieldName.IndexOf("flags", StringComparison.OrdinalIgnoreCase) < 0 &&
                     IsIntegerType(value.GetType()) && Convert.ToUInt64(value) > 0)
                 {
                     if (fieldName.IndexOf("parkedVehicle", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -186,6 +191,61 @@ namespace ModTools.Explorer
                             if (sceneExplorer != null)
                             {
                                 sceneExplorer.Show(ReferenceChainBuilder.ForPathUnit(Convert.ToUInt32(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("node", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show network node"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForNode(Convert.ToUInt16(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("segment", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show network segment"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForSegment(Convert.ToUInt16(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("lane", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show network lane"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForLane(Convert.ToUInt32(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("park", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show park district"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForPark(Convert.ToByte(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("district", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show district"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForDistrict(Convert.ToByte(value)));
                             }
                         }
                     }

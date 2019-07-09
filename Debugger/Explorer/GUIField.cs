@@ -112,10 +112,6 @@ namespace ModTools.Explorer
             GUI.contentColor = Color.white;
 
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Watch"))
-            {
-                MainWindow.Instance.Watches.AddWatch(refChain);
-            }
 
             GUIButtons.SetupButtons(refChain, value, valueIndex: 0, field.Name);
             object paste = null;
