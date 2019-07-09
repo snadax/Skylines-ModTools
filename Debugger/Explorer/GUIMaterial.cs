@@ -109,8 +109,12 @@ namespace ModTools.Explorer
                 GUI.contentColor = Color.white;
 
                 GUILayout.FlexibleSpace();
-                GUIButtons.SetupButtons(refChain, value, valueIndex: 0);
-                var doPaste = GUIButtons.SetupPasteButon(type, out var paste);
+                GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0);
+                var doPaste = GUIButtons.SetupPasteButon(type, value, out var paste);
+                if (value != null)
+                {
+                    GUIButtons.SetupJumpButton(refChain);
+                }
                 GUILayout.EndHorizontal();
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
@@ -163,8 +167,12 @@ namespace ModTools.Explorer
 
                 GUI.contentColor = Color.white;
                 GUILayout.FlexibleSpace();
-                GUIButtons.SetupButtons(refChain, value, valueIndex: 0);
-                var doPaste = GUIButtons.SetupPasteButon(type, out var paste);
+                GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0);
+                var doPaste = GUIButtons.SetupPasteButon(type, value, out var paste);
+                if (value != null)
+                {
+                    GUIButtons.SetupJumpButton(refChain);
+                }
                 GUILayout.EndHorizontal();
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))

@@ -113,12 +113,17 @@ namespace ModTools.Explorer
 
             GUILayout.FlexibleSpace();
 
-            GUIButtons.SetupButtons(refChain, value, valueIndex: 0, field.Name);
+            GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0, field.Name);
             object paste = null;
             var doPaste = !field.IsLiteral && !field.IsInitOnly;
             if (doPaste)
             {
-                doPaste = GUIButtons.SetupPasteButon(field.FieldType, out paste);
+                doPaste = GUIButtons.SetupPasteButon(field.FieldType, value, out paste);
+            }
+
+            if (value != null)
+            {
+                GUIButtons.SetupJumpButton(refChain);
             }
 
             GUILayout.EndHorizontal();

@@ -10,7 +10,7 @@ namespace ModTools.Explorer
         
         private static ModConfiguration Config => MainWindow.Instance.Config;
 
-        public static void SetupButtons(ReferenceChain refChain, object value, uint valueIndex, string fieldName = null)
+        public static void SetupCommonButtons(ReferenceChain refChain, object value, uint valueIndex, string fieldName = null)
         {
             switch (value)
             {
@@ -286,7 +286,7 @@ namespace ModTools.Explorer
             }
         }
 
-        public static bool SetupPasteButon(Type type, out object paste)
+        public static bool SetupPasteButon(Type type, object currentValue, out object paste)
         {
             paste = null;
             if (buffer != null && type.IsInstanceOfType(buffer) && GUILayout.Button("Paste"))
@@ -295,7 +295,19 @@ namespace ModTools.Explorer
                 return true;
             }
 
-            return GUILayout.Button("Unset");
+            return currentValue != null && GUILayout.Button("Unset");
+        }
+
+        public static void SetupJumpButton(ReferenceChain refChain)
+        {
+            if (GUILayout.Button(">"))
+            {
+                var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                if (sceneExplorer != null)
+                {
+                    sceneExplorer.Show(refChain);
+                }
+            }
         }
 
         private static void SetupMeshPreviewButtons(ReferenceChain refChain, Mesh mesh)

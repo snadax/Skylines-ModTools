@@ -160,14 +160,17 @@ namespace ModTools.Explorer
 
             GUILayout.FlexibleSpace();
 
-            GUIButtons.SetupButtons(refChain, value, valueIndex: 0, property.Name);
+            GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0, property.Name);
             object paste = null;
             var doPaste = property.CanWrite;
             if (doPaste)
             {
-                doPaste = GUIButtons.SetupPasteButon(property.PropertyType, out paste);
+                doPaste = GUIButtons.SetupPasteButon(property.PropertyType, value, out paste);
             }
-
+            if (value != null)
+            {
+                GUIButtons.SetupJumpButton(refChain);
+            }
             GUILayout.EndHorizontal();
 
             if (value != null && state.ExpandedObjects.Contains(refChain.UniqueId))

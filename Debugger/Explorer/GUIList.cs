@@ -79,9 +79,14 @@ namespace ModTools.Explorer
 
                 if (!isNullOrEmpty)
                 {
-                    GUIButtons.SetupButtons(refChain, value, i);
+                    GUIButtons.SetupCommonButtons(refChain, value, i);
                 }
 
+                if (value != null)
+                {
+                    GUIButtons.SetupJumpButton(refChain);
+                }
+                
                 GUILayout.EndHorizontal();
 
                 if (!isNullOrEmpty && !TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
