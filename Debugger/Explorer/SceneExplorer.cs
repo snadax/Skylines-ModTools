@@ -146,7 +146,8 @@ namespace ModTools.Explorer
 
             sceneRoots.Clear();
             ClearExpanded();
-            searchDisplayString = $"Showing results for \"{refChain}\"";
+            var typeName = refChain.Evaluate()?.GetType().Name; 
+            searchDisplayString = $"Showing {typeName} \"{refChain}\"";
 
             var rootGameObject = (GameObject)refChain.GetChainItem(0);
             sceneRoots.Add(rootGameObject, true);
