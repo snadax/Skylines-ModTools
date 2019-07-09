@@ -96,8 +96,12 @@ namespace ModTools.Explorer
             }
         }
 
-        private static void SetupSmartShowButtons(object value, string fieldName)
+        public static void SetupSmartShowButtons(object value, string fieldName)
         {
+            if (value == null)
+            {
+                return;
+            }
             try
             {
                 if (fieldName != null &&

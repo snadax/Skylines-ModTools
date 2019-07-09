@@ -90,8 +90,10 @@ namespace ModTools.Explorer
                 GUI.enabled = true;
 
                 GUILayout.FlexibleSpace();
+                
+                GUIButtons.SetupSmartShowButtons(value, watch.LastItemName);
 
-                if (GUILayout.Button("Find in Scene Explorer"))
+                if (GUILayout.Button("Show watched field"))
                 {
                     var sceneExplorer = FindObjectOfType<SceneExplorer>();
                     sceneExplorer.Show(watch.Trim(watch.Length - 1));
