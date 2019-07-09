@@ -336,6 +336,17 @@ namespace ModTools.Explorer
 
             GUILayout.EndHorizontal();
             
+            if (ToolManager.exists && ToolManager.instance?.m_properties?.CurrentTool != null)
+            {
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Show current tool", GUILayout.ExpandWidth(false)))
+                {
+                    Show(ReferenceChainBuilder.ForCurrentTool());
+                }
+
+                GUILayout.EndHorizontal();
+            }
+            
             if (ToolManager.exists && ToolManager.instance?.m_properties?.m_editPrefabInfo != null)
             {
                 GUILayout.BeginHorizontal();

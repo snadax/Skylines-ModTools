@@ -1,9 +1,19 @@
+using System.Reflection;
 using ModTools.Explorer;
 
 namespace ModTools.Utils
 {
     internal static class ReferenceChainBuilder
     {
+        public static ReferenceChain ForCurrentTool()
+        {
+            return new ReferenceChain()
+                .Add(ToolManager.instance.gameObject)
+                .Add(ToolManager.instance)
+                .Add(typeof(ToolManager).GetField("m_properties"))
+                .Add(typeof(ToolController).GetField("m_currentTool", BindingFlags.Instance | BindingFlags.NonPublic));
+        }
+
         public static ReferenceChain ForEditPrefabInfo()
         {
             return new ReferenceChain()
@@ -102,7 +112,7 @@ namespace ModTools.Utils
                 .Add(typeof(Array16<NetNode>).GetField("m_buffer"))
                 .Add(nodeId);
         }
-        
+
         public static ReferenceChain ForSegment(ushort segmentId)
         {
             return new ReferenceChain()
@@ -112,7 +122,7 @@ namespace ModTools.Utils
                 .Add(typeof(Array16<NetSegment>).GetField("m_buffer"))
                 .Add(segmentId);
         }
-        
+
         public static ReferenceChain ForLane(uint laneId)
         {
             return new ReferenceChain()
@@ -122,7 +132,7 @@ namespace ModTools.Utils
                 .Add(typeof(Array32<NetLane>).GetField("m_buffer"))
                 .Add(laneId);
         }
-        
+
         public static ReferenceChain ForDistrict(byte districtId)
         {
             return new ReferenceChain()
@@ -132,7 +142,7 @@ namespace ModTools.Utils
                 .Add(typeof(Array8<District>).GetField("m_buffer"))
                 .Add(districtId);
         }
-        
+
         public static ReferenceChain ForPark(byte parkId)
         {
             return new ReferenceChain()
@@ -142,7 +152,7 @@ namespace ModTools.Utils
                 .Add(typeof(Array8<DistrictPark>).GetField("m_buffer"))
                 .Add(parkId);
         }
-        
+
         public static ReferenceChain ForProp(ushort propId)
         {
             return new ReferenceChain()
@@ -152,7 +162,7 @@ namespace ModTools.Utils
                 .Add(typeof(Array16<PropInstance>).GetField("m_buffer"))
                 .Add(propId);
         }
-        
+
         public static ReferenceChain ForTree(uint treeId)
         {
             return new ReferenceChain()
