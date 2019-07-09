@@ -18,7 +18,7 @@ namespace ModTools.Explorer
                 return;
             }
 
-            var count = 0;
+            uint count = 0;
             var oldRefChain = refChain;
 
             foreach (var value in enumerable)

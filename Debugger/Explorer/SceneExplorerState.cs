@@ -12,9 +12,9 @@ namespace ModTools.Explorer
 
         public HashSet<string> EvaluatedProperties { get; } = new HashSet<string>();
 
-        public Dictionary<string, int> SelectedArrayStartIndices { get; } = new Dictionary<string, int>();
+        public Dictionary<string, uint> SelectedArrayStartIndices { get; } = new Dictionary<string, uint>();
 
-        public Dictionary<string, int> SelectedArrayEndIndices { get; } = new Dictionary<string, int>();
+        public Dictionary<string, uint> SelectedArrayEndIndices { get; } = new Dictionary<string, uint>();
 
         public HashSet<object> PreventCircularReferences { get; } = new HashSet<object>();
 

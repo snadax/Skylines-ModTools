@@ -8,7 +8,7 @@ namespace ModTools.Explorer
     {
         private static object buffer;
 
-        public static void SetupButtons(ReferenceChain refChain, object value, int valueIndex)
+        public static void SetupButtons(ReferenceChain refChain, object value, uint valueIndex, string fieldName = null)
         {
             switch (value)
             {
@@ -82,12 +82,118 @@ namespace ModTools.Explorer
                     goto default;
 
                 default:
+                    SetupSmartShowButtons(value, fieldName);
                     if (GUILayout.Button("Copy"))
                     {
                         buffer = value;
                     }
 
                     break;
+            }
+        }
+
+        private static void SetupSmartShowButtons(object value, string fieldName)
+        {
+            try
+            {
+                if (fieldName != null &&
+                    fieldName.IndexOf("count", StringComparison.OrdinalIgnoreCase) < 0 &&
+                    fieldName.IndexOf("type", StringComparison.OrdinalIgnoreCase) < 0 &&
+                    IsIntegerType(value.GetType()) && Convert.ToUInt64(value) > 0)
+                {
+                    if (fieldName.IndexOf("parkedVehicle", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show parked vehicle"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForParkedVehicle(Convert.ToUInt16(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("vehicle", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show vehicle"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForVehicle(Convert.ToUInt16(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("building", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show building"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForBuilding(Convert.ToUInt16(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("unit", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show citizen unit"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForCitizenUnit(Convert.ToUInt32(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("citizenInstance", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show citizen instance"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForCitizenInstance(Convert.ToUInt16(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("citizen", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show citizen"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForCitizen(Convert.ToUInt32(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("line", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show transport line"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForTransportLine(Convert.ToUInt16(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("path", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show path unit"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForPathUnit(Convert.ToUInt32(value)));
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+               //suppress 
             }
         }
 
@@ -289,6 +395,25 @@ namespace ModTools.Explorer
             if (GUILayout.Button("Go to"))
             {
                 ToolsModifierControl.cameraController.SetTarget(instance, position, true);
+            }
+        }
+        
+        public static bool IsIntegerType(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.Decimal:
+                    return true;
+                default:
+                    return false;
             }
         }
     }

@@ -11,7 +11,6 @@ namespace ModTools.Explorer
     internal sealed class SceneExplorer : GUIWindow, IGameObject, IAwakingObject
     {
         private static readonly Queue<ReferenceChain> ShowRequests = new Queue<ReferenceChain>();
-        private readonly ReferenceChain editPrefabInfoRefChain;
         
         private const float WindowTopMargin = 16.0f;
         private const float WindowBottomMargin = 8.0f;
@@ -46,12 +45,7 @@ namespace ModTools.Explorer
         public SceneExplorer()
             : base("Scene Explorer", new Rect(128, 440, 800, 500), Skin)
         {
-            editPrefabInfoRefChain =
-                new ReferenceChain()
-                    .Add(ToolManager.instance.gameObject)
-                    .Add(ToolManager.instance)
-                    .Add(typeof(ToolManager).GetField("m_properties"))
-                    .Add(typeof(ToolController).GetField("m_editPrefabInfo"));
+
             
             headerArea = new GUIArea(this)
                 .ChangeSizeRelative(height: 0)
@@ -184,7 +178,7 @@ namespace ModTools.Explorer
                         break;
 
                     case ReferenceChain.ReferenceType.EnumerableItem:
-                        var index = (int)refChain.GetChainItem(i);
+                        var index = (uint)refChain.GetChainItem(i);
                         state.SelectedArrayStartIndices[expandedRefChain.UniqueId] = index;
                         state.SelectedArrayEndIndices[expandedRefChain.UniqueId] = index;
                         expandedRefChain = expandedRefChain.Add(index);
@@ -342,7 +336,7 @@ namespace ModTools.Explorer
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Show edited prefab", GUILayout.ExpandWidth(false)))
                 {
-                    Show(editPrefabInfoRefChain);
+                    Show(ReferenceChainBuilder.ForEditPrefabInfo());
                 }
 
                 GUILayout.EndHorizontal();

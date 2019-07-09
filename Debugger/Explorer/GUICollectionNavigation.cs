@@ -11,8 +11,8 @@ namespace ModTools.Explorer
             ReferenceChain refChain,
             ReferenceChain oldRefChain,
             int collectionSize,
-            out int arrayStart,
-            out int arrayEnd)
+            out uint arrayStart,
+            out uint arrayEnd)
         {
             GUILayout.BeginHorizontal();
             SceneExplorerCommon.InsertIndent(refChain.Ident);
@@ -33,7 +33,7 @@ namespace ModTools.Explorer
             arrayStart = GUIControls.PrimitiveValueField($"{oldRefChain}.arrayStart", "Start index", arrayStart);
             arrayEnd = GUIControls.PrimitiveValueField($"{oldRefChain}.arrayEnd", "End index", arrayEnd);
             GUILayout.Label("(32 items max)");
-            var pageSize = Mathf.Clamp(arrayEnd - arrayStart + 1, 1, Mathf.Min(32, collectionSize - arrayStart, arrayEnd + 1));
+            var pageSize = (uint)Mathf.Clamp(arrayEnd - arrayStart + 1, 1, Mathf.Min(32, collectionSize - arrayStart, arrayEnd + 1));
             if (GUILayout.Button("◄", GUILayout.ExpandWidth(false)))
             {
                 arrayStart -= pageSize;
@@ -46,8 +46,8 @@ namespace ModTools.Explorer
                 arrayEnd += pageSize;
             }
 
-            arrayStart = Mathf.Clamp(arrayStart, 0, collectionSize - pageSize);
-            arrayEnd = Mathf.Clamp(arrayEnd, pageSize - 1, collectionSize - 1);
+            arrayStart = (uint)Mathf.Clamp(arrayStart, 0, collectionSize - pageSize);
+            arrayEnd = (uint)Mathf.Max(0, Mathf.Clamp(arrayEnd, pageSize - 1, collectionSize - 1));
             if (arrayStart > arrayEnd)
             {
                 arrayEnd = arrayStart;
@@ -56,7 +56,7 @@ namespace ModTools.Explorer
             if (arrayEnd - arrayStart > 32)
             {
                 arrayEnd = arrayStart + 32;
-                arrayEnd = Mathf.Clamp(arrayEnd, 32, collectionSize - 1);
+                arrayEnd = (uint)Mathf.Max(0, Mathf.Clamp(arrayEnd, 32, collectionSize - 1));
             }
 
             state.SelectedArrayStartIndices[refChain.UniqueId] = arrayStart;

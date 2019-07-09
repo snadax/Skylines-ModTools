@@ -121,7 +121,7 @@ namespace ModTools.Explorer
             return copy;
         }
 
-        public ReferenceChain Add(int index)
+        public ReferenceChain Add(uint index)
         {
             var copy = Clone();
             copy.chainObjects[Length] = index;
@@ -220,10 +220,10 @@ namespace ModTools.Explorer
 
                     case ReferenceType.EnumerableItem:
                         var collection = current as IEnumerable;
-                        var itemCount = 0;
+                        uint itemCount = 0;
                         foreach (var item in collection)
                         {
-                            if (itemCount == (int)chainObjects[i])
+                            if (itemCount == (uint)chainObjects[i])
                             {
                                 current = item;
                                 break;

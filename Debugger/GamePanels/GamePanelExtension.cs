@@ -11,77 +11,9 @@ namespace ModTools.GamePanels
 {
     internal sealed class GamePanelExtension : MonoBehaviour, IDestroyableObject, IAwakingObject
     {
-        private readonly ReferenceChain buildingsBufferRefChain;
-        private readonly ReferenceChain vehiclesBufferRefChain;
-        private readonly ReferenceChain vehiclesParkedBufferRefChain;
-        private readonly ReferenceChain citizenInstancesBufferRefChain;
-        private readonly ReferenceChain lineBufferRefChain;
-        private readonly ReferenceChain citizensBufferRefChain;
-        private readonly ReferenceChain citizensUnitsBufferRefChain;
-        private readonly ReferenceChain pathsBufferRefChain;
-
         private readonly List<IInfoPanelExtension> customPanels = new List<IInfoPanelExtension>();
 
         private SceneExplorer sceneExplorer;
-
-        public GamePanelExtension()
-        {
-            buildingsBufferRefChain =
-                new ReferenceChain()
-                .Add(BuildingManager.instance.gameObject)
-                .Add(BuildingManager.instance)
-                .Add(typeof(BuildingManager).GetField("m_buildings"))
-                .Add(typeof(Array16<Building>).GetField("m_buffer"));
-
-            vehiclesBufferRefChain =
-                new ReferenceChain()
-                .Add(VehicleManager.instance.gameObject)
-                .Add(VehicleManager.instance)
-                .Add(typeof(VehicleManager).GetField("m_vehicles"))
-                .Add(typeof(Array16<Vehicle>).GetField("m_buffer"));
-
-            vehiclesParkedBufferRefChain =
-                new ReferenceChain()
-                .Add(VehicleManager.instance.gameObject)
-                .Add(VehicleManager.instance)
-                .Add(typeof(VehicleManager).GetField("m_parkedVehicles"))
-                .Add(typeof(Array16<VehicleParked>).GetField("m_buffer"));
-
-            citizenInstancesBufferRefChain =
-                new ReferenceChain()
-                .Add(CitizenManager.instance.gameObject)
-                .Add(CitizenManager.instance)
-                .Add(typeof(CitizenManager).GetField("m_instances"))
-                .Add(typeof(Array16<CitizenInstance>).GetField("m_buffer"));
-
-            citizensBufferRefChain =
-                new ReferenceChain()
-                .Add(CitizenManager.instance.gameObject)
-                .Add(CitizenManager.instance)
-                .Add(typeof(CitizenManager).GetField("m_citizens"))
-                .Add(typeof(Array32<Citizen>).GetField("m_buffer"));
-
-            citizensUnitsBufferRefChain =
-                new ReferenceChain()
-                .Add(CitizenManager.instance.gameObject)
-                .Add(CitizenManager.instance)
-                .Add(typeof(CitizenManager).GetField("m_units"))
-                .Add(typeof(Array32<CitizenUnit>).GetField("m_buffer"));
-            
-            lineBufferRefChain =
-                new ReferenceChain()
-                    .Add(TransportManager.instance.gameObject)
-                    .Add(TransportManager.instance)
-                    .Add(typeof(TransportManager).GetField("m_lines"))
-                    .Add(typeof(Array16<TransportLine>).GetField("m_buffer"));
-            
-            pathsBufferRefChain =
-                new ReferenceChain()
-                    .Add(PathManager.instance.gameObject)
-                    .Add(PathManager.instance)
-                    .Add(typeof(PathManager).GetField("m_pathUnits"))
-                    .Add(typeof(Array32<PathUnit>).GetField("m_buffer"));
-        }
 
         public void OnDestroy()
         {
@@ -351,7 +283,7 @@ namespace ModTools.GamePanels
             var buildingId = instanceId.Building;
             if (buildingId != 0)
             {
-                sceneExplorer.Show(buildingsBufferRefChain.Add(buildingId));
+                sceneExplorer.Show(ReferenceChainBuilder.ForBuilding(buildingId));
             }
         }
 
@@ -360,14 +292,14 @@ namespace ModTools.GamePanels
             var vehicleId = instanceId.Vehicle;
             if (vehicleId != 0)
             {
-                sceneExplorer.Show(vehiclesBufferRefChain.Add(vehicleId));
+                sceneExplorer.Show(ReferenceChainBuilder.ForVehicle(vehicleId));
                 return;
             }
 
             vehicleId = instanceId.ParkedVehicle;
             if (vehicleId != 0)
             {
-                sceneExplorer.Show(vehiclesParkedBufferRefChain.Add(vehicleId));
+                sceneExplorer.Show(ReferenceChainBuilder.ForParkedVehicle(vehicleId));
             }
         }
 
@@ -377,7 +309,7 @@ namespace ModTools.GamePanels
 
             if (citizenId != 0)
             {
-                sceneExplorer.Show(citizensBufferRefChain.Add((int)citizenId));
+                sceneExplorer.Show(ReferenceChainBuilder.ForCitizen(citizenId));
             }
         }
 
@@ -409,7 +341,7 @@ namespace ModTools.GamePanels
             var unitId = BuildingManager.instance.m_buildings.m_buffer[buildingId].FindCitizenUnit(CitizenUnit.Flags.All, citizenId);
             if (unitId != 0)
             {
-                sceneExplorer.Show(citizensUnitsBufferRefChain.Add((int)unitId));
+                sceneExplorer.Show(ReferenceChainBuilder.ForCitizenUnit(unitId));
             }
         }
 
@@ -418,7 +350,7 @@ namespace ModTools.GamePanels
             var citizenInstanceId = GetCitizenInstanceId(instanceId);
             if (citizenInstanceId != 0)
             {
-                sceneExplorer.Show(citizenInstancesBufferRefChain.Add(citizenInstanceId));
+                sceneExplorer.Show(ReferenceChainBuilder.ForCitizenInstance(citizenInstanceId));
             }
         }
         
@@ -429,7 +361,7 @@ namespace ModTools.GamePanels
 
             if (pathUnitId != 0)
             {
-                sceneExplorer.Show(pathsBufferRefChain.Add((int)pathUnitId));
+                sceneExplorer.Show(ReferenceChainBuilder.ForPathUnit(pathUnitId));
             }
         }
 
@@ -438,7 +370,7 @@ namespace ModTools.GamePanels
             var lineId = instanceId.TransportLine;
             if (lineId != 0)
             {
-                sceneExplorer.Show(lineBufferRefChain.Add(lineId));    
+                sceneExplorer.Show(ReferenceChainBuilder.ForTransportLine(lineId));    
             }
         }
         
@@ -449,7 +381,7 @@ namespace ModTools.GamePanels
 
             if (pathUnitId != 0)
             {
-                sceneExplorer.Show(pathsBufferRefChain.Add((int)pathUnitId));
+                sceneExplorer.Show(ReferenceChainBuilder.ForPathUnit(pathUnitId));
             }
         }
     }

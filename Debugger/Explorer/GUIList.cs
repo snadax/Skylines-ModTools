@@ -46,7 +46,7 @@ namespace ModTools.Explorer
 
                 GUI.contentColor = Color.white;
 
-                var value = list[i];
+                var value = list[(int)i];
                 var type = value?.GetType() ?? listItemType;
                 var isNullOrEmpty = value == null || flagIsEnum && Convert.ToInt32(flagsField.GetValue(value)) == 0;
                 if (type != null)
