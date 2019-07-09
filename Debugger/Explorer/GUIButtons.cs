@@ -249,6 +249,28 @@ namespace ModTools.Explorer
                             }
                         }
                     }
+                    else if (fieldName.IndexOf("tree", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show tree"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForTree(Convert.ToUInt32(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("prop", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show prop"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForProp(Convert.ToUInt16(value)));
+                            }
+                        }
+                    }
                 }
             }
             catch

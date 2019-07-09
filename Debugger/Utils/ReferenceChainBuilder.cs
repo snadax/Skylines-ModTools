@@ -142,5 +142,25 @@ namespace ModTools.Utils
                 .Add(typeof(Array8<DistrictPark>).GetField("m_buffer"))
                 .Add(parkId);
         }
+        
+        public static ReferenceChain ForProp(ushort propId)
+        {
+            return new ReferenceChain()
+                .Add(PropManager.instance.gameObject)
+                .Add(PropManager.instance)
+                .Add(typeof(PropManager).GetField("m_props"))
+                .Add(typeof(Array16<PropInstance>).GetField("m_buffer"))
+                .Add(propId);
+        }
+        
+        public static ReferenceChain ForTree(uint treeId)
+        {
+            return new ReferenceChain()
+                .Add(TreeManager.instance.gameObject)
+                .Add(TreeManager.instance)
+                .Add(typeof(TreeManager).GetField("m_trees"))
+                .Add(typeof(Array32<TreeInstance>).GetField("m_buffer"))
+                .Add(treeId);
+        }
     }
 }
