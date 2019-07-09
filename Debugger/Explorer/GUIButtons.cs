@@ -151,17 +151,6 @@ namespace ModTools.Explorer
                             }
                         }
                     }
-                    else if (fieldName.IndexOf("citizenInstance", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show citizen instance"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForCitizenInstance(Convert.ToUInt16(value)));
-                            }
-                        }
-                    }
                     else if (fieldName.IndexOf("citizen", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         if (GUILayout.Button("Show citizen"))
@@ -269,6 +258,17 @@ namespace ModTools.Explorer
                             if (sceneExplorer != null)
                             {
                                 sceneExplorer.Show(ReferenceChainBuilder.ForProp(Convert.ToUInt16(value)));
+                            }
+                        }
+                    }
+                    else if (fieldName.IndexOf("instance", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if (GUILayout.Button("Show citizen instance"))
+                        {
+                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+                            if (sceneExplorer != null)
+                            {
+                                sceneExplorer.Show(ReferenceChainBuilder.ForCitizenInstance(Convert.ToUInt16(value)));
                             }
                         }
                     }
