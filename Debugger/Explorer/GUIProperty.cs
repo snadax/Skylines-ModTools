@@ -160,11 +160,6 @@ namespace ModTools.Explorer
 
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button("Watch"))
-            {
-                MainWindow.Instance.Watches.AddWatch(refChain);
-            }
-
             GUIButtons.SetupButtons(refChain, value, valueIndex: 0, property.Name);
             object paste = null;
             var doPaste = property.CanWrite;
