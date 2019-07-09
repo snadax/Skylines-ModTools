@@ -226,10 +226,10 @@ namespace ModTools.GamePanels
                     parentPanel = wrapperPanel;
                 }
             }
-            else if (typeof(T) == typeof(FestivalPanel))
+            else if (typeof(T) == typeof(FestivalPanel) || typeof(T) == typeof(DistrictWorldInfoPanel))
             {
-                // This magic is required because the 'festival panel' is buggy,
-                // it grows unlimitedly on performing auto layout - so restrict its size.
+                // This magic is required because the 'festival panel' and 'district world info panel' are buggy,
+                // they grow unlimitedly on performing auto layout - so restrict their size.
                 infoPanelContainer.maximumSize = infoPanelContainer.size;
                 infoPanelContainer.clipChildren = false;
             }

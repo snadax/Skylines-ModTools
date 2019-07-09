@@ -115,6 +115,11 @@ namespace ModTools.Explorer
 
         public void Show(ReferenceChain refChain)
         {
+            if (refChain == null)
+            {
+                Logger.Error("SceneExplorer: Show(): Null refChain");
+                return;
+            }
             ShowRequests.Enqueue(refChain);
             Visible = true;
         }        
@@ -123,7 +128,7 @@ namespace ModTools.Explorer
         {
             if (refChain == null)
             {
-                Logger.Error("SceneExplorer: ExpandFromRefChain(): Null refChain");
+                Logger.Error("SceneExplorer: ProcessShowRequest(): Null refChain");
                 return;
             }
 

@@ -104,6 +104,7 @@ namespace ModTools.Explorer
                     fieldName.IndexOf("count", StringComparison.OrdinalIgnoreCase) < 0 &&
                     fieldName.IndexOf("type", StringComparison.OrdinalIgnoreCase) < 0 &&
                     fieldName.IndexOf("flags", StringComparison.OrdinalIgnoreCase) < 0 &&
+                    fieldName.IndexOf("offset", StringComparison.OrdinalIgnoreCase) < 0 &&
                     IsIntegerType(value.GetType()) && Convert.ToUInt64(value) > 0)
                 {
                     if (fieldName.IndexOf("parkedVehicle", StringComparison.OrdinalIgnoreCase) >= 0)

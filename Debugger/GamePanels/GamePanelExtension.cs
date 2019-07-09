@@ -37,6 +37,7 @@ namespace ModTools.GamePanels
                 CreateVehiclePanels();
                 CreateCitizenPanels();
                 CreateLinePanel();
+                CreateDistrictPanels();
             }
         }
 
@@ -75,6 +76,22 @@ namespace ModTools.GamePanels
             var lineId = instanceId.TransportLine;
             return lineId != 0
                    ? TransportManager.instance.GetLineName(lineId) ?? "N/A"
+                : "N/A";
+        }
+        
+        private static string GetParkName(InstanceID instanceId)
+        {
+            var parkId = instanceId.Park;
+            return parkId != 0
+                ? DistrictManager.instance.GetParkName(parkId) ?? "N/A"
+                : "N/A";
+        }
+        
+        private static string GetDistrictName(InstanceID instanceId)
+        {
+            var districtId = instanceId.District;
+            return districtId != 0
+                ? DistrictManager.instance.GetDistrictName(districtId) ?? "N/A"
                 : "N/A";
         }
 
@@ -224,6 +241,33 @@ namespace ModTools.GamePanels
             CreateCitizenPanel<TouristWorldInfoPanel>();
             CreateCitizenPanel<ServicePersonWorldInfoPanel>();
             CreateCitizenPanel<AnimalWorldInfoPanel>();
+        }
+
+        private void CreateDistrictPanels()
+        {
+            CreateDistrictPanel();
+            CreateParkPanel<ParkWorldInfoPanel>();
+            CreateParkPanel<IndustryWorldInfoPanel>();
+            CreateParkPanel<CampusWorldInfoPanel>();
+        }
+
+        private void CreateDistrictPanel()
+        {
+            var name = "(Library) " + typeof(DistrictWorldInfoPanel).Name;
+            var buttons = new Dictionary<string, Action<InstanceID>>();
+
+            var districtPanel = ButtonsInfoPanelExtension<DistrictWorldInfoPanel>.Create(name, GetDistrictName, ShowDistrict, buttons);
+            customPanels.Add(districtPanel);
+        }
+
+        private void CreateParkPanel<T>()
+            where T : WorldInfoPanel
+        {
+            var name = "(Library) " + typeof(T).Name;
+            var buttons = new Dictionary<string, Action<InstanceID>>();
+
+            var parkPanel = ButtonsInfoPanelExtension<T>.Create(name, GetParkName, ShowPark, buttons);
+            customPanels.Add(parkPanel);
         }
 
         private void CreateLinePanel()
@@ -382,6 +426,26 @@ namespace ModTools.GamePanels
             if (pathUnitId != 0)
             {
                 sceneExplorer.Show(ReferenceChainBuilder.ForPathUnit(pathUnitId));
+            }
+        }
+        
+        private void ShowPark(InstanceID instanceId)
+        {
+            var parkId = instanceId.Park;
+
+            if (parkId != 0)
+            {
+                sceneExplorer.Show(ReferenceChainBuilder.ForPark(parkId));
+            }
+        }
+        
+        private void ShowDistrict(InstanceID instanceId)
+        {
+            var districtId = instanceId.District;
+
+            if (districtId != 0)
+            {
+                sceneExplorer.Show(ReferenceChainBuilder.ForDistrict(districtId));
             }
         }
     }
