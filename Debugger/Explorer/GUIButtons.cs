@@ -7,6 +7,8 @@ namespace ModTools.Explorer
     internal static class GUIButtons
     {
         private static object buffer;
+        
+        private static ModConfiguration Config => MainWindow.Instance.Config;
 
         public static void SetupButtons(ReferenceChain refChain, object value, uint valueIndex, string fieldName = null)
         {
@@ -98,7 +100,7 @@ namespace ModTools.Explorer
 
         public static void SetupSmartShowButtons(object value, string fieldName)
         {
-            if (value == null)
+            if (value == null || !Config.SmartShowButtons)
             {
                 return;
             }
