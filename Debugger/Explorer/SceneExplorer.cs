@@ -20,6 +20,7 @@ namespace ModTools.Explorer
 
         private const float SceneTreeWidth = 320.0f;
 
+        private const string TitleBase = "Scene Explorer";
         private const string ExpandDownButtonText = " ▼ ▼ ▼ ";
         private const string CollapseUpButtonText = " ▲ ▲ ▲ ";
         private const string ExpandRightButtonText = " ▶▶▶ ";
@@ -43,7 +44,7 @@ namespace ModTools.Explorer
         private bool treeExpanded = true;
 
         public SceneExplorer()
-            : base("Scene Explorer", new Rect(128, 440, 800, 500), Skin)
+            : base(TitleBase, new Rect(128, 440, 800, 500), Skin)
         {
 
             
@@ -66,7 +67,21 @@ namespace ModTools.Explorer
 
         public void Awake() => Plopper.Reset();
 
-        public void Update() => Plopper.Update();
+        public void Update()
+        {
+            var refChain = state.CurrentRefChain;
+            if (refChain != null && refChain.Length > 0)
+            {
+                var typeName = refChain.Evaluate().GetType().Name;
+                Title = $"{TitleBase} - {typeName} \"{refChain}\"";
+            }
+            else
+            {
+                Title = TitleBase;
+            }
+
+            Plopper.Update();
+        }
 
         public void RecalculateAreas()
         {
@@ -146,8 +161,7 @@ namespace ModTools.Explorer
 
             sceneRoots.Clear();
             ClearExpanded();
-            var typeName = refChain.Evaluate()?.GetType().Name; 
-            searchDisplayString = $"Showing {typeName} \"{refChain}\"";
+            searchDisplayString = string.Empty;
 
             var rootGameObject = (GameObject)refChain.GetChainItem(0);
             sceneRoots.Add(rootGameObject, true);
