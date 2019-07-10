@@ -169,7 +169,7 @@ namespace ModTools.Explorer
             {
                 if (chainTypes[i] != ReferenceType.EnumerableItem)
                 {
-                    result.Append(".");
+                    result.Append("->");
                 }
 
                 result.Append(ItemToString(i));
@@ -283,7 +283,7 @@ namespace ModTools.Explorer
                     return ((GameObject)chainObjects[i]).name;
 
                 case ReferenceType.Component:
-                    return ((Component)chainObjects[i]).name;
+                    return ((Component)chainObjects[i]).GetType().ToString();
 
                 case ReferenceType.Field:
                     return ((FieldInfo)chainObjects[i]).Name;

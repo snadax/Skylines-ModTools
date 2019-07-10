@@ -348,7 +348,7 @@ namespace ModTools.Explorer
                 ClearExpanded();
                 Refresh();
             }
-            if (state.CurrentRefChain?.Length > 3) //TODO: should be 2
+            if (state.CurrentRefChain?.Length > 2)
             {
                 if (GUILayout.Button("<", GUILayout.ExpandWidth(false)))
                 {

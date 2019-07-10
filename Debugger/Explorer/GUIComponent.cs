@@ -24,11 +24,11 @@ namespace ModTools.Explorer
                 ? MainWindow.Instance.Config.EnabledComponentColor
                 : MainWindow.Instance.Config.DisabledComponentColor;
 
-            if (state.CurrentRefChain?.IsSameChain(refChain.Add(component)) != true)
+            if (state.CurrentRefChain?.IsSameChain(refChain) != true)
             {
                 if (GUILayout.Button(">", GUILayout.ExpandWidth(false)))
                 {
-                    state.CurrentRefChain = refChain.Add(component);
+                    state.CurrentRefChain = refChain;
                     state.CurrentRefChain.IdentOffset = -(refChain.Length + 1);
                 }
             }
