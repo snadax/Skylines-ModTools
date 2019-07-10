@@ -70,7 +70,7 @@ namespace ModTools.Explorer
         public void Update()
         {
             var refChain = state.CurrentRefChain;
-            if (refChain != null && refChain.Length > 0)
+            if (refChain?.Length > 0)
             {
                 var typeName = refChain.Evaluate().GetType().Name;
                 Title = $"{TitleBase} - {typeName} \"{refChain}\"";
@@ -348,9 +348,18 @@ namespace ModTools.Explorer
                 ClearExpanded();
                 Refresh();
             }
+            if (state.CurrentRefChain?.Length > 3) //TODO: should be 2
+            {
+                if (GUILayout.Button("<", GUILayout.ExpandWidth(false)))
+                {
+                    Show(state.CurrentRefChain.Trim(state.CurrentRefChain.Length - 1));
+                }
+            }
 
             GUILayout.EndHorizontal();
-            
+
+
+
             if (ToolManager.exists && ToolManager.instance?.m_properties?.CurrentTool != null)
             {
                 GUILayout.BeginHorizontal();

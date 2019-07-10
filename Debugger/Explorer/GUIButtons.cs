@@ -300,7 +300,7 @@ namespace ModTools.Explorer
 
         public static void SetupJumpButton(ReferenceChain refChain)
         {
-            if (GUILayout.Button(">"))
+            if (GUILayout.Button(">", GUILayout.ExpandWidth(false)))
             {
                 var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
                 if (sceneExplorer != null)
