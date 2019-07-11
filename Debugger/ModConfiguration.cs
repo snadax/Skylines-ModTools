@@ -21,9 +21,6 @@ namespace ModTools
 
         [XmlElement("logLevel")]
         public int LogLevel { get; set; }
-        
-        [XmlElement("smartShowButtons")]
-        public bool SmartShowButtons { get; set; } = true;
 
         #endregion
 

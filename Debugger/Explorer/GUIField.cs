@@ -8,7 +8,7 @@ namespace ModTools.Explorer
 {
     internal static class GUIField
     {
-        public static void OnSceneTreeReflectField(SceneExplorerState state, ReferenceChain refChain, object obj, FieldInfo field)
+        public static void OnSceneTreeReflectField(SceneExplorerState state, ReferenceChain refChain, object obj, FieldInfo field, TypeUtil.SmartType smartType)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {
@@ -113,7 +113,7 @@ namespace ModTools.Explorer
 
             GUILayout.FlexibleSpace();
 
-            GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0, field.Name);
+            GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0, smartType);
             object paste = null;
             var doPaste = !field.IsLiteral && !field.IsInitOnly;
             if (doPaste)

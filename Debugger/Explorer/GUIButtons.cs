@@ -1,16 +1,17 @@
 ﻿using System;
 using ModTools.Utils;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace ModTools.Explorer
 {
     internal static class GUIButtons
     {
         private static object buffer;
-        
+
         private static ModConfiguration Config => MainWindow.Instance.Config;
 
-        public static void SetupCommonButtons(ReferenceChain refChain, object value, uint valueIndex, string fieldName = null)
+        public static void SetupCommonButtons(ReferenceChain refChain, object value, uint valueIndex, TypeUtil.SmartType smartType = TypeUtil.SmartType.Unknown)
         {
             switch (value)
             {
@@ -84,7 +85,7 @@ namespace ModTools.Explorer
                     goto default;
 
                 default:
-                    SetupSmartShowButtons(value, fieldName);
+                    SetupSmartShowButtons(value, smartType);
                     if (GUILayout.Button("Watch"))
                     {
                         MainWindow.Instance.Watches.AddWatch(refChain);
@@ -98,191 +99,173 @@ namespace ModTools.Explorer
             }
         }
 
-        public static void SetupSmartShowButtons(object value, string fieldName)
+        public static void SetupSmartShowButtons(object value,  TypeUtil.SmartType smartType)
         {
-            if (value == null || !Config.SmartShowButtons)
-            {
-                return;
-            }
             try
             {
-                if (fieldName != null &&
-                    fieldName.IndexOf("count", StringComparison.OrdinalIgnoreCase) < 0 &&
-                    fieldName.IndexOf("type", StringComparison.OrdinalIgnoreCase) < 0 &&
-                    fieldName.IndexOf("flags", StringComparison.OrdinalIgnoreCase) < 0 &&
-                    fieldName.IndexOf("offset", StringComparison.OrdinalIgnoreCase) < 0 &&
-                    IsIntegerType(value.GetType()) && Convert.ToUInt64(value) > 0)
+                if (value == null || smartType == TypeUtil.SmartType.Unknown ||
+                    Convert.ToUInt64(value) < 1)
                 {
-                    if (fieldName.IndexOf("parkedVehicle", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show parked vehicle"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForParkedVehicle(Convert.ToUInt16(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("vehicle", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show vehicle"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForVehicle(Convert.ToUInt16(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("building", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show building"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForBuilding(Convert.ToUInt16(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("unit", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show citizen unit"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForCitizenUnit(Convert.ToUInt32(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("citizen", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show citizen"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForCitizen(Convert.ToUInt32(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("line", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show transport line"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForTransportLine(Convert.ToUInt16(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("path", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show path unit"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForPathUnit(Convert.ToUInt32(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("node", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show network node"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForNode(Convert.ToUInt16(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("segment", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show network segment"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForSegment(Convert.ToUInt16(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("lane", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show network lane"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForLane(Convert.ToUInt32(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("park", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show park district"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForPark(Convert.ToByte(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("district", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show district"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForDistrict(Convert.ToByte(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("tree", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show tree"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForTree(Convert.ToUInt32(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("prop", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show prop"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForProp(Convert.ToUInt16(value)));
-                            }
-                        }
-                    }
-                    else if (fieldName.IndexOf("instance", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (GUILayout.Button("Show citizen instance"))
-                        {
-                            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                            if (sceneExplorer != null)
-                            {
-                                sceneExplorer.Show(ReferenceChainBuilder.ForCitizenInstance(Convert.ToUInt16(value)));
-                            }
-                        }
-                    }
+                    return;
                 }
             }
             catch
             {
-               //suppress 
+                return;
+            }
+            switch (smartType)
+            {
+                case TypeUtil.SmartType.ParkedVehicle:
+                {
+                    if (GUILayout.Button("Show parked vehicle"))
+                    {            
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForParkedVehicle(Convert.ToUInt16(value)));
+                    }
+                    break;
+                }
+                case TypeUtil.SmartType.Vehicle:
+                {
+                    if (GUILayout.Button("Show vehicle"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForVehicle(Convert.ToUInt16(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.Building:
+                {
+                    if (GUILayout.Button("Show building"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForBuilding(Convert.ToUInt16(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.CitizenUnit:
+                {
+                    if (GUILayout.Button("Show citizen unit"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForCitizenUnit(Convert.ToUInt32(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.Citizen:
+                {
+                    if (GUILayout.Button("Show citizen"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForCitizen(Convert.ToUInt32(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.TransportLine:
+                {
+                    if (GUILayout.Button("Show transport line"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForTransportLine(Convert.ToUInt16(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.PathUnit:
+                {
+                    if (GUILayout.Button("Show path unit"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForPathUnit(Convert.ToUInt32(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.NetNode:
+                {
+                    if (GUILayout.Button("Show network node"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForNode(Convert.ToUInt16(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.NetSegment:
+                {
+                    if (GUILayout.Button("Show network segment"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForSegment(Convert.ToUInt16(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.NetLane:
+                {
+                    if (GUILayout.Button("Show network lane"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForLane(Convert.ToUInt32(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.ParkDistrict:
+                {
+                    if (GUILayout.Button("Show park district"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForPark(Convert.ToByte(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.District:
+                {
+                    if (GUILayout.Button("Show district"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForDistrict(Convert.ToByte(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.Tree:
+                {
+                    if (GUILayout.Button("Show tree"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForTree(Convert.ToUInt32(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.Prop:
+                {
+                    if (GUILayout.Button("Show prop"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForProp(Convert.ToUInt16(value)));
+                    }
+
+                    break;
+                }
+                case TypeUtil.SmartType.CitizenInstance:
+                {
+                    if (GUILayout.Button("Show citizen instance"))
+                    {
+                        var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(ReferenceChainBuilder.ForCitizenInstance(Convert.ToUInt16(value)));
+                    }
+
+                    break;
+                }
+                default:
+                    return;
             }
         }
 
@@ -300,13 +283,14 @@ namespace ModTools.Explorer
 
         public static void SetupJumpButton(ReferenceChain refChain)
         {
-            if (GUILayout.Button(">", GUILayout.ExpandWidth(false)))
+            if (!GUILayout.Button(">", GUILayout.ExpandWidth(false)))
             {
-                var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-                if (sceneExplorer != null)
-                {
-                    sceneExplorer.Show(refChain);
-                }
+                return;
+            }
+            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
+            if (sceneExplorer != null)
+            {
+                sceneExplorer.Show(refChain);
             }
         }
 
@@ -497,25 +481,6 @@ namespace ModTools.Explorer
             {
                 ToolsModifierControl.cameraController.SetTarget(instance, position, true);
             }
-        }
-        
-        public static bool IsIntegerType(Type type)
-        {
-            switch (Type.GetTypeCode(type))
-            {
-                case TypeCode.Byte:
-                case TypeCode.SByte:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.Decimal:
-                    return true;
-                default:
-                    return false;
-            }
-        }
+        }       
     }
 }

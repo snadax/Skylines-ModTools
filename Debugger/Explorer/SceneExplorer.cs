@@ -123,7 +123,6 @@ namespace ModTools.Explorer
         public void Refresh()
         {
             sceneRoots = GameObjectUtil.FindSceneRoots();
-            TypeUtil.ClearTypeCache();
         }
         
         
@@ -431,7 +430,6 @@ namespace ModTools.Explorer
             Debug.LogException(ex);
             state = new SceneExplorerState();
             sceneRoots = GameObjectUtil.FindSceneRoots();
-            TypeUtil.ClearTypeCache();
         }
 
         protected override void DrawWindow()
@@ -469,7 +467,6 @@ namespace ModTools.Explorer
             searchDisplayString = string.Empty;
             sceneTreeScrollPosition = Vector2.zero;
             state.CurrentRefChain = null;
-            TypeUtil.ClearTypeCache();
         }
 
         private void DrawFindGameObjectPanel()

@@ -82,14 +82,14 @@ namespace ModTools.Explorer
 
             if (MainWindow.Instance.Config.SortItemsAlphabetically)
             {
-                Array.Sort(members, (x, y) => string.CompareOrdinal(x.Name, y.Name));
+                Array.Sort(members, (x, y) => string.CompareOrdinal(x.ReflectionInfo.Name, y.ReflectionInfo.Name));
             }
 
             foreach (var member in members)
             {
-                if (member.MemberType == MemberTypes.Field && MainWindow.Instance.Config.ShowFields)
+                if (member.ReflectionInfo.MemberType == MemberTypes.Field && MainWindow.Instance.Config.ShowFields)
                 {
-                    var field = (FieldInfo)member;
+                    var field = (FieldInfo)member.ReflectionInfo;
 
                     if (field.IsLiteral && !field.IsInitOnly && !MainWindow.Instance.Config.ShowConsts)
                     {
@@ -98,32 +98,32 @@ namespace ModTools.Explorer
 
                     try
                     {
-                        GUIField.OnSceneTreeReflectField(state, refChain.Add(field), obj, field);
+                        GUIField.OnSceneTreeReflectField(state, refChain.Add(field), obj, field, member.DetectedType);
                     }
                     catch (Exception ex)
                     {
                         SceneExplorerCommon.OnSceneTreeMessage(refChain, $"Exception when fetching field \"{field.Name}\" - {ex.Message}\n{ex.StackTrace}");
                     }
                 }
-                else if (member.MemberType == MemberTypes.Property && MainWindow.Instance.Config.ShowProperties)
+                else if (member.ReflectionInfo.MemberType == MemberTypes.Property && MainWindow.Instance.Config.ShowProperties)
                 {
-                    var property = (PropertyInfo)member;
+                    var property = (PropertyInfo)member.ReflectionInfo;
                     if (property.GetIndexParameters().Length > 0)
                     {
                         continue; //TODO: add support for indexers
                     }
                     try
                     {
-                        GUIProperty.OnSceneTreeReflectProperty(state, refChain.Add(property), obj, property);
+                        GUIProperty.OnSceneTreeReflectProperty(state, refChain.Add(property), obj, property, member.DetectedType);
                     }
                     catch (Exception ex)
                     {
                         SceneExplorerCommon.OnSceneTreeMessage(refChain, $"Exception when fetching property \"{property.Name}\" - {ex.Message}\n{ex.StackTrace}");
                     }
                 }
-                else if (member.MemberType == MemberTypes.Method && MainWindow.Instance.Config.ShowMethods)
+                else if (member.ReflectionInfo.MemberType == MemberTypes.Method && MainWindow.Instance.Config.ShowMethods)
                 {
-                    var method = (MethodInfo)member;
+                    var method = (MethodInfo)member.ReflectionInfo;
 
                     try
                     {

@@ -253,13 +253,6 @@ namespace ModTools
 
                 SaveConfig();
             }
-            
-            var smartShowButtons = GUILayout.Toggle(Config.SmartShowButtons, " Display smart 'Show ...' Buttons");
-            if (smartShowButtons != Config.SmartShowButtons)
-            {
-                Config.SmartShowButtons = smartShowButtons;
-                SaveConfig();
-            }
 
             GUILayout.Space(Config.TreeIdentSpacing);
 

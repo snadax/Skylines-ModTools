@@ -90,8 +90,11 @@ namespace ModTools.Explorer
                 GUI.enabled = true;
 
                 GUILayout.FlexibleSpace();
-                
-                GUIButtons.SetupSmartShowButtons(value, watch.LastItemName);
+
+                if (value != null)
+                {
+                    GUIButtons.SetupSmartShowButtons(value, TypeUtil.DetectSmartType(watch.LastItemName, value.GetType())); //TODO: get from cache
+                }
 
                 if (GUILayout.Button("Show watched field"))
                 {

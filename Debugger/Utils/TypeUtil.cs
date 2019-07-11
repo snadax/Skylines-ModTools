@@ -3,32 +3,33 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace ModTools.Utils
 {
     internal static class TypeUtil
     {
-        private static Dictionary<Type, MemberInfo[]> typeCache = new Dictionary<Type, MemberInfo[]>();
+        private static Dictionary<Type, ExtendedMemberInfo[]> typeCache = new Dictionary<Type, ExtendedMemberInfo[]>();
 
         public static bool IsSpecialType(Type t)
         {
             return t.IsPrimitive
                 || t.IsEnum
                 || t == typeof(string)
-                || t == typeof(UnityEngine.Vector2)
-                || t == typeof(UnityEngine.Vector3)
-                || t == typeof(UnityEngine.Vector4)
-                || t == typeof(UnityEngine.Quaternion)
-                || t == typeof(UnityEngine.Color)
-                || t == typeof(UnityEngine.Color32);
+                || t == typeof(Vector2)
+                || t == typeof(Vector3)
+                || t == typeof(Vector4)
+                || t == typeof(Quaternion)
+                || t == typeof(Color)
+                || t == typeof(Color32);
         }
 
         public static bool IsBitmaskEnum(Type t) => t.IsDefined(typeof(FlagsAttribute), false);
 
-        public static MemberInfo[] GetAllMembers(Type type, bool recursive = false)
+        public static ExtendedMemberInfo[] GetAllMembers(Type type, bool recursive = false)
             => GetMembersInternal(type, recursive, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 
-        public static void ClearTypeCache() => typeCache = new Dictionary<Type, MemberInfo[]>();
+        public static void ClearTypeCache() => typeCache = new Dictionary<Type, ExtendedMemberInfo[]>();
 
         public static bool IsEnumerable(object myProperty)
         {
@@ -51,27 +52,28 @@ namespace ModTools.Utils
         public static FieldInfo FindField(Type type, string fieldName)
             => Array.Find(type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance), f => f.Name == fieldName);
 
-        private static MemberInfo[] GetMembersInternal(Type type, bool recursive, BindingFlags bindingFlags)
+        private static ExtendedMemberInfo[] GetMembersInternal(Type type, bool recursive, BindingFlags bindingFlags)
         {
             if (typeCache.ContainsKey(type))
             {
                 return typeCache[type];
             }
 
-            var results = new Dictionary<string, MemberInfo>();
+            var results = new Dictionary<string, ExtendedMemberInfo>();
             GetMembersInternal2(type, recursive, bindingFlags, results);
             var members = results.Values.ToArray();
             typeCache[type] = members;
             return members;
         }
 
-        private static void GetMembersInternal2(Type type, bool recursive, BindingFlags bindingFlags, Dictionary<string, MemberInfo> outResults)
+        private static void GetMembersInternal2(Type type, bool recursive, BindingFlags bindingFlags, Dictionary<string, ExtendedMemberInfo> outResults)
         {
             foreach (var member in type.GetMembers(bindingFlags))
             {
                 if (!outResults.ContainsKey(member.Name))
                 {
-                    outResults.Add(member.Name, member);
+                    outResults.Add(member.Name, new ExtendedMemberInfo(member, 
+                        member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property ? DetectSmartType(member.Name, GetMemberUnderlyingType(member)) : SmartType.Unknown));
                 }
             }
 
@@ -79,6 +81,165 @@ namespace ModTools.Utils
             {
                 GetMembersInternal2(type.BaseType, true, bindingFlags, outResults);
             }
+        }
+        
+        private static Type GetMemberUnderlyingType(MemberInfo member)
+        {
+            if (member.MemberType == MemberTypes.Field)
+            {
+                return ((FieldInfo)member).FieldType;
+            }
+            if (member.MemberType == MemberTypes.Property)
+            {
+                return ((PropertyInfo)member).PropertyType;
+            }
+            throw new ArgumentException("MemberInfo must be if type FieldInfo or PropertyInfo", nameof(member));
+        }
+
+        
+        public static SmartType DetectSmartType(string memberName, Type type)
+        {
+            try
+            {
+                if (memberName.IndexOf("count", StringComparison.OrdinalIgnoreCase) < 0 &&
+                    memberName.IndexOf("type", StringComparison.OrdinalIgnoreCase) < 0 &&
+                    memberName.IndexOf("flags", StringComparison.OrdinalIgnoreCase) < 0 &&
+                    memberName.IndexOf("offset", StringComparison.OrdinalIgnoreCase) < 0 &&
+                    IsIntegerType(type))
+                {
+                    if (memberName.IndexOf("parkedVehicle", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.ParkedVehicle;
+                    }
+
+                    if (memberName.IndexOf("vehicle", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.Vehicle;
+                    }
+
+                    if (memberName.IndexOf("building", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.Building;
+                    }
+
+                    if (memberName.IndexOf("unit", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.CitizenUnit;
+                    }
+
+                    if (memberName.IndexOf("citizen", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.Citizen;
+                    }
+
+                    if (memberName.IndexOf("line", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.TransportLine;
+                    }
+
+                    if (memberName.IndexOf("path", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.PathUnit;
+                    }
+
+                    if (memberName.IndexOf("node", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.NetNode;
+                    }
+
+                    if (memberName.IndexOf("segment", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.NetSegment;
+                    }
+
+                    if (memberName.IndexOf("lane", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.NetLane;
+                    }
+
+                    if (memberName.IndexOf("park", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.ParkDistrict;
+                    }
+
+                    if (memberName.IndexOf("district", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.District;
+                    }
+
+                    if (memberName.IndexOf("tree", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.Tree;
+                    }
+
+                    if (memberName.IndexOf("prop", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.Prop;
+                    }
+
+                    if (memberName.IndexOf("instance", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.CitizenInstance;
+                    }
+                }
+            }
+            catch
+            {
+               //suppress 
+            }
+            return SmartType.Unknown;
+        }
+        
+        private static bool IsIntegerType(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.Decimal:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public readonly struct ExtendedMemberInfo
+        {
+            public readonly MemberInfo ReflectionInfo;
+
+            public readonly SmartType DetectedType;
+
+            public ExtendedMemberInfo(MemberInfo reflectionInfo, SmartType detectedType)
+            {
+                ReflectionInfo = reflectionInfo;
+                DetectedType = detectedType;
+            }
+        }
+        
+        public enum SmartType
+        {
+            Building,
+            NetNode,
+            NetSegment,
+            TransportLine,
+            District,
+            ParkDistrict,
+            Vehicle,
+            ParkedVehicle,
+            Citizen,
+            CitizenUnit,
+            CitizenInstance,
+            NetLane,
+            PathUnit,
+            Tree,
+            Prop,
+            Unknown
         }
     }
 }

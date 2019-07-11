@@ -9,7 +9,7 @@ namespace ModTools.Explorer
 {
     internal static class GUIProperty
     {
-        public static void OnSceneTreeReflectProperty(SceneExplorerState state, ReferenceChain refChain, object obj, PropertyInfo property)
+        public static void OnSceneTreeReflectProperty(SceneExplorerState state, ReferenceChain refChain, object obj, PropertyInfo property, TypeUtil.SmartType smartType)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {
@@ -160,7 +160,7 @@ namespace ModTools.Explorer
 
             GUILayout.FlexibleSpace();
 
-            GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0, property.Name);
+            GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0, smartType);
             object paste = null;
             var doPaste = property.CanWrite;
             if (doPaste)

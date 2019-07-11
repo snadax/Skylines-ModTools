@@ -2,12 +2,20 @@
 using ICities;
 using ModTools.Explorer;
 using ModTools.GamePanels;
+using ModTools.Utils;
 using UnityEngine;
 
 namespace ModTools
 {
     public sealed class LoadingExtension : LoadingExtensionBase
     {
+        public override void OnCreated(ILoading loading)
+        {
+            base.OnCreated(loading);
+            TypeUtil.ClearTypeCache();
+        }
+
+
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
@@ -39,6 +47,7 @@ namespace ModTools
         public override void OnReleased()
         {
             base.OnReleased();
+            TypeUtil.ClearTypeCache();
             CustomPrefabs.Revert();
         }
     }
