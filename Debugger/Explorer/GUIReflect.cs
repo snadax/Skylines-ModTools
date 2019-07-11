@@ -108,7 +108,10 @@ namespace ModTools.Explorer
                 else if (member.MemberType == MemberTypes.Property && MainWindow.Instance.Config.ShowProperties)
                 {
                     var property = (PropertyInfo)member;
-
+                    if (property.GetIndexParameters().Length > 0)
+                    {
+                        continue; //TODO: add support for indexers
+                    }
                     try
                     {
                         GUIProperty.OnSceneTreeReflectProperty(state, refChain.Add(property), obj, property);
