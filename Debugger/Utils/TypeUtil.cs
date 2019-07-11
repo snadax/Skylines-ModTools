@@ -112,7 +112,8 @@ namespace ModTools.Utils
                         return SmartType.ParkedVehicle;
                     }
 
-                    if (memberName.IndexOf("vehicle", StringComparison.OrdinalIgnoreCase) >= 0)
+                    if (memberName.IndexOf("vehicle", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        memberName.IndexOf("cargo", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         return SmartType.Vehicle;
                     }
