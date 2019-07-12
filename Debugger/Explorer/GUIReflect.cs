@@ -8,7 +8,7 @@ namespace ModTools.Explorer
 {
     internal static class GUIReflect
     {
-        public static void OnSceneTreeReflect(SceneExplorerState state, ReferenceChain refChain, object obj, bool rawReflection, TypeUtil.SmartType smartType, string filter)
+        public static void OnSceneTreeReflect(SceneExplorerState state, ReferenceChain refChain, object obj, bool rawReflection, TypeUtil.SmartType smartType = TypeUtil.SmartType.Undefined, string filter = "")
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {
@@ -120,7 +120,7 @@ namespace ModTools.Explorer
                     }
                     try
                     {
-                        GUIProperty.OnSceneTreeReflectProperty(state, refChain.Add(property), obj, property, member.DetectedType);
+                        GUIProperty.OnSceneTreeReflectProperty(state, refChain.Add(property), obj, property, member.DetectedType, filterMatchFrom, filter.Length);
                     }
                     catch (Exception ex)
                     {
@@ -133,7 +133,7 @@ namespace ModTools.Explorer
 
                     try
                     {
-                        GUIMethod.OnSceneTreeReflectMethod(refChain.Add(method), obj, method);
+                        GUIMethod.OnSceneTreeReflectMethod(refChain.Add(method), obj, method, filterMatchFrom, filter.Length);
                     }
                     catch (Exception ex)
                     {

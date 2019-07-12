@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Console\ConsoleMessage.cs" />
+    <Compile Include="Explorer\GUIMemberName.cs" />
     <Compile Include="GamePanels\ButtonsInfoPanelExtension.cs" />
     <Compile Include="GamePanels\GamePanelExtension.cs" />
     <Compile Include="GamePanels\InfoPanelExtensionBase.cs" />

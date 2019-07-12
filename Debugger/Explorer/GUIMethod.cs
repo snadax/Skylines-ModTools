@@ -5,7 +5,7 @@ namespace ModTools.Explorer
 {
     internal static class GUIMethod
     {
-        public static void OnSceneTreeReflectMethod(ReferenceChain refChain, object obj, MethodInfo method)
+        public static void OnSceneTreeReflectMethod(ReferenceChain refChain, object obj, MethodInfo method, int nameHighlightFrom = -1, int nameHighlightLength = 0)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {
@@ -24,7 +24,10 @@ namespace ModTools.Explorer
             GUI.contentColor = MainWindow.Instance.Config.MemberTypeColor;
             GUILayout.Label("method ");
             GUI.contentColor = Color.white;
-            GUILayout.Label(method.ReturnType.ToString() + " " + method.Name + "(");
+            GUILayout.Label(method.ReturnType + " ");
+            GUIMemberName.MemberName(method, nameHighlightFrom, nameHighlightLength);
+            GUI.contentColor = Color.white;
+            GUILayout.Label(method.ReturnType + "(");
             GUI.contentColor = MainWindow.Instance.Config.NameColor;
 
             var first = true;

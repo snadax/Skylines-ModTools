@@ -8,7 +8,7 @@ namespace ModTools.Explorer
 {
     internal static class GUIField
     {
-        public static void OnSceneTreeReflectField(SceneExplorerState state, ReferenceChain refChain, object obj, FieldInfo field, TypeUtil.SmartType smartType, int nameHighlightFrom = -1, int nameHighlightLength = 0)
+        public static void OnSceneTreeReflectField(SceneExplorerState state, ReferenceChain refChain, object obj, FieldInfo field, TypeUtil.SmartType smartType = TypeUtil.SmartType.Undefined, int nameHighlightFrom = -1, int nameHighlightLength = 0)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {
@@ -80,7 +80,7 @@ namespace ModTools.Explorer
             GUI.contentColor = MainWindow.Instance.Config.TypeColor;
             GUILayout.Label(field.FieldType + " ");
 
-            DrawMemberName(field, nameHighlightFrom, nameHighlightLength);
+            GUIMemberName.MemberName(field, nameHighlightFrom, nameHighlightLength);
 
             GUI.contentColor = Color.white;
             GUILayout.Label(" = ");
@@ -140,7 +140,7 @@ namespace ModTools.Explorer
                 }
                 else
                 {
-                    GUIReflect.OnSceneTreeReflect(state, refChain, value, false, smartType, string.Empty);
+                    GUIReflect.OnSceneTreeReflect(state, refChain, value, false, smartType);
                 }
             }
 
@@ -155,32 +155,6 @@ namespace ModTools.Explorer
                     Logger.Warning(e.Message);
                 }
             }
-        }
-
-        private static void DrawMemberName(MemberInfo member, int nameHighlightFrom, int nameHighlightLength)
-        {
-            GUI.contentColor = MainWindow.Instance.Config.NameColor;
-            if (nameHighlightFrom == -1)
-            {
-                GUILayout.Label(member.Name);
-            }
-            else if (nameHighlightFrom > 0)
-            {
-                GUILayout.Label(member.Name.Substring(0, nameHighlightFrom));
-            }
-
-            if (nameHighlightFrom < 0)
-            {
-                return;
-            }
-            GUI.contentColor = MainWindow.Instance.Config.SelectedComponentColor;
-            GUILayout.Label(member.Name.Substring(nameHighlightFrom, nameHighlightLength));
-            if (nameHighlightFrom + nameHighlightLength >= member.Name.Length)
-            {
-                return;
-            }
-            GUI.contentColor = MainWindow.Instance.Config.NameColor;
-            GUILayout.Label(member.Name.Substring(nameHighlightFrom + nameHighlightLength));
         }
     }
 }

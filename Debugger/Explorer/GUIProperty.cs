@@ -9,7 +9,7 @@ namespace ModTools.Explorer
 {
     internal static class GUIProperty
     {
-        public static void OnSceneTreeReflectProperty(SceneExplorerState state, ReferenceChain refChain, object obj, PropertyInfo property, TypeUtil.SmartType smartType)
+        public static void OnSceneTreeReflectProperty(SceneExplorerState state, ReferenceChain refChain, object obj, PropertyInfo property, TypeUtil.SmartType smartType = TypeUtil.SmartType.Undefined, int nameHighlightFrom = -1, int nameHighlightLength = 0)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {
@@ -73,7 +73,7 @@ namespace ModTools.Explorer
 
             GUI.contentColor = MainWindow.Instance.Config.NameColor;
 
-            GUILayout.Label(property.Name);
+            GUIMemberName.MemberName(property, nameHighlightFrom, nameHighlightLength);
 
             GUI.contentColor = Color.white;
             GUILayout.Label(" = ");
@@ -188,7 +188,7 @@ namespace ModTools.Explorer
                 }
                 else
                 {
-                    GUIReflect.OnSceneTreeReflect(state, refChain, value, false, TypeUtil.SmartType.Undefined, string.Empty);
+                    GUIReflect.OnSceneTreeReflect(state, refChain, value, false);
                 }
             }
 
