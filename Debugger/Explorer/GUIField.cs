@@ -8,7 +8,7 @@ namespace ModTools.Explorer
 {
     internal static class GUIField
     {
-        public static void OnSceneTreeReflectField(SceneExplorerState state, ReferenceChain refChain, object obj, FieldInfo field, TypeUtil.SmartType smartType)
+        public static void OnSceneTreeReflectField(SceneExplorerState state, ReferenceChain refChain, object obj, FieldInfo field, TypeUtil.SmartType smartType, int nameHighlightFrom = -1, int nameHighlightLength = 0)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {
@@ -80,9 +80,7 @@ namespace ModTools.Explorer
             GUI.contentColor = MainWindow.Instance.Config.TypeColor;
             GUILayout.Label(field.FieldType + " ");
 
-            GUI.contentColor = MainWindow.Instance.Config.NameColor;
-
-            GUILayout.Label(field.Name);
+            DrawMemberName(field, nameHighlightFrom, nameHighlightLength);
 
             GUI.contentColor = Color.white;
             GUILayout.Label(" = ");
@@ -157,6 +155,32 @@ namespace ModTools.Explorer
                     Logger.Warning(e.Message);
                 }
             }
+        }
+
+        private static void DrawMemberName(MemberInfo member, int nameHighlightFrom, int nameHighlightLength)
+        {
+            GUI.contentColor = MainWindow.Instance.Config.NameColor;
+            if (nameHighlightFrom == -1)
+            {
+                GUILayout.Label(member.Name);
+            }
+            else if (nameHighlightFrom > 0)
+            {
+                GUILayout.Label(member.Name.Substring(0, nameHighlightFrom));
+            }
+
+            if (nameHighlightFrom < 0)
+            {
+                return;
+            }
+            GUI.contentColor = MainWindow.Instance.Config.SelectedComponentColor;
+            GUILayout.Label(member.Name.Substring(nameHighlightFrom, nameHighlightLength));
+            if (nameHighlightFrom + nameHighlightLength >= member.Name.Length)
+            {
+                return;
+            }
+            GUI.contentColor = MainWindow.Instance.Config.NameColor;
+            GUILayout.Label(member.Name.Substring(nameHighlightFrom + nameHighlightLength));
         }
     }
 }

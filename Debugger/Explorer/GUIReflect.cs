@@ -88,7 +88,8 @@ namespace ModTools.Explorer
 
             foreach (var member in members)
             {
-                if (!filter.IsNullOrEmpty() && member.ReflectionInfo.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0)
+                var filterMatchFrom = -1;
+                if (!filter.IsNullOrEmpty() && (filterMatchFrom = member.ReflectionInfo.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase)) < 0)
                 {
                     continue;
                 }
@@ -103,7 +104,7 @@ namespace ModTools.Explorer
 
                     try
                     {
-                        GUIField.OnSceneTreeReflectField(state, refChain.Add(field), obj, field, member.DetectedType);
+                        GUIField.OnSceneTreeReflectField(state, refChain.Add(field), obj, field, member.DetectedType, filterMatchFrom, filter.Length);
                     }
                     catch (Exception ex)
                     {
