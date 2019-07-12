@@ -79,7 +79,7 @@ namespace ModTools.Explorer
 
                 if (!isNullOrEmpty)
                 {
-                    GUIButtons.SetupCommonButtons(refChain, value, i);
+                    GUIButtons.SetupCommonButtons(refChain, value, i, elementSmartType);
                 }
 
                 if (value != null)
@@ -104,7 +104,7 @@ namespace ModTools.Explorer
                     }
                     else
                     {
-                        GUIReflect.OnSceneTreeReflect(state, refChain, value, false, elementSmartType);
+                        GUIReflect.OnSceneTreeReflect(state, refChain, value, false, TypeUtil.SmartType.Undefined);
                     }
                 }
             }
