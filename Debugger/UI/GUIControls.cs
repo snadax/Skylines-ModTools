@@ -80,6 +80,11 @@ namespace ModTools.UI
                 return EnumField(id, string.Empty, value);
             }
 
+            if (type == typeof(Shader))
+            {
+                return ShaderField(id, (Shader)value);  
+            }
+
             if (type == typeof(Vector2))
             {
                 return CustomValueField(id, string.Empty, PresentVector2, (Vector2)value);
@@ -134,7 +139,7 @@ namespace ModTools.UI
             return value;
         }
 
-        public static object EnumField(string id, string name, object value)
+        private static object EnumField(string id, string name, object value)
         {
             GUILayout.BeginHorizontal();
 
@@ -166,6 +171,30 @@ namespace ModTools.UI
                     }
                 }
 
+                GUI.contentColor = Color.white;
+            }
+            finally
+            {
+                GUILayout.EndHorizontal();
+            }
+
+            return value;
+        }
+
+        private static object ShaderField(string id, Shader value)
+        {
+            GUILayout.BeginHorizontal();
+
+            try
+            {
+                GUI.contentColor = Config.ValueColor;
+                var values = ShaderUtil.GetShaders();
+                var valueIndex = Array.IndexOf(values, value.name);
+                var newValueIndex = GUIComboBox.Box(valueIndex, values, id);
+                if (newValueIndex != valueIndex)
+                {
+                    value = Shader.Find(values[newValueIndex]);
+                }
                 GUI.contentColor = Color.white;
             }
             finally

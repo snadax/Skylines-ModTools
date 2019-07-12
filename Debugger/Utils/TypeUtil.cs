@@ -14,14 +14,15 @@ namespace ModTools.Utils
         public static bool IsSpecialType(Type t)
         {
             return t.IsPrimitive
-                || t.IsEnum
-                || t == typeof(string)
-                || t == typeof(Vector2)
-                || t == typeof(Vector3)
-                || t == typeof(Vector4)
-                || t == typeof(Quaternion)
-                || t == typeof(Color)
-                || t == typeof(Color32);
+                   || t.IsEnum
+                   || t == typeof(string)
+                   || t == typeof(Vector2)
+                   || t == typeof(Vector3)
+                   || t == typeof(Vector4)
+                   || t == typeof(Quaternion)
+                   || t == typeof(Color)
+                   || t == typeof(Color32)
+                   || t == typeof(Shader);
         }
 
         public static bool IsBitmaskEnum(Type t) => t.IsDefined(typeof(FlagsAttribute), false);

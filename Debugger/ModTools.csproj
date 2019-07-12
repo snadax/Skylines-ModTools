@@ -120,6 +120,7 @@
     <Compile Include="Explorer\SceneExplorer.cs" />
     <Compile Include="Utils\ParseHelper.cs" />
     <Compile Include="Utils\ReferenceChainBuilder.cs" />
+    <Compile Include="Utils\ShaderUtil.cs" />
     <Compile Include="Utils\TypeUtil.cs" />
     <Compile Include="UserNotifications.cs" />
     <Compile Include="Utils\DumpUtil.cs" />

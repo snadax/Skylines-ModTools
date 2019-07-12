@@ -13,6 +13,7 @@ namespace ModTools
         {
             base.OnCreated(loading);
             TypeUtil.ClearTypeCache();
+            ShaderUtil.ClearShaderCache();
         }
 
 
@@ -48,6 +49,7 @@ namespace ModTools
         {
             base.OnReleased();
             TypeUtil.ClearTypeCache();
+            ShaderUtil.ClearShaderCache();
             CustomPrefabs.Revert();
         }
     }
