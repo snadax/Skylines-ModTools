@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Reflection;
 using ModTools.Utils;
+using ObjUnity3D;
 using UnityEngine;
 
 namespace ModTools.Explorer
 {
     internal static class GUIReflect
     {
-        public static void OnSceneTreeReflect(SceneExplorerState state, ReferenceChain refChain, object obj, bool rawReflection, TypeUtil.SmartType smartType)
+        public static void OnSceneTreeReflect(SceneExplorerState state, ReferenceChain refChain, object obj, bool rawReflection, TypeUtil.SmartType smartType, string filter)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {
@@ -87,6 +88,10 @@ namespace ModTools.Explorer
 
             foreach (var member in members)
             {
+                if (!filter.IsNullOrEmpty() && member.ReflectionInfo.Name.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    continue;
+                }
                 if (member.ReflectionInfo.MemberType == MemberTypes.Field && MainWindow.Instance.Config.ShowFields)
                 {
                     var field = (FieldInfo)member.ReflectionInfo;

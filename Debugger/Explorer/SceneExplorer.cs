@@ -42,6 +42,8 @@ namespace ModTools.Explorer
 
         private bool headerExpanded;
         private bool treeExpanded = true;
+        
+        private string quickFilter = string.Empty;
 
         public SceneExplorer()
             : base(TitleBase, new Rect(128, 440, 800, 500), Skin)
@@ -403,6 +405,17 @@ namespace ModTools.Explorer
         public void DrawComponent()
         {
             componentArea.Begin();
+            if (state.CurrentRefChain?.Length > 1)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Quick filter", GUILayout.MinWidth(110f));
+                var updatedFilter = GUILayout.TextField(quickFilter, GUILayout.ExpandWidth(true), GUILayout.MaxWidth(float.MaxValue));
+                if (!updatedFilter.Equals(quickFilter))
+                {
+                    quickFilter = updatedFilter;
+                }
+                GUILayout.EndHorizontal();
+            }
 
             componentScrollPosition = GUILayout.BeginScrollView(componentScrollPosition);
 
@@ -410,7 +423,7 @@ namespace ModTools.Explorer
             {
                 try
                 {
-                    GUIReflect.OnSceneTreeReflect(state, state.CurrentRefChain, state.CurrentRefChain.Evaluate(), false, TypeUtil.SmartType.Undefined);
+                    GUIReflect.OnSceneTreeReflect(state, state.CurrentRefChain, state.CurrentRefChain.Evaluate(), false, TypeUtil.SmartType.Undefined, quickFilter);
                 }
                 catch (Exception e)
                 {
