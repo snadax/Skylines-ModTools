@@ -7,7 +7,7 @@ namespace ModTools.Explorer
 {
     internal static class GUIReflect
     {
-        public static void OnSceneTreeReflect(SceneExplorerState state, ReferenceChain refChain, object obj, bool rawReflection = false)
+        public static void OnSceneTreeReflect(SceneExplorerState state, ReferenceChain refChain, object obj, bool rawReflection, TypeUtil.SmartType smartType)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {
@@ -49,19 +49,19 @@ namespace ModTools.Explorer
 
                 if (TypeUtil.IsList(obj))
                 {
-                    GUIList.OnSceneTreeReflectIList(state, refChain, obj);
+                    GUIList.OnSceneTreeReflectIList(state, refChain, obj, smartType);
                     return;
                 }
 
                 if (TypeUtil.IsCollection(obj))
                 {
-                    GUICollection.OnSceneTreeReflectICollection(state, refChain, obj);
+                    GUICollection.OnSceneTreeReflectICollection(state, refChain, obj, smartType);
                     return;
                 }
 
                 if (TypeUtil.IsEnumerable(obj))
                 {
-                    GUIEnumerable.OnSceneTreeReflectIEnumerable(state, refChain, obj);
+                    GUIEnumerable.OnSceneTreeReflectIEnumerable(state, refChain, obj, smartType);
                     return;
                 }
 

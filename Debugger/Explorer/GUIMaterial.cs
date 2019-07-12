@@ -119,7 +119,7 @@ namespace ModTools.Explorer
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
                 {
-                    GUIReflect.OnSceneTreeReflect(state, refChain, value);
+                    GUIReflect.OnSceneTreeReflect(state, refChain, value, false, TypeUtil.SmartType.Undefined);
                 }
 
                 if (doPaste)
@@ -177,7 +177,7 @@ namespace ModTools.Explorer
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
                 {
-                    GUIReflect.OnSceneTreeReflect(state, refChain, value);
+                    GUIReflect.OnSceneTreeReflect(state, refChain, value, false, TypeUtil.SmartType.Undefined);
                 }
 
                 if (doPaste)
@@ -186,7 +186,7 @@ namespace ModTools.Explorer
                 }
             }
 
-            GUIReflect.OnSceneTreeReflect(state, refChain, material, true);
+            GUIReflect.OnSceneTreeReflect(state, refChain, material, true, TypeUtil.SmartType.Undefined);
         }
     }
 }

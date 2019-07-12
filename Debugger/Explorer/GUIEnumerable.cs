@@ -6,7 +6,7 @@ namespace ModTools.Explorer
 {
     internal static class GUIEnumerable
     {
-        public static void OnSceneTreeReflectIEnumerable(SceneExplorerState state, ReferenceChain refChain, object myProperty)
+        public static void OnSceneTreeReflectIEnumerable(SceneExplorerState state, ReferenceChain refChain, object myProperty, TypeUtil.SmartType elementSmartType)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
             {
@@ -70,7 +70,7 @@ namespace ModTools.Explorer
                     }
                     else
                     {
-                        GUIReflect.OnSceneTreeReflect(state, refChain, value);
+                        GUIReflect.OnSceneTreeReflect(state, refChain, value, false, elementSmartType);
                     }
                 }
 

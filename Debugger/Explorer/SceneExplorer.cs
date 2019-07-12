@@ -410,7 +410,7 @@ namespace ModTools.Explorer
             {
                 try
                 {
-                    GUIReflect.OnSceneTreeReflect(state, state.CurrentRefChain, state.CurrentRefChain.Evaluate());
+                    GUIReflect.OnSceneTreeReflect(state, state.CurrentRefChain, state.CurrentRefChain.Evaluate(), false, TypeUtil.SmartType.Undefined);
                 }
                 catch (Exception e)
                 {

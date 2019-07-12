@@ -51,7 +51,7 @@ namespace ModTools.Utils
 
         public static FieldInfo FindField(Type type, string fieldName)
             => Array.Find(type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance), f => f.Name == fieldName);
-
+        
         private static ExtendedMemberInfo[] GetMembersInternal(Type type, bool recursive, BindingFlags bindingFlags)
         {
             if (typeCache.ContainsKey(type))
@@ -73,7 +73,7 @@ namespace ModTools.Utils
                 if (!outResults.ContainsKey(member.Name))
                 {
                     outResults.Add(member.Name, new ExtendedMemberInfo(member, 
-                        member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property ? DetectSmartType(member.Name, GetMemberUnderlyingType(member)) : SmartType.Unknown));
+                        member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property ? DetectSmartType(member.Name, GetMemberUnderlyingType(member)) : SmartType.Undefined));
                 }
             }
 
@@ -188,7 +188,7 @@ namespace ModTools.Utils
             {
                //suppress 
             }
-            return SmartType.Unknown;
+            return SmartType.Undefined;
         }
         
         private static bool IsIntegerType(Type type)
@@ -206,7 +206,7 @@ namespace ModTools.Utils
                 case TypeCode.Decimal:
                     return true;
                 default:
-                    return false;
+                    return type.IsArray && IsIntegerType(type.GetElementType());
             }
         }
 
@@ -240,7 +240,7 @@ namespace ModTools.Utils
             PathUnit,
             Tree,
             Prop,
-            Unknown
+            Undefined
         }
     }
 }

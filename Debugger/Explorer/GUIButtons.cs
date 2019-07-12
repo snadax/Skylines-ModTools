@@ -11,7 +11,7 @@ namespace ModTools.Explorer
 
         private static ModConfiguration Config => MainWindow.Instance.Config;
 
-        public static void SetupCommonButtons(ReferenceChain refChain, object value, uint valueIndex, TypeUtil.SmartType smartType = TypeUtil.SmartType.Unknown)
+        public static void SetupCommonButtons(ReferenceChain refChain, object value, uint valueIndex, TypeUtil.SmartType smartType = TypeUtil.SmartType.Undefined)
         {
             switch (value)
             {
@@ -103,7 +103,7 @@ namespace ModTools.Explorer
         {
             try
             {
-                if (value == null || smartType == TypeUtil.SmartType.Unknown ||
+                if (value == null || smartType == TypeUtil.SmartType.Undefined || value.GetType().IsArray ||
                     Convert.ToUInt64(value) < 1)
                 {
                     return;

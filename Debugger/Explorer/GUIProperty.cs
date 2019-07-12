@@ -188,7 +188,7 @@ namespace ModTools.Explorer
                 }
                 else
                 {
-                    GUIReflect.OnSceneTreeReflect(state, refChain, value);
+                    GUIReflect.OnSceneTreeReflect(state, refChain, value, false, TypeUtil.SmartType.Undefined);
                 }
             }
 
