@@ -24,9 +24,9 @@ namespace ModTools.Explorer
             SpecialNamedProperty,
         }
 
-        public int IdentOffset { get; set; }
+        public int IdentOffset { private get; set; } = 2;
 
-        public int Ident => Length + IdentOffset - 1;
+        public int Ident => Length - IdentOffset - 1;
 
         public int Length { get; private set; }
 

@@ -136,6 +136,8 @@ namespace ModTools.Explorer
                 Logger.Error("SceneExplorer: Show(): Null refChain");
                 return;
             }
+
+            refChain.IdentOffset = refChain.Length;
             ShowRequests.Enqueue(refChain);
             Visible = true;
         }        
@@ -209,7 +211,6 @@ namespace ModTools.Explorer
             }
 
             state.CurrentRefChain = refChain.Clone();
-            state.CurrentRefChain.IdentOffset = -state.CurrentRefChain.Length;
         }
 
         public void DrawHeader()
