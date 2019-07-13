@@ -352,7 +352,7 @@ namespace ModTools.Explorer
             }
             if (state.CurrentRefChain?.Length > 2)
             {
-                if (GUILayout.Button("<", GUILayout.ExpandWidth(false)))
+                if (GUILayout.Button("^", GUILayout.ExpandWidth(false)))
                 {
                     Show(state.CurrentRefChain.Trim(state.CurrentRefChain.Length - 1));
                 }
