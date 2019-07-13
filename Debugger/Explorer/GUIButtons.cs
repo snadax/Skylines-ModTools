@@ -28,8 +28,7 @@ namespace ModTools.Explorer
                         var wrapper = new MilestonesWrapper(UnlockManager.instance);
                         wrapper.UnlockMilestone(milestoneInfo.name);
                     }
-
-                    return;
+                    goto default;     
 
                 case NetInfo.Segment segmentInfo:
                     SetupMeshPreviewButtons(name: null, segmentInfo.m_mesh, segmentInfo.m_material, segmentInfo.m_lodMesh, segmentInfo.m_lodMaterial);
@@ -38,6 +37,15 @@ namespace ModTools.Explorer
                 case NetInfo.Node nodeInfo:
                     SetupMeshPreviewButtons(name: null, nodeInfo.m_mesh, nodeInfo.m_material, nodeInfo.m_lodMesh, nodeInfo.m_lodMaterial);
                     goto default;
+                    
+//TODO: fix exceptions                    
+//                case BuildingInfo.MeshInfo buildingSumMeshInfo:
+//                    SetupMeshPreviewButtons(name: null, buildingSumMeshInfo.m_subInfo.m_mesh, buildingSumMeshInfo.m_subInfo.m_material, buildingSumMeshInfo.m_subInfo.m_lodMesh, buildingSumMeshInfo.m_subInfo.m_lodMaterial);
+//                    goto default; 
+//                    
+//                case VehicleInfo.MeshInfo vehicleSumMeshInfo:
+//                    SetupMeshPreviewButtons(name: null, vehicleSumMeshInfo.m_subInfo.m_mesh, vehicleSumMeshInfo.m_subInfo.m_material, vehicleSumMeshInfo.m_subInfo.m_lodMesh, vehicleSumMeshInfo.m_subInfo.m_lodMaterial);
+//                    goto default;   
 
                 case CitizenInstance instance
                     when valueIndex > 0 && (instance.m_flags & (CitizenInstance.Flags.Created | CitizenInstance.Flags.Deleted)) == CitizenInstance.Flags.Created:
@@ -75,7 +83,19 @@ namespace ModTools.Explorer
                     buildingInst.Building = (ushort)valueIndex;
                     SetupGotoButton(buildingInst, building.m_position);
                     goto default;
-
+                    
+                case NetSegment segment when valueIndex > 0 && (segment.m_flags & (NetSegment.Flags.Created | NetSegment.Flags.Deleted)) == NetSegment.Flags.Created:
+                    InstanceID segmentInst = default;
+                    segmentInst.NetSegment = (ushort)valueIndex;
+                    SetupGotoButton(segmentInst, segment.m_middlePosition);
+                    goto default;
+                    
+                case NetNode node when valueIndex > 0 && (node.m_flags & (NetNode.Flags.Created | NetNode.Flags.Deleted)) == NetNode.Flags.Created:
+                    InstanceID nodeInst = default;
+                    nodeInst.NetNode = (ushort)valueIndex;
+                    SetupGotoButton(nodeInst, node.m_position);
+                    goto default;    
+   
                 case Texture texture:
                     SetupTexturePreviewButtons(texture);
                     goto default;

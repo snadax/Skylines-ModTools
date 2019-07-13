@@ -280,6 +280,15 @@ namespace ModTools
         public override void SimulationStep()
         {
             base.SimulationStep();
+            if (m_hoverInstance.CitizenInstance > 0 || m_hoverInstance.Vehicle > 0 ||
+                m_hoverInstance.ParkedVehicle > 0 ||
+                m_hoverInstance.District > 0 || m_hoverInstance.Park > 0 || m_hoverInstance.TransportLine > 0 ||
+                m_hoverInstance.Prop > 0 || m_hoverInstance.Tree > 0)
+            {
+                this.m_hoverSegment = m_hoverInstance.NetSegment;
+                this.m_hoverBuilding = m_hoverInstance.Building;
+                return;
+            }
             if (!RayCastSegmentAndNode(out var hoveredSegment, out var hoveredNode))
             {
                 return;
