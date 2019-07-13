@@ -161,7 +161,7 @@ namespace ModTools.Explorer
                 Logger.Error($"SceneExplorer: ExpandFromRefChain(): invalid chain type for element [0] - expected {ReferenceChain.ReferenceType.GameObject}, got {refChain.FirstItemType}");
                 return;
             }
-
+           
             sceneRoots.Clear();
             ClearExpanded();
             searchDisplayString = string.Empty;
@@ -479,6 +479,7 @@ namespace ModTools.Explorer
             state.SelectedArrayStartIndices.Clear();
             state.SelectedArrayEndIndices.Clear();
             searchDisplayString = string.Empty;
+            quickFilter = string.Empty;
             sceneTreeScrollPosition = Vector2.zero;
             state.CurrentRefChain = null;
         }

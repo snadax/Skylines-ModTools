@@ -86,6 +86,7 @@ namespace ModTools.Explorer
                 Array.Sort(members, (x, y) => string.CompareOrdinal(x.ReflectionInfo.Name, y.ReflectionInfo.Name));
             }
 
+            int matchingMembers = 0;
             foreach (var member in members)
             {
                 var filterMatchFrom = -1;
@@ -93,6 +94,8 @@ namespace ModTools.Explorer
                 {
                     continue;
                 }
+
+                matchingMembers++;
                 if (member.ReflectionInfo.MemberType == MemberTypes.Field && MainWindow.Instance.Config.ShowFields)
                 {
                     var field = (FieldInfo)member.ReflectionInfo;
@@ -140,6 +143,13 @@ namespace ModTools.Explorer
                         SceneExplorerCommon.OnSceneTreeMessage(refChain, $"Exception when fetching method \"{method.Name}\" - {ex.Message}");
                     }
                 }
+            }
+
+            if (!filter.IsNullOrEmpty() && members.Length > 0 && matchingMembers == 0)
+            {
+                GUI.contentColor = Color.yellow;
+                SceneExplorerCommon.OnSceneTreeMessage(refChain, "No members matching the search term found!");
+                GUI.contentColor = Color.white;
             }
         }
     }
