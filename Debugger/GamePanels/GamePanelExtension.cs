@@ -38,6 +38,7 @@ namespace ModTools.GamePanels
                 CreateCitizenPanels();
                 CreateLinePanel();
                 CreateDistrictPanels();
+                CreateRoadPanel();
             }
         }
 
@@ -76,6 +77,14 @@ namespace ModTools.GamePanels
             var lineId = instanceId.TransportLine;
             return lineId != 0
                    ? TransportManager.instance.GetLineName(lineId) ?? "N/A"
+                : "N/A";
+        }
+        
+        private static string GetSegmentName(InstanceID instanceId)
+        {
+            var segmentId = instanceId.NetSegment;
+            return segmentId != 0
+                ? NetManager.instance.m_segments.m_buffer[segmentId].Info?.name ?? "N/A"
                 : "N/A";
         }
         
@@ -149,6 +158,25 @@ namespace ModTools.GamePanels
                     buildingInfo.m_lodMesh,
                     buildingInfo.m_lodMaterial,
                     buildingInfo.m_subMeshes);
+                ShowAssetDumpModal(assetName);
+            }
+        }
+        
+        private static void DumpNetwork(InstanceID instanceId)
+        {
+            var segmentId = instanceId.NetSegment;
+            if (segmentId == 0)
+            {
+                return;
+            }
+
+            var netInfo = NetManager.instance.m_segments.m_buffer[segmentId].Info;
+            if (netInfo != null)
+            {
+                var assetName = AssetDumpUtil.DumpNetwork(
+                    netInfo.name,
+                    netInfo.m_segments,
+                    netInfo.m_nodes);
                 ShowAssetDumpModal(assetName);
             }
         }
@@ -276,6 +304,19 @@ namespace ModTools.GamePanels
             var buttons = new Dictionary<string, Action<InstanceID>>();
 
             var linePanel = ButtonsInfoPanelExtension<PublicTransportWorldInfoPanel>.Create(name, GetLineName, ShowLine, buttons);
+            customPanels.Add(linePanel);
+        }
+        
+        private void CreateRoadPanel()
+        {
+            var name = "(Library) " + typeof(RoadWorldInfoPanel).Name;
+            var buttons = new Dictionary<string, Action<InstanceID>>()
+            {
+                
+                ["Dump asset"] = DumpNetwork,
+            };
+
+            var linePanel = ButtonsInfoPanelExtension<RoadWorldInfoPanel>.Create(name, GetSegmentName, ShowSegment, buttons);
             customPanels.Add(linePanel);
         }
 
@@ -415,6 +456,15 @@ namespace ModTools.GamePanels
             if (lineId != 0)
             {
                 sceneExplorer.Show(ReferenceChainBuilder.ForTransportLine(lineId));    
+            }
+        }
+        
+        private void ShowSegment(InstanceID instanceId)
+        {
+            var segmentId = instanceId.NetSegment;
+            if (segmentId != 0)
+            {
+                sceneExplorer.Show(ReferenceChainBuilder.ForSegment(segmentId));    
             }
         }
         
