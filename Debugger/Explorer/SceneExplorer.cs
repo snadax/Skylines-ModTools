@@ -350,13 +350,6 @@ namespace ModTools.Explorer
                 ClearExpanded();
                 Refresh();
             }
-            if (state.CurrentRefChain?.Length > 2)
-            {
-                if (GUILayout.Button("^", GUILayout.ExpandWidth(false)))
-                {
-                    Show(state.CurrentRefChain.Trim(state.CurrentRefChain.Length - 1));
-                }
-            }
 
             GUILayout.EndHorizontal();
 
@@ -406,37 +399,69 @@ namespace ModTools.Explorer
         public void DrawComponent()
         {
             componentArea.Begin();
-            if (state.CurrentRefChain?.Length > 1)
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Quick filter", GUILayout.MinWidth(110f));
-                var updatedFilter = GUILayout.TextField(quickFilter, GUILayout.ExpandWidth(true), GUILayout.MaxWidth(float.MaxValue));
-                if (!updatedFilter.Equals(quickFilter))
-                {
-                    quickFilter = updatedFilter;
-                }
-                GUILayout.EndHorizontal();
-            }
 
+            object value;
+            try
+            {
+                value = state.CurrentRefChain?.Evaluate();
+                if (state.CurrentRefChain?.Length > 1)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label("Actions", GUILayout.MinWidth(110f));
+                    if (GUILayout.Button("^", GUILayout.ExpandWidth(false)))
+                    {
+                        Show(state.CurrentRefChain.Trim(state.CurrentRefChain.Length - 1));
+                    }
+                    GUIButtons.SetupCommonButtons(state.CurrentRefChain, value,
+                        state.CurrentRefChain.LastItem is uint u ? u : 0);
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndHorizontal();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                value = null;
+            }
+            
+            DrawQuickFilter();
+            
             componentScrollPosition = GUILayout.BeginScrollView(componentScrollPosition);
 
-            if (state.CurrentRefChain != null)
+            if (value != null)
             {
                 try
                 {
-                    GUIReflect.OnSceneTreeReflect(state, state.CurrentRefChain, state.CurrentRefChain.Evaluate(), false, TypeUtil.SmartType.Undefined, quickFilter);
+                    GUIReflect.OnSceneTreeReflect(state, state.CurrentRefChain, value, false, TypeUtil.SmartType.Undefined, quickFilter);
                 }
                 catch (Exception e)
                 {
                     Debug.LogException(e);
                     state.CurrentRefChain = null;
-                    throw;
                 }
             }
 
             GUILayout.EndScrollView();
 
             componentArea.End();
+        }
+
+        private void DrawQuickFilter()
+        {
+            if (!(state.CurrentRefChain?.Length > 1))
+            {
+                return;
+            }
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Quick filter", GUILayout.MinWidth(110f));
+            var updatedFilter =
+                GUILayout.TextField(quickFilter, GUILayout.ExpandWidth(true), GUILayout.MaxWidth(float.MaxValue));
+            if (!updatedFilter.Equals(quickFilter))
+            {
+                quickFilter = updatedFilter;
+            }
+
+            GUILayout.EndHorizontal();
         }
 
         protected override void HandleException(Exception ex)
