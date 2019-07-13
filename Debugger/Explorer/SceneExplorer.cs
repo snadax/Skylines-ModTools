@@ -137,7 +137,7 @@ namespace ModTools.Explorer
                 return;
             }
 
-            refChain.IdentOffset = refChain.Length;
+            refChain.IndentationOffset = refChain.Length;
             ShowRequests.Enqueue(refChain);
             Visible = true;
         }        

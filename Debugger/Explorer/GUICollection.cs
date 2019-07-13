@@ -49,7 +49,7 @@ namespace ModTools.Explorer
                 refChain = oldRefChain.Add(count);
 
                 GUILayout.BeginHorizontal();
-                SceneExplorerCommon.InsertIndent(refChain.Ident);
+                SceneExplorerCommon.InsertIndent(refChain.Indentation);
 
                 var isNullOrEmpty = value == null || flagIsEnum && Convert.ToInt32(flagsField.GetValue(value)) == 0;
 

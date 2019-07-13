@@ -22,7 +22,7 @@ namespace ModTools.Explorer
             }
 
             GUILayout.BeginHorizontal();
-            SceneExplorerCommon.InsertIndent(refChain.Ident);
+            SceneExplorerCommon.InsertIndent(refChain.Indentation);
 
             GUI.contentColor = Color.white;
 

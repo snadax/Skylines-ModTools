@@ -30,7 +30,7 @@ namespace ModTools.Explorer
                 try
                 {
                     GUILayout.BeginHorizontal();
-                    SceneExplorerCommon.InsertIndent(refChain.Ident);
+                    SceneExplorerCommon.InsertIndent(refChain.Indentation);
 
                     if (GUILayout.Button("-", GUILayout.ExpandWidth(false)))
                     {
@@ -69,7 +69,7 @@ namespace ModTools.Explorer
             else
             {
                 GUILayout.BeginHorizontal();
-                SceneExplorerCommon.InsertIndent(refChain.Ident);
+                SceneExplorerCommon.InsertIndent(refChain.Indentation);
 
                 if (GUILayout.Button("+", GUILayout.ExpandWidth(false)))
                 {

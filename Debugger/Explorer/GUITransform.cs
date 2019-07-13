@@ -55,7 +55,7 @@ namespace ModTools.Explorer
                 name,
                 GUIControls.PresentQuaternion,
                 vec,
-                MainWindow.Instance.Config.TreeIdentSpacing * refChain.Ident);
+                MainWindow.Instance.Config.TreeIdentSpacing * refChain.Indentation);
         }
 
         private static void OnSceneTreeReflectUnityEngineVector3(ReferenceChain refChain, string name, ref Vector3 vec)
@@ -70,7 +70,7 @@ namespace ModTools.Explorer
                 name,
                 GUIControls.PresentVector3,
                 vec,
-                MainWindow.Instance.Config.TreeIdentSpacing * refChain.Ident);
+                MainWindow.Instance.Config.TreeIdentSpacing * refChain.Indentation);
         }
     }
 }

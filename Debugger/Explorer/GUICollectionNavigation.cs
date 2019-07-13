@@ -15,7 +15,7 @@ namespace ModTools.Explorer
             out uint arrayEnd)
         {
             GUILayout.BeginHorizontal();
-            SceneExplorerCommon.InsertIndent(refChain.Ident);
+            SceneExplorerCommon.InsertIndent(refChain.Indentation);
 
             GUILayout.Label($"{collectionLabel} size: {collectionSize}");
 

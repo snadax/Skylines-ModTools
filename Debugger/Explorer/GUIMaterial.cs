@@ -41,7 +41,7 @@ namespace ModTools.Explorer
                 var type = value.GetType();
 
                 GUILayout.BeginHorizontal();
-                SceneExplorerCommon.InsertIndent(refChain.Ident + 1);
+                SceneExplorerCommon.InsertIndent(refChain.Indentation + 1);
 
                 GUIExpander.ExpanderControls(state, refChain, type);
 
@@ -94,7 +94,7 @@ namespace ModTools.Explorer
                 var type = value.GetType();
 
                 GUILayout.BeginHorizontal();
-                SceneExplorerCommon.InsertIndent(refChain.Ident + 1);
+                SceneExplorerCommon.InsertIndent(refChain.Indentation + 1);
 
                 GUIExpander.ExpanderControls(state, refChain, type);
 
@@ -152,7 +152,7 @@ namespace ModTools.Explorer
                 var type = value.GetType();
 
                 GUILayout.BeginHorizontal();
-                SceneExplorerCommon.InsertIndent(refChain.Ident + 1);
+                SceneExplorerCommon.InsertIndent(refChain.Indentation + 1);
 
                 GUIExpander.ExpanderControls(state, refChain, type);
 
@@ -210,7 +210,7 @@ namespace ModTools.Explorer
                 var type = value.GetType();
 
                 GUILayout.BeginHorizontal();
-                SceneExplorerCommon.InsertIndent(refChain.Ident + 1);
+                SceneExplorerCommon.InsertIndent(refChain.Indentation  + 1);
 
                 GUIExpander.ExpanderControls(state, refChain, type);
 

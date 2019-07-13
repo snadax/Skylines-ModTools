@@ -11,7 +11,7 @@ namespace ModTools.Explorer
         internal static void OnSceneTreeMessage(ReferenceChain refChain, string message)
         {
             GUILayout.BeginHorizontal();
-            InsertIndent(refChain.Ident);
+            InsertIndent(refChain.Indentation);
             GUILayout.Label(message);
             GUILayout.EndHorizontal();
         }

@@ -24,9 +24,9 @@ namespace ModTools.Explorer
             SpecialNamedProperty,
         }
 
-        public int IdentOffset { private get; set; } = 2;
+        public int IndentationOffset { private get; set; } = 2;
 
-        public int Ident => Length - IdentOffset - 1;
+        public int Indentation => Length - IndentationOffset - 1;
 
         public int Length { get; private set; }
 
@@ -69,7 +69,7 @@ namespace ModTools.Explorer
                 clone.chainTypes[i] = chainTypes[i];
             }
 
-            clone.IdentOffset = IdentOffset;
+            clone.IndentationOffset = IndentationOffset;
 
             return clone;
         }
@@ -183,7 +183,7 @@ namespace ModTools.Explorer
             var copy = new ReferenceChain
             {
                 Length = Length,
-                IdentOffset = IdentOffset,
+                IndentationOffset = IndentationOffset,
             };
 
             for (var i = 0; i < Length; i++)

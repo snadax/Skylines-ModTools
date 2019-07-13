@@ -26,7 +26,7 @@ namespace ModTools.Explorer
                 refChain = oldRefChain.Add(count);
 
                 GUILayout.BeginHorizontal();
-                SceneExplorerCommon.InsertIndent(refChain.Ident);
+                SceneExplorerCommon.InsertIndent(refChain.Indentation);
 
                 var type = value?.GetType();
                 if (type != null)
