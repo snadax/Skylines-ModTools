@@ -1,4 +1,5 @@
-﻿using ModTools.UI;
+﻿using System;
+using ModTools.UI;
 using ModTools.Utils;
 using UnityEngine;
 
@@ -6,54 +7,6 @@ namespace ModTools.Explorer
 {
     internal static class GUIMaterial
     {
-        private static readonly string[] TextureProps =
-        {
-            "_BackTex",
-            "_BumpMap",
-            "_BumpSpecMap",
-            "_Control",
-            "_DecalTex",
-            "_Detail",
-            "_DownTex",
-            "_FrontTex",
-            "_GlossMap",
-            "_Illum",
-            "_LeftTex",
-            "_LightMap",
-            "_LightTextureB0",
-            "_MainTex",
-            "_XYSMap",
-            "_ACIMap",
-            "_XYCAMap",
-            "_ParallaxMap",
-            "_RightTex",
-            "_ShadowOffset",
-            "_Splat0",
-            "_Splat1",
-            "_Splat2",
-            "_Splat3",
-            "_TranslucencyMap",
-            "_UpTex",
-            "_Tex",
-            "_Cube",
-            "_APRMap",
-            "_RainNoise",
-            "_RainNoiseSum",
-            "areaTex",
-            "luminTex",
-            "searchTex",
-            "_SrcTex",
-            "_Blurred",
-        };
-
-        private static readonly string[] ColorProps =
-        {
-            "_Color",
-            "_ColorV0",
-            "_ColorV1",
-            "_ColorV2",
-            "_ColorV3",
-        };
 
         public static void OnSceneReflectUnityEngineMaterial(SceneExplorerState state, ReferenceChain refChain, Material material)
         {
@@ -70,7 +23,7 @@ namespace ModTools.Explorer
 
             var oldRefChain = refChain;
 
-            foreach (var prop in TextureProps)
+            foreach (var prop in ShaderUtil.GetTextureProperties())
             {
                 if (!material.HasProperty(prop))
                 {
@@ -128,7 +81,7 @@ namespace ModTools.Explorer
                 }
             }
 
-            foreach (var prop in ColorProps)
+            foreach (var prop in ShaderUtil.GetColorProperties())
             {
                 if (!material.HasProperty(prop))
                 {
@@ -163,6 +116,122 @@ namespace ModTools.Explorer
                 if (newColor != value)
                 {
                     material.SetColor(prop, newColor);
+                }
+
+                GUI.contentColor = Color.white;
+                GUILayout.FlexibleSpace();
+                GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0);
+                var doPaste = GUIButtons.SetupPasteButon(type, value, out var paste);
+                if (value != null)
+                {
+                    GUIButtons.SetupJumpButton(refChain);
+                }
+                GUILayout.EndHorizontal();
+
+                if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
+                {
+                    GUIReflect.OnSceneTreeReflect(state, refChain, value, false);
+                }
+
+                if (doPaste)
+                {
+                    material.SetColor(prop, (Color)paste);
+                }
+            }
+            
+            foreach (var prop in ShaderUtil.GetFloatProperties())
+            {
+                if (!material.HasProperty(prop))
+                {
+                    continue;
+                }
+
+                var value = material.GetFloat(prop);
+                refChain = oldRefChain.Add(prop);
+
+                var type = value.GetType();
+
+                GUILayout.BeginHorizontal();
+                SceneExplorerCommon.InsertIndent(refChain.Ident + 1);
+
+                GUIExpander.ExpanderControls(state, refChain, type);
+
+                GUI.contentColor = MainWindow.Instance.Config.TypeColor;
+
+                GUILayout.Label(type.ToString() + " ");
+
+                GUI.contentColor = MainWindow.Instance.Config.NameColor;
+
+                GUILayout.Label(prop);
+
+                GUI.contentColor = Color.white;
+
+                GUILayout.Label(" = ");
+
+                GUI.contentColor = MainWindow.Instance.Config.ValueColor;
+
+                var newValue = GUIControls.PrimitiveValueField(refChain.UniqueId, string.Empty, value);
+                if (newValue != value)
+                {
+                    material.SetFloat(prop, newValue);
+                }
+
+                GUI.contentColor = Color.white;
+                GUILayout.FlexibleSpace();
+                GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0);
+                var doPaste = GUIButtons.SetupPasteButon(type, value, out var paste);
+                if (value != null)
+                {
+                    GUIButtons.SetupJumpButton(refChain);
+                }
+                GUILayout.EndHorizontal();
+
+                if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
+                {
+                    GUIReflect.OnSceneTreeReflect(state, refChain, value, false);
+                }
+
+                if (doPaste)
+                {
+                    material.SetColor(prop, (Color)paste);
+                }
+            }
+            
+            foreach (var prop in ShaderUtil.GetVectorProperties())
+            {
+                if (!material.HasProperty(prop))
+                {
+                    continue;
+                }
+
+                var value = material.GetVector(prop);
+                refChain = oldRefChain.Add(prop);
+
+                var type = value.GetType();
+
+                GUILayout.BeginHorizontal();
+                SceneExplorerCommon.InsertIndent(refChain.Ident + 1);
+
+                GUIExpander.ExpanderControls(state, refChain, type);
+
+                GUI.contentColor = MainWindow.Instance.Config.TypeColor;
+
+                GUILayout.Label(type.ToString() + " ");
+
+                GUI.contentColor = MainWindow.Instance.Config.NameColor;
+
+                GUILayout.Label(prop);
+
+                GUI.contentColor = Color.white;
+
+                GUILayout.Label(" = ");
+
+                GUI.contentColor = MainWindow.Instance.Config.ValueColor;
+
+                var newValue = GUIControls.PresentVector4(refChain.UniqueId, value);
+                if (newValue != value)
+                {
+                    material.SetVector(prop, newValue);
                 }
 
                 GUI.contentColor = Color.white;

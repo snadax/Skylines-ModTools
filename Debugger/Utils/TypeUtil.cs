@@ -11,6 +11,28 @@ namespace ModTools.Utils
     {
         private static Dictionary<Type, ExtendedMemberInfo[]> typeCache = new Dictionary<Type, ExtendedMemberInfo[]>();
 
+        public static Type FindTypeByFullName(string fullName)
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                try
+                {
+                    var type = assembly.GetTypes()
+                        .FirstOrDefault(t => t.FullName == fullName);
+                    if (type != null)
+                    {
+                        return type;
+                    }
+                }
+                catch
+                {
+                    //skip
+                }
+            }
+
+            return null;
+        }
+        
         public static bool IsSpecialType(Type t)
         {
             return t.IsPrimitive
