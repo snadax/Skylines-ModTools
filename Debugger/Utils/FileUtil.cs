@@ -26,23 +26,30 @@ namespace ModTools.Utils
         {
             foreach (var item in PluginManager.instance.GetPluginsInfo())
             {
-                var instances = item.GetInstances<IUserMod>();
-                var instance = instances.FirstOrDefault();
-                if (instance != null && instance.GetType() != type)
+                try
                 {
-                    continue;
-                }
-
-                foreach (var file in Directory.GetFiles(item.modPath))
-                {
-                    if (Path.GetExtension(file) == ".dll")
+                    var instances = item.GetInstances<IUserMod>();
+                    var instance = instances.FirstOrDefault();
+                    if (instance != null && instance.GetType() != type)
                     {
-                        return file;
+                        continue;
                     }
+
+                    foreach (var file in Directory.GetFiles(item.modPath))
+                    {
+                        if (Path.GetExtension(file) == ".dll")
+                        {
+                            return file;
+                        }
+                    }
+                }
+                catch
+                {
+                    UnityEngine.Debug.LogWarning($"FYI, ModTools failed to check mod {item.name} (published file ID {item.publishedFileID}) while searching for type {type.FullName}. That mod may malfunction." );
                 }
             }
 
-            throw new FileNotFoundException("Failed to find assembly!");
+            throw new FileNotFoundException($"Failed to find plugin path of type {type.FullName}");
         }
 
         public static string LegalizeFileName(string illegal)
