@@ -83,7 +83,7 @@ namespace ModTools
                 }
                 else if (m_hoverInstance.NetSegment > 0)
                 {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForSegment(this.m_hoverBuilding)); 
+                    sceneExplorer.Show(ReferenceChainBuilder.ForBuilding(this.m_hoverBuilding)); 
                 }
             }
         }
@@ -340,10 +340,7 @@ namespace ModTools
                 }
             }
 
-            if (m_hoverInstance.Building > 0)
-            {
-                this.m_hoverBuilding = m_hoverInstance.Building;
-            }
+            this.m_hoverBuilding = m_hoverInstance.Building;
 
             if (hoveredNode > 0)
             {
