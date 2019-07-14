@@ -255,13 +255,13 @@ namespace ModTools.GamePanels
             var name = "(Library) " + typeof(T).Name;
             var buttons = new Dictionary<string, Action<InstanceID>>
             {
-                ["Show instance in Scene Explorer"] = ShowCitizenInstance,
+                ["Show citizen in Scene Explorer"] = ShowCitizen,
                 ["Show unit in Scene Explorer"] = ShowCitizenUnit,
                 ["Show path in SceneExplorer"] = ShowCitizenPath,
                 ["Dump asset"] = DumpCitizen,
             };
 
-            var vehiclePanel = ButtonsInfoPanelExtension<T>.Create(name, InstanceUtil.GetCitizenAssetName, ShowCitizen, buttons);
+            var vehiclePanel = ButtonsInfoPanelExtension<T>.Create(name, InstanceUtil.GetCitizenAssetName, ShowCitizenInstance, buttons);
             customPanels.Add(vehiclePanel);
         }
 
