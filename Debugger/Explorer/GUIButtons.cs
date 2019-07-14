@@ -36,8 +36,8 @@ namespace ModTools.Explorer
 
                 case NetInfo.Node nodeInfo:
                     SetupMeshPreviewButtons(name: null, nodeInfo.m_mesh, nodeInfo.m_material, nodeInfo.m_lodMesh, nodeInfo.m_lodMaterial);
-                    goto default;
-                                   
+                    goto default;                   
+            
                 case BuildingInfo.MeshInfo buildingSumMeshInfo:
                     SetupMeshPreviewButtons(name: null, buildingSumMeshInfo.m_subInfo?.m_mesh, buildingSumMeshInfo.m_subInfo?.m_material, buildingSumMeshInfo.m_subInfo?.m_lodMesh, buildingSumMeshInfo.m_subInfo?.m_lodMaterial);
                     goto default; 
@@ -344,15 +344,15 @@ namespace ModTools.Explorer
         {
             switch (prefabInfo)
             {
-                case VehicleInfo vehicleInfo:
-                    SetupMeshPreviewButtons(vehicleInfo.name, vehicleInfo.m_mesh, vehicleInfo.m_material, vehicleInfo.m_lodMesh, vehicleInfo.m_lodMaterial);
+                case VehicleInfoBase vehicleInfoBase:
+                    SetupMeshPreviewButtons(vehicleInfoBase.name, vehicleInfoBase.m_mesh, vehicleInfoBase.m_material, vehicleInfoBase.m_lodMesh, vehicleInfoBase.m_lodMaterial);
                     SetupVehicleFullDumpButton(
-                        vehicleInfo.name,
-                        vehicleInfo.m_mesh,
-                        vehicleInfo.m_material,
-                        vehicleInfo.m_lodMesh,
-                        vehicleInfo.m_lodMaterial,
-                        vehicleInfo.m_subMeshes);
+                        vehicleInfoBase.name,
+                        vehicleInfoBase.m_mesh,
+                        vehicleInfoBase.m_material,
+                        vehicleInfoBase.m_lodMesh,
+                        vehicleInfoBase.m_lodMaterial,
+                        vehicleInfoBase is VehicleInfo vehicleInfo ? vehicleInfo.m_subMeshes : null);
                     break;
 
                 case NetInfo netInfo:
@@ -374,16 +374,20 @@ namespace ModTools.Explorer
                     SetupNetworkFullDumpButton(netInfo.name, netInfo.m_segments, netInfo.m_nodes);
                     break;
 
-                case BuildingInfo buildingInfo:
-                    SetupPlopButton(prefabInfo);
-                    SetupMeshPreviewButtons(buildingInfo.name, buildingInfo.m_mesh, buildingInfo.m_material, buildingInfo.m_lodMesh, buildingInfo.m_lodMaterial);
+                case BuildingInfoBase buildingInfoBase:
+                    if (buildingInfoBase is BuildingInfo)
+                    {
+                        SetupPlopButton(prefabInfo);
+                    }
+
+                    SetupMeshPreviewButtons(buildingInfoBase.name, buildingInfoBase.m_mesh, buildingInfoBase.m_material, buildingInfoBase.m_lodMesh, buildingInfoBase.m_lodMaterial);
                     SetupBuildingFullDumpButton(
-                        buildingInfo.name,
-                        buildingInfo.m_mesh,
-                        buildingInfo.m_material,
-                        buildingInfo.m_lodMesh,
-                        buildingInfo.m_lodMaterial,
-                        buildingInfo.m_subMeshes);
+                        buildingInfoBase.name,
+                        buildingInfoBase.m_mesh,
+                        buildingInfoBase.m_material,
+                        buildingInfoBase.m_lodMesh,
+                        buildingInfoBase.m_lodMaterial,
+                        buildingInfoBase is BuildingInfo buildingInfo ? buildingInfo.m_subMeshes : buildingInfoBase is BuildingInfoSub buildingInfoSub ? buildingInfoSub.m_subMeshes : null);
                     break;
 
                 case PropInfo propInfo:
