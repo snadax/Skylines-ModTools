@@ -35,12 +35,6 @@ namespace ModTools
                 modTools.gameObject.AddComponent<GamePanelExtension>();
             }
             
-            var toolController = Object.FindObjectOfType<ToolManager>().m_properties;
-            if (toolController == null)
-            {
-                return;
-            }
-            toolController.AddTool<SelectionTool>();
             new GameObject("SelectionToolControl").AddComponent<SelectionToolControl>();
         }
         

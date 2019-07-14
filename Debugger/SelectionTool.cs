@@ -115,7 +115,7 @@ namespace ModTools
             }
             else if (hoverInstance1.CitizenInstance != 0)
             {
-                text = $"[Click LMB to show citizen instance in SceneExplorer]\n[Click RMB to show citizen in SceneExplorer]\nInstance ID: {hoverInstance1.CitizenInstance}\nCitizen ID: {hoverInstance1.GetCitizenId()}\nAsset: {hoverInstance1.GetCitizenAssetName()}";
+                text = $"[Click LMB to show citizen instance in SceneExplorer]\n[Click RMB to show citizen in SceneExplorer]\nCitizen instance ID: {hoverInstance1.CitizenInstance}\nCitizen ID: {hoverInstance1.GetCitizenId()}\nAsset: {hoverInstance1.GetCitizenAssetName()}";
             }
             else if (hoverInstance1.Prop != 0)
             {

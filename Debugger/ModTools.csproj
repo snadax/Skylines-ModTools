@@ -70,6 +70,7 @@
     <Compile Include="GamePanels\IInfoPanelExtension.cs" />
     <Compile Include="IGameObject.cs" />
     <Compile Include="ModalUI.cs" />
+    <Compile Include="SelectionToolButton.cs" />
     <Compile Include="SelectionToolControl.cs" />
     <Compile Include="SelectionTool.cs" />
     <Compile Include="UI\ColorPicker.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="ILogger.cs" />
     <Compile Include="Scripting\ScriptEditorFile.cs" />
     <Compile Include="Utils\AssetDumpUtil.cs" />
+    <Compile Include="Utils\AtlasUtil.cs" />
     <Compile Include="Utils\InstanceUtil.cs" />
     <Compile Include="Utils\ColorUtil.cs" />
     <Compile Include="ModConfiguration.cs" />
@@ -131,6 +133,9 @@
     <Compile Include="Utils\DumpUtil.cs" />
     <Compile Include="Utils\TextureUtil.cs" />
     <Compile Include="Explorer\Watches.cs" />
+  </ItemGroup>
+    <ItemGroup>
+    <EmbeddedResource Include="SelectionToolNormal.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -264,11 +264,7 @@ namespace ModTools
                     {
                         if (tool.enabled)
                         {
-                            var defaultTool = ToolsModifierControl.GetTool<DefaultTool>();
-                            if (defaultTool != null)
-                            {
-                                defaultTool.enabled = true;
-                            }
+                            ToolsModifierControl.SetTool<DefaultTool>();
                         }
                     }
 

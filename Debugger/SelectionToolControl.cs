@@ -1,9 +1,23 @@
-﻿using UnityEngine;
+﻿using ColossalFramework.UI;
+using ModTools.Utils;
+using UnityEngine;
 
 namespace ModTools
 {
     public class SelectionToolControl : MonoBehaviour
     {
+        public void Awake()
+        {
+            var toolController = FindObjectOfType<ToolManager>().m_properties;
+            if (toolController == null)
+            {
+                return;
+            }
+
+            toolController.AddTool<SelectionTool>();
+            var selectionToolButton = SelectionToolButton.Create();
+            selectionToolButton.eventClicked += (c, e) => ToggleTool();
+        }
 
         public void Update()
         {
@@ -11,28 +25,32 @@ namespace ModTools
             {
                 return;
             }
-            if ((!Input.GetKey(KeyCode.RightControl) && !Input.GetKey(KeyCode.LeftControl)) || !Input.GetKeyDown(KeyCode.M))
+
+            if ((!Input.GetKey(KeyCode.RightControl) && !Input.GetKey(KeyCode.LeftControl)) ||
+                !Input.GetKeyDown(KeyCode.M))
             {
                 return;
             }
+
+            ToggleTool();
+        }
+
+        private static void ToggleTool()
+        {
             var tool = ToolsModifierControl.GetTool<SelectionTool>();
             if (tool == null)
             {
                 return;
             }
+
             if (tool.enabled)
             {
-                var defaultTool = ToolsModifierControl.GetTool<DefaultTool>();
-                if (defaultTool != null)
-                {
-                    defaultTool.enabled = true;
-                }
+                ToolsModifierControl.SetTool<DefaultTool>();
             }
             else
             {
-                tool.enabled = true;
+                ToolsModifierControl.SetTool<SelectionTool>();
             }
         }
-
     }
 }
