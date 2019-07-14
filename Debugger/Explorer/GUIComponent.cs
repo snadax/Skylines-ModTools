@@ -18,7 +18,7 @@ namespace ModTools.Explorer
             }
 
             GUILayout.BeginHorizontal();
-            SceneExplorerCommon.InsertIndent(1);
+            SceneExplorerCommon.InsertIndent(refChain.Indentation);
 
             GUI.contentColor = GameObjectUtil.ComponentIsEnabled(component)
                 ? MainWindow.Instance.Config.EnabledComponentColor
@@ -28,6 +28,7 @@ namespace ModTools.Explorer
             {
                 if (GUILayout.Button(">", GUILayout.ExpandWidth(false)))
                 {
+                    refChain.IndentationOffset = refChain.Length;
                     state.CurrentRefChain = refChain;
                 }
             }

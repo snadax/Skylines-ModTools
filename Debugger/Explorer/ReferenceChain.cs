@@ -24,7 +24,7 @@ namespace ModTools.Explorer
             SpecialNamedProperty,
         }
 
-        public int IndentationOffset { private get; set; } = 2;
+        public int IndentationOffset { private get; set; }
 
         public int Indentation => Length - IndentationOffset - 1;
 

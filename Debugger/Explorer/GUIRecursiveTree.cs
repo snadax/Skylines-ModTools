@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace ModTools.Explorer
@@ -57,7 +57,7 @@ namespace ModTools.Explorer
 
                     for (var i = 0; i < obj.transform.childCount; i++)
                     {
-                        OnSceneTreeRecursive(modToolsGo, state, refChain.Add(obj.transform.GetChild(i)), obj.transform.GetChild(i).gameObject);
+                        OnSceneTreeRecursive(modToolsGo, state, refChain.Add(obj.transform.GetChild(i).gameObject), obj.transform.GetChild(i).gameObject);
                     }
                 }
                 catch (Exception)
