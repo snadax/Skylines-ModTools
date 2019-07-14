@@ -37,15 +37,14 @@ namespace ModTools.Explorer
                 case NetInfo.Node nodeInfo:
                     SetupMeshPreviewButtons(name: null, nodeInfo.m_mesh, nodeInfo.m_material, nodeInfo.m_lodMesh, nodeInfo.m_lodMaterial);
                     goto default;
+                                   
+                case BuildingInfo.MeshInfo buildingSumMeshInfo:
+                    SetupMeshPreviewButtons(name: null, buildingSumMeshInfo.m_subInfo?.m_mesh, buildingSumMeshInfo.m_subInfo?.m_material, buildingSumMeshInfo.m_subInfo?.m_lodMesh, buildingSumMeshInfo.m_subInfo?.m_lodMaterial);
+                    goto default; 
                     
-//TODO: fix exceptions                    
-//                case BuildingInfo.MeshInfo buildingSumMeshInfo:
-//                    SetupMeshPreviewButtons(name: null, buildingSumMeshInfo.m_subInfo.m_mesh, buildingSumMeshInfo.m_subInfo.m_material, buildingSumMeshInfo.m_subInfo.m_lodMesh, buildingSumMeshInfo.m_subInfo.m_lodMaterial);
-//                    goto default; 
-//                    
-//                case VehicleInfo.MeshInfo vehicleSumMeshInfo:
-//                    SetupMeshPreviewButtons(name: null, vehicleSumMeshInfo.m_subInfo.m_mesh, vehicleSumMeshInfo.m_subInfo.m_material, vehicleSumMeshInfo.m_subInfo.m_lodMesh, vehicleSumMeshInfo.m_subInfo.m_lodMaterial);
-//                    goto default;   
+                case VehicleInfo.MeshInfo vehicleSumMeshInfo:
+                    SetupMeshPreviewButtons(name: null, vehicleSumMeshInfo.m_subInfo?.m_mesh, vehicleSumMeshInfo.m_subInfo?.m_material, vehicleSumMeshInfo.m_subInfo?.m_lodMesh, vehicleSumMeshInfo.m_subInfo?.m_lodMaterial);
+                    goto default;   
 
                 case CitizenInstance instance
                     when valueIndex > 0 && (instance.m_flags & (CitizenInstance.Flags.Created | CitizenInstance.Flags.Deleted)) == CitizenInstance.Flags.Created:
