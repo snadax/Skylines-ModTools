@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Reflection;
+using ColossalFramework.UI;
 using ModTools.Explorer;
+using UnityEngine;
 
 namespace ModTools.Utils
 {
@@ -171,6 +174,18 @@ namespace ModTools.Utils
                 .Add(typeof(TreeManager).GetField("m_trees"))
                 .Add(typeof(Array32<TreeInstance>).GetField("m_buffer"))
                 .Add(treeId);
+        }
+
+        public static ReferenceChain ForSprite(string value) //TODO add support for other atlases other than the default one
+        {
+            var id = (uint)UIView.GetAView().defaultAtlas.sprites.FindIndex(sprite => sprite.name == value);
+            var gameObject = GameObject.Find(nameof(UIView));
+            return new ReferenceChain()
+                .Add(gameObject)
+                .Add(gameObject.GetComponent<UIView>())
+                .Add(typeof(UIView).GetProperty("defaultAtlas"))
+                .Add(typeof(UITextureAtlas).GetProperty("sprites"))
+                .Add(id); 
         }
     }
 }

@@ -124,7 +124,14 @@ namespace ModTools.Utils
         {
             try
             {
-                if (memberName.IndexOf("count", StringComparison.OrdinalIgnoreCase) < 0 &&
+                if (type == typeof(string))
+                {
+                    if (memberName.IndexOf("sprite", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.Sprite;
+                    }
+                }
+                else if (memberName.IndexOf("count", StringComparison.OrdinalIgnoreCase) < 0 &&
                     memberName.IndexOf("type", StringComparison.OrdinalIgnoreCase) < 0 &&
                     memberName.IndexOf("flags", StringComparison.OrdinalIgnoreCase) < 0 &&
                     memberName.IndexOf("offset", StringComparison.OrdinalIgnoreCase) < 0 &&
@@ -204,7 +211,7 @@ namespace ModTools.Utils
                     if (memberName.IndexOf("instance", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         return SmartType.CitizenInstance;
-                    }
+                    }                 
                 }
             }
             catch
@@ -263,7 +270,8 @@ namespace ModTools.Utils
             PathUnit,
             Tree,
             Prop,
-            Undefined
+            Undefined,
+            Sprite
         }
     }
 }
