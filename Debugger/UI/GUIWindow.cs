@@ -17,7 +17,7 @@ namespace ModTools.UI
         private static Vector2 resizeDragHandle = Vector2.zero;
 
         private static GUIWindow movingWindow;
-        private static Vector2 moveDragHandle = Vector2.zero;
+        private static Vector2 moveDragHandle = new Vector2(16, 0);
 
         private readonly int id;
         private readonly bool resizable;
@@ -244,7 +244,9 @@ namespace ModTools.UI
 
             if (resizable)
             {
-                DrawResizeHandle(mouse);
+                DrawResizeHandle(mouse, new Vector2(0, 0));
+                DrawResizeHandle(mouse, new Vector2(windowRect.width * UIScale - 16.0f, windowRect.height * UIScale - 8.0f));
+                DrawResizeHandle(mouse, new Vector2(0, windowRect.height * UIScale - 8.0f));
             }
         }
 
@@ -260,7 +262,7 @@ namespace ModTools.UI
 
         private void DrawTitlebar(Vector3 mouse)
         {
-            var moveRect = new Rect(windowRect.x * UIScale, windowRect.y * UIScale, windowRect.width * UIScale, 20.0f);
+            var moveRect = new Rect(windowRect.x * UIScale + 16, windowRect.y * UIScale, windowRect.width * UIScale - 16, 20.0f);
             var moveTex = MoveNormalTexture;
 
             // TODO: reduce nesting
@@ -319,7 +321,7 @@ namespace ModTools.UI
 
             GUI.DrawTexture(new Rect(0.0f, 0.0f, windowRect.width * UIScale, 20.0f), moveTex, ScaleMode.StretchToFill);
             GUI.contentColor = Config.TitleBarTextColor;
-            GUI.Label(new Rect(8.0f, 0.0f, windowRect.width * UIScale, 20.0f), Title);
+            GUI.Label(new Rect(24.0f, 0.0f, windowRect.width * UIScale, 20.0f), Title);
             GUI.contentColor = Color.white;
         }
 
@@ -344,9 +346,9 @@ namespace ModTools.UI
             GUI.DrawTexture(new Rect(windowRect.width - 20.0f, 0.0f, 16.0f, 8.0f), closeTex, ScaleMode.StretchToFill);
         }
 
-        private void DrawResizeHandle(Vector3 mouse)
+        private void DrawResizeHandle(Vector3 mouse, Vector2 position)
         {
-            var resizeRect = new Rect(windowRect.x * UIScale + windowRect.width * UIScale - 16.0f, windowRect.y * UIScale + windowRect.height * UIScale - 8.0f, 16.0f, 8.0f);
+            var resizeRect = new Rect(windowRect.x * UIScale + position.x, windowRect.y * UIScale + position.y, 16.0f, 8.0f);
             var resizeTex = ResizeNormalTexture;
 
             // TODO: reduce nesting
@@ -404,7 +406,7 @@ namespace ModTools.UI
                 }
             }
 
-            GUI.DrawTexture(new Rect(windowRect.width - 16.0f, windowRect.height - 8.0f, 16.0f, 8.0f), resizeTex, ScaleMode.StretchToFill);
+            GUI.DrawTexture(new Rect(position.x, position.y, 16.0f, 8.0f), resizeTex, ScaleMode.StretchToFill);
         }
     }
 }
