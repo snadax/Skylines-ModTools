@@ -134,8 +134,11 @@
     <Compile Include="Utils\TextureUtil.cs" />
     <Compile Include="Explorer\Watches.cs" />
   </ItemGroup>
-    <ItemGroup>
-    <EmbeddedResource Include="SelectionToolNormal.png" />
+  <ItemGroup>
+    <EmbeddedResource Include="SelectionToolButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SelectionToolBar.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
