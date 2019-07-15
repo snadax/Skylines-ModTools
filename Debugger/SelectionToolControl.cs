@@ -103,6 +103,7 @@ namespace ModTools
             }
             else
             {
+                ToolsModifierControl.mainToolbar.CloseEverything();
                 ToolsModifierControl.SetTool<SelectionTool>();
                 this.m_Bar.Show();
                 ValueAnimator.Animate("BulldozerBar", (System.Action<float>) (val =>
