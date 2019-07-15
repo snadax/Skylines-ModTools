@@ -37,12 +37,29 @@ namespace ModTools.Explorer
                         state.ExpandedGameObjects.Remove(refChain.UniqueId);
                     }
 
-                    GUI.contentColor = MainWindow.Instance.Config.GameObjectColor;
+                    GUI.contentColor = state.CurrentRefChain?.IsSameChain(refChain) == true ? MainWindow.Instance.Config.SelectedComponentColor : MainWindow.Instance.Config.GameObjectColor;
+
                     GUILayout.Label(obj.name);
                     GUI.contentColor = Color.white;
 
                     GUILayout.EndHorizontal();
 
+                    var gameObjects = new GameObject[obj.transform.childCount];
+                    for (var i = 0; i < obj.transform.childCount; i++)
+                    {
+                        gameObjects[i] = obj.transform.GetChild(i).gameObject;
+                    }
+                    
+                    if (MainWindow.Instance.Config.SortItemsAlphabetically)
+                    {
+                        Array.Sort(gameObjects, (x, y) => string.CompareOrdinal(x?.name, y?.name));
+                    }
+                    
+                    foreach (var gameObject in gameObjects)
+                    {
+                        OnSceneTreeRecursive(modToolsGo, state, refChain.Add(gameObject), gameObject);                        
+                    }
+                    
                     var components = obj.GetComponents(typeof(Component));
 
                     if (MainWindow.Instance.Config.SortItemsAlphabetically)
@@ -54,11 +71,7 @@ namespace ModTools.Explorer
                     {
                         GUIComponent.OnSceneTreeComponent(state, refChain.Add(component), component);
                     }
-
-                    for (var i = 0; i < obj.transform.childCount; i++)
-                    {
-                        OnSceneTreeRecursive(modToolsGo, state, refChain.Add(obj.transform.GetChild(i).gameObject), obj.transform.GetChild(i).gameObject);
-                    }
+                    
                 }
                 catch (Exception)
                 {
@@ -76,7 +89,7 @@ namespace ModTools.Explorer
                     state.ExpandedGameObjects.Add(refChain.UniqueId);
                 }
 
-                GUI.contentColor = MainWindow.Instance.Config.GameObjectColor;
+                GUI.contentColor = state.CurrentRefChain?.IsSameChain(refChain) == true ? MainWindow.Instance.Config.SelectedComponentColor : MainWindow.Instance.Config.GameObjectColor;
                 GUILayout.Label(obj.name);
                 GUI.contentColor = Color.white;
                 GUILayout.EndHorizontal();

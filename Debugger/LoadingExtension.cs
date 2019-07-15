@@ -34,8 +34,10 @@ namespace ModTools
             {
                 modTools.gameObject.AddComponent<GamePanelExtension>();
             }
-            
-            new GameObject("SelectionToolControl").AddComponent<SelectionToolControl>();
+
+            var selectionToolGo = new GameObject("SelectionToolControl");
+            selectionToolGo.transform.parent = ModToolsMod.mainObject.transform;
+            selectionToolGo.AddComponent<SelectionToolControl>();
         }
         
         public override void OnLevelUnloading()
@@ -46,7 +48,7 @@ namespace ModTools
             {
                 sceneExplorer.ClearExpanded();
             }
-            var go = GameObject.Find("SelectionToolControl");
+            var go = Object.FindObjectOfType<SelectionToolControl>();
             if (go != null)
             {
                 Object.Destroy(go);

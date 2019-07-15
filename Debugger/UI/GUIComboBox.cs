@@ -47,7 +47,7 @@ namespace ModTools.UI
                 return true;
             }
 
-            var modTools = GameObject.Find("ModTools");
+            var modTools = ModToolsMod.mainWindowObject;
             if (modTools == null)
             {
                 return false;

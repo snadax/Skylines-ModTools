@@ -238,7 +238,7 @@ namespace ModTools
 
             debugRenderer.DrawDebugInfo = GUILayout.Toggle(debugRenderer.DrawDebugInfo, " Debug Renderer (Ctrl + R)");
 
-            var customPrefabsObject = GUILayout.Toggle(Config.CustomPrefabsObject, " Custom Prefabs Object");
+            var customPrefabsObject = GUILayout.Toggle(Config.CustomPrefabsObject, " ModTools.CustomPrefabs Object");
             if (customPrefabsObject != Config.CustomPrefabsObject)
             {
                 Config.CustomPrefabsObject = customPrefabsObject;
