@@ -458,9 +458,14 @@ namespace ModTools.Explorer
                 GUILayout.TextField(quickFilter, GUILayout.ExpandWidth(true), GUILayout.MaxWidth(float.MaxValue));
             if (!updatedFilter.Equals(quickFilter))
             {
-                quickFilter = updatedFilter;
+                quickFilter = updatedFilter.Trim();
             }
 
+            if (GUILayout.Button("Clear"))
+            {
+                quickFilter = string.Empty;
+            }
+            
             GUILayout.EndHorizontal();
         }
 
