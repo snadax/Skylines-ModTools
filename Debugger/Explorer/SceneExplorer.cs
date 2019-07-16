@@ -169,7 +169,7 @@ namespace ModTools.Explorer
             var rootGameObject = (GameObject)refChain.GetChainItem(0);
             sceneRoots.Add(rootGameObject, true);
 
-            var expandedRefChain = new ReferenceChain().Add(rootGameObject);
+            var expandedRefChain = ReferenceChainBuilder.ForGameObject(rootGameObject);
             state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
 
             for (var i = 1; i < refChain.Length; i++)

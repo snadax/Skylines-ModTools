@@ -187,5 +187,33 @@ namespace ModTools.Utils
                 .Add(typeof(UITextureAtlas).GetProperty("sprites"))
                 .Add(id); 
         }
+        
+        public static ReferenceChain ForUIComponent(UIComponent component)
+        {
+            var current = component;
+            var refChain = new ReferenceChain();
+            refChain = refChain.Add(current);
+            while (current != null)
+            {
+                refChain = refChain.Add(current.gameObject);
+                current = current.parent;
+            }
+
+            refChain = refChain.Add(UIView.GetAView().gameObject);
+            return refChain.Reverse();
+        }
+
+        public static ReferenceChain ForGameObject(GameObject gameObject)
+        {
+            var current = gameObject;
+            var refChain = new ReferenceChain();
+            refChain = refChain.Add(current);
+            while (current.transform?.parent?.gameObject != null)
+            {
+                refChain = refChain.Add(current.transform.parent.gameObject);
+                current = current.transform.parent.gameObject;
+            }
+            return refChain.Reverse();
+        }
     }
 }

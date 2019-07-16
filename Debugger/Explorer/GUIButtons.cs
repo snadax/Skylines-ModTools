@@ -405,17 +405,30 @@ namespace ModTools.Explorer
             return currentValue != null && GUILayout.Button("Unset");
         }
 
-        public static void SetupJumpButton(ReferenceChain refChain)
+        //TODO: usage of value arg is a hack required because at least the last element of the refChain is not set properly
+        public static void SetupJumpButton(object value, ReferenceChain refChain)
         {
             if (!GUILayout.Button(">", GUILayout.ExpandWidth(false)))
             {
                 return;
             }
 
-            var sceneExplorer = GameObject.FindObjectOfType<SceneExplorer>();
-            if (sceneExplorer != null)
+            var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+            if (sceneExplorer == null)
             {
-                sceneExplorer.Show(refChain);
+                return;
+            }
+            switch (value)
+            {
+                case GameObject go:
+                    sceneExplorer.Show(ReferenceChainBuilder.ForGameObject(go));
+                    break;
+                case UIComponent uiComponent:
+                    sceneExplorer.Show(ReferenceChainBuilder.ForUIComponent(uiComponent));
+                    break;
+                default:
+                    sceneExplorer.Show(refChain);
+                    break;
             }
         }
 

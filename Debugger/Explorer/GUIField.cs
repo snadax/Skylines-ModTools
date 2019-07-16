@@ -121,7 +121,7 @@ namespace ModTools.Explorer
 
             if (value != null)
             {
-                GUIButtons.SetupJumpButton(refChain);
+                GUIButtons.SetupJumpButton(value, refChain);
             }
 
             GUILayout.EndHorizontal();

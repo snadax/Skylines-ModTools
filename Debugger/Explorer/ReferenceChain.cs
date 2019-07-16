@@ -28,7 +28,7 @@ namespace ModTools.Explorer
 
         public int Indentation => Length - IndentationOffset - 1;
 
-        public int Length { get; private set; }
+        public int Length { get; private  set; }
 
         public object LastItem => chainObjects[Length - 1];
 
@@ -178,7 +178,7 @@ namespace ModTools.Explorer
             return result.ToString();
         }
 
-        public ReferenceChain GetReversedCopy()
+        public ReferenceChain Reverse()
         {
             var copy = new ReferenceChain
             {

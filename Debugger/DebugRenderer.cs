@@ -31,25 +31,10 @@ namespace ModTools
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F))
             {
-                var uiView = FindObjectOfType<UIView>();
-                if (uiView == null)
-                {
-                    return;
-                }
-
-                var current = hoveredLocal;
-                var refChain = new ReferenceChain();
-                refChain = refChain.Add(current);
-                while (current != null)
-                {
-                    refChain = refChain.Add(current.gameObject);
-                    current = current.parent;
-                }
-
-                refChain = refChain.Add(uiView.gameObject);
+                var refChain = ReferenceChainBuilder.ForUIComponent(hoveredLocal);
 
                 var sceneExplorer = FindObjectOfType<SceneExplorer>();
-                sceneExplorer.Show(refChain.GetReversedCopy());
+                sceneExplorer.Show(refChain);
             }
 
             if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G) && hoveredComponents.Count > 1 && hoveredComponent != null)
