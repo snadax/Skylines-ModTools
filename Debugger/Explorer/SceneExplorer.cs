@@ -122,7 +122,7 @@ namespace ModTools.Explorer
                 .ChangeSizeBy(height: verticalSizeOffset);
         }
 
-        public void Refresh()
+        public void RefreshSceneRoots()
         {
             sceneRoots = GameObjectUtil.FindSceneRoots();
         }
@@ -342,13 +342,13 @@ namespace ModTools.Explorer
 
             if (GUILayout.Button("Refresh", GUILayout.ExpandWidth(false)))
             {
-                Refresh();
+                RefreshSceneRoots();
             }
 
             if (GUILayout.Button("Fold all / Clear", GUILayout.ExpandWidth(false)))
             {
                 ClearExpanded();
-                Refresh();
+                RefreshSceneRoots();
             }
 
             GUILayout.EndHorizontal();
@@ -473,7 +473,7 @@ namespace ModTools.Explorer
         {
             Debug.LogException(ex);
             state = new SceneExplorerState();
-            sceneRoots = GameObjectUtil.FindSceneRoots();
+            RefreshSceneRoots();
         }
 
         protected override void DrawWindow()
@@ -542,9 +542,7 @@ namespace ModTools.Explorer
             if (GUILayout.Button("Reset"))
             {
                 ClearExpanded();
-                sceneRoots = GameObjectUtil.FindSceneRoots();
-                sceneTreeScrollPosition = Vector2.zero;
-                searchDisplayString = string.Empty;
+                RefreshSceneRoots();
             }
 
             GUI.enabled = true;
@@ -584,9 +582,7 @@ namespace ModTools.Explorer
             if (GUILayout.Button("Reset"))
             {
                 ClearExpanded();
-                sceneRoots = GameObjectUtil.FindSceneRoots();
-                sceneTreeScrollPosition = Vector2.zero;
-                searchDisplayString = string.Empty;
+                RefreshSceneRoots();
             }
 
             GUI.enabled = true;

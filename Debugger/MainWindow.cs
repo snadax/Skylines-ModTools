@@ -134,7 +134,7 @@ namespace ModTools
                 SceneExplorer.Visible = !SceneExplorer.Visible;
                 if (SceneExplorer.Visible)
                 {
-                    SceneExplorer.Refresh();
+                    SceneExplorer.RefreshSceneRoots();
                 }
             }
             else if (Input.GetKeyDown(KeyCode.R))
@@ -300,7 +300,7 @@ namespace ModTools
                 SceneExplorer.Visible = !SceneExplorer.Visible;
                 if (SceneExplorer.Visible)
                 {
-                    SceneExplorer.Refresh();
+                    SceneExplorer.RefreshSceneRoots();
                 }
             }
 
