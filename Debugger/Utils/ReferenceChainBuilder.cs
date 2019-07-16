@@ -185,11 +185,30 @@ namespace ModTools.Utils
                 .Add(gameObject.GetComponent<UIView>())
                 .Add(typeof(UIView).GetProperty("defaultAtlas"))
                 .Add(typeof(UITextureAtlas).GetProperty("sprites"))
-                .Add(id); 
+                .Add(id);
+        }
+
+        //TODO: usage of value arg is a hack required because at least the last element of the refChain is not set properly
+        public static ReferenceChain Optimize(ReferenceChain referenceChain, object value)
+        {
+            switch (value)
+            {
+                case GameObject go:
+                    return ForGameObject(go);
+                case UIComponent uiComponent:
+                    return ForUIComponent(uiComponent);
+                default:
+                    return referenceChain;
+            }
         }
         
         public static ReferenceChain ForUIComponent(UIComponent component)
         {
+            if (component == null)
+            {
+                return null;
+            }
+            
             var current = component;
             var refChain = new ReferenceChain();
             refChain = refChain.Add(current);
@@ -205,6 +224,11 @@ namespace ModTools.Utils
 
         public static ReferenceChain ForGameObject(GameObject gameObject)
         {
+            if (gameObject == null)
+            {
+                return null;
+            }
+
             var current = gameObject;
             var refChain = new ReferenceChain();
             refChain = refChain.Add(current);
