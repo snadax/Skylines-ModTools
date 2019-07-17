@@ -58,11 +58,11 @@ namespace ModTools
             m_Button.hoveredBgSprite = $"{baseSpriteName}Hovered";
             m_Button.pressedBgSprite = $"{baseSpriteName}Pressed";
             m_Button.disabledBgSprite = $"{baseSpriteName}Disabled";
-            m_Button.absolutePosition = new Vector3(1700, 10); // TODO: make dynamic
             m_Button.playAudioEvents = true;
             m_Button.width = 46f;
             m_Button.height = 46f;
             UIView.GetAView().AttachUIComponent(buttonGo);
+            m_Button.absolutePosition = new Vector3(1700, 10); // TODO: make dynamic
             m_Button.atlas = atlas;
             m_Button.eventClicked += (c, e) => ToggleTool();
 

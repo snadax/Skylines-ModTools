@@ -93,13 +93,13 @@ namespace ModTools.Explorer
 
                 if (value != null)
                 {
-                    GUIButtons.SetupSmartShowButtons(value, TypeUtil.DetectSmartType(watch.LastItemName, value.GetType())); //TODO: get from cache
+                    GUIButtons.SetupSmartShowButtons(value, TypeUtil.OverrideSmartType(TypeUtil.DetectSmartType(watch.LastItemName, value.GetType()), watch.LastItemName, watch.SubChain(watch.Length - 1).Evaluate())); //TODO: get from cache
                 }
 
                 if (GUILayout.Button("Show watched field"))
                 {
                     var sceneExplorer = FindObjectOfType<SceneExplorer>();
-                    sceneExplorer.Show(watch.Trim(watch.Length - 1));
+                    sceneExplorer.Show(watch.SubChain(watch.Length - 1));
                 }
 
                 if (GUILayout.Button("x", GUILayout.Width(24)))

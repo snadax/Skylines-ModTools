@@ -105,7 +105,6 @@ namespace ModTools.Utils
                 GetMembersInternal2(type.BaseType, true, bindingFlags, outResults);
             }
         }
-        
         private static Type GetMemberUnderlyingType(MemberInfo member)
         {
             if (member.MemberType == MemberTypes.Field)
@@ -219,6 +218,40 @@ namespace ModTools.Utils
                //suppress 
             }
             return SmartType.Undefined;
+        }
+        
+        public static SmartType OverrideSmartType(SmartType smartType, string memberName, object value)
+        {
+            if (value == null || memberName == null)
+            {
+                return smartType;
+            }
+
+            if (memberName != "m_targetBuilding")
+            {
+                return smartType;
+            }
+            switch (value)
+            {
+                case Vehicle vehicle:
+                    var vehicleCopy = vehicle;
+                    if (vehicle.Info?.m_vehicleAI?.GetTargetID(0, ref vehicleCopy).NetNode > 0)
+                    {
+                        return SmartType.NetNode;
+                    }
+
+                    break;
+                case CitizenInstance citizenInstance:
+                    var citizenInstanceCopy = citizenInstance;
+                    if (citizenInstance.Info?.m_citizenAI?.GetTargetID(0, ref citizenInstanceCopy).NetNode > 0)
+                    {
+                        return SmartType.NetNode;
+                    }
+
+                    break;
+            }
+
+            return smartType;
         }
         
         private static bool IsIntegerType(Type type)

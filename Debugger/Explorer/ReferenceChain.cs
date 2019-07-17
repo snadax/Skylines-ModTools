@@ -139,7 +139,7 @@ namespace ModTools.Explorer
             return copy;
         }
 
-        public ReferenceChain Trim(int num)
+        public ReferenceChain SubChain(int num)
         {
             var copy = Clone();
             copy.Length = Mathf.Min(num, Length);

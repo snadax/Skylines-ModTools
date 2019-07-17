@@ -418,7 +418,7 @@ namespace ModTools.Explorer
                     GUILayout.Label("Actions", GUILayout.MinWidth(110f));
                     if (GUILayout.Button("^", GUILayout.ExpandWidth(false)))
                     {
-                        Show(state.CurrentRefChain.Trim(state.CurrentRefChain.Length - 1));
+                        Show(state.CurrentRefChain.SubChain(state.CurrentRefChain.Length - 1));
                     }
                     GUIButtons.SetupCommonButtons(state.CurrentRefChain, value,
                         state.CurrentRefChain.LastItem is uint u ? u : 0);
