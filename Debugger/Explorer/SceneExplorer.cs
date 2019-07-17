@@ -71,15 +71,23 @@ namespace ModTools.Explorer
 
         public void Update()
         {
-            var refChain = state.CurrentRefChain;
-            if (refChain?.Length > 0)
+            try
             {
-                var typeName = refChain.Evaluate().GetType().Name;
-                Title = $"{TitleBase} - {typeName} \"{refChain}\"";
+                var refChain = state.CurrentRefChain;
+                if (refChain?.Length > 0)
+                {
+                    var typeName = refChain.Evaluate().GetType().Name;
+                    Title = $"{TitleBase} - {typeName} \"{refChain}\"";
+                }
+                else
+                {
+                    Title = TitleBase;
+                }
             }
-            else
+            catch
             {
-                Title = TitleBase;
+                ClearExpanded();
+                RefreshSceneRoots();
             }
 
             Plopper.Update();
