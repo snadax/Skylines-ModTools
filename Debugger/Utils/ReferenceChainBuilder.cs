@@ -35,6 +35,16 @@ namespace ModTools.Utils
                 .Add(typeof(Array16<Building>).GetField("m_buffer"))
                 .Add(buildingId);
         }
+        
+        public static ReferenceChain ForZoneBlock(ushort blockId)
+        {
+            return new ReferenceChain()
+                .Add(ZoneManager.instance.gameObject)
+                .Add(ZoneManager.instance)
+                .Add(typeof(ZoneManager).GetField("m_blocks"))
+                .Add(typeof(Array16<ZoneBlock>).GetField("m_buffer"))
+                .Add(blockId);
+        }
 
         public static ReferenceChain ForVehicle(ushort vehicleId)
         {

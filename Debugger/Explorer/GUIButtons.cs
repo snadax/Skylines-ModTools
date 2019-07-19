@@ -408,6 +408,20 @@ namespace ModTools.Explorer
 
                         break;
                     }
+                    case TypeUtil.SmartType.ZoneBlock:
+                    {
+                        if (Convert.ToUInt16(value) < 1)
+                        {
+                            return;
+                        }
+                        if (GUILayout.Button("Show zone block"))
+                        {
+                            var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                            sceneExplorer.Show(ReferenceChainBuilder.ForZoneBlock(Convert.ToUInt16(value)));
+                        }
+
+                        break;
+                    }
                     default:
                         return;
                 }

@@ -152,6 +152,11 @@ namespace ModTools.Utils
                         return SmartType.Building;
                     }
 
+                    if (memberName.IndexOf("path", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.PathUnit;
+                    }
+
                     if (memberName.IndexOf("unit", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         return SmartType.CitizenUnit;
@@ -165,11 +170,6 @@ namespace ModTools.Utils
                     if (memberName.IndexOf("line", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         return SmartType.TransportLine;
-                    }
-
-                    if (memberName.IndexOf("path", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        return SmartType.PathUnit;
                     }
 
                     if (memberName.IndexOf("node", StringComparison.OrdinalIgnoreCase) >= 0)
@@ -210,7 +210,12 @@ namespace ModTools.Utils
                     if (memberName.IndexOf("instance", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         return SmartType.CitizenInstance;
-                    }                 
+                    }
+
+                    if (memberName.IndexOf("block", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.ZoneBlock;
+                    }
                 }
             }
             catch
@@ -304,7 +309,8 @@ namespace ModTools.Utils
             Tree,
             Prop,
             Undefined,
-            Sprite
+            Sprite,
+            ZoneBlock
         }
     }
 }
