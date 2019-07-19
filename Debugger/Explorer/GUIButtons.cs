@@ -62,7 +62,7 @@ namespace ModTools.Explorer
                          CitizenInstance.Flags.Created:
 
                     InstanceID citizenInstanceInst = default;
-                    citizenInstanceInst.CitizenInstance = (ushort) valueIndex;
+                    citizenInstanceInst.CitizenInstance = (ushort)valueIndex;
                     SetupGotoButton(citizenInstanceInst, instance.GetLastFramePosition());
                     goto default;
 
@@ -82,13 +82,13 @@ namespace ModTools.Explorer
                                           (vehicle.m_flags & (Vehicle.Flags.Created | Vehicle.Flags.Deleted)) ==
                                           Vehicle.Flags.Created:
                     InstanceID vehicleInst = default;
-                    vehicleInst.Vehicle = (ushort) valueIndex;
+                    vehicleInst.Vehicle = (ushort)valueIndex;
                     SetupGotoButton(vehicleInst, vehicle.GetLastFramePosition());
-                    break;
+                    goto default;
 
                 case VehicleParked parkedVehicle when valueIndex > 0 && (parkedVehicle.m_flags & 3) == 1:
                     InstanceID parkedVehicleInst = default;
-                    parkedVehicleInst.ParkedVehicle = (ushort) valueIndex;
+                    parkedVehicleInst.ParkedVehicle = (ushort)valueIndex;
                     SetupGotoButton(parkedVehicleInst, parkedVehicle.m_position);
                     goto default;
 
@@ -96,8 +96,24 @@ namespace ModTools.Explorer
                                             (building.m_flags & (Building.Flags.Created | Building.Flags.Deleted)) ==
                                             Building.Flags.Created:
                     InstanceID buildingInst = default;
-                    buildingInst.Building = (ushort) valueIndex;
+                    buildingInst.Building = (ushort)valueIndex;
                     SetupGotoButton(buildingInst, building.m_position);
+                    goto default;
+
+                case PropInstance prop when valueIndex > 0 &&
+                                            ((PropInstance.Flags)prop.m_flags & (PropInstance.Flags.Created | PropInstance.Flags.Deleted)) ==
+                                            PropInstance.Flags.Created:
+                    InstanceID propInst = default;
+                    propInst.Prop = (ushort)valueIndex;
+                    SetupGotoButton(propInst, prop.Position);
+                    goto default;
+
+                case TreeInstance tree when valueIndex > 0 &&
+                                            ((TreeInstance.Flags)tree.m_flags & (TreeInstance.Flags.Created | TreeInstance.Flags.Deleted)) ==
+                                            TreeInstance.Flags.Created:
+                    InstanceID treeInst = default;
+                    treeInst.Tree = valueIndex;
+                    SetupGotoButton(treeInst, tree.Position);
                     goto default;
 
                 case NetSegment segment when valueIndex > 0 &&
@@ -105,7 +121,7 @@ namespace ModTools.Explorer
                                               (NetSegment.Flags.Created | NetSegment.Flags.Deleted)) ==
                                              NetSegment.Flags.Created:
                     InstanceID segmentInst = default;
-                    segmentInst.NetSegment = (ushort) valueIndex;
+                    segmentInst.NetSegment = (ushort)valueIndex;
                     SetupGotoButton(segmentInst, segment.m_middlePosition);
                     goto default;
 
@@ -113,8 +129,17 @@ namespace ModTools.Explorer
                                        (node.m_flags & (NetNode.Flags.Created | NetNode.Flags.Deleted)) ==
                                        NetNode.Flags.Created:
                     InstanceID nodeInst = default;
-                    nodeInst.NetNode = (ushort) valueIndex;
+                    nodeInst.NetNode = (ushort)valueIndex;
                     SetupGotoButton(nodeInst, node.m_position);
+                    goto default;
+
+                case NetLane lane when valueIndex > 0 &&
+                                       ((NetLane.Flags)lane.m_flags & (NetLane.Flags.Created | NetLane.Flags.Deleted)) ==
+                                       NetLane.Flags.Created:
+                    InstanceID segmentInst1 = default;
+                    segmentInst1.NetSegment = lane.m_segment;
+                    var segment1 = NetManager.instance.m_segments.m_buffer[lane.m_segment];
+                    SetupGotoButton(segmentInst1, segment1.m_middlePosition);
                     goto default;
 
                 case Texture texture:
