@@ -25,29 +25,6 @@ namespace ModTools.Explorer
             GUILayout.BeginHorizontal();
             SceneExplorerCommon.InsertIndent(refChain.Indentation);
 
-            var propertyWasEvaluated = false;
-            object value = null;
-
-            Exception exceptionOnGetting = null;
-
-            if (property.CanRead && MainWindow.Instance.Config.EvaluateProperties || state.EvaluatedProperties.Contains(refChain.UniqueId))
-            {
-                try
-                {
-                    value = property.GetValue(obj, null);
-                    propertyWasEvaluated = true;
-                }
-                catch (Exception e)
-                {
-                    exceptionOnGetting = e;
-                }
-
-                if (value != null && exceptionOnGetting == null)
-                {
-                    GUIExpander.ExpanderControls(state, refChain, property.PropertyType, obj);
-                }
-            }
-
             GUI.contentColor = Color.white;
 
             if (!property.CanWrite)
@@ -79,6 +56,9 @@ namespace ModTools.Explorer
             GUILayout.Label(" = ");
             GUI.contentColor = MainWindow.Instance.Config.ValueColor;
 
+            object value = null;
+
+            Exception exceptionOnGetting = null;
             if (!MainWindow.Instance.Config.EvaluateProperties && !state.EvaluatedProperties.Contains(refChain.UniqueId))
             {
                 GUI.enabled = true;
@@ -90,12 +70,11 @@ namespace ModTools.Explorer
             }
             else
             {
-                if (!propertyWasEvaluated && property.CanRead)
+                if (property.CanRead)
                 {
                     try
                     {
                         value = property.GetValue(obj, null);
-                        propertyWasEvaluated = true;
                     }
                     catch (Exception e)
                     {
@@ -109,7 +88,10 @@ namespace ModTools.Explorer
                     GUILayout.Label("Exception happened when getting property value");
                     GUI.contentColor = Color.white;
                     GUI.enabled = true;
-                    GUIStackTrace.StackTraceButton(new StackTrace(exceptionOnGetting, true));
+                    if (exceptionOnGetting.InnerException != null)
+                    {
+                        GUIStackTrace.StackTraceButton(new StackTrace(exceptionOnGetting.InnerException, true), exceptionOnGetting.InnerException.Message);
+                    }
 
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();

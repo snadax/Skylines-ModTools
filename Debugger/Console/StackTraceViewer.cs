@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using ModTools.UI;
+using ObjUnity3D;
 using UnityEngine;
 
 namespace ModTools.Console
@@ -8,6 +10,7 @@ namespace ModTools.Console
     internal sealed class StackTraceViewer : GUIWindow
     {
         private StackTrace trace;
+        private string errorMessage;
 
         private Vector2 scrollPos = Vector2.zero;
 
@@ -18,11 +21,12 @@ namespace ModTools.Console
 
         private static ModConfiguration Config => MainWindow.Instance.Config;
 
-        public static StackTraceViewer CreateStackTraceViewer(StackTrace trace)
+        public static StackTraceViewer CreateStackTraceViewer(StackTrace trace, string errorMessage = "")
         {
             var go = new GameObject("StackTraceViewer");
             go.transform.parent = MainWindow.Instance.transform;
             var viewer = go.AddComponent<StackTraceViewer>();
+            viewer.errorMessage = errorMessage;
             viewer.trace = trace;
             return viewer;
         }
@@ -47,7 +51,7 @@ namespace ModTools.Console
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             var count = 0;
-            foreach (var frame in stackFrames)
+            foreach (var frame in stackFrames.Reverse())
             {
                 GUILayout.BeginHorizontal(Skin.box);
                 var method = frame.GetMethod();
@@ -65,10 +69,18 @@ namespace ModTools.Console
                     GUILayout.Label(" @ " + method.DeclaringType.ToString(), GUILayout.ExpandWidth(false));
                 }
 
-                GUI.contentColor = Color.white;
-
-                GUILayout.EndHorizontal();
                 count++;
+                GUILayout.EndHorizontal();
+
+                GUI.contentColor = Color.white;
+            }
+
+            if (stackFrames.Length > 0 && !errorMessage.IsNullOrEmpty())
+            {
+                GUILayout.BeginHorizontal(Skin.box);
+                GUI.contentColor = Config.ConsoleErrorColor;
+                GUILayout.Label(errorMessage);
+                GUILayout.EndHorizontal();
             }
 
             GUILayout.EndScrollView();
