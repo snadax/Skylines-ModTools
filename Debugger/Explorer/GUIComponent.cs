@@ -28,8 +28,8 @@ namespace ModTools.Explorer
             {
                 if (GUILayout.Button(">", GUILayout.ExpandWidth(false)))
                 {
-                    refChain.IndentationOffset = refChain.Length;
-                    state.CurrentRefChain = refChain;
+                    var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                    sceneExplorer.Show(refChain, false);
                 }
             }
             else

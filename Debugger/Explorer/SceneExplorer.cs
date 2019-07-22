@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,7 +10,7 @@ namespace ModTools.Explorer
 {
     internal sealed class SceneExplorer : GUIWindow, IGameObject, IAwakingObject
     {
-        private static readonly Queue<ReferenceChain> ShowRequests = new Queue<ReferenceChain>();
+        private static readonly Queue<ShowRequest> ShowRequests = new Queue<ShowRequest>();
         
         private const float WindowTopMargin = 16.0f;
         private const float WindowBottomMargin = 8.0f;
@@ -137,20 +137,7 @@ namespace ModTools.Explorer
         
         
 
-        public void Show(ReferenceChain refChain)
-        {
-            if (refChain == null)
-            {
-                Logger.Error("SceneExplorer: Show(): Null refChain");
-                return;
-            }
-
-            refChain.IndentationOffset = refChain.Length;
-            ShowRequests.Enqueue(refChain);
-            Visible = true;
-        }        
-         
-        private void ProcessShowRequest(ReferenceChain refChain)
+        public void Show(ReferenceChain refChain, bool hideUnrelatedSceneRoots = true, string updatedSearchString = "")
         {
             if (refChain == null)
             {
@@ -169,56 +156,124 @@ namespace ModTools.Explorer
                 Logger.Error($"SceneExplorer: ExpandFromRefChain(): invalid chain type for element [0] - expected {ReferenceChain.ReferenceType.GameObject}, got {refChain.FirstItemType}");
                 return;
             }
-           
-            sceneRoots.Clear();
-            ClearExpanded();
-            searchDisplayString = string.Empty;
 
-            var rootGameObject = (GameObject)refChain.GetChainItem(0);
-            sceneRoots.Add(rootGameObject, true);
+            EnqueueShowRefChainRequest(new List<ReferenceChain> { refChain }, hideUnrelatedSceneRoots, updatedSearchString);
 
-            var expandedRefChain = ReferenceChainBuilder.ForGameObject(rootGameObject);
-            state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
+            Visible = true;
+        }
 
-            for (var i = 1; i < refChain.Length; i++)
+        private static void EnqueueShowRefChainRequest(List<ReferenceChain> refChains, bool hideUnrelatedSceneRoots, string updatedSearchString)
+        {
+            ShowRequests.Enqueue(new ShowRequest()
             {
-                switch (refChain.GetChainItemType(i))
+                ReferenceChains = refChains,
+                HideUnrelatedSceneRoots = hideUnrelatedSceneRoots,
+                UpdatedSearchString = updatedSearchString,
+            });
+        }
+
+        private void ProcessShowRequest(ShowRequest request)
+        {
+            if (request.HideUnrelatedSceneRoots)
+            {
+                sceneTreeScrollPosition = Vector2.zero;
+                sceneRoots.Clear();
+                ClearExpanded();
+            }
+
+            searchDisplayString = request.UpdatedSearchString;
+            ReferenceChain currentRefChain = null;
+            foreach (var refChain in request.ReferenceChains)
+            {
+                var rootGameObject = (GameObject)refChain.GetChainItem(0);
+                if (!sceneRoots.ContainsKey(rootGameObject))
                 {
-                    case ReferenceChain.ReferenceType.GameObject:
-                        var go = (GameObject)refChain.GetChainItem(i);
-                        expandedRefChain = expandedRefChain.Add(go);
-                        state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
-                        break;
+                    sceneRoots.Add(rootGameObject, true);
+                }
 
-                    case ReferenceChain.ReferenceType.Component:
-                        var component = (Component)refChain.GetChainItem(i);
-                        expandedRefChain = expandedRefChain.Add(component);
-                        state.ExpandedComponents.Add(expandedRefChain.UniqueId);
-                        break;
+                var expandedRefChain = ReferenceChainBuilder.ForGameObject(rootGameObject);
+                if (!state.ExpandedGameObjects.Contains(expandedRefChain.UniqueId))
+                {
+                    state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
+                }
 
-                    case ReferenceChain.ReferenceType.Field:
-                        var field = (FieldInfo)refChain.GetChainItem(i);
-                        expandedRefChain = expandedRefChain.Add(field);
-                        state.ExpandedObjects.Add(expandedRefChain.UniqueId);
-                        break;
+                for (var i = 1; i < refChain.Length; i++)
+                {
+                    var breakLoop = false;
+                    switch (refChain.GetChainItemType(i))
+                    {
+                        case ReferenceChain.ReferenceType.GameObject:
+                            var go = (GameObject)refChain.GetChainItem(i);
+                            expandedRefChain = expandedRefChain.Add(go);
+                            if (!state.ExpandedGameObjects.Contains(expandedRefChain.UniqueId))
+                            {
+                                state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
+                            }
 
-                    case ReferenceChain.ReferenceType.Property:
-                        var property = (PropertyInfo)refChain.GetChainItem(i);
-                        expandedRefChain = expandedRefChain.Add(property);
-                        state.ExpandedObjects.Add(expandedRefChain.UniqueId);
-                        break;
+                            break;
 
-                    case ReferenceChain.ReferenceType.EnumerableItem:
-                        var index = (uint)refChain.GetChainItem(i);
-                        state.SelectedArrayStartIndices[expandedRefChain.UniqueId] = index;
-                        state.SelectedArrayEndIndices[expandedRefChain.UniqueId] = index;
-                        expandedRefChain = expandedRefChain.Add(index);
-                        state.ExpandedObjects.Add(expandedRefChain.UniqueId);
+                        case ReferenceChain.ReferenceType.Component:
+                            var component = (Component)refChain.GetChainItem(i);
+                            expandedRefChain = expandedRefChain.Add(component);
+                            if (!state.ExpandedComponents.Contains(expandedRefChain.UniqueId))
+                            {
+                                state.ExpandedComponents.Add(expandedRefChain.UniqueId);
+                            }
+
+                            if (currentRefChain != null)
+                            {
+                                breakLoop = true;
+                            }
+
+                            break;
+
+                        case ReferenceChain.ReferenceType.Field:
+                            var field = (FieldInfo)refChain.GetChainItem(i);
+                            expandedRefChain = expandedRefChain.Add(field);
+                            if (!state.ExpandedObjects.Contains(expandedRefChain.UniqueId))
+                            {
+                                state.ExpandedObjects.Add(expandedRefChain.UniqueId);
+                            }
+
+                            break;
+
+                        case ReferenceChain.ReferenceType.Property:
+                            var property = (PropertyInfo)refChain.GetChainItem(i);
+                            expandedRefChain = expandedRefChain.Add(property);
+                            if (!state.ExpandedObjects.Contains(expandedRefChain.UniqueId))
+                            {
+                                state.ExpandedObjects.Add(expandedRefChain.UniqueId);
+                            }
+
+                            break;
+
+                        case ReferenceChain.ReferenceType.EnumerableItem:
+                            var index = (uint)refChain.GetChainItem(i);
+                            state.SelectedArrayStartIndices[expandedRefChain.UniqueId] = index;
+                            state.SelectedArrayEndIndices[expandedRefChain.UniqueId] = index;
+                            expandedRefChain = expandedRefChain.Add(index);
+                            if (!state.ExpandedObjects.Contains(expandedRefChain.UniqueId))
+                            {
+                                state.ExpandedObjects.Add(expandedRefChain.UniqueId);
+                            }
+
+                            break;
+                    }
+
+                    if (breakLoop)
+                    {
                         break;
+                    }
+                }
+
+                if (currentRefChain == null)
+                {
+                    currentRefChain = refChain.Clone();
+                    currentRefChain.IndentationOffset = refChain.Length;
                 }
             }
 
-            state.CurrentRefChain = refChain.Clone();
+            state.CurrentRefChain = currentRefChain;
         }
 
         public void DrawHeader()
@@ -539,11 +594,7 @@ namespace ModTools.Explorer
                 var go = GameObject.Find(findGameObjectFilter.Trim());
                 if (go != null)
                 {
-                    sceneRoots.Clear();
-                    state.ExpandedGameObjects.Add(new ReferenceChain().Add(go).UniqueId);
-                    sceneRoots.Add(go, true);
-                    sceneTreeScrollPosition = Vector2.zero;
-                    searchDisplayString = $"Showing results for GameObject.Find(\"{findGameObjectFilter}\")";
+                    EnqueueShowRefChainRequest(new List<ReferenceChain> { new ReferenceChain().Add(go) }, true, $"Showing results for GameObject.Find(\"{findGameObjectFilter}\")");
                 }
             }
 
@@ -570,21 +621,7 @@ namespace ModTools.Explorer
             if (GUILayout.Button("Find"))
             {
                 var gameObjects = GameObjectUtil.FindComponentsOfType(findObjectTypeFilter.Trim());
-
-                sceneRoots.Clear();
-                foreach (var item in gameObjects)
-                {
-                    ClearExpanded();
-                    state.ExpandedGameObjects.Add(new ReferenceChain().Add(item.Key).UniqueId);
-                    if (gameObjects.Count == 1)
-                    {
-                        state.ExpandedComponents.Add(new ReferenceChain().Add(item.Key).Add(item.Value).UniqueId);
-                    }
-
-                    sceneRoots.Add(item.Key, true);
-                    sceneTreeScrollPosition = Vector2.zero;
-                    searchDisplayString = $"Showing results for GameObject.FindObjectsOfType({findObjectTypeFilter})";
-                }
+                EnqueueShowRefChainRequest(gameObjects.Select(item => new ReferenceChain().Add(item.Key)).ToList(), true, $"Showing results for GameObject.FindObjectsOfType({findObjectTypeFilter})");
             }
 
             if (GUILayout.Button("Reset"))
@@ -597,6 +634,15 @@ namespace ModTools.Explorer
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+        }
+        
+        private sealed class ShowRequest
+        {
+            public List<ReferenceChain> ReferenceChains { get; set; }
+
+            public bool HideUnrelatedSceneRoots { get; set; }
+
+            public string UpdatedSearchString { get; set; }
         }
     }
 }
