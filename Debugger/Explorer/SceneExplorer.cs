@@ -272,7 +272,7 @@ namespace ModTools.Explorer
                 }
             }
 
-            state.CurrentRefChain = singleRefChain ? currentRefChain : null;
+            state.CurrentRefChain = currentRefChain;
         }
 
         public void DrawHeader()
