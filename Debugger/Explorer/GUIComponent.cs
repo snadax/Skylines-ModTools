@@ -35,6 +35,7 @@ namespace ModTools.Explorer
             else
             {
                 GUI.contentColor = MainWindow.Instance.Config.SelectedComponentColor;
+                state.PreventCircularReferences.Add(component.gameObject);
                 if (GUILayout.Button("<", GUILayout.ExpandWidth(false)))
                 {
                     state.CurrentRefChain = null;

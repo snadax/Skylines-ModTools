@@ -71,7 +71,6 @@ namespace ModTools.Explorer
                     {
                         GUIComponent.OnSceneTreeComponent(state, refChain.Add(component), component);
                     }
-                    
                 }
                 catch (Exception)
                 {

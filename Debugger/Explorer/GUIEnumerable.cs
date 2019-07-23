@@ -57,21 +57,7 @@ namespace ModTools.Explorer
 
                 if (type != null && !TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
                 {
-                    if (value is GameObject go)
-                    {
-                        foreach (var component in go.GetComponents<Component>())
-                        {
-                            GUIComponent.OnSceneTreeComponent(state, refChain, component);
-                        }
-                    }
-                    else if (value is Transform transform)
-                    {
-                        GUITransform.OnSceneTreeReflectUnityEngineTransform(refChain, transform);
-                    }
-                    else
-                    {
-                        GUIReflect.OnSceneTreeReflect(state, refChain, value, false, elementSmartType, string.Empty);
-                    }
+                    GUIReflect.OnSceneTreeReflect(state, refChain, value, false, elementSmartType, string.Empty);
                 }
 
                 count++;
