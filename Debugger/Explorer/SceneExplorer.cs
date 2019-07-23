@@ -215,11 +215,6 @@ namespace ModTools.Explorer
                         case ReferenceChain.ReferenceType.Component:
                             var component = (Component)refChain.GetChainItem(i);
                             expandedRefChain = expandedRefChain.Add(component);
-                            if (!state.ExpandedComponents.Contains(expandedRefChain.UniqueId))
-                            {
-                                state.ExpandedComponents.Add(expandedRefChain.UniqueId);
-                            }
-
                             if (currentRefChain != null)
                             {
                                 breakLoop = true;
@@ -566,7 +561,6 @@ namespace ModTools.Explorer
         public void ClearExpanded()
         {
             state.ExpandedGameObjects.Clear();
-            state.ExpandedComponents.Clear();
             state.ExpandedObjects.Clear();
             state.EvaluatedProperties.Clear();
             state.SelectedArrayStartIndices.Clear();

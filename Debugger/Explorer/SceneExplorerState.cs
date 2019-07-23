@@ -6,8 +6,6 @@ namespace ModTools.Explorer
     {
         public HashSet<string> ExpandedGameObjects { get; } = new HashSet<string>();
 
-        public HashSet<string> ExpandedComponents { get; } = new HashSet<string>();
-
         public HashSet<string> ExpandedObjects { get; } = new HashSet<string>();
 
         public HashSet<string> EvaluatedProperties { get; } = new HashSet<string>();
