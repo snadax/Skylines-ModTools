@@ -48,9 +48,13 @@ namespace ModTools.Explorer
                 var stringBuilder = new StringBuilder(Length * 32);
                 for (var i = 0; i < Length; ++i)
                 {
+                    var instanceString = chainObjects[i] is GameObject gameObject ? $"#{gameObject.GetInstanceID()}" : string.Empty;
                     stringBuilder
-                        .Append(chainTypes[i]).Append(':')
-                        .Append(ItemToString(i)).Append('.');
+                        .Append(chainTypes[i])
+                        .Append(':')
+                        .Append(ItemToString(i))
+                        .Append(instanceString)
+                        .Append('.');
                 }
 
                 uniqueId = stringBuilder.ToString();
