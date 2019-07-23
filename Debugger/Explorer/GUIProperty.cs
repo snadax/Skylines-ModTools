@@ -25,6 +25,27 @@ namespace ModTools.Explorer
             GUILayout.BeginHorizontal();
             SceneExplorerCommon.InsertIndent(refChain.Indentation);
 
+            object value = null;
+
+            Exception exceptionOnGetting = null;
+
+            if (property.CanRead && MainWindow.Instance.Config.EvaluateProperties || state.EvaluatedProperties.Contains(refChain.UniqueId))
+            {
+                try
+                {
+                    value = property.GetValue(obj, null);
+                }
+                catch (Exception e)
+                {
+                    exceptionOnGetting = e;
+                }
+
+                if (value != null && exceptionOnGetting == null)
+                {
+                    GUIExpander.ExpanderControls(state, refChain, property.PropertyType, obj);
+                }
+            }
+
             GUI.contentColor = Color.white;
 
             if (!property.CanWrite)
@@ -55,10 +76,22 @@ namespace ModTools.Explorer
             GUI.contentColor = Color.white;
             GUILayout.Label(" = ");
             GUI.contentColor = MainWindow.Instance.Config.ValueColor;
+            if (exceptionOnGetting != null)
+            {
+                GUI.contentColor = Color.red;
+                GUILayout.Label("Exception happened when getting property value");
+                GUI.contentColor = Color.white;
+                GUI.enabled = true;
+                if (exceptionOnGetting.InnerException != null)
+                {
+                    GUIStackTrace.StackTraceButton(new StackTrace(exceptionOnGetting.InnerException, true), exceptionOnGetting.InnerException.Message);
+                }
 
-            object value = null;
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+                return;
+            }
 
-            Exception exceptionOnGetting = null;
             if (!MainWindow.Instance.Config.EvaluateProperties && !state.EvaluatedProperties.Contains(refChain.UniqueId))
             {
                 GUI.enabled = true;
@@ -70,34 +103,6 @@ namespace ModTools.Explorer
             }
             else
             {
-                if (property.CanRead)
-                {
-                    try
-                    {
-                        value = property.GetValue(obj, null);
-                    }
-                    catch (Exception e)
-                    {
-                        exceptionOnGetting = e;
-                    }
-                }
-
-                if (exceptionOnGetting != null)
-                {
-                    GUI.contentColor = Color.red;
-                    GUILayout.Label("Exception happened when getting property value");
-                    GUI.contentColor = Color.white;
-                    GUI.enabled = true;
-                    if (exceptionOnGetting.InnerException != null)
-                    {
-                        GUIStackTrace.StackTraceButton(new StackTrace(exceptionOnGetting.InnerException, true), exceptionOnGetting.InnerException.Message);
-                    }
-
-                    GUILayout.FlexibleSpace();
-                    GUILayout.EndHorizontal();
-                    return;
-                }
-
                 if (value == null || !TypeUtil.IsSpecialType(property.PropertyType))
                 {
                     if (property.CanRead)
