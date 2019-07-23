@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace ModTools.Explorer
 {
@@ -37,10 +38,29 @@ namespace ModTools.Explorer
                         state.ExpandedGameObjects.Remove(refChain.UniqueId);
                     }
 
-                    GUI.contentColor = state.CurrentRefChain?.IsSameChain(refChain) == true ? MainWindow.Instance.Config.SelectedComponentColor : MainWindow.Instance.Config.GameObjectColor;
+                    var currentlySelected = state.CurrentRefChain?.IsSameChain(refChain) == true;
+                    GUI.contentColor = currentlySelected
+                        ? MainWindow.Instance.Config.SelectedComponentColor
+                        : obj.activeInHierarchy ? MainWindow.Instance.Config.GameObjectColor : MainWindow.Instance.Config.DisabledComponentColor;
 
                     GUILayout.Label(obj.name);
                     GUI.contentColor = Color.white;
+
+                    if (currentlySelected)
+                    {
+                        if (GUILayout.Button("<", GUILayout.ExpandWidth(false)))
+                        {
+                            state.CurrentRefChain = null;
+                        }
+                    }
+                    else
+                    {
+                        if (GUILayout.Button(">", GUILayout.ExpandWidth(false)))
+                        {
+                            var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
+                            sceneExplorer.Show(refChain, false);
+                        }
+                    }
 
                     GUILayout.EndHorizontal();
 
@@ -49,17 +69,17 @@ namespace ModTools.Explorer
                     {
                         gameObjects[i] = obj.transform.GetChild(i).gameObject;
                     }
-                    
+
                     if (MainWindow.Instance.Config.SortItemsAlphabetically)
                     {
                         Array.Sort(gameObjects, (x, y) => string.CompareOrdinal(x?.name, y?.name));
                     }
-                    
+
                     foreach (var gameObject in gameObjects)
                     {
-                        OnSceneTreeRecursive(modToolsGo, state, refChain.Add(gameObject), gameObject);                        
+                        OnSceneTreeRecursive(modToolsGo, state, refChain.Add(gameObject), gameObject);
                     }
-                    
+
                     var components = obj.GetComponents(typeof(Component));
 
                     if (MainWindow.Instance.Config.SortItemsAlphabetically)
@@ -88,7 +108,10 @@ namespace ModTools.Explorer
                     state.ExpandedGameObjects.Add(refChain.UniqueId);
                 }
 
-                GUI.contentColor = state.CurrentRefChain?.IsSameChain(refChain) == true ? MainWindow.Instance.Config.SelectedComponentColor : MainWindow.Instance.Config.GameObjectColor;
+                var currentlySelected = state.CurrentRefChain?.IsSameChain(refChain) == true;
+                GUI.contentColor = currentlySelected
+                    ? MainWindow.Instance.Config.SelectedComponentColor
+                    : obj.activeInHierarchy ? MainWindow.Instance.Config.GameObjectColor : MainWindow.Instance.Config.DisabledComponentColor;
                 GUILayout.Label(obj.name);
                 GUI.contentColor = Color.white;
                 GUILayout.EndHorizontal();

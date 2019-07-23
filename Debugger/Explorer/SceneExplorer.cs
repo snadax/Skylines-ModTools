@@ -134,8 +134,6 @@ namespace ModTools.Explorer
         {
             sceneRoots = GameObjectUtil.FindSceneRoots();
         }
-        
-        
 
         public void Show(ReferenceChain refChain, bool hideUnrelatedSceneRoots = true, string updatedSearchString = "")
         {
@@ -183,6 +181,7 @@ namespace ModTools.Explorer
 
             searchDisplayString = request.UpdatedSearchString;
             ReferenceChain currentRefChain = null;
+            var singleRefChain = request.ReferenceChains.Count == 1;
             foreach (var refChain in request.ReferenceChains)
             {
                 var rootGameObject = (GameObject)refChain.GetChainItem(0);
@@ -195,6 +194,11 @@ namespace ModTools.Explorer
                 if (!state.ExpandedGameObjects.Contains(expandedRefChain.UniqueId))
                 {
                     state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
+                }
+
+                if (!singleRefChain)
+                {
+                    continue;
                 }
 
                 for (var i = 1; i < refChain.Length; i++)
@@ -268,7 +272,7 @@ namespace ModTools.Explorer
                 }
             }
 
-            state.CurrentRefChain = currentRefChain;
+            state.CurrentRefChain = singleRefChain ? currentRefChain : null;
         }
 
         public void DrawHeader()
@@ -468,12 +472,28 @@ namespace ModTools.Explorer
                     GUILayout.Label("Actions", GUILayout.MinWidth(110f));
                     if (GUILayout.Button("^", GUILayout.ExpandWidth(false)))
                     {
-                        Show(state.CurrentRefChain.SubChain(state.CurrentRefChain.Length - 1));
+                        Show(state.CurrentRefChain.SubChain(state.CurrentRefChain.Length - 1), false);
                     }
+
                     GUIButtons.SetupCommonButtons(state.CurrentRefChain, value,
                         state.CurrentRefChain.LastItem is uint u ? u : 0);
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
+                }
+                else if (state.CurrentRefChain?.LastItem is GameObject gameObject)
+                {
+                    if (gameObject.transform?.parent?.gameObject != null)
+                    {
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Label("Actions", GUILayout.MinWidth(110f));
+                        if (GUILayout.Button("^", GUILayout.ExpandWidth(false)))
+                        {
+                            Show(ReferenceChainBuilder.ForGameObject(gameObject.transform?.parent?.gameObject));
+                        }
+
+                        GUILayout.FlexibleSpace();
+                        GUILayout.EndHorizontal();
+                    }
                 }
             }
             catch (Exception e)
