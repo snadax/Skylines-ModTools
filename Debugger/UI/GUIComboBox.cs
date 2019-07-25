@@ -31,10 +31,10 @@ namespace ModTools.UI
             var popupSize = GetPopupDimensions(items);
 
             GUILayout.Box(items[itemIndex], GUILayout.Width(popupSize.x));
-            var popupPusition = GUIUtility.GUIToScreenPoint(GUILayoutUtility.GetLastRect().position);
+            var popupPosition = GUIUtility.GUIToScreenPoint(GUILayoutUtility.GetLastRect().position);
             if (GUILayout.Button(ExpandDownButtonText, GUILayout.Width(24f)) && EnsurePopupWindow())
             {
-                popupWindow.Show(callerId, items, itemIndex, popupPusition, popupSize);
+                popupWindow.Show(callerId, items, itemIndex, popupPosition, popupSize);
             }
 
             return itemIndex;
@@ -47,7 +47,7 @@ namespace ModTools.UI
                 return true;
             }
 
-            var modTools = ModToolsMod.MainWindowObject;
+            var modTools = Object.FindObjectOfType<MainWindow>();
             if (modTools == null)
             {
                 return false;
@@ -55,7 +55,7 @@ namespace ModTools.UI
 
             if (modTools.GetComponent<PopupWindow>() == null)
             {
-                popupWindow = modTools.AddComponent<PopupWindow>();
+                popupWindow = modTools.gameObject.AddComponent<PopupWindow>();
             }
 
             return popupWindow != null;

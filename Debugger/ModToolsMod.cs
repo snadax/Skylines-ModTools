@@ -11,7 +11,7 @@ namespace ModTools
     {
         public const string ModToolsName = "ModTools";
 
-        public static GameObject MainWindowObject;
+        private GameObject mainWindowObject;
 
         private GameObject mainObject;
 
@@ -25,7 +25,7 @@ namespace ModTools
         {
             try
             {
-                if (MainWindowObject != null)
+                if (mainWindowObject != null)
                 {
                     return;
                 }
@@ -36,10 +36,10 @@ namespace ModTools
                 mainObject = new GameObject(ModToolsName);
                 UnityEngine.Object.DontDestroyOnLoad(mainObject);
 
-                MainWindowObject = new GameObject(ModToolsName + nameof(MainWindow));
-                UnityEngine.Object.DontDestroyOnLoad(MainWindowObject);
+                mainWindowObject = new GameObject(ModToolsName + nameof(MainWindow));
+                UnityEngine.Object.DontDestroyOnLoad(mainWindowObject);
 
-                var modTools = MainWindowObject.AddComponent<MainWindow>();
+                var modTools = mainWindowObject.AddComponent<MainWindow>();
                 modTools.Initialize();
             }
             catch (Exception e)
@@ -50,11 +50,11 @@ namespace ModTools
 
         public void OnDisabled()
         {
-            if (MainWindowObject != null)
+            if (mainWindowObject != null)
             {
                 CODebugBase<LogChannel>.verbose = false;
-                UnityEngine.Object.Destroy(MainWindowObject);
-                MainWindowObject = null;
+                UnityEngine.Object.Destroy(mainWindowObject);
+                mainWindowObject = null;
             }
 
             if (mainObject != null)
