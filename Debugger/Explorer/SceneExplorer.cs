@@ -10,8 +10,6 @@ namespace ModTools.Explorer
 {
     internal sealed class SceneExplorer : GUIWindow, IGameObject, IAwakingObject
     {
-        private static readonly Queue<ShowRequest> ShowRequests = new Queue<ShowRequest>();
-        
         private const float WindowTopMargin = 16.0f;
         private const float WindowBottomMargin = 8.0f;
 
@@ -26,6 +24,7 @@ namespace ModTools.Explorer
         private const string ExpandRightButtonText = " ▶▶▶ ";
         private const string CollapseLeftButtonText = " ◀◀◀ ";
 
+        private static readonly Queue<ShowRequest> ShowRequests = new Queue<ShowRequest>();
         private readonly GUIArea headerArea;
         private readonly GUIArea sceneTreeArea;
         private readonly GUIArea componentArea;
@@ -42,14 +41,12 @@ namespace ModTools.Explorer
 
         private bool headerExpanded;
         private bool treeExpanded = true;
-        
+
         private string quickFilter = string.Empty;
 
         public SceneExplorer()
             : base(TitleBase, new Rect(128, 440, 800, 500), Skin)
         {
-
-            
             headerArea = new GUIArea(this)
                 .ChangeSizeRelative(height: 0)
                 .OffsetBy(vertical: WindowTopMargin);
@@ -158,121 +155,6 @@ namespace ModTools.Explorer
             EnqueueShowRefChainRequest(new List<ReferenceChain> { refChain }, hideUnrelatedSceneRoots, updatedSearchString);
 
             Visible = true;
-        }
-
-        private static void EnqueueShowRefChainRequest(List<ReferenceChain> refChains, bool hideUnrelatedSceneRoots, string updatedSearchString)
-        {
-            ShowRequests.Enqueue(new ShowRequest()
-            {
-                ReferenceChains = refChains,
-                HideUnrelatedSceneRoots = hideUnrelatedSceneRoots,
-                UpdatedSearchString = updatedSearchString,
-            });
-        }
-
-        private void ProcessShowRequest(ShowRequest request)
-        {
-            if (request.HideUnrelatedSceneRoots)
-            {
-                sceneTreeScrollPosition = Vector2.zero;
-                sceneRoots.Clear();
-                ClearExpanded();
-            }
-
-            searchDisplayString = request.UpdatedSearchString;
-            ReferenceChain currentRefChain = null;
-            var singleRefChain = request.ReferenceChains.Count == 1;
-            foreach (var refChain in request.ReferenceChains)
-            {
-                var rootGameObject = (GameObject)refChain.GetChainItem(0);
-                if (!sceneRoots.ContainsKey(rootGameObject))
-                {
-                    sceneRoots.Add(rootGameObject, true);
-                }
-
-                var expandedRefChain = ReferenceChainBuilder.ForGameObject(rootGameObject);
-                if (!state.ExpandedGameObjects.Contains(expandedRefChain.UniqueId))
-                {
-                    state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
-                }
-
-                if (!singleRefChain)
-                {
-                    continue;
-                }
-
-                for (var i = 1; i < refChain.Length; i++)
-                {
-                    var breakLoop = false;
-                    switch (refChain.GetChainItemType(i))
-                    {
-                        case ReferenceChain.ReferenceType.GameObject:
-                            var go = (GameObject)refChain.GetChainItem(i);
-                            expandedRefChain = expandedRefChain.Add(go);
-                            if (!state.ExpandedGameObjects.Contains(expandedRefChain.UniqueId))
-                            {
-                                state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
-                            }
-
-                            break;
-
-                        case ReferenceChain.ReferenceType.Component:
-                            var component = (Component)refChain.GetChainItem(i);
-                            expandedRefChain = expandedRefChain.Add(component);
-                            if (currentRefChain != null)
-                            {
-                                breakLoop = true;
-                            }
-
-                            break;
-
-                        case ReferenceChain.ReferenceType.Field:
-                            var field = (FieldInfo)refChain.GetChainItem(i);
-                            expandedRefChain = expandedRefChain.Add(field);
-                            if (!state.ExpandedObjects.Contains(expandedRefChain.UniqueId))
-                            {
-                                state.ExpandedObjects.Add(expandedRefChain.UniqueId);
-                            }
-
-                            break;
-
-                        case ReferenceChain.ReferenceType.Property:
-                            var property = (PropertyInfo)refChain.GetChainItem(i);
-                            expandedRefChain = expandedRefChain.Add(property);
-                            if (!state.ExpandedObjects.Contains(expandedRefChain.UniqueId))
-                            {
-                                state.ExpandedObjects.Add(expandedRefChain.UniqueId);
-                            }
-
-                            break;
-
-                        case ReferenceChain.ReferenceType.EnumerableItem:
-                            var index = (uint)refChain.GetChainItem(i);
-                            state.SelectedArrayStartIndices[expandedRefChain.UniqueId] = index;
-                            state.SelectedArrayEndIndices[expandedRefChain.UniqueId] = index;
-                            expandedRefChain = expandedRefChain.Add(index);
-                            if (!state.ExpandedObjects.Contains(expandedRefChain.UniqueId))
-                            {
-                                state.ExpandedObjects.Add(expandedRefChain.UniqueId);
-                            }
-
-                            break;
-                    }
-
-                    if (breakLoop)
-                    {
-                        break;
-                    }
-                }
-
-                if (currentRefChain == null)
-                {
-                    currentRefChain = refChain.Clone();
-                    currentRefChain.IndentationOffset = refChain.Length;
-                }
-            }
-
-            state.CurrentRefChain = currentRefChain;
         }
 
         public void DrawHeader()
@@ -415,8 +297,6 @@ namespace ModTools.Explorer
 
             GUILayout.EndHorizontal();
 
-
-
             if (ToolManager.exists && ToolManager.instance?.m_properties?.CurrentTool != null)
             {
                 GUILayout.BeginHorizontal();
@@ -427,7 +307,7 @@ namespace ModTools.Explorer
 
                 GUILayout.EndHorizontal();
             }
-            
+
             if (ToolManager.exists && ToolManager.instance?.m_properties?.m_editPrefabInfo != null)
             {
                 GUILayout.BeginHorizontal();
@@ -475,8 +355,7 @@ namespace ModTools.Explorer
                         Show(state.CurrentRefChain.SubChain(state.CurrentRefChain.Length - 1), false);
                     }
 
-                    GUIButtons.SetupCommonButtons(state.CurrentRefChain, value,
-                        state.CurrentRefChain.LastItem is uint u ? u : 0);
+                    GUIButtons.SetupCommonButtons(state.CurrentRefChain, value, state.CurrentRefChain.LastItem is uint u ? u : 0);
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                 }
@@ -501,9 +380,9 @@ namespace ModTools.Explorer
                 Debug.LogException(e);
                 value = null;
             }
-            
+
             DrawQuickFilter();
-            
+
             componentScrollPosition = GUILayout.BeginScrollView(componentScrollPosition);
 
             if (value != null)
@@ -524,27 +403,17 @@ namespace ModTools.Explorer
             componentArea.End();
         }
 
-        private void DrawQuickFilter()
+        public void ClearExpanded()
         {
-            if (!(state.CurrentRefChain?.Length > 1))
-            {
-                return;
-            }
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Quick filter", GUILayout.MinWidth(110f));
-            var updatedFilter =
-                GUILayout.TextField(quickFilter, GUILayout.ExpandWidth(true), GUILayout.MaxWidth(float.MaxValue));
-            if (!updatedFilter.Equals(quickFilter))
-            {
-                quickFilter = updatedFilter.Trim();
-            }
-
-            if (GUILayout.Button("Clear"))
-            {
-                quickFilter = string.Empty;
-            }
-            
-            GUILayout.EndHorizontal();
+            state.ExpandedGameObjects.Clear();
+            state.ExpandedObjects.Clear();
+            state.EvaluatedProperties.Clear();
+            state.SelectedArrayStartIndices.Clear();
+            state.SelectedArrayEndIndices.Clear();
+            searchDisplayString = string.Empty;
+            quickFilter = string.Empty;
+            sceneTreeScrollPosition = Vector2.zero;
+            state.CurrentRefChain = null;
         }
 
         protected override void HandleException(Exception ex)
@@ -567,28 +436,156 @@ namespace ModTools.Explorer
 
             state.PreventCircularReferences.Clear();
 
-            lock(ShowRequests) {
-                while (ShowRequests.Count > 0) {
+            lock (ShowRequests)
+            {
+                while (ShowRequests.Count > 0)
+                {
                     ProcessShowRequest(ShowRequests.Dequeue());
                 }
             }
-            
+
             DrawHeader();
             DrawSceneTree();
             DrawComponent();
         }
 
-        public void ClearExpanded()
+        private static void EnqueueShowRefChainRequest(List<ReferenceChain> refChains, bool hideUnrelatedSceneRoots, string updatedSearchString)
         {
-            state.ExpandedGameObjects.Clear();
-            state.ExpandedObjects.Clear();
-            state.EvaluatedProperties.Clear();
-            state.SelectedArrayStartIndices.Clear();
-            state.SelectedArrayEndIndices.Clear();
-            searchDisplayString = string.Empty;
-            quickFilter = string.Empty;
-            sceneTreeScrollPosition = Vector2.zero;
-            state.CurrentRefChain = null;
+            ShowRequests.Enqueue(new ShowRequest()
+            {
+                ReferenceChains = refChains,
+                HideUnrelatedSceneRoots = hideUnrelatedSceneRoots,
+                UpdatedSearchString = updatedSearchString,
+            });
+        }
+
+        private void ProcessShowRequest(ShowRequest request)
+        {
+            if (request.HideUnrelatedSceneRoots)
+            {
+                sceneTreeScrollPosition = Vector2.zero;
+                sceneRoots.Clear();
+                ClearExpanded();
+            }
+
+            searchDisplayString = request.UpdatedSearchString;
+            ReferenceChain currentRefChain = null;
+            var singleRefChain = request.ReferenceChains.Count == 1;
+            foreach (var refChain in request.ReferenceChains)
+            {
+                var rootGameObject = (GameObject)refChain.GetChainItem(0);
+                if (!sceneRoots.ContainsKey(rootGameObject))
+                {
+                    sceneRoots.Add(rootGameObject, true);
+                }
+
+                var expandedRefChain = ReferenceChainBuilder.ForGameObject(rootGameObject);
+                if (!state.ExpandedGameObjects.Contains(expandedRefChain.UniqueId))
+                {
+                    state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
+                }
+
+                if (!singleRefChain)
+                {
+                    continue;
+                }
+
+                for (var i = 1; i < refChain.Length; i++)
+                {
+                    var breakLoop = false;
+                    switch (refChain.GetChainItemType(i))
+                    {
+                        case ReferenceChain.ReferenceType.GameObject:
+                            var go = (GameObject)refChain.GetChainItem(i);
+                            expandedRefChain = expandedRefChain.Add(go);
+                            if (!state.ExpandedGameObjects.Contains(expandedRefChain.UniqueId))
+                            {
+                                state.ExpandedGameObjects.Add(expandedRefChain.UniqueId);
+                            }
+
+                            break;
+
+                        case ReferenceChain.ReferenceType.Component:
+                            var component = (Component)refChain.GetChainItem(i);
+                            expandedRefChain = expandedRefChain.Add(component);
+                            if (currentRefChain != null)
+                            {
+                                breakLoop = true;
+                            }
+
+                            break;
+
+                        case ReferenceChain.ReferenceType.Field:
+                            var field = (FieldInfo)refChain.GetChainItem(i);
+                            expandedRefChain = expandedRefChain.Add(field);
+                            if (!state.ExpandedObjects.Contains(expandedRefChain.UniqueId))
+                            {
+                                state.ExpandedObjects.Add(expandedRefChain.UniqueId);
+                            }
+
+                            break;
+
+                        case ReferenceChain.ReferenceType.Property:
+                            var property = (PropertyInfo)refChain.GetChainItem(i);
+                            expandedRefChain = expandedRefChain.Add(property);
+                            if (!state.ExpandedObjects.Contains(expandedRefChain.UniqueId))
+                            {
+                                state.ExpandedObjects.Add(expandedRefChain.UniqueId);
+                            }
+
+                            break;
+
+                        case ReferenceChain.ReferenceType.EnumerableItem:
+                            var index = (uint)refChain.GetChainItem(i);
+                            state.SelectedArrayStartIndices[expandedRefChain.UniqueId] = index;
+                            state.SelectedArrayEndIndices[expandedRefChain.UniqueId] = index;
+                            expandedRefChain = expandedRefChain.Add(index);
+                            if (!state.ExpandedObjects.Contains(expandedRefChain.UniqueId))
+                            {
+                                state.ExpandedObjects.Add(expandedRefChain.UniqueId);
+                            }
+
+                            break;
+                    }
+
+                    if (breakLoop)
+                    {
+                        break;
+                    }
+                }
+
+                if (currentRefChain == null)
+                {
+                    currentRefChain = refChain.Clone();
+                    currentRefChain.IndentationOffset = refChain.Length;
+                }
+            }
+
+            state.CurrentRefChain = currentRefChain;
+        }
+
+        private void DrawQuickFilter()
+        {
+            if (!(state.CurrentRefChain?.Length > 1))
+            {
+                return;
+            }
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Quick filter", GUILayout.MinWidth(110f));
+            var updatedFilter =
+                GUILayout.TextField(quickFilter, GUILayout.ExpandWidth(true), GUILayout.MaxWidth(float.MaxValue));
+            if (!updatedFilter.Equals(quickFilter))
+            {
+                quickFilter = updatedFilter.Trim();
+            }
+
+            if (GUILayout.Button("Clear"))
+            {
+                quickFilter = string.Empty;
+            }
+
+            GUILayout.EndHorizontal();
         }
 
         private void DrawFindGameObjectPanel()
@@ -649,7 +646,7 @@ namespace ModTools.Explorer
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
-        
+
         private sealed class ShowRequest
         {
             public List<ReferenceChain> ReferenceChains { get; set; }
