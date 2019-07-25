@@ -9,11 +9,11 @@ namespace ModTools
 {
     public sealed class ModToolsMod : IUserMod
     {
+        public const string ModToolsName = "ModTools";
+
         public static GameObject MainWindowObject;
 
-        public static GameObject MainObject;
-
-        private const string ModToolsName = "ModTools";
+        private static GameObject mainObject;
 
         public static string Version { get; } = GitVersion.GetAssemblyVersion(typeof(ModToolsMod).Assembly);
 
@@ -33,8 +33,8 @@ namespace ModTools
                 CODebugBase<LogChannel>.verbose = true;
                 CODebugBase<LogChannel>.EnableChannels(LogChannel.All);
 
-                MainObject = new GameObject(ModToolsName);
-                UnityEngine.Object.DontDestroyOnLoad(MainObject);
+                mainObject = new GameObject(ModToolsName);
+                UnityEngine.Object.DontDestroyOnLoad(mainObject);
 
                 MainWindowObject = new GameObject(ModToolsName + nameof(MainWindow));
                 UnityEngine.Object.DontDestroyOnLoad(MainWindowObject);
@@ -55,6 +55,13 @@ namespace ModTools
                 CODebugBase<LogChannel>.verbose = false;
                 UnityEngine.Object.Destroy(MainWindowObject);
                 MainWindowObject = null;
+            }
+
+            if (mainObject != null)
+            {
+                CODebugBase<LogChannel>.verbose = false;
+                UnityEngine.Object.Destroy(mainObject);
+                mainObject = null;
             }
         }
     }

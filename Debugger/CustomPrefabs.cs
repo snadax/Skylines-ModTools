@@ -31,7 +31,7 @@ namespace ModTools
             if (thisGameObject == null)
             {
                 thisGameObject = new GameObject("Custom Prefabs");
-                thisGameObject.transform.parent = ModToolsMod.MainObject.transform;
+                thisGameObject.transform.parent = GameObject.Find(ModToolsMod.ModToolsName).transform;
                 thisGameObject.AddComponent<CustomPrefabs>();
             }
         }
