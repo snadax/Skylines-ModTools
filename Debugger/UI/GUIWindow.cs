@@ -7,9 +7,9 @@ namespace ModTools.UI
     internal abstract class GUIWindow : MonoBehaviour, IDestroyableObject, IUIObject
     {
         // TODO: make this field to private-instance
-        public static GUISkin Skin;
+        internal static GUISkin Skin;
 
-        protected const float UIScale = 1.0f;
+        private const float UIScale = 1.0f;
 
         private static readonly List<GUIWindow> Windows = new List<GUIWindow>();
 

@@ -93,7 +93,7 @@ namespace ModTools.Explorer
 
                 if (value != null)
                 {
-                    GUIButtons.SetupSmartShowButtons(value, TypeUtil.OverrideSmartType(TypeUtil.DetectSmartType(watch.LastItemName, value.GetType()), watch.LastItemName, watch.SubChain(watch.Length - 1).Evaluate())); //TODO: get from cache
+                    GUIButtons.SetupSmartShowButtons(value, TypeUtil.OverrideSmartType(TypeUtil.DetectSmartType(watch.LastItemName, value.GetType()), watch.LastItemName, watch.SubChain(watch.Length - 1).Evaluate())); // TODO: get from cache
                 }
 
                 if (GUILayout.Button("Show watched field"))

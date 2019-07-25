@@ -45,6 +45,7 @@ namespace ModTools.Utils
 
                 atlas.AddSprite(spriteInfo);
             }
+
             atlas.material.mainTexture = texture;
             return atlas;
         }
@@ -59,7 +60,7 @@ namespace ModTools.Utils
             var buf = new byte[textureStream.Length];
             textureStream.Read(buf, 0, buf.Length);
             textureStream.Close();
-            var tex = new Texture2D(36, 36, TextureFormat.ARGB32, true) {filterMode = FilterMode.Trilinear};
+            var tex = new Texture2D(36, 36, TextureFormat.ARGB32, true) { filterMode = FilterMode.Trilinear };
             tex.LoadImage(buf);
             return tex;
         }

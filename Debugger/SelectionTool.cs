@@ -294,70 +294,7 @@ namespace ModTools
             return true;
         }
 
-        private void DrawLabel()
-        {
-            var hoverInstance1 = m_hoverInstance;
-            var text = (string)null;
-
-            if (hoverInstance1.NetNode != 0)
-            {
-                text = $"[Click LMB to show node in SceneExplorer]\n[Click RMB to show segment in SceneExplorer]\nNode ID: {hoverInstance1.NetNode}\nSegment ID: {hoveredSegment}\nAsset: {hoverInstance1.GetNetworkAssetName()}";
-            }
-            else if (hoverInstance1.NetSegment != 0)
-            {
-                text = $"[Click LMB to show segment in SceneExplorer]\n[Click RMB to show building in SceneExplorer]\nSegment ID: {hoverInstance1.NetSegment}\nBuilding ID: {hoveredBuilding}\nAsset: {hoverInstance1.GetNetworkAssetName()}";
-            }
-            else if (hoverInstance1.Building != 0)
-            {
-                text = $"[Click LMB to show building in SceneExplorer]\nBuilding ID: {hoverInstance1.Building}\nAsset: {hoverInstance1.GetBuildingAssetName()}";
-            }
-            else if (hoverInstance1.Vehicle != 0)
-            {
-                text = $"[Click LMB to show vehicle in SceneExplorer]\nVehicle ID: {hoverInstance1.Vehicle}\nAsset: {hoverInstance1.GetVehicleAssetName()}";
-            }
-            else if (hoverInstance1.ParkedVehicle != 0)
-            {
-                text = $"[Click LMB to show parked vehicle in SceneExplorer]\nParked Vehicle ID: {hoverInstance1.ParkedVehicle}\nAsset: {hoverInstance1.GetVehicleAssetName()}";
-            }
-            else if (hoverInstance1.CitizenInstance != 0)
-            {
-                text = $"[Click LMB to show citizen instance in SceneExplorer]\n[Click RMB to show citizen in SceneExplorer]\nCitizen instance ID: {hoverInstance1.CitizenInstance}\nCitizen ID: {hoverInstance1.GetCitizenId()}\nAsset: {hoverInstance1.GetCitizenAssetName()}";
-            }
-            else if (hoverInstance1.Prop != 0)
-            {
-                text = $"[Click LMB to show prop in SceneExplorer]\nProp ID: {hoverInstance1.Prop}\nAsset: {hoverInstance1.GetPropAssetName()}";
-            }
-            else if (hoverInstance1.Tree != 0)
-            {
-                text = $"[Click LMB to show tree in SceneExplorer]\nTree ID: {hoverInstance1.Tree}\nAsset: {hoverInstance1.GetTreeAssetName()}";
-            }
-            else if (hoverInstance1.Park != 0)
-            {
-                text = $"[Click LMB to show park in SceneExplorer]\nPark ID: {hoverInstance1.Park}\nName: {hoverInstance1.GetParkName()}";
-            }
-            else if (hoverInstance1.District != 0)
-            {
-                text = $"[Click LMB to show district in SceneExplorer]\nDistrict ID: {hoverInstance1.District}\nName: {hoverInstance1.GetDistrictName()}";
-            }
-            else if (hoverInstance1.TransportLine != 0)
-            {
-                text = $"[Click LMB to show transport line in SceneExplorer]\nTransport Line ID: {hoverInstance1.TransportLine}\nName: {hoverInstance1.GetLineName()}";
-            }
-
-            if (text == null)
-            {
-                return;
-            }
-
-            var screenPoint = Input.mousePosition;
-            screenPoint.y = Screen.height - screenPoint.y;
-            var color = GUI.color;
-            GUI.color = Color.white;
-            DeveloperUI.LabelOutline(new Rect(screenPoint.x, screenPoint.y, 500f, 500f), text, Color.black, Color.cyan, GUI.skin.label, 2f);
-            GUI.color = color;
-        }
-
-        private static void SetSegments(ushort segmentId, Dictionary<ushort, SegmentAndNode> m_segments)
+        private static void SetSegments(ushort segmentId, IDictionary<ushort, SegmentAndNode> segments)
         {
             var segment = NetManager.instance.m_segments.m_buffer[segmentId];
             var seg = new SegmentAndNode()
@@ -366,19 +303,19 @@ namespace ModTools
                 TargetNode = segment.m_endNode,
             };
 
-            m_segments[segmentId] = seg;
+            segments[segmentId] = seg;
 
             var infoIndex = segment.m_infoIndex;
             var node = NetManager.instance.m_nodes.m_buffer[segment.m_startNode];
             if (node.CountSegments() == 2)
             {
-                SetSegments(node.m_segment0 == segmentId ? node.m_segment1 : node.m_segment0, infoIndex, ref seg, m_segments);
+                SetSegments(node.m_segment0 == segmentId ? node.m_segment1 : node.m_segment0, infoIndex, ref seg, segments);
             }
 
             node = NetManager.instance.m_nodes.m_buffer[segment.m_endNode];
             if (node.CountSegments() == 2)
             {
-                SetSegments(node.m_segment0 == segmentId ? node.m_segment1 : node.m_segment0, infoIndex, ref seg, m_segments);
+                SetSegments(node.m_segment0 == segmentId ? node.m_segment1 : node.m_segment0, infoIndex, ref seg, segments);
             }
         }
 
@@ -446,6 +383,69 @@ namespace ModTools
             };
 
             return RayCast(input, out output);
+        }
+
+        private void DrawLabel()
+        {
+            var hoverInstance1 = m_hoverInstance;
+            var text = (string)null;
+
+            if (hoverInstance1.NetNode != 0)
+            {
+                text = $"[Click LMB to show node in SceneExplorer]\n[Click RMB to show segment in SceneExplorer]\nNode ID: {hoverInstance1.NetNode}\nSegment ID: {hoveredSegment}\nAsset: {hoverInstance1.GetNetworkAssetName()}";
+            }
+            else if (hoverInstance1.NetSegment != 0)
+            {
+                text = $"[Click LMB to show segment in SceneExplorer]\n[Click RMB to show building in SceneExplorer]\nSegment ID: {hoverInstance1.NetSegment}\nBuilding ID: {hoveredBuilding}\nAsset: {hoverInstance1.GetNetworkAssetName()}";
+            }
+            else if (hoverInstance1.Building != 0)
+            {
+                text = $"[Click LMB to show building in SceneExplorer]\nBuilding ID: {hoverInstance1.Building}\nAsset: {hoverInstance1.GetBuildingAssetName()}";
+            }
+            else if (hoverInstance1.Vehicle != 0)
+            {
+                text = $"[Click LMB to show vehicle in SceneExplorer]\nVehicle ID: {hoverInstance1.Vehicle}\nAsset: {hoverInstance1.GetVehicleAssetName()}";
+            }
+            else if (hoverInstance1.ParkedVehicle != 0)
+            {
+                text = $"[Click LMB to show parked vehicle in SceneExplorer]\nParked Vehicle ID: {hoverInstance1.ParkedVehicle}\nAsset: {hoverInstance1.GetVehicleAssetName()}";
+            }
+            else if (hoverInstance1.CitizenInstance != 0)
+            {
+                text = $"[Click LMB to show citizen instance in SceneExplorer]\n[Click RMB to show citizen in SceneExplorer]\nCitizen instance ID: {hoverInstance1.CitizenInstance}\nCitizen ID: {hoverInstance1.GetCitizenId()}\nAsset: {hoverInstance1.GetCitizenAssetName()}";
+            }
+            else if (hoverInstance1.Prop != 0)
+            {
+                text = $"[Click LMB to show prop in SceneExplorer]\nProp ID: {hoverInstance1.Prop}\nAsset: {hoverInstance1.GetPropAssetName()}";
+            }
+            else if (hoverInstance1.Tree != 0)
+            {
+                text = $"[Click LMB to show tree in SceneExplorer]\nTree ID: {hoverInstance1.Tree}\nAsset: {hoverInstance1.GetTreeAssetName()}";
+            }
+            else if (hoverInstance1.Park != 0)
+            {
+                text = $"[Click LMB to show park in SceneExplorer]\nPark ID: {hoverInstance1.Park}\nName: {hoverInstance1.GetParkName()}";
+            }
+            else if (hoverInstance1.District != 0)
+            {
+                text = $"[Click LMB to show district in SceneExplorer]\nDistrict ID: {hoverInstance1.District}\nName: {hoverInstance1.GetDistrictName()}";
+            }
+            else if (hoverInstance1.TransportLine != 0)
+            {
+                text = $"[Click LMB to show transport line in SceneExplorer]\nTransport Line ID: {hoverInstance1.TransportLine}\nName: {hoverInstance1.GetLineName()}";
+            }
+
+            if (text == null)
+            {
+                return;
+            }
+
+            var screenPoint = Input.mousePosition;
+            screenPoint.y = Screen.height - screenPoint.y;
+            var color = GUI.color;
+            GUI.color = Color.white;
+            DeveloperUI.LabelOutline(new Rect(screenPoint.x, screenPoint.y, 500f, 500f), text, Color.black, Color.cyan, GUI.skin.label, 2f);
+            GUI.color = color;
         }
 
         private struct SegmentAndNode

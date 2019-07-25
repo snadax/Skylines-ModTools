@@ -95,8 +95,8 @@ namespace ModTools.UI
 
             return value;
         }
-        
-                public static Vector3 PresentVector3(string id, Vector3 value)
+
+        public static Vector3 PresentVector3(string id, Vector3 value)
         {
             value.x = PrimitiveValueField(id + ".x", "x", value.x);
             value.y = PrimitiveValueField(id + ".y", "y", value.y);
