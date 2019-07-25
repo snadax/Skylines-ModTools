@@ -13,7 +13,7 @@ namespace ModTools
 
         public static GameObject MainWindowObject;
 
-        private static GameObject mainObject;
+        private GameObject mainObject;
 
         public static string Version { get; } = GitVersion.GetAssemblyVersion(typeof(ModToolsMod).Assembly);
 
