@@ -5,152 +5,10 @@ using UnityEngine;
 
 namespace ModTools
 {
-    class SelectionTool : DefaultTool
+    internal class SelectionTool : DefaultTool
     {
-        private ushort m_hoverSegment;
-        private ushort m_hoverBuilding;
-
-        protected override void OnToolGUI(Event e)
-        {
-            DrawLabel();
-            if (m_toolController.IsInsideUI || e.type != EventType.MouseDown)
-            {
-                base.OnToolGUI(e);
-                return;
-            }
-
-            if (m_hoverInstance.IsEmpty)
-            {
-                return;
-            }
-            var sceneExplorer = FindObjectOfType<SceneExplorer>();
-            if (e.button == 0)
-            {
-                if (m_hoverInstance.NetNode > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForNode(m_hoverInstance.NetNode));
-                }
-                else if (m_hoverInstance.NetSegment > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForSegment(m_hoverInstance.NetSegment));
-                }
-                else if (m_hoverInstance.Tree > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForTree(m_hoverInstance.Tree));
-                }
-                else if (m_hoverInstance.Prop > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForProp(m_hoverInstance.Prop));
-                }
-                else if (m_hoverInstance.CitizenInstance > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForCitizenInstance(m_hoverInstance.CitizenInstance));
-                }
-                else if (m_hoverInstance.Building > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForBuilding(m_hoverInstance.Building));
-                }
-                else if (m_hoverInstance.Vehicle > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForVehicle(m_hoverInstance.Vehicle));
-                }
-                else if (m_hoverInstance.ParkedVehicle > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForParkedVehicle(m_hoverInstance.ParkedVehicle));
-                }
-                else if (m_hoverInstance.District > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForDistrict(m_hoverInstance.District));
-                }
-                else if (m_hoverInstance.Park > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForPark(m_hoverInstance.Park));
-                }
-                else if (m_hoverInstance.TransportLine > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForTransportLine(m_hoverInstance.TransportLine));
-                }
-            }
-            else if (e.button == 1)
-            {
-                if (m_hoverInstance.CitizenInstance > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForCitizen(m_hoverInstance.GetCitizenId()));
-                }
-                else if (m_hoverInstance.NetNode > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForSegment(this.m_hoverSegment)); 
-                }
-                else if (m_hoverInstance.NetSegment > 0)
-                {
-                    sceneExplorer.Show(ReferenceChainBuilder.ForBuilding(this.m_hoverBuilding)); 
-                }
-            }
-        }
-
-        private void DrawLabel()
-        {
-            var hoverInstance1 = this.m_hoverInstance;
-            var text = (string)null;
-
-            if (hoverInstance1.NetNode != 0)
-            {
-                text = $"[Click LMB to show node in SceneExplorer]\n[Click RMB to show segment in SceneExplorer]\nNode ID: {hoverInstance1.NetNode}\nSegment ID: {this.m_hoverSegment}\nAsset: {hoverInstance1.GetNetworkAssetName()}";
-            }
-            else if (hoverInstance1.NetSegment != 0)
-            {
-                text = $"[Click LMB to show segment in SceneExplorer]\n[Click RMB to show building in SceneExplorer]\nSegment ID: {hoverInstance1.NetSegment}\nBuilding ID: {this.m_hoverBuilding}\nAsset: {hoverInstance1.GetNetworkAssetName()}";
-            }
-            else  if (hoverInstance1.Building != 0)
-            {
-                text = $"[Click LMB to show building in SceneExplorer]\nBuilding ID: {hoverInstance1.Building}\nAsset: {hoverInstance1.GetBuildingAssetName()}";
-            }
-            else if (hoverInstance1.Vehicle != 0)
-            {
-                text = $"[Click LMB to show vehicle in SceneExplorer]\nVehicle ID: {hoverInstance1.Vehicle}\nAsset: {hoverInstance1.GetVehicleAssetName()}";
-            }
-            else if (hoverInstance1.ParkedVehicle != 0)
-            {
-                text = $"[Click LMB to show parked vehicle in SceneExplorer]\nParked Vehicle ID: {hoverInstance1.ParkedVehicle}\nAsset: {hoverInstance1.GetVehicleAssetName()}";
-            }
-            else if (hoverInstance1.CitizenInstance != 0)
-            {
-                text = $"[Click LMB to show citizen instance in SceneExplorer]\n[Click RMB to show citizen in SceneExplorer]\nCitizen instance ID: {hoverInstance1.CitizenInstance}\nCitizen ID: {hoverInstance1.GetCitizenId()}\nAsset: {hoverInstance1.GetCitizenAssetName()}";
-            }
-            else if (hoverInstance1.Prop != 0)
-            {
-                text = $"[Click LMB to show prop in SceneExplorer]\nProp ID: {hoverInstance1.Prop}\nAsset: {hoverInstance1.GetPropAssetName()}";
-            }
-            else if (hoverInstance1.Tree != 0)
-            {
-                text = $"[Click LMB to show tree in SceneExplorer]\nTree ID: {hoverInstance1.Tree}\nAsset: {hoverInstance1.GetTreeAssetName()}";
-            }
-            else if (hoverInstance1.Park != 0)
-            {
-                text = $"[Click LMB to show park in SceneExplorer]\nPark ID: {hoverInstance1.Park}\nName: {hoverInstance1.GetParkName()}";
-            }
-            else if (hoverInstance1.District != 0)
-            {
-                text = $"[Click LMB to show district in SceneExplorer]\nDistrict ID: {hoverInstance1.District}\nName: {hoverInstance1.GetDistrictName()}";
-            }
-            else if (hoverInstance1.TransportLine != 0)
-            {
-                text = $"[Click LMB to show transport line in SceneExplorer]\nTransport Line ID: {hoverInstance1.TransportLine}\nName: {hoverInstance1.GetLineName()}";
-            }
-
-            if (text == null)
-            {
-                return;
-            }
-
-            var screenPoint = Input.mousePosition;
-            screenPoint.y = Screen.height - screenPoint.y;
-            var color = GUI.color;
-            GUI.color = Color.white;
-            DeveloperUI.LabelOutline(new Rect(screenPoint.x, screenPoint.y, 500f, 500f), text, Color.black, Color.cyan, GUI.skin.label, 2f);
-            GUI.color = color;
-        }
-
+        private ushort hoveredSegment;
+        private ushort hoveredBuilding;
 
         public override NetNode.Flags GetNodeIgnoreFlags()
         {
@@ -213,51 +71,6 @@ namespace ModTools
             return DisasterData.Flags.None;
         }
 
-        protected override bool CheckNode(ushort node, ref ToolErrors errors)
-        {
-            return true;
-        }
-
-        protected override bool CheckSegment(ushort segment, ref ToolErrors errors)
-        {
-            return true;
-        }
-
-        protected override bool CheckBuilding(ushort building, ref ToolErrors errors)
-        {
-            return true;
-        }
-
-        protected override bool CheckProp(ushort prop, ref ToolErrors errors)
-        {
-            return true;
-        }
-
-        protected override bool CheckTree(uint tree, ref ToolErrors errors)
-        {
-            return true;
-        }
-
-        protected override bool CheckVehicle(ushort vehicle, ref ToolErrors errors)
-        {
-            return true;
-        }
-
-        protected override bool CheckParkedVehicle(ushort parkedVehicle, ref ToolErrors errors)
-        {
-            return true;
-        }
-
-        protected override bool CheckCitizen(ushort citizenInstance, ref ToolErrors errors)
-        {
-            return true;
-        }
-
-        protected override bool CheckDisaster(ushort disaster, ref ToolErrors errors)
-        {
-            return true;
-        }
-        
         public override void RenderOverlay(RenderManager.CameraInfo cameraInfo)
         {
             base.RenderOverlay(cameraInfo);
@@ -265,18 +78,19 @@ namespace ModTools
             {
                 return;
             }
+
             var node = NetManager.instance.m_nodes.m_buffer[m_hoverInstance.NetNode];
             RenderManager.instance.OverlayEffect.DrawCircle(
-                cameraInfo, 
-                this.GetToolColor(false, this.m_selectErrors != ToolErrors.None),
-                node.m_position, 
+                cameraInfo,
+                GetToolColor(false, m_selectErrors != ToolErrors.None),
+                node.m_position,
                 15f,
-                node.m_position.y - 1f, 
+                node.m_position.y - 1f,
                 node.m_position.y + 1f,
                 true,
                 true);
         }
-        
+
         public override void SimulationStep()
         {
             base.SimulationStep();
@@ -285,14 +99,16 @@ namespace ModTools
                 m_hoverInstance.District > 0 || m_hoverInstance.Park > 0 || m_hoverInstance.TransportLine > 0 ||
                 m_hoverInstance.Prop > 0 || m_hoverInstance.Tree > 0)
             {
-                this.m_hoverSegment = m_hoverInstance.NetSegment;
-                this.m_hoverBuilding = m_hoverInstance.Building;
+                this.hoveredSegment = m_hoverInstance.NetSegment;
+                hoveredBuilding = m_hoverInstance.Building;
                 return;
             }
+
             if (!RayCastSegmentAndNode(out var hoveredSegment, out var hoveredNode))
             {
                 return;
             }
+
             var segments = new Dictionary<ushort, SegmentAndNode>();
 
             if (hoveredSegment != 0)
@@ -340,7 +156,7 @@ namespace ModTools
                 }
             }
 
-            this.m_hoverBuilding = m_hoverInstance.Building;
+            hoveredBuilding = m_hoverInstance.Building;
 
             if (hoveredNode > 0)
             {
@@ -350,9 +166,197 @@ namespace ModTools
             {
                 m_hoverInstance.NetSegment = hoveredSegment;
             }
-            this.m_hoverSegment = hoveredSegment > 0 ? hoveredSegment : m_hoverInstance.NetSegment;
+
+            this.hoveredSegment = hoveredSegment > 0 ? hoveredSegment : m_hoverInstance.NetSegment;
         }
-        
+
+        protected override void OnToolGUI(Event e)
+        {
+            DrawLabel();
+            if (m_toolController.IsInsideUI || e.type != EventType.MouseDown)
+            {
+                base.OnToolGUI(e);
+                return;
+            }
+
+            if (m_hoverInstance.IsEmpty)
+            {
+                return;
+            }
+
+            var sceneExplorer = FindObjectOfType<SceneExplorer>();
+            if (e.button == 0)
+            {
+                if (m_hoverInstance.NetNode > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForNode(m_hoverInstance.NetNode));
+                }
+                else if (m_hoverInstance.NetSegment > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForSegment(m_hoverInstance.NetSegment));
+                }
+                else if (m_hoverInstance.Tree > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForTree(m_hoverInstance.Tree));
+                }
+                else if (m_hoverInstance.Prop > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForProp(m_hoverInstance.Prop));
+                }
+                else if (m_hoverInstance.CitizenInstance > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForCitizenInstance(m_hoverInstance.CitizenInstance));
+                }
+                else if (m_hoverInstance.Building > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForBuilding(m_hoverInstance.Building));
+                }
+                else if (m_hoverInstance.Vehicle > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForVehicle(m_hoverInstance.Vehicle));
+                }
+                else if (m_hoverInstance.ParkedVehicle > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForParkedVehicle(m_hoverInstance.ParkedVehicle));
+                }
+                else if (m_hoverInstance.District > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForDistrict(m_hoverInstance.District));
+                }
+                else if (m_hoverInstance.Park > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForPark(m_hoverInstance.Park));
+                }
+                else if (m_hoverInstance.TransportLine > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForTransportLine(m_hoverInstance.TransportLine));
+                }
+            }
+            else if (e.button == 1)
+            {
+                if (m_hoverInstance.CitizenInstance > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForCitizen(m_hoverInstance.GetCitizenId()));
+                }
+                else if (m_hoverInstance.NetNode > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForSegment(hoveredSegment));
+                }
+                else if (m_hoverInstance.NetSegment > 0)
+                {
+                    sceneExplorer.Show(ReferenceChainBuilder.ForBuilding(hoveredBuilding));
+                }
+            }
+        }
+
+        protected override bool CheckNode(ushort node, ref ToolErrors errors)
+        {
+            return true;
+        }
+
+        protected override bool CheckSegment(ushort segment, ref ToolErrors errors)
+        {
+            return true;
+        }
+
+        protected override bool CheckBuilding(ushort building, ref ToolErrors errors)
+        {
+            return true;
+        }
+
+        protected override bool CheckProp(ushort prop, ref ToolErrors errors)
+        {
+            return true;
+        }
+
+        protected override bool CheckTree(uint tree, ref ToolErrors errors)
+        {
+            return true;
+        }
+
+        protected override bool CheckVehicle(ushort vehicle, ref ToolErrors errors)
+        {
+            return true;
+        }
+
+        protected override bool CheckParkedVehicle(ushort parkedVehicle, ref ToolErrors errors)
+        {
+            return true;
+        }
+
+        protected override bool CheckCitizen(ushort citizenInstance, ref ToolErrors errors)
+        {
+            return true;
+        }
+
+        protected override bool CheckDisaster(ushort disaster, ref ToolErrors errors)
+        {
+            return true;
+        }
+
+        private void DrawLabel()
+        {
+            var hoverInstance1 = m_hoverInstance;
+            var text = (string)null;
+
+            if (hoverInstance1.NetNode != 0)
+            {
+                text = $"[Click LMB to show node in SceneExplorer]\n[Click RMB to show segment in SceneExplorer]\nNode ID: {hoverInstance1.NetNode}\nSegment ID: {hoveredSegment}\nAsset: {hoverInstance1.GetNetworkAssetName()}";
+            }
+            else if (hoverInstance1.NetSegment != 0)
+            {
+                text = $"[Click LMB to show segment in SceneExplorer]\n[Click RMB to show building in SceneExplorer]\nSegment ID: {hoverInstance1.NetSegment}\nBuilding ID: {hoveredBuilding}\nAsset: {hoverInstance1.GetNetworkAssetName()}";
+            }
+            else if (hoverInstance1.Building != 0)
+            {
+                text = $"[Click LMB to show building in SceneExplorer]\nBuilding ID: {hoverInstance1.Building}\nAsset: {hoverInstance1.GetBuildingAssetName()}";
+            }
+            else if (hoverInstance1.Vehicle != 0)
+            {
+                text = $"[Click LMB to show vehicle in SceneExplorer]\nVehicle ID: {hoverInstance1.Vehicle}\nAsset: {hoverInstance1.GetVehicleAssetName()}";
+            }
+            else if (hoverInstance1.ParkedVehicle != 0)
+            {
+                text = $"[Click LMB to show parked vehicle in SceneExplorer]\nParked Vehicle ID: {hoverInstance1.ParkedVehicle}\nAsset: {hoverInstance1.GetVehicleAssetName()}";
+            }
+            else if (hoverInstance1.CitizenInstance != 0)
+            {
+                text = $"[Click LMB to show citizen instance in SceneExplorer]\n[Click RMB to show citizen in SceneExplorer]\nCitizen instance ID: {hoverInstance1.CitizenInstance}\nCitizen ID: {hoverInstance1.GetCitizenId()}\nAsset: {hoverInstance1.GetCitizenAssetName()}";
+            }
+            else if (hoverInstance1.Prop != 0)
+            {
+                text = $"[Click LMB to show prop in SceneExplorer]\nProp ID: {hoverInstance1.Prop}\nAsset: {hoverInstance1.GetPropAssetName()}";
+            }
+            else if (hoverInstance1.Tree != 0)
+            {
+                text = $"[Click LMB to show tree in SceneExplorer]\nTree ID: {hoverInstance1.Tree}\nAsset: {hoverInstance1.GetTreeAssetName()}";
+            }
+            else if (hoverInstance1.Park != 0)
+            {
+                text = $"[Click LMB to show park in SceneExplorer]\nPark ID: {hoverInstance1.Park}\nName: {hoverInstance1.GetParkName()}";
+            }
+            else if (hoverInstance1.District != 0)
+            {
+                text = $"[Click LMB to show district in SceneExplorer]\nDistrict ID: {hoverInstance1.District}\nName: {hoverInstance1.GetDistrictName()}";
+            }
+            else if (hoverInstance1.TransportLine != 0)
+            {
+                text = $"[Click LMB to show transport line in SceneExplorer]\nTransport Line ID: {hoverInstance1.TransportLine}\nName: {hoverInstance1.GetLineName()}";
+            }
+
+            if (text == null)
+            {
+                return;
+            }
+
+            var screenPoint = Input.mousePosition;
+            screenPoint.y = Screen.height - screenPoint.y;
+            var color = GUI.color;
+            GUI.color = Color.white;
+            DeveloperUI.LabelOutline(new Rect(screenPoint.x, screenPoint.y, 500f, 500f), text, Color.black, Color.cyan, GUI.skin.label, 2f);
+            GUI.color = color;
+        }
+
         private static void SetSegments(ushort segmentId, Dictionary<ushort, SegmentAndNode> m_segments)
         {
             var segment = NetManager.instance.m_segments.m_buffer[segmentId];
@@ -425,27 +429,25 @@ namespace ModTools
                 netNode = output.m_netNode;
                 return true;
             }
-    
+
             netSegment = 0;
             netNode = 0;
             return false;
         }
-        
+
         private static bool RayCastSegmentAndNode(out RaycastOutput output)
         {
-            var input = new RaycastInput(Camera.main.ScreenPointToRay(Input.mousePosition),
-                Camera.main.farClipPlane)
+            var input = new RaycastInput(Camera.main.ScreenPointToRay(Input.mousePosition), Camera.main.farClipPlane)
             {
-                m_netService = {m_itemLayers = ItemClass.Layer.Default | ItemClass.Layer.MetroTunnels},
+                m_netService = { m_itemLayers = ItemClass.Layer.Default | ItemClass.Layer.MetroTunnels },
                 m_ignoreSegmentFlags = NetSegment.Flags.None,
                 m_ignoreNodeFlags = NetNode.Flags.None,
                 m_ignoreTerrain = true,
             };
 
-
             return RayCast(input, out output);
         }
-        
+
         private struct SegmentAndNode
         {
             public ushort SegmentId;
