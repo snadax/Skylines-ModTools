@@ -13,8 +13,7 @@ namespace ModTools.Explorer
 
         private static ModConfiguration Config => MainWindow.Instance.Config;
 
-        public static void SetupCommonButtons(ReferenceChain refChain, object value, uint valueIndex,
-            TypeUtil.SmartType smartType = TypeUtil.SmartType.Undefined)
+        public static void SetupCommonButtons(ReferenceChain refChain, object value, uint valueIndex, TypeUtil.SmartType smartType = TypeUtil.SmartType.Undefined)
         {
             switch (value)
             {
@@ -35,24 +34,28 @@ namespace ModTools.Explorer
                     goto default;
 
                 case NetInfo.Segment segmentInfo:
-                    SetupMeshPreviewButtons(name: null, segmentInfo.m_mesh, segmentInfo.m_material,
-                        segmentInfo.m_lodMesh, segmentInfo.m_lodMaterial);
+                    SetupMeshPreviewButtons(name: null, segmentInfo.m_mesh, segmentInfo.m_material, segmentInfo.m_lodMesh, segmentInfo.m_lodMaterial);
                     goto default;
 
                 case NetInfo.Node nodeInfo:
-                    SetupMeshPreviewButtons(name: null, nodeInfo.m_mesh, nodeInfo.m_material, nodeInfo.m_lodMesh,
-                        nodeInfo.m_lodMaterial);
+                    SetupMeshPreviewButtons(name: null, nodeInfo.m_mesh, nodeInfo.m_material, nodeInfo.m_lodMesh, nodeInfo.m_lodMaterial);
                     goto default;
 
                 case BuildingInfo.MeshInfo buildingSumMeshInfo:
-                    SetupMeshPreviewButtons(name: null, buildingSumMeshInfo.m_subInfo?.m_mesh,
-                        buildingSumMeshInfo.m_subInfo?.m_material, buildingSumMeshInfo.m_subInfo?.m_lodMesh,
+                    SetupMeshPreviewButtons(
+                        name: null,
+                        buildingSumMeshInfo.m_subInfo?.m_mesh,
+                        buildingSumMeshInfo.m_subInfo?.m_material,
+                        buildingSumMeshInfo.m_subInfo?.m_lodMesh,
                         buildingSumMeshInfo.m_subInfo?.m_lodMaterial);
                     goto default;
 
                 case VehicleInfo.MeshInfo vehicleSumMeshInfo:
-                    SetupMeshPreviewButtons(name: null, vehicleSumMeshInfo.m_subInfo?.m_mesh,
-                        vehicleSumMeshInfo.m_subInfo?.m_material, vehicleSumMeshInfo.m_subInfo?.m_lodMesh,
+                    SetupMeshPreviewButtons(
+                        name: null,
+                        vehicleSumMeshInfo.m_subInfo?.m_mesh,
+                        vehicleSumMeshInfo.m_subInfo?.m_material,
+                        vehicleSumMeshInfo.m_subInfo?.m_lodMesh,
                         vehicleSumMeshInfo.m_subInfo?.m_lodMaterial);
                     goto default;
 
@@ -145,11 +148,11 @@ namespace ModTools.Explorer
                 case Texture texture:
                     SetupTexturePreviewButtons(texture);
                     goto default;
-                
+
                 case UITextureAtlas.SpriteInfo spriteInfo:
                     SetupTexturePreviewButtons(spriteInfo.texture);
                     goto default;
-                    
+
                 case UITextureSprite textureSprite:
                     SetupTexturePreviewButtons(textureSprite.texture);
                     goto default;
@@ -191,19 +194,23 @@ namespace ModTools.Explorer
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show sprite"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
                             sceneExplorer.Show(ReferenceChainBuilder.ForSprite((string)value));
                         }
+
                         break;
                     }
+
                     case TypeUtil.SmartType.ParkedVehicle:
                     {
                         if (Convert.ToUInt16(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show parked vehicle"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -212,12 +219,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.Vehicle:
                     {
                         if (Convert.ToUInt16(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show vehicle"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -226,12 +235,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.Building:
                     {
                         if (Convert.ToUInt16(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show building"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -240,12 +251,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.CitizenUnit:
                     {
                         if (Convert.ToUInt32(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show citizen unit"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -254,12 +267,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.Citizen:
                     {
                         if (Convert.ToUInt32(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show citizen"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -268,12 +283,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.TransportLine:
                     {
                         if (Convert.ToUInt16(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show transport line"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -282,12 +299,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.PathUnit:
                     {
                         if (Convert.ToUInt32(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show path unit"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -296,12 +315,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.NetNode:
                     {
                         if (Convert.ToUInt16(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show network node"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -310,12 +331,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.NetSegment:
                     {
                         if (Convert.ToUInt16(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show network segment"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -324,12 +347,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.NetLane:
                     {
                         if (Convert.ToUInt32(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show network lane"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -338,12 +363,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.ParkDistrict:
                     {
                         if (Convert.ToByte(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show park district"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -352,12 +379,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.District:
                     {
                         if (Convert.ToByte(value) < 1)
                         {
                             return;
-                        }  
+                        }
+
                         if (GUILayout.Button("Show district"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -366,12 +395,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.Tree:
                     {
                         if (Convert.ToUInt32(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show tree"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -380,12 +411,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.Prop:
                     {
                         if (Convert.ToUInt16(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show prop"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -394,12 +427,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.CitizenInstance:
                     {
                         if (Convert.ToUInt16(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show citizen instance"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -408,12 +443,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     case TypeUtil.SmartType.ZoneBlock:
                     {
                         if (Convert.ToUInt16(value) < 1)
                         {
                             return;
                         }
+
                         if (GUILayout.Button("Show zone block"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -422,13 +459,14 @@ namespace ModTools.Explorer
 
                         break;
                     }
+
                     default:
                         return;
                 }
             }
             catch
             {
-                //suppress
+                // suppress
             }
         }
 
@@ -443,7 +481,6 @@ namespace ModTools.Explorer
 
             return currentValue != null && GUILayout.Button("Unset");
         }
-
 
         public static void SetupJumpButton(object value, ReferenceChain refChain)
         {
@@ -493,8 +530,12 @@ namespace ModTools.Explorer
             switch (prefabInfo)
             {
                 case VehicleInfoBase vehicleInfoBase:
-                    SetupMeshPreviewButtons(vehicleInfoBase.name, vehicleInfoBase.m_mesh, vehicleInfoBase.m_material,
-                        vehicleInfoBase.m_lodMesh, vehicleInfoBase.m_lodMaterial);
+                    SetupMeshPreviewButtons(
+                        vehicleInfoBase.name,
+                        vehicleInfoBase.m_mesh,
+                        vehicleInfoBase.m_material,
+                        vehicleInfoBase.m_lodMesh,
+                        vehicleInfoBase.m_lodMaterial);
                     SetupVehicleFullDumpButton(
                         vehicleInfoBase.name,
                         vehicleInfoBase.m_mesh,
@@ -529,32 +570,31 @@ namespace ModTools.Explorer
                         SetupPlopButton(prefabInfo);
                     }
 
-                    SetupMeshPreviewButtons(buildingInfoBase.name, buildingInfoBase.m_mesh, buildingInfoBase.m_material,
-                        buildingInfoBase.m_lodMesh, buildingInfoBase.m_lodMaterial);
+                    SetupMeshPreviewButtons(
+                        buildingInfoBase.name,
+                        buildingInfoBase.m_mesh,
+                        buildingInfoBase.m_material,
+                        buildingInfoBase.m_lodMesh,
+                        buildingInfoBase.m_lodMaterial);
                     SetupBuildingFullDumpButton(
                         buildingInfoBase.name,
                         buildingInfoBase.m_mesh,
                         buildingInfoBase.m_material,
                         buildingInfoBase.m_lodMesh,
                         buildingInfoBase.m_lodMaterial,
-                        buildingInfoBase is BuildingInfo buildingInfo ? buildingInfo.m_subMeshes :
-                        buildingInfoBase is BuildingInfoSub buildingInfoSub ? buildingInfoSub.m_subMeshes : null);
+                        buildingInfoBase is BuildingInfo buildingInfo ? buildingInfo.m_subMeshes : buildingInfoBase is BuildingInfoSub buildingInfoSub ? buildingInfoSub.m_subMeshes : null);
                     break;
 
                 case PropInfo propInfo:
                     SetupPlopButton(prefabInfo);
-                    SetupMeshPreviewButtons(propInfo.name, propInfo.m_mesh, propInfo.m_material, propInfo.m_lodMesh,
-                        propInfo.m_lodMaterial);
-                    SetupGenericAssetFullDumpButton(propInfo.name, propInfo.m_mesh, propInfo.m_material,
-                        propInfo.m_lodMesh, propInfo.m_lodMaterial);
+                    SetupMeshPreviewButtons(propInfo.name, propInfo.m_mesh, propInfo.m_material, propInfo.m_lodMesh, propInfo.m_lodMaterial);
+                    SetupGenericAssetFullDumpButton(propInfo.name, propInfo.m_mesh, propInfo.m_material, propInfo.m_lodMesh, propInfo.m_lodMaterial);
                     break;
 
                 case TreeInfo treeInfo:
                     SetupPlopButton(prefabInfo);
-                    SetupMeshPreviewButtons(treeInfo.name, treeInfo.m_mesh, treeInfo.m_material, lodMesh: null,
-                        lodMaterial: null);
-                    SetupGenericAssetFullDumpButton(treeInfo.name, treeInfo.m_mesh, treeInfo.m_material, lodMesh: null,
-                        lodMaterial: null);
+                    SetupMeshPreviewButtons(treeInfo.name, treeInfo.m_mesh, treeInfo.m_material, null, null);
+                    SetupGenericAssetFullDumpButton(treeInfo.name, treeInfo.m_mesh, treeInfo.m_material, null, null);
                     break;
 
                 case CitizenInfo citizenInfo:
@@ -621,8 +661,7 @@ namespace ModTools.Explorer
             AssetDumpUtil.DumpVehicle(assetName, mesh, material, lodMesh, lodMaterial, subMeshes);
         }
 
-        private static void SetupNetworkFullDumpButton(string assetName, NetInfo.Segment[] segments,
-            NetInfo.Node[] nodes)
+        private static void SetupNetworkFullDumpButton(string assetName, NetInfo.Segment[] segments, NetInfo.Node[] nodes)
         {
             if (!GUILayout.Button("Full dump"))
             {
@@ -632,8 +671,7 @@ namespace ModTools.Explorer
             AssetDumpUtil.DumpNetwork(assetName, segments, nodes);
         }
 
-        private static void SetupMeshPreviewButtons(string name, Mesh mesh, Material material, Mesh lodMesh,
-            Material lodMaterial)
+        private static void SetupMeshPreviewButtons(string name, Mesh mesh, Material material, Mesh lodMesh, Material lodMaterial)
         {
             if (mesh != null && GUILayout.Button("Preview"))
             {
