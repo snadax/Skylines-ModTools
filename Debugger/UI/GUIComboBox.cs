@@ -164,7 +164,7 @@ namespace ModTools.UI
                 t.SetPixel(0, 0, default);
                 t.Apply();
                 result.hover.background = t;
-                result.font = GUIWindow.Skin.font;
+                result.font = GUI.skin.font;
 
                 return result;
             }

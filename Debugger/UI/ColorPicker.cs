@@ -24,7 +24,7 @@ namespace ModTools.UI
         private Texture2D lineTexTexture;
 
         public ColorPicker()
-            : base("ColorPicker", new Rect(16.0f, 16.0f, 188.0f, 156.0f), Skin, resizable: false, hasTitlebar: false)
+            : base("ColorPicker", new Rect(16.0f, 16.0f, 188.0f, 156.0f), false, false)
         {
             colorPickerRect = new Rect(8.0f, 8.0f, colorPickerSize, colorPickerSize);
             hueBarRect = new Rect(colorPickerRect.x + colorPickerSize + 4.0f, colorPickerRect.y, hueBarWidth, colorPickerRect.height);

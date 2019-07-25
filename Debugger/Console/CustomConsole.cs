@@ -69,7 +69,7 @@ namespace ModTools.Scripting
         private List<KeyValuePair<int, string>> userNotifications;
 
         public CustomConsole()
-            : base("Debug console", Config.ConsoleRect, Skin)
+            : base("Debug console", Config.ConsoleRect)
         {
             headerArea = new GUIArea(this)
                 .OffsetBy(vertical: 16f)
@@ -388,7 +388,7 @@ namespace ModTools.Scripting
 
             foreach (var item in userNotifications)
             {
-                GUILayout.BeginHorizontal(Skin.box);
+                GUILayout.BeginHorizontal(GUI.skin.box);
 
                 GUI.contentColor = Color.cyan;
                 GUILayout.Label(item.Value);
@@ -411,7 +411,7 @@ namespace ModTools.Scripting
 
             foreach (var item in messages)
             {
-                GUILayout.BeginHorizontal(Skin.box);
+                GUILayout.BeginHorizontal(GUI.skin.box);
 
                 var msg = Config.ConsoleFormatString.Replace("{{type}}", item.Type.ToString())
                         .Replace("{{caller}}", item.Caller)
@@ -449,7 +449,7 @@ namespace ModTools.Scripting
                         GUI.contentColor = Color.red;
                     }
 
-                    GUILayout.Label(item.Count.ToString(), Skin.box);
+                    GUILayout.Label(item.Count.ToString(), GUI.skin.box);
                 }
                 else
                 {

@@ -9,7 +9,7 @@ namespace ModTools.Explorer
         private Texture previewTexture;
 
         private TextureViewer()
-            : base("Texture Viewer", new Rect(512, 128, 512, 512), Skin)
+            : base("Texture Viewer", new Rect(512, 128, 512, 512))
         {
         }
 

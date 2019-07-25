@@ -10,7 +10,7 @@ namespace ModTools
         private int selectedFont;
 
         public AppearanceConfig()
-            : base("Appearance configuration", new Rect(16.0f, 16.0f, 600.0f, 490.0f), Skin, resizable: false)
+            : base("Appearance configuration", new Rect(16.0f, 16.0f, 600.0f, 490.0f), resizable: false)
         {
             availableFonts = Font.GetOSInstalledFontNames();
             selectedFont = Array.IndexOf(availableFonts, MainWindow.Instance.Config.FontName);
@@ -134,8 +134,6 @@ namespace ModTools
             config.ValueColor = template.ValueColor;
             config.FontName = template.FontName;
             config.FontSize = template.FontSize;
-
-            UpdateFont();
         }
 
         private Color DrawColorControl(string name, Color value)

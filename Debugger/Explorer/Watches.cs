@@ -14,7 +14,7 @@ namespace ModTools.Explorer
         private Vector2 watchesScroll = Vector2.zero;
 
         public Watches()
-            : base("Watches", new Rect(504, 128, 800, 300), Skin)
+            : base("Watches", new Rect(504, 128, 800, 300))
         {
         }
 

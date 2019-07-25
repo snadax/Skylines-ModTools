@@ -45,7 +45,7 @@ namespace ModTools.Explorer
         private string quickFilter = string.Empty;
 
         public SceneExplorer()
-            : base(TitleBase, new Rect(128, 440, 800, 500), Skin)
+            : base(TitleBase, new Rect(128, 440, 800, 500))
         {
             headerArea = new GUIArea(this)
                 .ChangeSizeRelative(height: 0)

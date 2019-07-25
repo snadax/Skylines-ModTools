@@ -6,9 +6,6 @@ namespace ModTools.UI
 {
     internal abstract class GUIWindow : MonoBehaviour, IDestroyableObject, IUIObject
     {
-        // TODO: make this field to private-instance
-        internal static GUISkin Skin;
-
         private const float UIScale = 1.0f;
 
         private static readonly List<GUIWindow> Windows = new List<GUIWindow>();
@@ -23,18 +20,21 @@ namespace ModTools.UI
         private readonly bool resizable;
         private readonly bool hasTitlebar;
 
+        private GUISkin skin;
+        private string cachedFontName = string.Empty;
+        private int cachedFontSize = 0;
+
         private Vector2 minSize = Vector2.zero;
         private Rect windowRect = new Rect(0, 0, 64, 64);
 
         private bool visible;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811", Justification = ".ctor of a Unity component")]
-        protected GUIWindow(string title, Rect rect, GUISkin skin, bool resizable = true, bool hasTitlebar = true)
+        protected GUIWindow(string title, Rect rect, bool resizable = true, bool hasTitlebar = true)
         {
             id = UnityEngine.Random.Range(1024, int.MaxValue);
             Title = title;
             windowRect = rect;
-            Skin = skin;
             this.resizable = resizable;
             this.hasTitlebar = hasTitlebar;
             minSize = new Vector2(64.0f, 64.0f);
@@ -77,10 +77,17 @@ namespace ModTools.UI
 
         private static ModConfiguration Config => MainWindow.Instance.Config;
 
-        public static void UpdateFont()
+        public void UpdateFont()
         {
-            Skin.font = Font.CreateDynamicFontFromOSFont(Config.FontName, Config.FontSize);
+            if (cachedFontName == Config.FontName && cachedFontSize == Config.FontSize)
+            {
+                return;
+            }
+
+            skin.font = Font.CreateDynamicFontFromOSFont(Config.FontName, Config.FontSize);
             MainWindow.Instance?.SceneExplorer?.RecalculateAreas();
+            cachedFontName = Config.FontName;
+            cachedFontSize = Config.FontSize;
         }
 
         public void OnDestroy()
@@ -91,7 +98,7 @@ namespace ModTools.UI
 
         public void OnGUI()
         {
-            if (Skin == null)
+            if (skin == null)
             {
                 BgTexture = new Texture2D(1, 1);
                 BgTexture.SetPixel(0, 0, Config.BackgroundColor);
@@ -121,37 +128,35 @@ namespace ModTools.UI
                 MoveHoverTexture.SetPixel(0, 0, Config.TitleBarColor * 1.2f);
                 MoveHoverTexture.Apply();
 
-                Skin = ScriptableObject.CreateInstance<GUISkin>();
-                Skin.box = new GUIStyle(GUI.skin.box);
-                Skin.button = new GUIStyle(GUI.skin.button);
-                Skin.horizontalScrollbar = new GUIStyle(GUI.skin.horizontalScrollbar);
-                Skin.horizontalScrollbarLeftButton = new GUIStyle(GUI.skin.horizontalScrollbarLeftButton);
-                Skin.horizontalScrollbarRightButton = new GUIStyle(GUI.skin.horizontalScrollbarRightButton);
-                Skin.horizontalScrollbarThumb = new GUIStyle(GUI.skin.horizontalScrollbarThumb);
-                Skin.horizontalSlider = new GUIStyle(GUI.skin.horizontalSlider);
-                Skin.horizontalSliderThumb = new GUIStyle(GUI.skin.horizontalSliderThumb);
-                Skin.label = new GUIStyle(GUI.skin.label);
-                Skin.scrollView = new GUIStyle(GUI.skin.scrollView);
-                Skin.textArea = new GUIStyle(GUI.skin.textArea);
-                Skin.textField = new GUIStyle(GUI.skin.textField);
-                Skin.toggle = new GUIStyle(GUI.skin.toggle);
-                Skin.verticalScrollbar = new GUIStyle(GUI.skin.verticalScrollbar);
-                Skin.verticalScrollbarDownButton = new GUIStyle(GUI.skin.verticalScrollbarDownButton);
-                Skin.verticalScrollbarThumb = new GUIStyle(GUI.skin.verticalScrollbarThumb);
-                Skin.verticalScrollbarUpButton = new GUIStyle(GUI.skin.verticalScrollbarUpButton);
-                Skin.verticalSlider = new GUIStyle(GUI.skin.verticalSlider);
-                Skin.verticalSliderThumb = new GUIStyle(GUI.skin.verticalSliderThumb);
-                Skin.window = new GUIStyle(GUI.skin.window);
-                Skin.window.normal.background = BgTexture;
-                Skin.window.onNormal.background = BgTexture;
+                skin = ScriptableObject.CreateInstance<GUISkin>();
+                skin.box = new GUIStyle(GUI.skin.box);
+                skin.button = new GUIStyle(GUI.skin.button);
+                skin.horizontalScrollbar = new GUIStyle(GUI.skin.horizontalScrollbar);
+                skin.horizontalScrollbarLeftButton = new GUIStyle(GUI.skin.horizontalScrollbarLeftButton);
+                skin.horizontalScrollbarRightButton = new GUIStyle(GUI.skin.horizontalScrollbarRightButton);
+                skin.horizontalScrollbarThumb = new GUIStyle(GUI.skin.horizontalScrollbarThumb);
+                skin.horizontalSlider = new GUIStyle(GUI.skin.horizontalSlider);
+                skin.horizontalSliderThumb = new GUIStyle(GUI.skin.horizontalSliderThumb);
+                skin.label = new GUIStyle(GUI.skin.label);
+                skin.scrollView = new GUIStyle(GUI.skin.scrollView);
+                skin.textArea = new GUIStyle(GUI.skin.textArea);
+                skin.textField = new GUIStyle(GUI.skin.textField);
+                skin.toggle = new GUIStyle(GUI.skin.toggle);
+                skin.verticalScrollbar = new GUIStyle(GUI.skin.verticalScrollbar);
+                skin.verticalScrollbarDownButton = new GUIStyle(GUI.skin.verticalScrollbarDownButton);
+                skin.verticalScrollbarThumb = new GUIStyle(GUI.skin.verticalScrollbarThumb);
+                skin.verticalScrollbarUpButton = new GUIStyle(GUI.skin.verticalScrollbarUpButton);
+                skin.verticalSlider = new GUIStyle(GUI.skin.verticalSlider);
+                skin.verticalSliderThumb = new GUIStyle(GUI.skin.verticalSliderThumb);
+                skin.window = new GUIStyle(GUI.skin.window);
+                skin.window.normal.background = BgTexture;
+                skin.window.onNormal.background = BgTexture;
 
-                Skin.settings.cursorColor = GUI.skin.settings.cursorColor;
-                Skin.settings.cursorFlashSpeed = GUI.skin.settings.cursorFlashSpeed;
-                Skin.settings.doubleClickSelectsWord = GUI.skin.settings.doubleClickSelectsWord;
-                Skin.settings.selectionColor = GUI.skin.settings.selectionColor;
-                Skin.settings.tripleClickSelectsLine = GUI.skin.settings.tripleClickSelectsLine;
-
-                UpdateFont();
+                skin.settings.cursorColor = GUI.skin.settings.cursorColor;
+                skin.settings.cursorFlashSpeed = GUI.skin.settings.cursorFlashSpeed;
+                skin.settings.doubleClickSelectsWord = GUI.skin.settings.doubleClickSelectsWord;
+                skin.settings.selectionColor = GUI.skin.settings.selectionColor;
+                skin.settings.tripleClickSelectsLine = GUI.skin.settings.tripleClickSelectsLine;
             }
 
             if (!Visible)
@@ -160,9 +165,10 @@ namespace ModTools.UI
             }
 
             var oldSkin = GUI.skin;
-            if (Skin != null)
+            if (skin != null)
             {
-                GUI.skin = Skin;
+                UpdateFont();
+                GUI.skin = skin;
             }
 
             var matrix = GUI.matrix;

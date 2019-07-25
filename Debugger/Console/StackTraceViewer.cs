@@ -15,7 +15,7 @@ namespace ModTools.Console
         private Vector2 scrollPos = Vector2.zero;
 
         private StackTraceViewer()
-            : base("Stack-trace viewer", new Rect(16.0f, 16.0f, 512.0f, 256.0f), Skin)
+            : base("Stack-trace viewer", new Rect(16.0f, 16.0f, 512.0f, 256.0f))
         {
         }
 
@@ -53,7 +53,7 @@ namespace ModTools.Console
             var count = 0;
             foreach (var frame in stackFrames.Reverse())
             {
-                GUILayout.BeginHorizontal(Skin.box);
+                GUILayout.BeginHorizontal(GUI.skin.box);
                 var method = frame.GetMethod();
 
                 GUILayout.Label(count.ToString(), GUILayout.ExpandWidth(false));
@@ -77,7 +77,7 @@ namespace ModTools.Console
 
             if (stackFrames.Length > 0 && !errorMessage.IsNullOrEmpty())
             {
-                GUILayout.BeginHorizontal(Skin.box);
+                GUILayout.BeginHorizontal(GUI.skin.box);
                 GUI.contentColor = Config.ConsoleErrorColor;
                 GUILayout.Label(errorMessage);
                 GUILayout.EndHorizontal();

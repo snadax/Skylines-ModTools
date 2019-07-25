@@ -27,7 +27,7 @@ namespace ModTools.Explorer
         private bool useOriginalShader;
 
         public MeshViewer()
-            : base("Mesh Viewer", new Rect(512, 128, 512, 512), Skin)
+            : base("Mesh Viewer", new Rect(512, 128, 512, 512))
         {
             try
             {

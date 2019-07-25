@@ -32,7 +32,7 @@ namespace ModTools.Scripting
         private ScriptEditorFile currentFile;
 
         public ScriptEditor()
-            : base("Script Editor", new Rect(16.0f, 16.0f, 640.0f, 480.0f), Skin)
+            : base("Script Editor", new Rect(16.0f, 16.0f, 640.0f, 480.0f))
         {
             headerArea = new GUIArea(this)
                 .OffsetBy(vertical: 32f)
