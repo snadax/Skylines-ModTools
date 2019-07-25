@@ -21,12 +21,14 @@ namespace ModTools.Explorer
             {
                 return;
             }
+
             GUI.contentColor = MainWindow.Instance.Config.SelectedComponentColor;
             GUILayout.Label(member.Name.Substring(nameHighlightFrom, nameHighlightLength));
             if (nameHighlightFrom + nameHighlightLength >= member.Name.Length)
             {
                 return;
             }
+
             GUI.contentColor = MainWindow.Instance.Config.NameColor;
             GUILayout.Label(member.Name.Substring(nameHighlightFrom + nameHighlightLength));
         }

@@ -154,10 +154,12 @@ namespace ModTools.Explorer
             {
                 doPaste = GUIButtons.SetupPasteButon(property.PropertyType, value, out paste);
             }
+
             if (value != null)
             {
                 GUIButtons.SetupJumpButton(value, refChain);
             }
+
             GUILayout.EndHorizontal();
 
             if (value != null && state.ExpandedObjects.Contains(refChain.UniqueId))

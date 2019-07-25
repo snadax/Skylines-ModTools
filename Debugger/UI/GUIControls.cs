@@ -41,28 +41,6 @@ namespace ModTools.UI
             return ParseHelper.TryParse<T>(newText, out var newValue) ? newValue : value;
         }
 
-        public static object PrimitiveValueField(string id, string name, object value)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (!string.IsNullOrEmpty(name))
-            {
-                GUI.contentColor = Config.NameColor;
-                GUILayout.Label(name);
-            }
-
-            GUI.contentColor = Config.ValueColor;
-
-            var valueType = value.GetType();
-            var newText = BufferedTextField(id, value.ToString(), GetTextFieldSize(valueType));
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
-
-            return ParseHelper.TryParse(newText, valueType, out var newValue) ? newValue : value;
-        }
-
         public static object EditorValueField(string id, Type type, object value)
         {
             if (type.IsPrimitive && type != typeof(bool) || type == typeof(string))
@@ -82,7 +60,7 @@ namespace ModTools.UI
 
             if (type == typeof(Shader))
             {
-                return ShaderField(id, (Shader)value);  
+                return ShaderField(id, (Shader)value);
             }
 
             if (type == typeof(Vector2))
@@ -117,102 +95,8 @@ namespace ModTools.UI
 
             return value;
         }
-
-        public static bool BoolField(string name, bool value)
-        {
-            GUILayout.BeginHorizontal();
-
-            if (!string.IsNullOrEmpty(name))
-            {
-                GUI.contentColor = Config.NameColor;
-                GUILayout.Label(name);
-            }
-
-            GUI.contentColor = Config.ValueColor;
-
-            value = GUILayout.Toggle(value, string.Empty);
-
-            GUI.contentColor = Color.white;
-
-            GUILayout.EndHorizontal();
-
-            return value;
-        }
-
-        private static object EnumField(string id, string name, object value)
-        {
-            GUILayout.BeginHorizontal();
-
-            try
-            {
-                var enumType = value.GetType();
-
-                if (!string.IsNullOrEmpty(name))
-                {
-                    GUI.contentColor = Config.NameColor;
-                    GUILayout.Label(name);
-                }
-
-                GUI.contentColor = Config.ValueColor;
-
-                if (TypeUtil.IsBitmaskEnum(enumType))
-                {
-                    GUILayout.Label(value.ToString());
-                }
-                else
-                {
-                    var names = Enum.GetNames(enumType);
-                    var values = Enum.GetValues(enumType);
-                    var valueIndex = Array.IndexOf(values, value);
-                    var newValueIndex = GUIComboBox.Box(valueIndex, names, id);
-                    if (newValueIndex != valueIndex)
-                    {
-                        value = values.GetValue(newValueIndex);
-                    }
-                }
-
-                GUI.contentColor = Color.white;
-            }
-            finally
-            {
-                GUILayout.EndHorizontal();
-            }
-
-            return value;
-        }
-
-        private static object ShaderField(string id, Shader value)
-        {
-            GUILayout.BeginHorizontal();
-
-            try
-            {
-                GUI.contentColor = Config.ValueColor;
-                var values = ShaderUtil.GetShaders();
-                var valueIndex = Array.IndexOf(values, value.name);
-                var newValueIndex = GUIComboBox.Box(valueIndex, values, id);
-                if (newValueIndex != valueIndex)
-                {
-                    value = Shader.Find(values[newValueIndex]);
-                }
-                GUI.contentColor = Color.white;
-            }
-            finally
-            {
-                GUILayout.EndHorizontal();
-            }
-
-            return value;
-        }
-
-        public static Vector2 PresentVector2(string id, Vector2 value)
-        {
-            value.x = PrimitiveValueField(id + ".x", "x", value.x);
-            value.y = PrimitiveValueField(id + ".y", "y", value.y);
-            return value;
-        }
-
-        public static Vector3 PresentVector3(string id, Vector3 value)
+        
+                public static Vector3 PresentVector3(string id, Vector3 value)
         {
             value.x = PrimitiveValueField(id + ".x", "x", value.x);
             value.y = PrimitiveValueField(id + ".y", "y", value.y);
@@ -313,6 +197,123 @@ namespace ModTools.UI
             GUILayout.EndHorizontal();
 
             return result;
+        }
+
+        private static object PrimitiveValueField(string id, string name, object value)
+        {
+            GUILayout.BeginHorizontal();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                GUI.contentColor = Config.NameColor;
+                GUILayout.Label(name);
+            }
+
+            GUI.contentColor = Config.ValueColor;
+
+            var valueType = value.GetType();
+            var newText = BufferedTextField(id, value.ToString(), GetTextFieldSize(valueType));
+
+            GUI.contentColor = Color.white;
+
+            GUILayout.EndHorizontal();
+
+            return ParseHelper.TryParse(newText, valueType, out var newValue) ? newValue : value;
+        }
+
+        private static bool BoolField(string name, bool value)
+        {
+            GUILayout.BeginHorizontal();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                GUI.contentColor = Config.NameColor;
+                GUILayout.Label(name);
+            }
+
+            GUI.contentColor = Config.ValueColor;
+
+            value = GUILayout.Toggle(value, string.Empty);
+
+            GUI.contentColor = Color.white;
+
+            GUILayout.EndHorizontal();
+
+            return value;
+        }
+
+        private static object EnumField(string id, string name, object value)
+        {
+            GUILayout.BeginHorizontal();
+
+            try
+            {
+                var enumType = value.GetType();
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    GUI.contentColor = Config.NameColor;
+                    GUILayout.Label(name);
+                }
+
+                GUI.contentColor = Config.ValueColor;
+
+                if (TypeUtil.IsBitmaskEnum(enumType))
+                {
+                    GUILayout.Label(value.ToString());
+                }
+                else
+                {
+                    var names = Enum.GetNames(enumType);
+                    var values = Enum.GetValues(enumType);
+                    var valueIndex = Array.IndexOf(values, value);
+                    var newValueIndex = GUIComboBox.Box(valueIndex, names, id);
+                    if (newValueIndex != valueIndex)
+                    {
+                        value = values.GetValue(newValueIndex);
+                    }
+                }
+
+                GUI.contentColor = Color.white;
+            }
+            finally
+            {
+                GUILayout.EndHorizontal();
+            }
+
+            return value;
+        }
+
+        private static object ShaderField(string id, Shader value)
+        {
+            GUILayout.BeginHorizontal();
+
+            try
+            {
+                GUI.contentColor = Config.ValueColor;
+                var values = ShaderUtil.GetShaders();
+                var valueIndex = Array.IndexOf(values, value.name);
+                var newValueIndex = GUIComboBox.Box(valueIndex, values, id);
+                if (newValueIndex != valueIndex)
+                {
+                    value = Shader.Find(values[newValueIndex]);
+                }
+
+                GUI.contentColor = Color.white;
+            }
+            finally
+            {
+                GUILayout.EndHorizontal();
+            }
+
+            return value;
+        }
+
+        private static Vector2 PresentVector2(string id, Vector2 value)
+        {
+            value.x = PrimitiveValueField(id + ".x", "x", value.x);
+            value.y = PrimitiveValueField(id + ".y", "y", value.y);
+            return value;
         }
 
         private static string BufferedTextField(string id, string value, float fieldSize)

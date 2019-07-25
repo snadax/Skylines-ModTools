@@ -86,7 +86,7 @@ namespace ModTools.Explorer
                 {
                     GUIButtons.SetupJumpButton(value, refChain);
                 }
-                
+
                 GUILayout.EndHorizontal();
 
                 if (!isNullOrEmpty && !TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))

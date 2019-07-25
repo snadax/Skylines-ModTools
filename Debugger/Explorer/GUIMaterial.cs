@@ -7,7 +7,6 @@ namespace ModTools.Explorer
 {
     internal static class GUIMaterial
     {
-
         public static void OnSceneReflectUnityEngineMaterial(SceneExplorerState state, ReferenceChain refChain, Material material)
         {
             if (!SceneExplorerCommon.SceneTreeCheckDepth(refChain))
@@ -68,6 +67,7 @@ namespace ModTools.Explorer
                 {
                     GUIButtons.SetupJumpButton(value, refChain);
                 }
+
                 GUILayout.EndHorizontal();
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
@@ -126,6 +126,7 @@ namespace ModTools.Explorer
                 {
                     GUIButtons.SetupJumpButton(value, refChain);
                 }
+
                 GUILayout.EndHorizontal();
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
@@ -138,7 +139,7 @@ namespace ModTools.Explorer
                     material.SetColor(prop, (Color)paste);
                 }
             }
-            
+
             foreach (var prop in ShaderUtil.GetFloatProperties())
             {
                 if (!material.HasProperty(prop))
@@ -178,12 +179,10 @@ namespace ModTools.Explorer
 
                 GUI.contentColor = Color.white;
                 GUILayout.FlexibleSpace();
-                GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0);
+                GUIButtons.SetupCommonButtons(refChain, value, 0);
                 var doPaste = GUIButtons.SetupPasteButon(type, value, out var paste);
-                if (value != null)
-                {
-                    GUIButtons.SetupJumpButton(value, refChain);
-                }
+                GUIButtons.SetupJumpButton(value, refChain);
+
                 GUILayout.EndHorizontal();
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
@@ -196,7 +195,7 @@ namespace ModTools.Explorer
                     material.SetColor(prop, (Color)paste);
                 }
             }
-            
+
             foreach (var prop in ShaderUtil.GetVectorProperties())
             {
                 if (!material.HasProperty(prop))
@@ -210,7 +209,7 @@ namespace ModTools.Explorer
                 var type = value.GetType();
 
                 GUILayout.BeginHorizontal();
-                SceneExplorerCommon.InsertIndent(refChain.Indentation  + 1);
+                SceneExplorerCommon.InsertIndent(refChain.Indentation + 1);
 
                 GUIExpander.ExpanderControls(state, refChain, type);
 
@@ -242,6 +241,7 @@ namespace ModTools.Explorer
                 {
                     GUIButtons.SetupJumpButton(value, refChain);
                 }
+
                 GUILayout.EndHorizontal();
 
                 if (!TypeUtil.IsSpecialType(type) && state.ExpandedObjects.Contains(refChain.UniqueId))
