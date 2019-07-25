@@ -11,10 +11,10 @@ namespace ModTools.Utils
         private static string[] shaders;
         private static readonly Dictionary<string, MethodInfo> methods = new Dictionary<string, MethodInfo>();
         private static readonly Dictionary<string, FieldInfo> fields = new Dictionary<string, FieldInfo>();
-        
+
         static ShaderUtil()
         {
-            
+
             var shaderUtilType = TypeUtil.FindTypeByFullName("ColossalFramework.Packaging.ShaderUtil");
             if (shaderUtilType == null)
             {

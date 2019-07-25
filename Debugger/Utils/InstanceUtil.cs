@@ -17,11 +17,13 @@ namespace ModTools.Utils
             {
                 return NetManager.instance.m_segments.m_buffer[segmentId].Info?.name ?? "N/A";
             }
+
             var nodeId = instanceId.NetNode;
             if (nodeId > 0)
             {
                 return NetManager.instance.m_nodes.m_buffer[nodeId].Info?.name ?? "N/A";
             }
+
             return "N/A";
         }
 
@@ -65,7 +67,7 @@ namespace ModTools.Utils
 
             return "N/A";
         }
-        
+
         public static string GetPropAssetName(this InstanceID instanceId)
         {
             var id = instanceId.Prop;
@@ -76,7 +78,7 @@ namespace ModTools.Utils
 
             return "N/A";
         }
-        
+
         public static string GetTreeAssetName(this InstanceID instanceId)
         {
             var id = instanceId.Tree;
@@ -98,7 +100,7 @@ namespace ModTools.Utils
 
             return "N/A";
         }
-        
+
         public static ushort GetCitizenInstanceId(this InstanceID instanceId)
         {
             var result = instanceId.CitizenInstance;

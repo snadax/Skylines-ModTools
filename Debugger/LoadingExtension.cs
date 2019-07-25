@@ -17,7 +17,6 @@ namespace ModTools
             ShaderUtil.ClearShaderCache();
         }
 
-
         public override void OnLevelLoaded(LoadMode mode)
         {
             base.OnLevelLoaded(mode);
@@ -39,7 +38,7 @@ namespace ModTools
             selectionToolGo.transform.parent = ModToolsMod.mainObject.transform;
             selectionToolGo.AddComponent<SelectionToolControl>();
         }
-        
+
         public override void OnLevelUnloading()
         {
             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
@@ -48,6 +47,7 @@ namespace ModTools
             {
                 sceneExplorer.ClearExpanded();
             }
+
             var go = Object.FindObjectOfType<SelectionToolControl>();
             if (go != null)
             {
@@ -62,6 +62,5 @@ namespace ModTools
             ShaderUtil.ClearShaderCache();
             CustomPrefabs.Revert();
         }
-      
     }
 }

@@ -35,7 +35,7 @@ namespace ModTools.Utils
                 .Add(typeof(Array16<Building>).GetField("m_buffer"))
                 .Add(buildingId);
         }
-        
+
         public static ReferenceChain ForZoneBlock(ushort blockId)
         {
             return new ReferenceChain()
@@ -186,7 +186,7 @@ namespace ModTools.Utils
                 .Add(treeId);
         }
 
-        public static ReferenceChain ForSprite(string value) //TODO add support for other atlases other than the default one
+        public static ReferenceChain ForSprite(string value) // TODO add support for other atlases other than the default one
         {
             var id = (uint)UIView.GetAView().defaultAtlas.sprites.FindIndex(sprite => sprite.name == value);
             var gameObject = GameObject.Find(nameof(UIView));
@@ -198,7 +198,7 @@ namespace ModTools.Utils
                 .Add(id);
         }
 
-        //TODO: usage of value arg is a hack required because at least the last element of the refChain is not set properly
+        // TODO: usage of value arg is a hack required because at least the last element of the refChain is not set properly
         public static ReferenceChain Optimize(ReferenceChain referenceChain, object value)
         {
             switch (value)
@@ -211,14 +211,14 @@ namespace ModTools.Utils
                     return referenceChain;
             }
         }
-        
+
         public static ReferenceChain ForUIComponent(UIComponent component)
         {
             if (component == null)
             {
                 return null;
             }
-            
+
             var current = component;
             var refChain = new ReferenceChain();
             refChain = refChain.Add(current);
@@ -247,6 +247,7 @@ namespace ModTools.Utils
                 refChain = refChain.Add(current.transform.parent.gameObject);
                 current = current.transform.parent.gameObject;
             }
+
             return refChain.Reverse();
         }
     }

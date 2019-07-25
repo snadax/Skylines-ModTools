@@ -253,7 +253,7 @@ namespace ModTools
 
                 SaveConfig();
             }
-            
+
             var newSelectionTool = GUILayout.Toggle(Config.SelectionTool, " Selection Tool (Ctrl + M)");
             if (newSelectionTool != Config.SelectionTool)
             {
@@ -267,9 +267,8 @@ namespace ModTools
                             ToolsModifierControl.SetTool<DefaultTool>();
                         }
                     }
-
-
                 }
+
                 Config.SelectionTool = newSelectionTool;
                 SaveConfig();
             }
