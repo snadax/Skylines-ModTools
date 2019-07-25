@@ -9,11 +9,11 @@ namespace ModTools
 {
     public sealed class ModToolsMod : IUserMod
     {
+        public static GameObject MainWindowObject;
+
+        public static GameObject MainObject;
+
         private const string ModToolsName = "ModTools";
-
-        public static GameObject mainWindowObject;
-
-        public static GameObject mainObject;
 
         public static string Version { get; } = GitVersion.GetAssemblyVersion(typeof(ModToolsMod).Assembly);
 
@@ -25,21 +25,21 @@ namespace ModTools
         {
             try
             {
-                if (mainWindowObject != null)
+                if (MainWindowObject != null)
                 {
                     return;
                 }
 
                 CODebugBase<LogChannel>.verbose = true;
                 CODebugBase<LogChannel>.EnableChannels(LogChannel.All);
-                
-                mainObject = new GameObject(ModToolsName);
-                UnityEngine.Object.DontDestroyOnLoad(mainObject);
 
-                mainWindowObject = new GameObject(ModToolsName + nameof(MainWindow));
-                UnityEngine.Object.DontDestroyOnLoad(mainWindowObject);
+                MainObject = new GameObject(ModToolsName);
+                UnityEngine.Object.DontDestroyOnLoad(MainObject);
 
-                var modTools = mainWindowObject.AddComponent<MainWindow>();
+                MainWindowObject = new GameObject(ModToolsName + nameof(MainWindow));
+                UnityEngine.Object.DontDestroyOnLoad(MainWindowObject);
+
+                var modTools = MainWindowObject.AddComponent<MainWindow>();
                 modTools.Initialize();
             }
             catch (Exception e)
@@ -50,11 +50,11 @@ namespace ModTools
 
         public void OnDisabled()
         {
-            if (mainWindowObject != null)
+            if (MainWindowObject != null)
             {
                 CODebugBase<LogChannel>.verbose = false;
-                UnityEngine.Object.Destroy(mainWindowObject);
-                mainWindowObject = null;
+                UnityEngine.Object.Destroy(MainWindowObject);
+                MainWindowObject = null;
             }
         }
     }

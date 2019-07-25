@@ -8,13 +8,12 @@ namespace ModTools.Utils
 {
     internal static class ShaderUtil
     {
+        private static readonly Dictionary<string, MethodInfo> Methods = new Dictionary<string, MethodInfo>();
+        private static readonly Dictionary<string, FieldInfo> Fields = new Dictionary<string, FieldInfo>();
         private static string[] shaders;
-        private static readonly Dictionary<string, MethodInfo> methods = new Dictionary<string, MethodInfo>();
-        private static readonly Dictionary<string, FieldInfo> fields = new Dictionary<string, FieldInfo>();
 
         static ShaderUtil()
         {
-
             var shaderUtilType = TypeUtil.FindTypeByFullName("ColossalFramework.Packaging.ShaderUtil");
             if (shaderUtilType == null)
             {
@@ -25,17 +24,15 @@ namespace ModTools.Utils
             foreach (var field in shaderUtilType.GetFields(BindingFlags.Public | BindingFlags.NonPublic |
                                                            BindingFlags.Static))
             {
-                fields[field.Name] = field;
+                Fields[field.Name] = field;
             }
 
             foreach (var method in shaderUtilType.GetMethods(
                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static))
             {
-                methods[method.Name] = method;
+                Methods[method.Name] = method;
             }
         }
-
-
 
         public static void ClearShaderCache()
         {
@@ -53,22 +50,22 @@ namespace ModTools.Utils
 
         public static IEnumerable<string> GetTextureProperties()
         {
-            return (string[])fields["textureProps"].GetValue(null);
+            return (string[])Fields["textureProps"].GetValue(null);
         }
-        
+
         public static IEnumerable<string> GetColorProperties()
         {
-            return (string[])fields["colorProps"].GetValue(null);
+            return (string[])Fields["colorProps"].GetValue(null);
         }
-        
+
         public static IEnumerable<string> GetVectorProperties()
         {
-            return (string[])fields["vectorProps"].GetValue(null);
+            return (string[])Fields["vectorProps"].GetValue(null);
         }
-        
+
         public static IEnumerable<string> GetFloatProperties()
         {
-            return (string[])fields["floatProps"].GetValue(null);
+            return (string[])Fields["floatProps"].GetValue(null);
         }
 
         public static int CountBoundProperties(this Material material)
@@ -78,7 +75,7 @@ namespace ModTools.Utils
 
         private static T Call<T>(string name, params object[] parameters)
         {
-            return (T)methods[name].Invoke(null, parameters);
+            return (T)Methods[name].Invoke(null, parameters);
         }
     }
 }

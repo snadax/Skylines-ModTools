@@ -63,7 +63,7 @@ namespace ModTools.GamePanels
                 ShowAssetDumpModal(assetName);
             }
         }
-        
+
         private static void DumpNetwork(InstanceID instanceId)
         {
             var segmentId = instanceId.NetSegment;
@@ -208,13 +208,12 @@ namespace ModTools.GamePanels
             var linePanel = ButtonsInfoPanelExtension<PublicTransportWorldInfoPanel>.Create(name, InstanceUtil.GetLineName, ShowLine, buttons);
             customPanels.Add(linePanel);
         }
-        
+
         private void CreateRoadPanel()
         {
             var name = "(Library) " + typeof(RoadWorldInfoPanel).Name;
             var buttons = new Dictionary<string, Action<InstanceID>>()
             {
-                
                 ["Dump asset"] = DumpNetwork,
             };
 
@@ -340,7 +339,7 @@ namespace ModTools.GamePanels
                 sceneExplorer.Show(ReferenceChainBuilder.ForCitizenInstance(citizenInstanceId));
             }
         }
-        
+
         private void ShowCitizenPath(InstanceID instanceId)
         {
             var citizenInstanceId = InstanceUtil.GetCitizenInstanceId(instanceId);
@@ -357,19 +356,19 @@ namespace ModTools.GamePanels
             var lineId = instanceId.TransportLine;
             if (lineId != 0)
             {
-                sceneExplorer.Show(ReferenceChainBuilder.ForTransportLine(lineId));    
+                sceneExplorer.Show(ReferenceChainBuilder.ForTransportLine(lineId));
             }
         }
-        
+
         private void ShowSegment(InstanceID instanceId)
         {
             var segmentId = instanceId.NetSegment;
             if (segmentId != 0)
             {
-                sceneExplorer.Show(ReferenceChainBuilder.ForSegment(segmentId));    
+                sceneExplorer.Show(ReferenceChainBuilder.ForSegment(segmentId));
             }
         }
-        
+
         private void ShowVehiclePath(InstanceID instanceId)
         {
             var vehicleId = instanceId.Vehicle;
@@ -380,7 +379,7 @@ namespace ModTools.GamePanels
                 sceneExplorer.Show(ReferenceChainBuilder.ForPathUnit(pathUnitId));
             }
         }
-        
+
         private void ShowPark(InstanceID instanceId)
         {
             var parkId = instanceId.Park;
@@ -390,7 +389,7 @@ namespace ModTools.GamePanels
                 sceneExplorer.Show(ReferenceChainBuilder.ForPark(parkId));
             }
         }
-        
+
         private void ShowDistrict(InstanceID instanceId)
         {
             var districtId = instanceId.District;

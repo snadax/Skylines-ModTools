@@ -11,6 +11,28 @@ namespace ModTools.Utils
     {
         private static Dictionary<Type, ExtendedMemberInfo[]> typeCache = new Dictionary<Type, ExtendedMemberInfo[]>();
 
+        public enum SmartType
+        {
+            Building,
+            NetNode,
+            NetSegment,
+            TransportLine,
+            District,
+            ParkDistrict,
+            Vehicle,
+            ParkedVehicle,
+            Citizen,
+            CitizenUnit,
+            CitizenInstance,
+            NetLane,
+            PathUnit,
+            Tree,
+            Prop,
+            Undefined,
+            Sprite,
+            ZoneBlock,
+        }
+
         public static Type FindTypeByFullName(string fullName)
         {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -26,13 +48,13 @@ namespace ModTools.Utils
                 }
                 catch
                 {
-                    //skip
+                    // skip
                 }
             }
 
             return null;
         }
-        
+
         public static bool IsSpecialType(Type t)
         {
             return t.IsPrimitive
@@ -74,51 +96,7 @@ namespace ModTools.Utils
 
         public static FieldInfo FindField(Type type, string fieldName)
             => Array.Find(type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance), f => f.Name == fieldName);
-        
-        private static ExtendedMemberInfo[] GetMembersInternal(Type type, bool recursive, BindingFlags bindingFlags)
-        {
-            if (typeCache.ContainsKey(type))
-            {
-                return typeCache[type];
-            }
 
-            var results = new Dictionary<string, ExtendedMemberInfo>();
-            GetMembersInternal2(type, recursive, bindingFlags, results);
-            var members = results.Values.ToArray();
-            typeCache[type] = members;
-            return members;
-        }
-
-        private static void GetMembersInternal2(Type type, bool recursive, BindingFlags bindingFlags, Dictionary<string, ExtendedMemberInfo> outResults)
-        {
-            foreach (var member in type.GetMembers(bindingFlags))
-            {
-                if (!outResults.ContainsKey(member.Name))
-                {
-                    outResults.Add(member.Name, new ExtendedMemberInfo(member, 
-                        member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property ? DetectSmartType(member.Name, GetMemberUnderlyingType(member)) : SmartType.Undefined));
-                }
-            }
-
-            if (recursive && type.BaseType != null)
-            {
-                GetMembersInternal2(type.BaseType, true, bindingFlags, outResults);
-            }
-        }
-        private static Type GetMemberUnderlyingType(MemberInfo member)
-        {
-            if (member.MemberType == MemberTypes.Field)
-            {
-                return ((FieldInfo)member).FieldType;
-            }
-            if (member.MemberType == MemberTypes.Property)
-            {
-                return ((PropertyInfo)member).PropertyType;
-            }
-            throw new ArgumentException("MemberInfo must be if type FieldInfo or PropertyInfo", nameof(member));
-        }
-
-        
         public static SmartType DetectSmartType(string memberName, Type type)
         {
             try
@@ -220,11 +198,12 @@ namespace ModTools.Utils
             }
             catch
             {
-               //suppress 
+               // suppress
             }
+
             return SmartType.Undefined;
         }
-        
+
         public static SmartType OverrideSmartType(SmartType smartType, string memberName, object value)
         {
             if (value == null || memberName == null)
@@ -236,6 +215,7 @@ namespace ModTools.Utils
             {
                 return smartType;
             }
+
             switch (value)
             {
                 case Vehicle vehicle:
@@ -258,7 +238,54 @@ namespace ModTools.Utils
 
             return smartType;
         }
-        
+
+        private static ExtendedMemberInfo[] GetMembersInternal(Type type, bool recursive, BindingFlags bindingFlags)
+        {
+            if (typeCache.ContainsKey(type))
+            {
+                return typeCache[type];
+            }
+
+            var results = new Dictionary<string, ExtendedMemberInfo>();
+            GetMembersInternal2(type, recursive, bindingFlags, results);
+            var members = results.Values.ToArray();
+            typeCache[type] = members;
+            return members;
+        }
+
+        private static void GetMembersInternal2(Type type, bool recursive, BindingFlags bindingFlags, Dictionary<string, ExtendedMemberInfo> outResults)
+        {
+            foreach (var member in type.GetMembers(bindingFlags))
+            {
+                if (!outResults.ContainsKey(member.Name))
+                {
+                    outResults.Add(member.Name, new ExtendedMemberInfo(
+                        member,
+                        member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property ? DetectSmartType(member.Name, GetMemberUnderlyingType(member)) : SmartType.Undefined));
+                }
+            }
+
+            if (recursive && type.BaseType != null)
+            {
+                GetMembersInternal2(type.BaseType, true, bindingFlags, outResults);
+            }
+        }
+
+        private static Type GetMemberUnderlyingType(MemberInfo member)
+        {
+            if (member.MemberType == MemberTypes.Field)
+            {
+                return ((FieldInfo)member).FieldType;
+            }
+
+            if (member.MemberType == MemberTypes.Property)
+            {
+                return ((PropertyInfo)member).PropertyType;
+            }
+
+            throw new ArgumentException("MemberInfo must be if type FieldInfo or PropertyInfo", nameof(member));
+        }
+
         private static bool IsIntegerType(Type type)
         {
             switch (Type.GetTypeCode(type))
@@ -289,28 +316,6 @@ namespace ModTools.Utils
                 ReflectionInfo = reflectionInfo;
                 DetectedType = detectedType;
             }
-        }
-        
-        public enum SmartType
-        {
-            Building,
-            NetNode,
-            NetSegment,
-            TransportLine,
-            District,
-            ParkDistrict,
-            Vehicle,
-            ParkedVehicle,
-            Citizen,
-            CitizenUnit,
-            CitizenInstance,
-            NetLane,
-            PathUnit,
-            Tree,
-            Prop,
-            Undefined,
-            Sprite,
-            ZoneBlock
         }
     }
 }

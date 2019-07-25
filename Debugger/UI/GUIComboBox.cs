@@ -47,7 +47,7 @@ namespace ModTools.UI
                 return true;
             }
 
-            var modTools = ModToolsMod.mainWindowObject;
+            var modTools = ModToolsMod.MainWindowObject;
             if (modTools == null)
             {
                 return false;

@@ -35,7 +35,7 @@ namespace ModTools
             }
 
             var selectionToolGo = new GameObject("SelectionToolControl");
-            selectionToolGo.transform.parent = ModToolsMod.mainObject.transform;
+            selectionToolGo.transform.parent = ModToolsMod.MainObject.transform;
             selectionToolGo.AddComponent<SelectionToolControl>();
         }
 
