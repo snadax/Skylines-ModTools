@@ -1,5 +1,4 @@
-﻿using System;
-using ModTools.UI;
+﻿using ModTools.UI;
 using ModTools.Utils;
 using UnityEngine;
 
