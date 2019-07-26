@@ -121,10 +121,8 @@ namespace ModTools.Explorer
                 GUILayout.FlexibleSpace();
                 GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0);
                 var doPaste = GUIButtons.SetupPasteButon(type, value, out var paste);
-                if (value != null)
-                {
-                    GUIButtons.SetupJumpButton(value, refChain);
-                }
+
+                GUIButtons.SetupJumpButton(value, refChain);
 
                 GUILayout.EndHorizontal();
 
@@ -236,10 +234,8 @@ namespace ModTools.Explorer
                 GUILayout.FlexibleSpace();
                 GUIButtons.SetupCommonButtons(refChain, value, valueIndex: 0);
                 var doPaste = GUIButtons.SetupPasteButon(type, value, out var paste);
-                if (value != null)
-                {
-                    GUIButtons.SetupJumpButton(value, refChain);
-                }
+
+                GUIButtons.SetupJumpButton(value, refChain);
 
                 GUILayout.EndHorizontal();
 
