@@ -185,7 +185,7 @@ namespace ModTools.Explorer
                 {
                     case TypeUtil.SmartType.Sprite:
                     {
-                        if (!(value is string) || !UIView.GetAView().defaultAtlas.spriteNames.Contains((string)value))
+                        if (!(value is string stringValue) || !UIView.GetAView().defaultAtlas.spriteNames.Contains(stringValue))
                         {
                             return;
                         }
@@ -193,7 +193,7 @@ namespace ModTools.Explorer
                         if (GUILayout.Button("Show sprite"))
                         {
                             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
-                            sceneExplorer.Show(ReferenceChainBuilder.ForSprite((string)value));
+                            sceneExplorer.Show(ReferenceChainBuilder.ForSprite(stringValue));
                         }
 
                         break;
