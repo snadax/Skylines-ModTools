@@ -281,31 +281,24 @@ namespace ModTools.Explorer
 
         private string ItemToString(int i)
         {
-            switch (chainTypes[i])
+            return chainTypes[i] switch
             {
-                case ReferenceType.GameObject:
-                    return ((GameObject)chainObjects[i]).name;
+                ReferenceType.GameObject => ((GameObject)chainObjects[i]).name,
 
-                case ReferenceType.Component:
-                    return ((Component)chainObjects[i]).GetType().ToString();
+                ReferenceType.Component => chainObjects[i].GetType().ToString(),
 
-                case ReferenceType.Field:
-                    return ((FieldInfo)chainObjects[i]).Name;
+                ReferenceType.Field => ((FieldInfo)chainObjects[i]).Name,
 
-                case ReferenceType.Property:
-                    return ((PropertyInfo)chainObjects[i]).Name;
+                ReferenceType.Property => ((PropertyInfo)chainObjects[i]).Name,
 
-                case ReferenceType.Method:
-                    return ((MethodInfo)chainObjects[i]).Name;
+                ReferenceType.Method => ((MethodInfo)chainObjects[i]).Name,
 
-                case ReferenceType.EnumerableItem:
-                    return "[" + chainObjects[i] + "]";
+                ReferenceType.EnumerableItem => "[" + chainObjects[i] + "]",
 
-                case ReferenceType.SpecialNamedProperty:
-                    return (string)chainObjects[i];
-            }
+                ReferenceType.SpecialNamedProperty => (string)chainObjects[i],
 
-            return string.Empty;
+                _ => string.Empty,
+            };
         }
     }
 }

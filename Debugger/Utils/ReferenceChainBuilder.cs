@@ -200,15 +200,12 @@ namespace ModTools.Utils
         // TODO: usage of value arg is a hack required because at least the last element of the refChain is not set properly
         public static ReferenceChain Optimize(ReferenceChain referenceChain, object value)
         {
-            switch (value)
+            return value switch
             {
-                case GameObject go:
-                    return ForGameObject(go);
-                case UIComponent uiComponent:
-                    return ForUIComponent(uiComponent);
-                default:
-                    return referenceChain;
-            }
+                GameObject go => ForGameObject(go),
+                UIComponent uiComponent => ForUIComponent(uiComponent),
+                _ => referenceChain,
+            };
         }
 
         public static ReferenceChain ForUIComponent(UIComponent component)
