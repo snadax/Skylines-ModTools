@@ -190,10 +190,8 @@ namespace ModTools
 
             try
             {
-                using (var reader = new StreamReader(filename))
-                {
-                    return (ModConfiguration)serializer.Deserialize(reader);
-                }
+                using var reader = new StreamReader(filename);
+                return (ModConfiguration)serializer.Deserialize(reader);
             }
             catch (Exception e)
             {
@@ -210,10 +208,8 @@ namespace ModTools
 
             try
             {
-                using (var writer = new StreamWriter(filename))
-                {
-                    serializer.Serialize(writer, this);
-                }
+                using var writer = new StreamWriter(filename);
+                serializer.Serialize(writer, this);
             }
             catch (Exception ex)
             {

@@ -13,10 +13,8 @@ namespace ModTools.Utils
             try
             {
                 var assembly = Assembly.GetExecutingAssembly();
-                using (var textureStream = assembly.GetManifestResourceStream(path))
-                {
-                    return LoadTextureFromStream(textureStream);
-                }
+                using var textureStream = assembly.GetManifestResourceStream(path);
+                return LoadTextureFromStream(textureStream);
             }
             catch (Exception e)
             {

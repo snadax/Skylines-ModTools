@@ -69,11 +69,9 @@ namespace ModTools.Utils
 
             try
             {
-                using (var stream = new FileStream(fileName, FileMode.Create))
-                {
-                    OBJLoader.ExportOBJ(meshToDump.EncodeOBJ(), stream);
-                    Logger.Warning($"Dumped mesh \"{mesh.name}\" to \"{fileName}\"");
-                }
+                using var stream = new FileStream(fileName, FileMode.Create);
+                OBJLoader.ExportOBJ(meshToDump.EncodeOBJ(), stream);
+                Logger.Warning($"Dumped mesh \"{mesh.name}\" to \"{fileName}\"");
             }
             catch (Exception ex)
             {
