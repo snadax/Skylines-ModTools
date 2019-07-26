@@ -34,83 +34,97 @@ namespace ModTools.Explorer
             }
         }
 
-        public Type GetWatchType(ReferenceChain refChain)
-        {
-            Type ret = null;
-            if (watches.Contains(refChain))
-            {
-                var item = refChain.LastItem;
-                var info = item as FieldInfo;
-                ret = info?.FieldType ?? (item as PropertyInfo)?.PropertyType;
-            }
-
-            return ret;
-        }
-
         protected override void DrawWindow()
         {
             watchesScroll = GUILayout.BeginScrollView(watchesScroll);
 
             foreach (var watch in watches.ToArray())
             {
-                GUILayout.BeginHorizontal();
-
-                var type = GetWatchType(watch);
-
-                GUI.contentColor = Config.TypeColor;
-                GUILayout.Label(type.ToString());
-                GUI.contentColor = Config.NameColor;
-                GUILayout.Label(watch.ToString());
-                GUI.contentColor = Color.white;
-                GUILayout.Label(" = ");
-
-                GUI.enabled = false;
-
-                var value = watch.Evaluate();
-                GUI.contentColor = Config.ValueColor;
-
-                if (value == null || !TypeUtil.IsSpecialType(type))
+                if (watch == null)
                 {
-                    GUILayout.Label(value == null ? "null" : value.ToString());
+                    continue;
                 }
-                else
+
+                GUILayout.BeginHorizontal();
+                try
                 {
-                    try
-                    {
-                        GUIControls.EditorValueField("watch." + watch, type, value);
-                    }
-                    catch (Exception)
+                    var type = GetWatchType(watch);
+
+                    GUI.contentColor = Config.TypeColor;
+                    GUILayout.Label(type.ToString());
+                    GUI.contentColor = Config.NameColor;
+                    GUILayout.Label(watch.ToString());
+                    GUI.contentColor = Color.white;
+                    GUILayout.Label(" = ");
+
+                    GUI.enabled = false;
+
+                    var value = watch.Evaluate();
+                    GUI.contentColor = Config.ValueColor;
+
+                    if (value == null || !TypeUtil.IsSpecialType(type))
                     {
                         GUILayout.Label(value == null ? "null" : value.ToString());
                     }
+                    else
+                    {
+                        try
+                        {
+                            GUIControls.EditorValueField("watch." + watch, type, value);
+                        }
+                        catch
+                        {
+                            GUILayout.Label(value.ToString());
+                        }
+                    }
+
+                    GUI.contentColor = Color.white;
+
+                    GUI.enabled = true;
+
+                    GUILayout.FlexibleSpace();
+
+                    if (value != null)
+                    {
+                        var smartType = TypeUtil.OverrideSmartType(TypeUtil.DetectSmartType(watch.LastItemName, value.GetType()), watch.LastItemName, watch.SubChain(watch.Length - 1).Evaluate());
+                        GUIButtons.SetupSmartShowButtons(value, smartType); // TODO: get from cache
+                    }
+
+                    if (GUILayout.Button("Show watched field"))
+                    {
+                        var sceneExplorer = FindObjectOfType<SceneExplorer>();
+                        sceneExplorer.Show(watch.SubChain(watch.Length - 1));
+                    }
+
+                    if (GUILayout.Button("x", GUILayout.Width(24)))
+                    {
+                        RemoveWatch(watch);
+                    }
                 }
-
-                GUI.contentColor = Color.white;
-
-                GUI.enabled = true;
-
-                GUILayout.FlexibleSpace();
-
-                if (value != null)
+                catch (Exception e)
                 {
-                    GUIButtons.SetupSmartShowButtons(value, TypeUtil.OverrideSmartType(TypeUtil.DetectSmartType(watch.LastItemName, value.GetType()), watch.LastItemName, watch.SubChain(watch.Length - 1).Evaluate())); // TODO: get from cache
-                }
-
-                if (GUILayout.Button("Show watched field"))
-                {
-                    var sceneExplorer = FindObjectOfType<SceneExplorer>();
-                    sceneExplorer.Show(watch.SubChain(watch.Length - 1));
-                }
-
-                if (GUILayout.Button("x", GUILayout.Width(24)))
-                {
-                    RemoveWatch(watch);
+                    Debug.LogException(e);
                 }
 
                 GUILayout.EndHorizontal();
             }
 
             GUILayout.EndScrollView();
+        }
+
+        private Type GetWatchType(ReferenceChain watch)
+        {
+            switch (watch.LastItem)
+            {
+                case FieldInfo fieldInfo:
+                    return fieldInfo.FieldType;
+                case PropertyInfo fieldInfo:
+                    return fieldInfo.PropertyType;
+                case uint _:
+                    return GetWatchType(watch.SubChain(watch.Length - 1)).GetElementType();
+                default:
+                    return watch.LastItem.GetType();
+            }
         }
     }
 }
