@@ -131,7 +131,7 @@ namespace ModTools.GamePanels
                 return;
             }
 
-            var citizenInfo = CitizenManager.instance.m_instances.m_buffer[InstanceUtil.GetCitizenInstanceId(instanceId)].Info;
+            var citizenInfo = CitizenManager.instance.m_instances.m_buffer[instanceId.GetCitizenInstanceId()].Info;
             if (citizenInfo != null)
             {
                 var assetName = AssetDumpUtil.DumpGenericAsset(
@@ -291,7 +291,7 @@ namespace ModTools.GamePanels
 
         private void ShowCitizen(InstanceID instanceId)
         {
-            var citizenId = InstanceUtil.GetCitizenId(instanceId);
+            var citizenId = instanceId.GetCitizenId();
 
             if (citizenId != 0)
             {
@@ -301,7 +301,7 @@ namespace ModTools.GamePanels
 
         private void ShowCitizenUnit(InstanceID instanceId)
         {
-            var citizenId = InstanceUtil.GetCitizenId(instanceId);
+            var citizenId = instanceId.GetCitizenId();
             if (citizenId == 0)
             {
                 return;
@@ -333,7 +333,7 @@ namespace ModTools.GamePanels
 
         private void ShowCitizenInstance(InstanceID instanceId)
         {
-            var citizenInstanceId = InstanceUtil.GetCitizenInstanceId(instanceId);
+            var citizenInstanceId = instanceId.GetCitizenInstanceId();
             if (citizenInstanceId != 0)
             {
                 sceneExplorer.Show(ReferenceChainBuilder.ForCitizenInstance(citizenInstanceId));
@@ -342,7 +342,7 @@ namespace ModTools.GamePanels
 
         private void ShowCitizenPath(InstanceID instanceId)
         {
-            var citizenInstanceId = InstanceUtil.GetCitizenInstanceId(instanceId);
+            var citizenInstanceId = instanceId.GetCitizenInstanceId();
             var pathUnitId = citizenInstanceId == 0 ? 0 : CitizenManager.instance.m_instances.m_buffer[citizenInstanceId].m_path;
 
             if (pathUnitId != 0)
