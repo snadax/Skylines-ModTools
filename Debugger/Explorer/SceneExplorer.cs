@@ -90,6 +90,12 @@ namespace ModTools.Explorer
             Plopper.Update();
         }
 
+        public new void OnGUI()
+        {
+            base.OnGUI();
+            MainWindow.Instance?.SceneExplorer?.RecalculateAreas();
+        }
+
         public void RecalculateAreas()
         {
             if (!treeExpanded || WindowRect.width < Screen.width / 4)
