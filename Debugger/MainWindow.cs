@@ -260,12 +260,9 @@ namespace ModTools
                 if (!newSelectionTool)
                 {
                     var tool = ToolsModifierControl.GetTool<SelectionTool>();
-                    if (tool != null)
+                    if (tool?.enabled == true)
                     {
-                        if (tool.enabled)
-                        {
-                            ToolsModifierControl.SetTool<DefaultTool>();
-                        }
+                        ToolsModifierControl.SetTool<DefaultTool>();
                     }
                 }
 

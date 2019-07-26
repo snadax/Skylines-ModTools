@@ -42,10 +42,7 @@ namespace ModTools
         {
             var sceneExplorer = Object.FindObjectOfType<SceneExplorer>();
 
-            if (sceneExplorer != null)
-            {
-                sceneExplorer.ClearExpanded();
-            }
+            sceneExplorer?.ClearExpanded();
 
             var go = Object.FindObjectOfType<SelectionToolControl>();
             if (go != null)

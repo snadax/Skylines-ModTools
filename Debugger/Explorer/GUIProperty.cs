@@ -101,9 +101,30 @@ namespace ModTools.Explorer
                     state.EvaluatedProperties.Add(refChain.UniqueId);
                 }
             }
+            else if (value == null || !TypeUtil.IsSpecialType(property.PropertyType))
+            {
+                if (property.CanRead)
+                {
+                    GUILayout.Label(value == null ? "null" : value.ToString());
+                }
+                else
+                {
+                    GUILayout.Label("(no get method)");
+                }
+
+                GUI.contentColor = Color.white;
+            }
             else
             {
-                if (value == null || !TypeUtil.IsSpecialType(property.PropertyType))
+                try
+                {
+                    var newValue = GUIControls.EditorValueField(refChain.UniqueId, property.PropertyType, value);
+                    if (newValue != value)
+                    {
+                        property.SetValue(obj, newValue, null);
+                    }
+                }
+                catch (Exception)
                 {
                     if (property.CanRead)
                     {
@@ -115,30 +136,6 @@ namespace ModTools.Explorer
                     }
 
                     GUI.contentColor = Color.white;
-                }
-                else
-                {
-                    try
-                    {
-                        var newValue = GUIControls.EditorValueField(refChain.UniqueId, property.PropertyType, value);
-                        if (newValue != value)
-                        {
-                            property.SetValue(obj, newValue, null);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        if (property.CanRead)
-                        {
-                            GUILayout.Label(value == null ? "null" : value.ToString());
-                        }
-                        else
-                        {
-                            GUILayout.Label("(no get method)");
-                        }
-
-                        GUI.contentColor = Color.white;
-                    }
                 }
             }
 

@@ -113,13 +113,10 @@ namespace ModTools
                     }
                 }
 
-                if (hoveredSegment != 0)
+                if (hoveredSegment != 0 && !segments.ContainsKey(hoveredSegment))
                 {
-                    if (!segments.ContainsKey(hoveredSegment))
-                    {
-                        segments.Clear();
-                        SetSegments(hoveredSegment, segments);
-                    }
+                    segments.Clear();
+                    SetSegments(hoveredSegment, segments);
                 }
             }
 
