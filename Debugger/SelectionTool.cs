@@ -270,8 +270,8 @@ namespace ModTools
 
             var previousSegment = NetManager.instance.m_segments.m_buffer[previousSeg.SegmentId];
             ushort nextNode;
-            if ((segment.m_startNode == previousSegment.m_endNode) ||
-                (segment.m_startNode == previousSegment.m_startNode))
+            if (segment.m_startNode == previousSegment.m_endNode ||
+                segment.m_startNode == previousSegment.m_startNode)
             {
                 nextNode = segment.m_endNode;
                 seg.TargetNode = segment.m_startNode == previousSeg.TargetNode

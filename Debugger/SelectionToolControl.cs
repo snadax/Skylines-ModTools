@@ -111,7 +111,7 @@ namespace ModTools
                 return;
             }
 
-            if ((!Input.GetKey(KeyCode.RightControl) && !Input.GetKey(KeyCode.LeftControl)) ||
+            if (!Input.GetKey(KeyCode.RightControl) && !Input.GetKey(KeyCode.LeftControl) ||
                 !Input.GetKeyDown(KeyCode.M))
             {
                 return;

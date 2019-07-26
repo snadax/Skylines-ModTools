@@ -12,7 +12,7 @@ namespace ModTools.Utils
     {
         public static List<string> ListFilesInDirectory(string path, List<string> filesMustBeNull = null)
         {
-            filesMustBeNull = filesMustBeNull ?? new List<string>();
+            filesMustBeNull ??= new List<string>();
 
             foreach (var file in Directory.GetFiles(path))
             {

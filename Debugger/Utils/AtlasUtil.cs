@@ -38,7 +38,10 @@ namespace ModTools.Utils
 
                 var spriteInfo = new UITextureAtlas.SpriteInfo
                 {
-                    name = sprite.name, texture = sprite, region = rect, border = new RectOffset(),
+                    name = sprite.name,
+                    texture = sprite,
+                    region = rect,
+                    border = new RectOffset(),
                 };
 
                 atlas.AddSprite(spriteInfo);

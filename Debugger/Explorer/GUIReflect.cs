@@ -86,7 +86,7 @@ namespace ModTools.Explorer
                 Array.Sort(members, (x, y) => string.CompareOrdinal(x.ReflectionInfo.Name, y.ReflectionInfo.Name));
             }
 
-            int matchingMembers = 0;
+            var matchingMembers = 0;
             foreach (var member in members)
             {
                 var filterMatchFrom = -1;

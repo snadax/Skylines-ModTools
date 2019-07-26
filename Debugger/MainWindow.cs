@@ -36,7 +36,7 @@ namespace ModTools
             {
                 lock (InstanceLock)
                 {
-                    instance = instance ?? FindObjectOfType<MainWindow>();
+                    instance ??= FindObjectOfType<MainWindow>();
                     return instance;
                 }
             }

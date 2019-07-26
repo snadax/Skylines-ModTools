@@ -198,7 +198,7 @@ namespace ModTools.Utils
             }
             catch
             {
-               // suppress
+                // suppress
             }
 
             return SmartType.Undefined;

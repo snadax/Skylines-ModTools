@@ -22,7 +22,7 @@ namespace ModTools.UI
 
         private GUISkin skin;
         private string cachedFontName = string.Empty;
-        private int cachedFontSize = 0;
+        private int cachedFontSize;
 
         private Vector2 minSize = Vector2.zero;
         private Rect windowRect = new Rect(0, 0, 64, 64);
