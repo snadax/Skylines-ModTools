@@ -16,7 +16,7 @@ namespace ModTools.Utils
             var shaderUtilType = TypeUtil.FindTypeByFullName("ColossalFramework.Packaging.ShaderUtil");
             if (shaderUtilType == null)
             {
-                UnityEngine.Debug.LogError("ModTools failed to find type ColossalFramework.Packaging.ShaderUtil!");
+                Debug.LogError("ModTools failed to find type ColossalFramework.Packaging.ShaderUtil!");
                 return;
             }
 

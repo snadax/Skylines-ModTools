@@ -24,7 +24,7 @@ namespace ModTools
             var modTools = MainWindow.Instance;
             if (modTools == null)
             {
-                UnityEngine.Debug.LogError("ModTools instance wasn't present");
+                Debug.LogError("ModTools instance wasn't present");
                 return;
             }
 
