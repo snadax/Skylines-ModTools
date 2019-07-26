@@ -33,10 +33,7 @@ namespace ModTools.Utils
             }
         }
 
-        public static void ClearShaderCache()
-        {
-            shaders = null;
-        }
+        public static void ClearShaderCache() => shaders = null;
 
         public static string[] GetShaders()
         {
@@ -47,34 +44,16 @@ namespace ModTools.Utils
                            .ToArray());
         }
 
-        public static IEnumerable<string> GetTextureProperties()
-        {
-            return (string[])Fields["textureProps"].GetValue(null);
-        }
+        public static IEnumerable<string> GetTextureProperties() => (string[])Fields["textureProps"].GetValue(null);
 
-        public static IEnumerable<string> GetColorProperties()
-        {
-            return (string[])Fields["colorProps"].GetValue(null);
-        }
+        public static IEnumerable<string> GetColorProperties() => (string[])Fields["colorProps"].GetValue(null);
 
-        public static IEnumerable<string> GetVectorProperties()
-        {
-            return (string[])Fields["vectorProps"].GetValue(null);
-        }
+        public static IEnumerable<string> GetVectorProperties() => (string[])Fields["vectorProps"].GetValue(null);
 
-        public static IEnumerable<string> GetFloatProperties()
-        {
-            return (string[])Fields["floatProps"].GetValue(null);
-        }
+        public static IEnumerable<string> GetFloatProperties() => (string[])Fields["floatProps"].GetValue(null);
 
-        public static int CountBoundProperties(this Material material)
-        {
-            return Call<int>("CountBoundProperties", material);
-        }
+        public static int CountBoundProperties(this Material material) => Call<int>("CountBoundProperties", material);
 
-        private static T Call<T>(string name, params object[] parameters)
-        {
-            return (T)Methods[name].Invoke(null, parameters);
-        }
+        private static T Call<T>(string name, params object[] parameters) => (T)Methods[name].Invoke(null, parameters);
     }
 }

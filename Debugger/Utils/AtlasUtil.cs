@@ -50,10 +50,7 @@ namespace ModTools.Utils
             return atlas;
         }
 
-        private static Shader GetUIAtlasShader()
-        {
-            return UIView.GetAView().defaultAtlas.material.shader;
-        }
+        private static Shader GetUIAtlasShader() => UIView.GetAView().defaultAtlas.material.shader;
 
         private static Texture2D LoadTextureFromStream(Stream textureStream)
         {

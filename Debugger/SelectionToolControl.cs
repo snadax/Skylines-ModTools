@@ -121,9 +121,7 @@ namespace ModTools
         }
 
         private static Texture2D GetTextureByName(string name, UITextureAtlas atlas)
-        {
-            return atlas.sprites.Find(sprite => sprite.name == name).texture;
-        }
+            => atlas.sprites.Find(sprite => sprite.name == name).texture;
 
         private void ToggleTool()
         {

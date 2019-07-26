@@ -10,10 +10,7 @@ namespace ModTools
         private ushort hoveredSegment;
         private ushort hoveredBuilding;
 
-        public override NetNode.Flags GetNodeIgnoreFlags()
-        {
-            return NetNode.Flags.None;
-        }
+        public override NetNode.Flags GetNodeIgnoreFlags() => NetNode.Flags.None;
 
         public override NetSegment.Flags GetSegmentIgnoreFlags(out bool nameOnly)
         {
@@ -21,55 +18,25 @@ namespace ModTools
             return NetSegment.Flags.None;
         }
 
-        public override Building.Flags GetBuildingIgnoreFlags()
-        {
-            return Building.Flags.None;
-        }
+        public override Building.Flags GetBuildingIgnoreFlags() => Building.Flags.None;
 
-        public override TreeInstance.Flags GetTreeIgnoreFlags()
-        {
-            return TreeInstance.Flags.None;
-        }
+        public override TreeInstance.Flags GetTreeIgnoreFlags() => TreeInstance.Flags.None;
 
-        public override PropInstance.Flags GetPropIgnoreFlags()
-        {
-            return PropInstance.Flags.None;
-        }
+        public override PropInstance.Flags GetPropIgnoreFlags() => PropInstance.Flags.None;
 
-        public override Vehicle.Flags GetVehicleIgnoreFlags()
-        {
-            return 0;
-        }
+        public override Vehicle.Flags GetVehicleIgnoreFlags() => 0;
 
-        public override VehicleParked.Flags GetParkedVehicleIgnoreFlags()
-        {
-            return VehicleParked.Flags.None;
-        }
+        public override VehicleParked.Flags GetParkedVehicleIgnoreFlags() => VehicleParked.Flags.None;
 
-        public override CitizenInstance.Flags GetCitizenIgnoreFlags()
-        {
-            return CitizenInstance.Flags.None;
-        }
+        public override CitizenInstance.Flags GetCitizenIgnoreFlags() => CitizenInstance.Flags.None;
 
-        public override TransportLine.Flags GetTransportIgnoreFlags()
-        {
-            return TransportLine.Flags.None;
-        }
+        public override TransportLine.Flags GetTransportIgnoreFlags() => TransportLine.Flags.None;
 
-        public override District.Flags GetDistrictIgnoreFlags()
-        {
-            return District.Flags.None;
-        }
+        public override District.Flags GetDistrictIgnoreFlags() => District.Flags.None;
 
-        public override DistrictPark.Flags GetParkIgnoreFlags()
-        {
-            return DistrictPark.Flags.None;
-        }
+        public override DistrictPark.Flags GetParkIgnoreFlags() => DistrictPark.Flags.None;
 
-        public override DisasterData.Flags GetDisasterIgnoreFlags()
-        {
-            return DisasterData.Flags.None;
-        }
+        public override DisasterData.Flags GetDisasterIgnoreFlags() => DisasterData.Flags.None;
 
         public override void RenderOverlay(RenderManager.CameraInfo cameraInfo)
         {
@@ -249,50 +216,23 @@ namespace ModTools
             }
         }
 
-        protected override bool CheckNode(ushort node, ref ToolErrors errors)
-        {
-            return true;
-        }
+        protected override bool CheckNode(ushort node, ref ToolErrors errors) => true;
 
-        protected override bool CheckSegment(ushort segment, ref ToolErrors errors)
-        {
-            return true;
-        }
+        protected override bool CheckSegment(ushort segment, ref ToolErrors errors) => true;
 
-        protected override bool CheckBuilding(ushort building, ref ToolErrors errors)
-        {
-            return true;
-        }
+        protected override bool CheckBuilding(ushort building, ref ToolErrors errors) => true;
 
-        protected override bool CheckProp(ushort prop, ref ToolErrors errors)
-        {
-            return true;
-        }
+        protected override bool CheckProp(ushort prop, ref ToolErrors errors) => true;
 
-        protected override bool CheckTree(uint tree, ref ToolErrors errors)
-        {
-            return true;
-        }
+        protected override bool CheckTree(uint tree, ref ToolErrors errors) => true;
 
-        protected override bool CheckVehicle(ushort vehicle, ref ToolErrors errors)
-        {
-            return true;
-        }
+        protected override bool CheckVehicle(ushort vehicle, ref ToolErrors errors) => true;
 
-        protected override bool CheckParkedVehicle(ushort parkedVehicle, ref ToolErrors errors)
-        {
-            return true;
-        }
+        protected override bool CheckParkedVehicle(ushort parkedVehicle, ref ToolErrors errors) => true;
 
-        protected override bool CheckCitizen(ushort citizenInstance, ref ToolErrors errors)
-        {
-            return true;
-        }
+        protected override bool CheckCitizen(ushort citizenInstance, ref ToolErrors errors) => true;
 
-        protected override bool CheckDisaster(ushort disaster, ref ToolErrors errors)
-        {
-            return true;
-        }
+        protected override bool CheckDisaster(ushort disaster, ref ToolErrors errors) => true;
 
         private static void SetSegments(ushort segmentId, IDictionary<ushort, SegmentAndNode> segments)
         {

@@ -127,10 +127,7 @@ namespace ModTools.Explorer
                 .ChangeSizeBy(height: verticalSizeOffset);
         }
 
-        public void RefreshSceneRoots()
-        {
-            sceneRoots = GameObjectUtil.FindSceneRoots();
-        }
+        public void RefreshSceneRoots() => sceneRoots = GameObjectUtil.FindSceneRoots();
 
         public void Show(ReferenceChain refChain, bool hideUnrelatedSceneRoots = true, string updatedSearchString = "")
         {
