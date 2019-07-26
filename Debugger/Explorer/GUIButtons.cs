@@ -20,7 +20,7 @@ namespace ModTools.Explorer
 
                 case PrefabInfo prefabInfo:
                     SetupButtonsForPrefab(prefabInfo);
-                    goto default;
+                    break;
 
                 case MilestoneInfo milestoneInfo:
                     if (GUILayout.Button("Unlock"))
@@ -29,15 +29,15 @@ namespace ModTools.Explorer
                         wrapper.UnlockMilestone(milestoneInfo.name);
                     }
 
-                    goto default;
+                    break;
 
                 case NetInfo.Segment segmentInfo:
                     SetupMeshPreviewButtons(name: null, segmentInfo.m_mesh, segmentInfo.m_material, segmentInfo.m_lodMesh, segmentInfo.m_lodMaterial);
-                    goto default;
+                    break;
 
                 case NetInfo.Node nodeInfo:
                     SetupMeshPreviewButtons(name: null, nodeInfo.m_mesh, nodeInfo.m_material, nodeInfo.m_lodMesh, nodeInfo.m_lodMaterial);
-                    goto default;
+                    break;
 
                 case BuildingInfo.MeshInfo buildingSumMeshInfo:
                     SetupMeshPreviewButtons(
@@ -46,7 +46,7 @@ namespace ModTools.Explorer
                         buildingSumMeshInfo.m_subInfo?.m_material,
                         buildingSumMeshInfo.m_subInfo?.m_lodMesh,
                         buildingSumMeshInfo.m_subInfo?.m_lodMaterial);
-                    goto default;
+                    break;
 
                 case VehicleInfo.MeshInfo vehicleSumMeshInfo:
                     SetupMeshPreviewButtons(
@@ -55,7 +55,7 @@ namespace ModTools.Explorer
                         vehicleSumMeshInfo.m_subInfo?.m_material,
                         vehicleSumMeshInfo.m_subInfo?.m_lodMesh,
                         vehicleSumMeshInfo.m_subInfo?.m_lodMaterial);
-                    goto default;
+                    break;
 
                 case CitizenInstance instance
                     when valueIndex > 0 &&
@@ -65,7 +65,7 @@ namespace ModTools.Explorer
                     InstanceID citizenInstanceInst = default;
                     citizenInstanceInst.CitizenInstance = (ushort)valueIndex;
                     SetupGotoButton(citizenInstanceInst, instance.GetLastFramePosition());
-                    goto default;
+                    break;
 
                 case Citizen citizen when citizen.m_instance > 0:
                     ref var citizenInstance = ref CitizenManager.instance.m_instances.m_buffer[citizen.m_instance];
@@ -77,7 +77,7 @@ namespace ModTools.Explorer
                         SetupGotoButton(citizenInstanceInst2, citizenInstance.GetLastFramePosition());
                     }
 
-                    goto default;
+                    break;
 
                 case Vehicle vehicle when valueIndex > 0 &&
                                           (vehicle.m_flags & (Vehicle.Flags.Created | Vehicle.Flags.Deleted)) ==
@@ -85,13 +85,13 @@ namespace ModTools.Explorer
                     InstanceID vehicleInst = default;
                     vehicleInst.Vehicle = (ushort)valueIndex;
                     SetupGotoButton(vehicleInst, vehicle.GetLastFramePosition());
-                    goto default;
+                    break;
 
                 case VehicleParked parkedVehicle when valueIndex > 0 && (parkedVehicle.m_flags & 3) == 1:
                     InstanceID parkedVehicleInst = default;
                     parkedVehicleInst.ParkedVehicle = (ushort)valueIndex;
                     SetupGotoButton(parkedVehicleInst, parkedVehicle.m_position);
-                    goto default;
+                    break;
 
                 case Building building when valueIndex > 0 &&
                                             (building.m_flags & (Building.Flags.Created | Building.Flags.Deleted)) ==
@@ -99,7 +99,7 @@ namespace ModTools.Explorer
                     InstanceID buildingInst = default;
                     buildingInst.Building = (ushort)valueIndex;
                     SetupGotoButton(buildingInst, building.m_position);
-                    goto default;
+                    break;
 
                 case PropInstance prop when valueIndex > 0 &&
                                             ((PropInstance.Flags)prop.m_flags & (PropInstance.Flags.Created | PropInstance.Flags.Deleted)) ==
@@ -107,7 +107,7 @@ namespace ModTools.Explorer
                     InstanceID propInst = default;
                     propInst.Prop = (ushort)valueIndex;
                     SetupGotoButton(propInst, prop.Position);
-                    goto default;
+                    break;
 
                 case TreeInstance tree when valueIndex > 0 &&
                                             ((TreeInstance.Flags)tree.m_flags & (TreeInstance.Flags.Created | TreeInstance.Flags.Deleted)) ==
@@ -115,7 +115,7 @@ namespace ModTools.Explorer
                     InstanceID treeInst = default;
                     treeInst.Tree = valueIndex;
                     SetupGotoButton(treeInst, tree.Position);
-                    goto default;
+                    break;
 
                 case NetSegment segment when valueIndex > 0 &&
                                              (segment.m_flags &
@@ -124,7 +124,7 @@ namespace ModTools.Explorer
                     InstanceID segmentInst = default;
                     segmentInst.NetSegment = (ushort)valueIndex;
                     SetupGotoButton(segmentInst, segment.m_middlePosition);
-                    goto default;
+                    break;
 
                 case NetNode node when valueIndex > 0 &&
                                        (node.m_flags & (NetNode.Flags.Created | NetNode.Flags.Deleted)) ==
@@ -132,7 +132,7 @@ namespace ModTools.Explorer
                     InstanceID nodeInst = default;
                     nodeInst.NetNode = (ushort)valueIndex;
                     SetupGotoButton(nodeInst, node.m_position);
-                    goto default;
+                    break;
 
                 case NetLane lane when valueIndex > 0 &&
                                        ((NetLane.Flags)lane.m_flags & (NetLane.Flags.Created | NetLane.Flags.Deleted)) ==
@@ -141,37 +141,34 @@ namespace ModTools.Explorer
                     segmentInst1.NetSegment = lane.m_segment;
                     var segment1 = NetManager.instance.m_segments.m_buffer[lane.m_segment];
                     SetupGotoButton(segmentInst1, segment1.m_middlePosition);
-                    goto default;
+                    break;
 
                 case Texture texture:
                     SetupTexturePreviewButtons(texture);
-                    goto default;
+                    break;
 
                 case UITextureAtlas.SpriteInfo spriteInfo:
                     SetupTexturePreviewButtons(spriteInfo.texture);
-                    goto default;
+                    break;
 
                 case UITextureSprite textureSprite:
                     SetupTexturePreviewButtons(textureSprite.texture);
-                    goto default;
+                    break;
 
                 case Mesh mesh:
                     SetupMeshPreviewButtons(refChain, mesh);
-                    goto default;
-
-                default:
-                    SetupSmartShowButtons(value, smartType);
-                    if (GUILayout.Button("Watch"))
-                    {
-                        MainWindow.Instance.Watches.AddWatch(refChain);
-                    }
-
-                    if (GUILayout.Button("Copy"))
-                    {
-                        buffer = value;
-                    }
-
                     break;
+            }
+
+            SetupSmartShowButtons(value, smartType);
+            if (GUILayout.Button("Watch"))
+            {
+                MainWindow.Instance.Watches.AddWatch(refChain);
+            }
+
+            if (GUILayout.Button("Copy"))
+            {
+                buffer = value;
             }
         }
 
