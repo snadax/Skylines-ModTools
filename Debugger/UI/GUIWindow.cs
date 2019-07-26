@@ -85,7 +85,6 @@ namespace ModTools.UI
             }
 
             skin.font = Font.CreateDynamicFontFromOSFont(Config.FontName, Config.FontSize);
-            MainWindow.Instance?.SceneExplorer?.RecalculateAreas();
             cachedFontName = Config.FontName;
             cachedFontSize = Config.FontSize;
         }
