@@ -11,8 +11,6 @@ namespace ModTools.Explorer
     {
         private static object buffer;
 
-        private static ModConfiguration Config => MainWindow.Instance.Config;
-
         public static void SetupCommonButtons(ReferenceChain refChain, object value, uint valueIndex, TypeUtil.SmartType smartType = TypeUtil.SmartType.Undefined)
         {
             switch (value)
