@@ -126,6 +126,7 @@
     <Compile Include="Utils\ParseHelper.cs" />
     <Compile Include="Utils\ReferenceChainBuilder.cs" />
     <Compile Include="Utils\ShaderUtil.cs" />
+    <Compile Include="Utils\ToolControllerUtil.cs" />
     <Compile Include="Utils\ToolUtil.cs" />
     <Compile Include="Utils\TypeUtil.cs" />
     <Compile Include="UserNotifications.cs" />

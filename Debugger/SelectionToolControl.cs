@@ -1,4 +1,7 @@
-﻿using ColossalFramework;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using ColossalFramework;
 using ColossalFramework.UI;
 using ModTools.Utils;
 using UnityEngine;
@@ -19,7 +22,7 @@ namespace ModTools
                 return;
             }
 
-            toolController.AddTool<SelectionTool>();
+            toolController.AddExtraToolToController<SelectionTool>();
             var textureButton = AtlasUtil.LoadTextureFromAssembly("ModTools.SelectionToolButton.png");
             textureButton.name = "SelectionToolButton";
             var textureBar = AtlasUtil.LoadTextureFromAssembly("ModTools.SelectionToolBar.png");

@@ -37,11 +37,10 @@ namespace ModTools.Utils
 
         public static string[] GetShaders()
         {
-            return shaders ?? (shaders =
-                       Resources.FindObjectsOfTypeAll<Shader>()
-                           .Select(shader => shader.name)
-                           .OrderBy(name => name)
-                           .ToArray());
+            return shaders ??= Resources.FindObjectsOfTypeAll<Shader>()
+                .Select(shader => shader.name)
+                .OrderBy(name => name)
+                .ToArray();
         }
 
         public static IEnumerable<string> GetTextureProperties() => (string[])Fields["textureProps"].GetValue(null);
