@@ -125,6 +125,11 @@ namespace ModTools.Utils
                         return SmartType.Vehicle;
                     }
 
+                    if (memberName.IndexOf("buildingNode", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.NetNode;
+                    }
+
                     if (memberName.IndexOf("building", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         return SmartType.Building;
