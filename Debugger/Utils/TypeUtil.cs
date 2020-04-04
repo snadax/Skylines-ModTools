@@ -199,6 +199,11 @@ namespace ModTools.Utils
                     {
                         return SmartType.ZoneBlock;
                     }
+
+                    if (memberName.IndexOf("stop", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        return SmartType.NetNode;
+                    }
                 }
             }
             catch
