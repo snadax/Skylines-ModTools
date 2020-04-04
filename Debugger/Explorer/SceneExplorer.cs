@@ -85,6 +85,7 @@ namespace ModTools.Explorer
             {
                 ClearExpanded();
                 RefreshSceneRoots();
+                ClearHistory();
             }
 
             Plopper.Update();
@@ -135,27 +136,35 @@ namespace ModTools.Explorer
 
         public void RefreshSceneRoots() => sceneRoots = GameObjectUtil.FindSceneRoots();
 
-        public void Show(ReferenceChain refChain, bool hideUnrelatedSceneRoots = true, string updatedSearchString = "")
+
+        private void BackToPreviousRefChain()
+        {
+            var chain = state.RefChainHistory.Last();
+            state.RefChainHistory.RemoveAt(state.RefChainHistory.Count - 1);
+            Show(chain, false, addChainToHistory: false);
+        }
+
+        public void Show(ReferenceChain refChain, bool hideUnrelatedSceneRoots = true, string updatedSearchString = "", bool addChainToHistory = true)
         {
             if (refChain == null)
             {
-                Logger.Error("SceneExplorer: ProcessShowRequest(): Null refChain");
+                Logger.Error("SceneExplorer: Show(): Null refChain");
                 return;
             }
 
             if (refChain.Length == 0)
             {
-                Logger.Error("SceneExplorer: ExpandFromRefChain(): Invalid refChain, expected Length >= 0");
+                Logger.Error("SceneExplorer: Show(): Invalid refChain, expected Length >= 0");
                 return;
             }
 
             if (refChain.FirstItemType != ReferenceChain.ReferenceType.GameObject)
             {
-                Logger.Error($"SceneExplorer: ExpandFromRefChain(): invalid chain type for element [0] - expected {ReferenceChain.ReferenceType.GameObject}, got {refChain.FirstItemType}");
+                Logger.Error($"SceneExplorer: Show(): invalid chain type for element [0] - expected {ReferenceChain.ReferenceType.GameObject}, got {refChain.FirstItemType}");
                 return;
             }
 
-            EnqueueShowRefChainRequest(new List<ReferenceChain> { refChain }, hideUnrelatedSceneRoots, updatedSearchString);
+            EnqueueShowRefChainRequest(new List<ReferenceChain> { refChain }, hideUnrelatedSceneRoots, updatedSearchString, addChainToHistory);
 
             Visible = true;
         }
@@ -296,6 +305,7 @@ namespace ModTools.Explorer
             {
                 ClearExpanded();
                 RefreshSceneRoots();
+                ClearHistory();
             }
 
             GUILayout.EndHorizontal();
@@ -353,7 +363,12 @@ namespace ModTools.Explorer
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("Actions", GUILayout.MinWidth(110f));
-                    if (GUILayout.Button("^", GUILayout.ExpandWidth(false)))
+                    if (GUILayout.Button("Back") && state.RefChainHistory.Count > 0)
+                    {
+                        BackToPreviousRefChain();
+                    }
+
+                    if (GUILayout.Button("Up", GUILayout.ExpandWidth(false)))
                     {
                         Show(state.CurrentRefChain.SubChain(state.CurrentRefChain.Length - 1), false);
                     }
@@ -368,7 +383,12 @@ namespace ModTools.Explorer
                     {
                         GUILayout.BeginHorizontal();
                         GUILayout.Label("Actions", GUILayout.MinWidth(110f));
-                        if (GUILayout.Button("^", GUILayout.ExpandWidth(false)))
+                        if (GUILayout.Button("Back") && state.RefChainHistory.Count > 0)
+                        {
+                            BackToPreviousRefChain();
+                        }
+
+                        if (GUILayout.Button("Up", GUILayout.ExpandWidth(false)))
                         {
                             Show(ReferenceChainBuilder.ForGameObject(gameObject.transform?.parent?.gameObject));
                         }
@@ -404,6 +424,11 @@ namespace ModTools.Explorer
             GUILayout.EndScrollView();
 
             componentArea.End();
+        }
+
+        public void ClearHistory()
+        {
+            state.RefChainHistory = new List<ReferenceChain>();
         }
 
         public void ClearExpanded()
@@ -452,18 +477,24 @@ namespace ModTools.Explorer
             DrawComponent();
         }
 
-        private static void EnqueueShowRefChainRequest(List<ReferenceChain> refChains, bool hideUnrelatedSceneRoots, string updatedSearchString)
+        private static void EnqueueShowRefChainRequest(List<ReferenceChain> refChains, bool hideUnrelatedSceneRoots, string updatedSearchString, bool addChainToHistory)
         {
             ShowRequests.Enqueue(new ShowRequest()
             {
                 ReferenceChains = refChains,
                 HideUnrelatedSceneRoots = hideUnrelatedSceneRoots,
                 UpdatedSearchString = updatedSearchString,
+                AddChainToHistory = addChainToHistory,
             });
         }
 
         private void ProcessShowRequest(ShowRequest request)
         {
+            if (state.CurrentRefChain != null && request.AddChainToHistory)
+            {
+                state.RefChainHistory.Add(state.CurrentRefChain);
+            }
+
             if (request.HideUnrelatedSceneRoots)
             {
                 sceneTreeScrollPosition = Vector2.zero;
@@ -563,7 +594,6 @@ namespace ModTools.Explorer
                     currentRefChain.IndentationOffset = refChain.Length;
                 }
             }
-
             state.CurrentRefChain = currentRefChain;
         }
 
@@ -605,16 +635,18 @@ namespace ModTools.Explorer
             if (GUILayout.Button("Find"))
             {
                 ClearExpanded();
+                ClearHistory();
                 var go = GameObject.Find(findGameObjectFilter.Trim());
                 if (go != null)
                 {
-                    EnqueueShowRefChainRequest(new List<ReferenceChain> { new ReferenceChain().Add(go) }, true, $"Showing results for GameObject.Find(\"{findGameObjectFilter}\")");
+                    EnqueueShowRefChainRequest(new List<ReferenceChain> { new ReferenceChain().Add(go) }, true, $"Showing results for GameObject.Find(\"{findGameObjectFilter}\")", true);
                 }
             }
 
             if (GUILayout.Button("Reset"))
             {
                 ClearExpanded();
+                ClearHistory();
                 RefreshSceneRoots();
             }
 
@@ -635,7 +667,7 @@ namespace ModTools.Explorer
             if (GUILayout.Button("Find"))
             {
                 var gameObjects = GameObjectUtil.FindComponentsOfType(findObjectTypeFilter.Trim());
-                EnqueueShowRefChainRequest(gameObjects.Select(item => new ReferenceChain().Add(item.Key)).ToList(), true, $"Showing results for GameObject.FindObjectsOfType({findObjectTypeFilter})");
+                EnqueueShowRefChainRequest(gameObjects.Select(item => new ReferenceChain().Add(item.Key)).ToList(), true, $"Showing results for GameObject.FindObjectsOfType({findObjectTypeFilter})", false);
             }
 
             if (GUILayout.Button("Reset"))
@@ -657,6 +689,8 @@ namespace ModTools.Explorer
             public bool HideUnrelatedSceneRoots { get; set; }
 
             public string UpdatedSearchString { get; set; }
+            
+            public bool AddChainToHistory { get; set; }
         }
     }
 }

@@ -17,5 +17,7 @@ namespace ModTools.Explorer
         public HashSet<object> PreventCircularReferences { get; } = new HashSet<object>();
 
         public ReferenceChain CurrentRefChain { get; set; }
+
+        public List<ReferenceChain> RefChainHistory { get; set; } = new List<ReferenceChain>();
     }
 }
