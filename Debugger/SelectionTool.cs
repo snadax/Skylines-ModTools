@@ -46,14 +46,13 @@ namespace ModTools
                 return;
             }
 
-            var node = NetManager.instance.m_nodes.m_buffer[m_hoverInstance.NetNode];
             RenderManager.instance.OverlayEffect.DrawCircle(
                 cameraInfo,
                 GetToolColor(false, m_selectErrors != ToolErrors.None),
-                node.m_position,
-                15f,
-                node.m_position.y - 1f,
-                node.m_position.y + 1f,
+                NetManager.instance.m_nodes.m_buffer[m_hoverInstance.NetNode].m_position,
+                NetManager.instance.m_nodes.m_buffer[m_hoverInstance.NetNode].m_bounds.size.magnitude,
+                NetManager.instance.m_nodes.m_buffer[m_hoverInstance.NetNode].m_position.y - 1f,
+                NetManager.instance.m_nodes.m_buffer[m_hoverInstance.NetNode].m_position.y + 1f,
                 true,
                 true);
         }
