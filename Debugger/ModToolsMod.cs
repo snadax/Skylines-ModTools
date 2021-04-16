@@ -1,21 +1,23 @@
 ﻿using System;
 using ColossalFramework;
+using ColossalFramework.UI;
 using ColossalFramework.Plugins;
 using ICities;
-using ModTools.Utils;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using ModTools.UI;
 
 namespace ModTools
 {
     public sealed class ModToolsMod : IUserMod
-    {
+   {
         public const string ModToolsName = "ModTools";
 
         private GameObject mainWindowObject;
 
         private GameObject mainObject;
 
-        public static string Version { get; } = GitVersion.GetAssemblyVersion(typeof(ModToolsMod).Assembly);
+        public static string Version { get; } = typeof(ModToolsMod).Assembly.GetName().Version.ToString(2);
 
         public string Name => ModToolsName;
 
@@ -41,6 +43,17 @@ namespace ModTools
 
                 var modTools = mainWindowObject.AddComponent<MainWindow>();
                 modTools.Initialize();
+
+#if DEBUG
+                Test.Create();
+#endif
+
+                string scene = SceneManager.GetActiveScene().name;
+                if (scene != "IntroScreen" && scene != "Startup")
+                {
+                    // hot reload:
+                    LoadingExtension.Load();
+                }
             }
             catch (Exception e)
             {
@@ -63,6 +76,15 @@ namespace ModTools
                 UnityEngine.Object.Destroy(mainObject);
                 mainObject = null;
             }
+
+#if DEBUG
+            Test.Release();
+#endif
+
+            // hot unload
+            UnityEngine.Object.Destroy(UnityEngine.Object.FindObjectOfType<SelectionToolControl>());
         }
+
+        public void OnSettingsUI(UIHelper helper) => SettingsUI.OnSettingsUI(helper);
     }
 }

@@ -29,6 +29,12 @@ namespace ModTools
 
         #region Appearance
 
+        [XmlElement("UIScale")]
+        public float UIScale { get; set; } = 1f;
+
+        [XmlElement("ScaleToResolution")]
+        public bool ScaleToResolution { get; set; } = true;
+
         [XmlElement("fontName")]
         public string FontName { get; set; } = "Courier New Bold";
 
@@ -138,6 +144,12 @@ namespace ModTools
         [XmlElement("sceneExplorerShowInheritedMembers")]
         public bool ShowInheritedMembers { get; set; }
 
+        [XmlElement("sceneExplorerHighlightHoveredMember")]
+        public bool HighlightHoveredMember { get; set; } = true;
+
+        [XmlElement("sceneExplorerSubmitNumbersOnEnter")]
+        public bool SubmitNumbersOnEnter { get; set; }
+
         #region Appearance
 
         [XmlElement("sceneExplorerTreeIdentSpacing")]
@@ -183,6 +195,12 @@ namespace ModTools
         public string ScriptWorkspacePath { get; set; } = string.Empty;
 
         #endregion
+
+        [XmlElement("debugRendererAutoTurnOff")]
+        public bool DebugRendererAutoTurnOff { get; set; } = true;
+
+        [XmlElement("debugRendererExcludeUninteractive")]
+        public bool DebugRendererExcludeUninteractive { get; set; } = true;
 
         public static ModConfiguration Deserialize(string filename)
         {

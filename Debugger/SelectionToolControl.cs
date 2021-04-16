@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using ColossalFramework;
+﻿using ColossalFramework;
 using ColossalFramework.UI;
 using ModTools.Utils;
 using UnityEngine;
+using ModTools.UI;
 
 namespace ModTools
 {
@@ -84,6 +82,15 @@ namespace ModTools
             fullscreenContainer = UIView.Find("FullScreenContainer");
         }
 
+        public void OnDestroy()
+        {
+            Destroy(button.gameObject);
+            button = null;
+            Destroy(bar.gameObject);
+            bar = null;
+            fullscreenContainer = null;
+        }
+
         public void Update()
         {
             var tool = ToolsModifierControl.GetTool<SelectionTool>();
@@ -114,13 +121,8 @@ namespace ModTools
                 return;
             }
 
-            if (!Input.GetKey(KeyCode.RightControl) && !Input.GetKey(KeyCode.LeftControl) ||
-                !Input.GetKeyDown(KeyCode.M))
-            {
-                return;
-            }
-
-            ToggleTool();
+            if (SettingsUI.SelectionToolKey.IsKeyUp())
+                ToggleTool();
         }
 
         private static Texture2D GetTextureByName(string name, UITextureAtlas atlas)

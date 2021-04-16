@@ -17,7 +17,7 @@ namespace ModTools
         private static MainWindow instance;
         private static bool loggingInitialized;
 
-        private readonly ModalUI modalUI = new ModalUI();
+        private ModalUI modalUI = new ModalUI();
 
         private CustomConsole console;
         private ScriptEditor scriptEditor;
@@ -25,7 +25,7 @@ namespace ModTools
         private DebugRenderer debugRenderer;
 
         public MainWindow()
-            : base("Mod Tools " + ModToolsMod.Version, new Rect(128, 128, 356, 320), resizable: false)
+            : base("Mod Tools " + ModToolsMod.Version, new Rect(128, 128, 356, 340), resizable: false)
         {
         }
 
@@ -96,6 +96,12 @@ namespace ModTools
             }
         }
 
+        public void OnDestroy()
+        {
+            modalUI?.Release();
+            modalUI = null;
+        }
+
         public void Update()
         {
             var middleButtonState = MouseButtonState.None;
@@ -114,22 +120,15 @@ namespace ModTools
 
             modalUI.Update(IsMouseOverWindow(), middleButtonState);
 
-            if (!Input.GetKey(KeyCode.LeftControl))
+            if (SettingsUI.ConsoleKey.IsKeyUp())
             {
-                if (Config.UseModToolsConsole && Input.GetKeyDown(KeyCode.F7))
-                {
-                    console.Visible = !console.Visible;
-                }
-
-                return;
-            }
-
-            // The shortcuts below are 'Ctrl' + key
-            if (Input.GetKeyDown(KeyCode.Q))
+                console.Visible = !console.Visible;
+            } 
+            else if (SettingsUI.MainWindowKey.IsKeyUp())
             {
                 Visible = !Visible;
             }
-            else if (Input.GetKeyDown(KeyCode.E))
+            else if (SettingsUI.SceneExplorerKey.IsKeyUp())
             {
                 SceneExplorer.Visible = !SceneExplorer.Visible;
                 if (SceneExplorer.Visible)
@@ -137,20 +136,17 @@ namespace ModTools
                     SceneExplorer.RefreshSceneRoots();
                 }
             }
-            else if (Input.GetKeyDown(KeyCode.R))
+            else if (SettingsUI.DebugRendererKey.IsKeyUp())
             {
-                if (debugRenderer == null)
-                {
+                if (!debugRenderer)
                     debugRenderer = FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
-                }
-
                 debugRenderer.DrawDebugInfo = !debugRenderer.DrawDebugInfo;
             }
-            else if (Input.GetKeyDown(KeyCode.W))
+            else if (SettingsUI.WatchesKey.IsKeyUp())
             {
                 Watches.Visible = !Watches.Visible;
             }
-            else if (Input.GetKeyDown(KeyCode.S))
+            else if (SettingsUI.ScriptEditorKey.IsKeyUp())
             {
                 scriptEditor.Visible = !scriptEditor.Visible;
             }
@@ -164,6 +160,7 @@ namespace ModTools
             Destroy(scriptEditor);
             Destroy(Watches);
             Destroy(ColorPicker);
+            Destroy(debugRenderer);
         }
 
         protected override void DrawWindow()
@@ -236,7 +233,8 @@ namespace ModTools
                 debugRenderer = FindObjectOfType<UIView>().gameObject.AddComponent<DebugRenderer>();
             }
 
-            debugRenderer.DrawDebugInfo = GUILayout.Toggle(debugRenderer.DrawDebugInfo, " Debug Renderer (Ctrl + R)");
+            debugRenderer.DrawDebugInfo = GUILayout.Toggle(
+                debugRenderer.DrawDebugInfo, $" Debug Renderer ({SettingsUI.DebugRendererKey})");
 
             var customPrefabsObject = GUILayout.Toggle(Config.CustomPrefabsObject, " ModTools.CustomPrefabs Object");
             if (customPrefabsObject != Config.CustomPrefabsObject)
@@ -254,7 +252,8 @@ namespace ModTools
                 SaveConfig();
             }
 
-            var newSelectionTool = GUILayout.Toggle(Config.SelectionTool, " Selection Tool (Ctrl + M)");
+            var newSelectionTool = GUILayout.Toggle(
+                Config.SelectionTool, $" Selection Tool ({SettingsUI.SelectionToolKey})");
             if (newSelectionTool != Config.SelectionTool)
             {
                 if (!newSelectionTool)
@@ -272,7 +271,7 @@ namespace ModTools
 
             GUILayout.Space(Config.TreeIdentSpacing);
 
-            if (GUILayout.Button("Debug console (F7)"))
+            if (GUILayout.Button($"Debug console ({SettingsUI.ConsoleKey})"))
             {
                 if (console != null)
                 {
@@ -286,12 +285,12 @@ namespace ModTools
                 }
             }
 
-            if (GUILayout.Button("Watches (Ctrl + W)"))
+            if (GUILayout.Button($"Watches ({SettingsUI.WatchesKey})"))
             {
                 Watches.Visible = !Watches.Visible;
             }
 
-            if (GUILayout.Button("Scene explorer (Ctrl + E)"))
+            if (GUILayout.Button($"Scene explorer ({SettingsUI.SceneExplorerKey})"))
             {
                 SceneExplorer.Visible = !SceneExplorer.Visible;
                 if (SceneExplorer.Visible)
@@ -300,7 +299,7 @@ namespace ModTools
                 }
             }
 
-            if (GUILayout.Button("Script editor (Ctrl + S)"))
+            if (GUILayout.Button($"Script editor ({SettingsUI.ScriptEditorKey})"))
             {
                 scriptEditor.Visible = !scriptEditor.Visible;
             }

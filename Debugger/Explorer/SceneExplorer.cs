@@ -241,6 +241,9 @@ namespace ModTools.Explorer
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+            
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical();
 
             var showModifiers = GUILayout.Toggle(MainWindow.Instance.Config.ShowModifiers, " Show field / property modifiers");
             if (showModifiers != MainWindow.Instance.Config.ShowModifiers)
@@ -264,12 +267,33 @@ namespace ModTools.Explorer
                 configChanged = true;
             }
 
+            GUILayout.EndVertical();
+            GUILayout.BeginVertical();
+
             var sortAlphabetically = GUILayout.Toggle(MainWindow.Instance.Config.SortItemsAlphabetically, " Sort alphabetically");
             if (sortAlphabetically != MainWindow.Instance.Config.SortItemsAlphabetically)
             {
                 MainWindow.Instance.Config.SortItemsAlphabetically = sortAlphabetically;
                 configChanged = true;
             }
+
+            var highlightHoveredMember = GUILayout.Toggle(MainWindow.Instance.Config.HighlightHoveredMember, " Highlight hovered member");
+            if (highlightHoveredMember != MainWindow.Instance.Config.HighlightHoveredMember)
+            {
+                MainWindow.Instance.Config.HighlightHoveredMember = highlightHoveredMember;
+                configChanged = true;
+            }
+
+            var submitNumbersOnEnter = GUILayout.Toggle(MainWindow.Instance.Config.SubmitNumbersOnEnter, " Submit numbers on enter");
+            if (submitNumbersOnEnter != MainWindow.Instance.Config.SubmitNumbersOnEnter)
+            {
+                MainWindow.Instance.Config.SubmitNumbersOnEnter = submitNumbersOnEnter;
+                configChanged = true;
+            }
+
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+
 
             if (configChanged)
             {
@@ -457,10 +481,12 @@ namespace ModTools.Explorer
 
             var enterPressed = Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter);
 
-            if (enterPressed)
+            if (enterPressed && !GUIControls.EditingMultiLineField)
             {
                 GUI.FocusControl(null);
             }
+
+            GUIControls.EditingMultiLineField = false; // consume
 
             state.PreventCircularReferences.Clear();
 
@@ -571,8 +597,24 @@ namespace ModTools.Explorer
 
                         case ReferenceChain.ReferenceType.EnumerableItem:
                             var index = (uint)refChain.GetChainItem(i);
-                            state.SelectedArrayStartIndices[expandedRefChain.UniqueId] = index;
-                            state.SelectedArrayEndIndices[expandedRefChain.UniqueId] = index;
+                            uint startIndex;
+                            if (state.SelectedArrayStartIndices.TryGetValue(expandedRefChain.UniqueId,out startIndex)) {
+                                startIndex = Math.Min(index, startIndex);
+                            } else if (index > 16) {
+                                    startIndex = index - 16;
+                            } else {
+                                startIndex = 0;
+                            }
+
+                            uint endIndex;
+                            if (state.SelectedArrayEndIndices.TryGetValue(expandedRefChain.UniqueId, out endIndex)) {
+                                endIndex = Math.Max(index, endIndex);
+                            } else {
+                                endIndex = startIndex + 31;
+                            }
+
+                            state.SelectedArrayStartIndices[expandedRefChain.UniqueId] = startIndex;
+                            state.SelectedArrayEndIndices[expandedRefChain.UniqueId] = endIndex;
                             expandedRefChain = expandedRefChain.Add(index);
                             if (!state.ExpandedObjects.Contains(expandedRefChain.UniqueId))
                             {
