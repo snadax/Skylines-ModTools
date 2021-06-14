@@ -191,13 +191,9 @@
 
         private static Rect CalculateRealComponentRect(Vector3 absolutePosition, Vector2 size)
         {
-            var dx = Screen.width / 1920.0f;
-            var dy = Screen.height / 1080.0f;
-            absolutePosition.x *= dx;
-            absolutePosition.y *= dy;
-            size.x *= dx;
-            size.y *= dy;
-            return new Rect(absolutePosition.x, absolutePosition.y, size.x, size.y);
+            var dx = Screen.width / UIScaler.BaseResolutionX;
+            var dy = Screen.height / UIScaler.BaseResolutionY;
+            return new Rect(absolutePosition.x * dx, absolutePosition.y * dy, size.x * dx, size.y * dy);
         }
 
         private static long CalculateHash(UIComponent c)
