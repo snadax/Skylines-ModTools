@@ -391,7 +391,11 @@ namespace ModTools.UI
                                 - new Vector2(windowRect.x, windowRect.y);
                             windowRect.width = size.x;
                             windowRect.height = size.y;
-                            FitScreen();
+
+                            // calling FitScreen() here causes gradual expansion of window when mouse is past the screen
+                            // so we do like this:
+                            windowRect.xMax = Mathf.Min(windowRect.xMax, UIScaler.MaxWidth);
+                            windowRect.yMax = Mathf.Min(windowRect.yMax, UIScaler.MaxHeight);
                         }
                         else
                         {
