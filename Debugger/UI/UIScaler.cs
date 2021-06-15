@@ -4,11 +4,35 @@
     using UnityEngine;
     using ColossalFramework.UI;
 
-    public static class UIScaler
-    {
-        public static float BaseResolutionX => UIView.GetAView().GetScreenResolution().x;  // 1920f if aspect ratio is 16:9;
+    public static class UIScaler {
+        static bool TryGetScreenResolution(out Vector2 resolution) {
+            UIView uIView = UIView.GetAView();
+            if (uIView) {
+                resolution = uIView.GetScreenResolution();
+                return true;
+            } else {
+                resolution = default;
+                return false;
+            }
+        }
 
-        public static float BaseResolutionY => UIView.GetAView().GetScreenResolution().y; // always 1080f;
+        public static float BaseResolutionX {
+            get {
+                if (TryGetScreenResolution(out Vector2 resolution))
+                    return resolution.x;  // 1920f if aspect ratio is 16:9;
+                else
+                    return 1080f * AspectRatio;
+            }
+        }
+
+        public static float BaseResolutionY {
+            get {
+                if (TryGetScreenResolution(out Vector2 resolution))
+                    return resolution.y; // always 1080f. But we keep this code for the sake of future proofing
+                else
+                    return 1080f;
+            }
+        }
 
         public static float AspectRatio => Screen.width / (float)Screen.height;
 
