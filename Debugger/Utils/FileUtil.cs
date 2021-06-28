@@ -12,17 +12,7 @@ namespace ModTools.Utils
     {
         public static string PlugingPath => FindPluginPath(typeof(ModToolsMod));
 
-        public static List<string> ListFilesInDirectory(string path, List<string> filesMustBeNull = null)
-        {
-            filesMustBeNull ??= new List<string>();
-
-            foreach (var file in Directory.GetFiles(path))
-            {
-                filesMustBeNull.Add(file);
-            }
-
-            return filesMustBeNull;
-        }
+        public static List<string> ListFilesInDirectory(string path) => Directory.GetFiles(path).ToList();
 
         public static string FindPluginPath(Type type)
         {

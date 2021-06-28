@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using ModTools.UI;
@@ -10,7 +11,8 @@ namespace ModTools.Scripting
     internal sealed class ScriptEditor : GUIWindow
     {
         private const string TextAreaControlName = "ModToolsScriptEditorTextArea";
-        private const string ExampleScriptFileName = "ExampleScript.cs";
+        private const string ExampleScriptFileName = ExampleScriptName + ".cs";
+        public const string ExampleScriptName = "ExampleScript";
 
         private const float HeaderHeight = 120.0f;
         private const float FooterHeight = 60.0f;
@@ -32,7 +34,7 @@ namespace ModTools.Scripting
         private ScriptEditorFile currentFile;
 
         public ScriptEditor()
-            : base("Script Editor", new Rect(16.0f, 16.0f, 640.0f, 480.0f))
+            : base("Script Editor", new Rect(16.0f, 16.0f, 1000.0f, 480.0f))
         {
             headerArea = new GUIArea(this)
                 .OffsetBy(vertical: 32f)
@@ -59,8 +61,6 @@ namespace ModTools.Scripting
                 return;
             }
 
-            var exampleFileExists = false;
-
             projectFiles.Clear();
 
             try
@@ -69,20 +69,8 @@ namespace ModTools.Scripting
                 {
                     if (Path.GetExtension(file) == ".cs")
                     {
-                        if (Path.GetFileName(file) == ExampleScriptFileName)
-                        {
-                            exampleFileExists = true;
-                        }
-
                         projectFiles.Add(new ScriptEditorFile(File.ReadAllText(file), file));
                     }
-                }
-
-                if (!exampleFileExists)
-                {
-                    var exampleFile = new ScriptEditorFile(ScriptEditorFile.DefaultSource, Path.Combine(projectWorkspacePath, ExampleScriptFileName));
-                    projectFiles.Add(exampleFile);
-                    SaveProjectFile(exampleFile);
                 }
             }
             catch (Exception ex)
@@ -92,6 +80,19 @@ namespace ModTools.Scripting
             }
 
             lastError = string.Empty;
+        }
+
+        public void DrawAddExampleFile()
+        {
+            bool exampleFileExists = projectFiles.Any(item => Path.GetFileName(item.Path) == ExampleScriptFileName);
+            if (!exampleFileExists)
+            {
+                if (GUILayout.Button("Create Example Script", GUILayout.ExpandWidth(false))) {
+                    var exampleFile = new ScriptEditorFile(ScriptEditorFile.DefaultSource, Path.Combine(projectWorkspacePath, ExampleScriptFileName));
+                    projectFiles.Add(exampleFile);
+                    SaveProjectFile(exampleFile);
+                }
+            }
         }
 
         protected override void DrawWindow()
@@ -172,6 +173,9 @@ namespace ModTools.Scripting
                 }
             }
 
+            GUILayout.FlexibleSpace();
+            DrawAddExampleFile();
+
             GUILayout.EndHorizontal();
             GUILayout.EndScrollView();
 
@@ -224,35 +228,30 @@ namespace ModTools.Scripting
 
             if (GUILayout.Button("Compile"))
             {
-                if (ScriptCompiler.CompileSource(projectFiles, out var dllPath))
+                if(!ScriptCompiler.CompileSource(projectFiles, out var dllPath))
                 {
-                    Logger.Message("Source compiled to \"" + dllPath + "\"");
-                }
-                else
-                {
-                    Logger.Error("Failed to compile script!");
+                    Logger.Error("Failed to compile source");
                 }
             }
 
             if (GUILayout.Button("Run"))
             {
-                if (ScriptCompiler.RunSource(projectFiles, out var errorMessage, out currentMod))
-                {
-                    Logger.Message("Running IModEntryPoint.OnModLoaded()");
-
-                    try
-                    {
-                        currentMod.OnModLoaded();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error($"Exception while calling IModEntryPoint.OnModLoaded() - {ex.Message}");
-                    }
-                }
-                else
+                if (!ScriptCompiler.GetMod(projectFiles, out var errorMessage, out currentMod))
                 {
                     lastError = errorMessage;
                     Logger.Error("Failed to compile or run source, reason: " + errorMessage);
+                    return;
+                }
+
+                try
+                {
+                    Logger.Message($"Running {currentMod.GetType().Name}.OnModLoaded()");
+                    currentMod.OnModLoaded();
+                }
+                catch (Exception ex)
+                {
+                    lastError = ex.Message;
+                    Logger.Exception(ex);
                 }
             }
 

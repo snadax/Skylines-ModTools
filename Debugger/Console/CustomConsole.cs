@@ -560,7 +560,7 @@ namespace ModTools.Scripting
 
             var source = string.Format(DefaultSource, commandLine);
             var file = new ScriptEditorFile(source, "ModToolsCommandLineScript.cs");
-            if (!ScriptCompiler.RunSource(new List<ScriptEditorFile>() { file }, out _, out var instance))
+            if (!ScriptCompiler.GetMod(new List<ScriptEditorFile>() { file }, out _, out var instance))
             {
                 Logger.Error("Failed to compile command-line!");
             }
