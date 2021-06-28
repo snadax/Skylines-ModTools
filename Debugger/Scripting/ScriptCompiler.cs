@@ -113,7 +113,10 @@ namespace ModTools.Scripting
                     var sourceFilePath = Path.Combine(sourcePath, Path.GetFileName(file.Path));
                     File.WriteAllText(sourceFilePath, file.Source);
                 }
+
+#if DEBUG
                 Logger.Message("Source files copied to " + sourcePath);
+#endif
 
                 // compile sources to DllsPath\randomName\randomName.dll
                 var outputPath = Path.Combine(DllsPath, randomName);
