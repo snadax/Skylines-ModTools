@@ -27,6 +27,8 @@ namespace ModTools
         public ICollection<NetInfo.Node> Nodes2;
         public IEnumerable<NetInfo.Node> Nodes3;
         public NetInfo.Node[] Nodes4 = new NetInfo.Node[100];
+        public int[] IntArray = new int[10];
+        public NetNode[] NetNodeArray = new NetNode[10];
 
         public float f = 1.1f;
         public int i = -1;

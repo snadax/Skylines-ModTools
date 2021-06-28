@@ -529,7 +529,6 @@ namespace ModTools.Explorer
         {
             try
             {
-                Debug.Log("SetupSegmentButtons() called");
                 if (segmentInfo.m_mesh != null && segmentInfo.m_mesh.isReadable && GUILayout.Button("Dump"))
                 {
                     var outPath = refChain.ToString().Replace(' ', '_');
@@ -544,7 +543,6 @@ namespace ModTools.Explorer
                 }
 
                 SetupMeshPreviewButtons(name: null, segmentInfo.m_mesh, segmentInfo.m_material, segmentInfo.m_lodMesh, segmentInfo.m_lodMaterial);
-                Debug.Log("SetupSegmentButtons() successful");
             }
             catch (Exception ex)
             {

@@ -97,7 +97,7 @@ namespace ModTools.Explorer
                     var newValue = GUIControls.EditorValueField(refChain.UniqueId, field.FieldType, value);
                     if (!newValue.Equals(value))
                     {
-                        field.SetValue(obj, newValue);
+                        refChain.SetValue(obj, field, newValue);
                     }
                 }
                 catch (Exception)
@@ -134,7 +134,7 @@ namespace ModTools.Explorer
             {
                 try
                 {
-                    field.SetValue(obj, paste);
+                    refChain.SetValue(obj, field, paste);
                 }
                 catch (Exception e)
                 {
