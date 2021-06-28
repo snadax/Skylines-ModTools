@@ -34,6 +34,8 @@ namespace ModTools
         public int i = -1;
         public uint u = 1;
         public string s = "string";
+        public string s2 = "string\nstring2";
+
         public char c = 'A';
         public Vector3 v;
 
