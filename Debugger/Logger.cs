@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace ModTools
 {
@@ -66,6 +67,24 @@ namespace ModTools
             else
             {
                 DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Warning, s);
+            }
+        }
+
+        public static void Exception(Exception ex)
+        {
+            ILogger logger;
+            lock (SyncObject)
+            {
+                logger = customLogger;
+            }
+
+            if (logger != null)
+            {
+                logger.Log(ex.ToString(), LogType.Exception);
+            }
+            else
+            {
+                DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Error, ex.ToString());
             }
         }
     }
