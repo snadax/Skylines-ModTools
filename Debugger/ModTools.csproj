@@ -5,16 +5,20 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
     <Deterministic>false</Deterministic>
-    <AssemblyVersion>3.4.4.*</AssemblyVersion>
+    <AssemblyVersion>3.5.2.*</AssemblyVersion>
     <FileAlignment>512</FileAlignment>
     <LangVersion>latest</LangVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PathMap>$(MSBuildProjectDirectory)/=$(ProjectName)/</PathMap>
-    <Configurations>Debug;Release;Workshop</Configurations>
+    <Configurations>Debug;Release;Workshop;Workshop2</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Workshop|AnyCPU' ">
     <ContentID>450877484</ContentID>
+    <DefineConstants />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Workshop2|AnyCPU' ">
+    <ContentID>2434651215</ContentID>
     <DefineConstants />
   </PropertyGroup>
   <PropertyGroup>

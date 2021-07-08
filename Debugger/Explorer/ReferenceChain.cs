@@ -1,20 +1,18 @@
-﻿using ModTools.Utils;
-using System;
+﻿using System;
 using System.Collections;
 using System.Reflection;
 using System.Text;
+using ModTools.Utils;
 using UnityEngine;
+using System.Linq;
 
-namespace ModTools.Explorer
-{
-    internal sealed class ReferenceChain : ICloneable
-    {
+namespace ModTools.Explorer {
+    internal sealed class ReferenceChain : ICloneable {
         private readonly object[] chainObjects = new object[MainWindow.Instance.Config.MaxHierarchyDepth];
         private readonly ReferenceType[] chainTypes = new ReferenceType[MainWindow.Instance.Config.MaxHierarchyDepth];
         private string uniqueId;
 
-        public enum ReferenceType
-        {
+        public enum ReferenceType {
             None,
             GameObject,
             Component,
@@ -37,18 +35,14 @@ namespace ModTools.Explorer
 
         public ReferenceType FirstItemType => chainTypes[0];
 
-        public string UniqueId
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(uniqueId))
-                {
+        public string UniqueId {
+            get {
+                if (!string.IsNullOrEmpty(uniqueId)) {
                     return uniqueId;
                 }
 
                 var stringBuilder = new StringBuilder(Length * 32);
-                for (var i = 0; i < Length; ++i)
-                {
+                for (var i = 0; i < Length; ++i) {
                     var instanceString = chainObjects[i] is GameObject gameObject ? $"#{gameObject.GetInstanceID()}" : string.Empty;
                     stringBuilder
                         .Append(chainTypes[i])
@@ -65,11 +59,9 @@ namespace ModTools.Explorer
 
         object ICloneable.Clone() => Clone();
 
-        public ReferenceChain Clone()
-        {
+        public ReferenceChain Clone() {
             var clone = new ReferenceChain { Length = Length };
-            for (var i = 0; i < Length; i++)
-            {
+            for (var i = 0; i < Length; i++) {
                 clone.chainObjects[i] = chainObjects[i];
                 clone.chainTypes[i] = chainTypes[i];
             }
@@ -81,8 +73,7 @@ namespace ModTools.Explorer
 
         public bool CheckDepth() => Length >= MainWindow.Instance.Config.MaxHierarchyDepth;
 
-        public ReferenceChain Add(GameObject go)
-        {
+        public ReferenceChain Add(GameObject go) {
             var copy = Clone();
             copy.chainObjects[Length] = go;
             copy.chainTypes[Length] = ReferenceType.GameObject;
@@ -90,8 +81,7 @@ namespace ModTools.Explorer
             return copy;
         }
 
-        public ReferenceChain Add(Component component)
-        {
+        public ReferenceChain Add(Component component) {
             var copy = Clone();
             copy.chainObjects[Length] = component;
             copy.chainTypes[Length] = ReferenceType.Component;
@@ -99,8 +89,7 @@ namespace ModTools.Explorer
             return copy;
         }
 
-        public ReferenceChain Add(FieldInfo fieldInfo)
-        {
+        public ReferenceChain Add(FieldInfo fieldInfo) {
             var copy = Clone();
             copy.chainObjects[Length] = fieldInfo;
             copy.chainTypes[Length] = ReferenceType.Field;
@@ -108,8 +97,7 @@ namespace ModTools.Explorer
             return copy;
         }
 
-        public ReferenceChain Add(PropertyInfo propertyInfo)
-        {
+        public ReferenceChain Add(PropertyInfo propertyInfo) {
             var copy = Clone();
             copy.chainObjects[Length] = propertyInfo;
             copy.chainTypes[Length] = ReferenceType.Property;
@@ -117,8 +105,7 @@ namespace ModTools.Explorer
             return copy;
         }
 
-        public ReferenceChain Add(MethodInfo methodInfo)
-        {
+        public ReferenceChain Add(MethodInfo methodInfo) {
             var copy = Clone();
             copy.chainObjects[Length] = methodInfo;
             copy.chainTypes[Length] = ReferenceType.Method;
@@ -126,8 +113,7 @@ namespace ModTools.Explorer
             return copy;
         }
 
-        public ReferenceChain Add(uint index)
-        {
+        public ReferenceChain Add(uint index) {
             var copy = Clone();
             copy.chainObjects[Length] = index;
             copy.chainTypes[Length] = ReferenceType.EnumerableItem;
@@ -135,8 +121,7 @@ namespace ModTools.Explorer
             return copy;
         }
 
-        public ReferenceChain Add(string namedProperty)
-        {
+        public ReferenceChain Add(string namedProperty) {
             var copy = Clone();
             copy.chainObjects[Length] = namedProperty;
             copy.chainTypes[Length] = ReferenceType.SpecialNamedProperty;
@@ -144,8 +129,7 @@ namespace ModTools.Explorer
             return copy;
         }
 
-        public ReferenceChain SubChain(int num)
-        {
+        public ReferenceChain SubChain(int num) {
             var copy = Clone();
             copy.Length = Mathf.Min(num, Length);
             return copy;
@@ -156,10 +140,8 @@ namespace ModTools.Explorer
         public ReferenceType GetChainItemType(int index)
             => index >= 0 && index < Length ? chainTypes[index] : ReferenceType.None;
 
-        public override string ToString()
-        {
-            switch (Length)
-            {
+        public override string ToString() {
+            switch (Length) {
                 case 0:
                     return string.Empty;
 
@@ -170,10 +152,8 @@ namespace ModTools.Explorer
             var result = new StringBuilder();
             result.Append(ItemToString(0));
 
-            for (var i = 1; i < Length; i++)
-            {
-                if (chainTypes[i] != ReferenceType.EnumerableItem)
-                {
+            for (var i = 1; i < Length; i++) {
+                if (chainTypes[i] != ReferenceType.EnumerableItem) {
                     result.Append("->");
                 }
 
@@ -183,16 +163,13 @@ namespace ModTools.Explorer
             return result.ToString();
         }
 
-        public ReferenceChain Reverse()
-        {
-            var copy = new ReferenceChain
-            {
+        public ReferenceChain Reverse() {
+            var copy = new ReferenceChain {
                 Length = Length,
                 IndentationOffset = IndentationOffset,
             };
 
-            for (var i = 0; i < Length; i++)
-            {
+            for (var i = 0; i < Length; i++) {
                 copy.chainObjects[Length - i - 1] = chainObjects[i];
                 copy.chainTypes[Length - i - 1] = chainTypes[i];
             }
@@ -200,84 +177,151 @@ namespace ModTools.Explorer
             return copy;
         }
 
-        public object Evaluate()
-        {
-            object current = null;
-            for (var i = 0; i < Length; i++)
-            {
-                switch (chainTypes[i])
-                {
-                    case ReferenceType.GameObject:
-                    case ReferenceType.Component:
-                        current = chainObjects[i];
-                        break;
+        private object Evaluate(int i, object current) {
+            switch (chainTypes[i]) {
+                case ReferenceType.GameObject:
+                case ReferenceType.Component:
+                    current = chainObjects[i];
+                    break;
 
-                    case ReferenceType.Field:
-                        current = ((FieldInfo)chainObjects[i]).GetValue(current);
-                        break;
+                case ReferenceType.Field:
+                    current = ((FieldInfo)chainObjects[i]).GetValue(current);
+                    break;
 
-                    case ReferenceType.Property:
-                        current = ((PropertyInfo)chainObjects[i]).GetValue(current, null);
-                        break;
+                case ReferenceType.Property:
+                    current = ((PropertyInfo)chainObjects[i]).GetValue(current, null);
+                    break;
 
-                    case ReferenceType.Method:
-                        break;
+                case ReferenceType.Method:
+                    break;
 
-                    case ReferenceType.EnumerableItem:
-                        var collection = current as IEnumerable;
-                        uint itemCount = 0;
-                        foreach (var item in collection)
-                        {
-                            if (itemCount == (uint)chainObjects[i])
-                            {
-                                current = item;
-                                break;
-                            }
-
-                            itemCount++;
+                case ReferenceType.EnumerableItem:
+                    var collection = current as IEnumerable;
+                    uint currentIndex = 0;
+                    uint index = (uint)chainObjects[i];
+                    foreach (var item in collection) {
+                        if (currentIndex == index) {
+                            current = item;
+                            break;
                         }
 
-                        break;
+                        currentIndex++;
+                    }
 
-                    case ReferenceType.SpecialNamedProperty when current is Material material:
-                        current = ShaderUtil.GetProperty(material, (string)chainObjects[i]);
-                        break;
-                    default:
-                        Logger.Error($"unhandled case in refchain: " +
-                            $"index={i} target=\"{current}\" ReferenceType=\"{chainTypes[i]}\"");
-                        break;
-                }
+                    break;
+
+                case ReferenceType.SpecialNamedProperty when current is Material material:
+                    current = ShaderUtil.GetProperty(material, (string)chainObjects[i]);
+                    break;
+                default:
+                    Logger.Error($"unhandled case in refchain: " +
+                        $"index={i} target=\"{current}\" ReferenceType=\"{chainTypes[i]}\"");
+                    break;
             }
 
             return current;
         }
 
-        public bool IsSameChain(ReferenceChain other)
-        {
-            if (other == null)
-            {
-                throw new ArgumentNullException(nameof(other));
+        public object Evaluate() {
+            object current = null;
+            for (var i = 0; i < Length; i++) {
+                current = Evaluate(i, current);
             }
 
-            if (Length != other.Length)
-            {
-                return false;
-            }
+            return current;
+        }
 
-            if (ReferenceEquals(this, other))
-            {
+        private static void SetMemberValue(object target, MemberInfo memberInfo, object value) {
+            try {
+                if (memberInfo is FieldInfo fieldInfo) {
+                    fieldInfo.SetValue(target, value);
+                } else if (memberInfo is PropertyInfo propertyInfo) {
+                    propertyInfo.SetValue(target, value, null);
+                } else {
+                    throw new Exception("unhandeled type: " + memberInfo);
+                }
+            } catch (Exception ex) {
+                Debug.LogException(ex);
+            }
+        }
+
+        void SetValueImpl (int i, object target, object value) {
+            switch (chainTypes[i]) {
+                case ReferenceType.Field:
+                case ReferenceType.Property:
+                    SetMemberValue(target, (MemberInfo)chainObjects[i], value);
+                    break;
+
+                case ReferenceType.EnumerableItem when target is IList list:
+                    int index = (int)(uint)chainObjects[i];
+                    list[index] = value;
+
+                    break;
+
+                case ReferenceType.EnumerableItem:
+                case ReferenceType.Method:
+                case ReferenceType.SpecialNamedProperty when target is Material material:
+                case ReferenceType.GameObject:
+                case ReferenceType.Component:
+                default:
+                    Logger.Error($"unhandled case in refchain: " +
+                        $"index={i} target=\"{target}\" ReferenceType=\"{chainTypes[i]}\"");
+                    break;
+            }
+        }
+
+        private bool SetValueRecursive(int i, object target, object value) {
+            if (i == Length - 1) {
+                SetMemberValue(target, (MemberInfo)chainObjects[i], value);
                 return true;
             }
 
-            for (var i = 0; i < Length; ++i)
-            {
-                if (chainTypes[i] != other.chainTypes[i])
-                {
+            object current = Evaluate(i, target);
+
+            if (SetValueRecursive(i + 1, current, value)) {
+                if (current.GetType().IsValueType) {
+                    SetValueImpl(i, target, current);
+                    return true;
+                }
+            }
+
+            return false; // stop setting values when we found the last struct in the ref chain.
+        }
+
+        public void SetValue(object target, MemberInfo memberInfo, object value) {
+#if DEBUG
+            Debug.Log($"SetValue({target}, {memberInfo}, {value}) called.");
+#endif
+            try {
+                if (memberInfo.DeclaringType.IsValueType) {
+                    SetValueRecursive(0, null, value);
+                } else {
+                    SetMemberValue(target, memberInfo, value);
+                }
+            } catch (Exception ex) {
+                Debug.LogException(ex);
+            }
+        }
+
+        public bool IsSameChain(ReferenceChain other) {
+            if (other == null) {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            if (Length != other.Length) {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other)) {
+                return true;
+            }
+
+            for (var i = 0; i < Length; ++i) {
+                if (chainTypes[i] != other.chainTypes[i]) {
                     return false;
                 }
 
-                if (chainObjects[i] != other.chainObjects[i])
-                {
+                if (chainObjects[i] != other.chainObjects[i]) {
                     return false;
                 }
             }
@@ -285,10 +329,8 @@ namespace ModTools.Explorer
             return true;
         }
 
-        private string ItemToString(int i)
-        {
-            return chainTypes[i] switch
-            {
+        private string ItemToString(int i) {
+            return chainTypes[i] switch {
                 ReferenceType.GameObject => ((GameObject)chainObjects[i]).name,
 
                 ReferenceType.Component => chainObjects[i].GetType().ToString(),

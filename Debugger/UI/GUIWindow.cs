@@ -290,18 +290,16 @@ namespace ModTools.UI
             GUI.DrawTexture(bottomRect, MoveNormalTexture);
         }
 
-
         private void FitScreen()
         {
             windowRect.width = Mathf.Clamp(windowRect.width, minSize.x, UIScaler.MaxWidth);
             windowRect.height = Mathf.Clamp(windowRect.height, minSize.y, UIScaler.MaxHeight);
             windowRect.x = Mathf.Clamp(windowRect.x, 0, UIScaler.MaxWidth);
             windowRect.y = Mathf.Clamp(windowRect.y, 0, UIScaler.MaxHeight);
-            if(windowRect.xMax > UIScaler.MaxWidth)
-            {
+            if (windowRect.xMax > UIScaler.MaxWidth)
                 windowRect.x = UIScaler.MaxWidth - windowRect.width;
+            if (windowRect.yMax > UIScaler.MaxHeight)
                 windowRect.y = UIScaler.MaxHeight - windowRect.height;
-            }
         }
 
         private void DrawTitlebar(Vector3 mouse)
@@ -393,7 +391,11 @@ namespace ModTools.UI
                                 - new Vector2(windowRect.x, windowRect.y);
                             windowRect.width = size.x;
                             windowRect.height = size.y;
-                            FitScreen();
+
+                            // calling FitScreen() here causes gradual expansion of window when mouse is past the screen
+                            // so we do like this:
+                            windowRect.xMax = Mathf.Min(windowRect.xMax, UIScaler.MaxWidth);
+                            windowRect.yMax = Mathf.Min(windowRect.yMax, UIScaler.MaxHeight);
                         }
                         else
                         {

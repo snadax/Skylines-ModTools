@@ -36,77 +36,103 @@ namespace ModTools.Scripting
             Directory.CreateDirectory(DllsPath);
         }
 
-        public static bool RunSource(List<ScriptEditorFile> sources, out string errorMessage, out IModEntryPoint modInstance)
+        public static bool GetMod(List<ScriptEditorFile> sources, out string errorMessage, out IModEntryPoint modInstance)
         {
-            modInstance = null;
-
-            if (CompileSource(sources, out var dllPath))
+            try
             {
-                var assembly = Assembly.LoadFile(dllPath);
+                modInstance = null;
 
-                if (assembly == null)
+                if (!CompileSource(sources, out var dllPath))
                 {
-                    errorMessage = "Failed to load assembly!";
+                    errorMessage = "Failed to compile the source!";
                     return false;
                 }
 
-                Type entryPointType = null;
-                foreach (var type in assembly.GetTypes())
                 {
-                    if (typeof(IModEntryPoint).IsAssignableFrom(type))
+                    var assembly = Assembly.LoadFile(dllPath);
+
+                    if (assembly == null)
                     {
-                        entryPointType = type;
-                        break;
+                        errorMessage = "Failed to load assembly!";
+                        return false;
+                    }
+                    else
+                    {
+                        Logger.Message($"Loaded {dllPath}");
+                    }
+
+                    // in case of multiple IModEntryPoint implementations, priorotize like this:
+                    var entry =
+                        assembly.GetTypes()
+                        .Where(_type => typeof(IModEntryPoint).IsAssignableFrom(_type))
+                        .OrderBy(_type =>
+                        {
+                            if (_type.IsPublic)
+                                return 0;
+                            else if (_type.Name != ScriptEditor.ExampleScriptName)
+                                return 1;
+                            else
+                                return 2;
+                        })
+                        .FirstOrDefault();
+
+                    if (entry == null)
+                    {
+                        errorMessage = "Failed to find any class that implements IModEntryPoint!";
+                        return false;
+                    }
+
+                    modInstance = Activator.CreateInstance(entry) as IModEntryPoint;
+                    if (modInstance == null)
+                    {
+                        errorMessage = "Failed to create an instance of the IModEntryPoint class!";
+                        return false;
                     }
                 }
 
-                if (entryPointType == null)
-                {
-                    errorMessage = "Failed to find any class that implements IModEntryPoint!";
-                    return false;
-                }
-
-                modInstance = Activator.CreateInstance(entryPointType) as IModEntryPoint;
-                if (modInstance == null)
-                {
-                    errorMessage = "Failed to create an instance of the IModEntryPoint class!";
-                    return false;
-                }
-            }
-            else
-            {
-                errorMessage = "Failed to compile the source!";
+                errorMessage = "OK!";
+                return true;
+            } catch(Exception ex) {
+                modInstance = null;
+                errorMessage = ex.ToString();
                 return false;
             }
-
-            errorMessage = "OK!";
-            return true;
         }
 
         public static bool CompileSource(List<ScriptEditorFile> sources, out string dllPath)
         {
-            var name = $"tmp_{Random.Range(0, int.MaxValue)}";
-
-            var sourcePath = Path.Combine(SourcesPath, name);
-
-            Directory.CreateDirectory(sourcePath);
-
-            var outputPath = Path.Combine(DllsPath, name);
-            Directory.CreateDirectory(outputPath);
-
-            foreach (var file in sources)
+            try
             {
-                var sourceFilePath = Path.Combine(sourcePath, Path.GetFileName(file.Path));
-                File.WriteAllText(sourceFilePath, file.Source);
+                var randomName = $"tmp_{Random.Range(0, int.MaxValue)}";
+
+                // write source files to SourcesPath\randomName\*.*
+                var sourcePath = Path.Combine(SourcesPath, randomName);
+                Directory.CreateDirectory(sourcePath);
+                foreach (var file in sources)
+                {
+                    var sourceFilePath = Path.Combine(sourcePath, Path.GetFileName(file.Path));
+                    File.WriteAllText(sourceFilePath, file.Source);
+                }
+
+#if DEBUG
+                Logger.Message("Source files copied to " + sourcePath);
+#endif
+
+                // compile sources to DllsPath\randomName\randomName.dll
+                var outputPath = Path.Combine(DllsPath, randomName);
+                Directory.CreateDirectory(outputPath);
+                dllPath = Path.Combine(outputPath, randomName + ".dll");
+
+                var modToolsAssembly = FileUtil.FindPluginPath(typeof(ModToolsMod));
+                var additionalAssemblies = GameAssemblies.Concat(new[] { modToolsAssembly }).ToArray();
+
+                PluginManager.CompileSourceInFolder(sourcePath, outputPath, additionalAssemblies);
+                return File.Exists(dllPath);
+            } catch(Exception ex) {
+                Logger.Exception(ex);
+                dllPath = null;
+                return false;
             }
-
-            dllPath = Path.Combine(outputPath, Path.GetFileName(outputPath) + ".dll");
-
-            var modToolsAssembly = FileUtil.FindPluginPath(typeof(ModToolsMod));
-            var additionalAssemblies = GameAssemblies.Concat(new[] { modToolsAssembly }).ToArray();
-
-            PluginManager.CompileSourceInFolder(sourcePath, outputPath, additionalAssemblies);
-            return File.Exists(dllPath);
         }
 
         private static void ClearFolder(string path)

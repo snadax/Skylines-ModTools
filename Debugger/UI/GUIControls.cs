@@ -239,7 +239,14 @@ namespace ModTools.UI
 
             int nLines = Math.Min(4, value.Count(c => c == '\n') + 1);
             GUI.SetNextControlName(id);
-            value = GUILayout.TextArea(value, GUILayout.Width(StringFieldSize), GUILayout.Height(22 * nLines));
+
+            var style = GUI.skin.textArea;
+            style.wordWrap = false;
+            value = GUILayout.TextArea(
+                value,
+                style,
+                GUILayout.Width(StringFieldSize),
+                GUILayout.Height(22 * nLines));
             EditingMultiLineField = !string.IsNullOrEmpty(id) && GUI.GetNameOfFocusedControl() == id;
 
             GUI.contentColor = Color.white;
