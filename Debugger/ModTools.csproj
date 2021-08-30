@@ -45,7 +45,7 @@
     <Reference Include="ColossalManaged" />
     <Reference Include="ICities" />
     <Reference Include="UnityEngine" />
-    <Reference Include="ObjUnity3D" >
+    <Reference Include="ObjUnity3D">
       <Private>true</Private>
     </Reference>
   </ItemGroup>

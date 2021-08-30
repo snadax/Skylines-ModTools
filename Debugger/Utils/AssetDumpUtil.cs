@@ -1,7 +1,18 @@
 using UnityEngine;
+using System.IO;
+using System.Text;
+using ColossalFramework.IO;
+using System.Text.RegularExpressions;
 
 namespace ModTools.Utils
 {
+    public struct bdt
+    {
+        public string name;
+        public float angle;
+        public Vector3 position;
+        public FastList<string> submeshs;
+    }
     internal static class AssetDumpUtil
     {
         public static string DumpGenericAsset(
@@ -18,6 +29,59 @@ namespace ModTools.Utils
             DumpUtil.DumpMeshAndTextures($"{assetName}_lod", lodMesh, lodMaterial);
             Logger.Warning($"Successfully dumped asset \"{assetName}\"");
             return assetName;
+        }
+
+        public static void DumpAllBuildingsData()
+        {
+            Logger.Warning("11111111111111");
+
+            StringBuilder jsonstr = new StringBuilder();
+            jsonstr.Append("[");
+            for (int i = 0; i < BuildingManager.MAX_BUILDING_COUNT; i++)
+            {
+                Building bd = BuildingManager.instance.m_buildings.m_buffer[i];
+                if (bd.m_flags != Building.Flags.None)
+                {
+                    jsonstr.Append("{");
+                    string[] str = bd.Info.name.Split('.');
+                    if (str.Length == 2)
+                    {
+                        jsonstr.Append($"\"group\":\"{str[0]}\",");
+                        jsonstr.Append($"\"name\":\"{str[1].Replace("_Data", string.Empty).Replace(" ", string.Empty)}\",");
+                    }
+                    else
+                    {
+                        jsonstr.Append($"\"group\":\"\",");
+                        jsonstr.Append($"\"name\":\"{bd.Info.name}\",");
+                    }
+                    jsonstr.Append($"\"angle\":\"{bd.m_angle}\",");
+                    jsonstr.Append($"\"position\":\"{bd.m_position}\",");
+                    jsonstr.Append($"\"submeshs\":[");
+                    if (bd.Info.m_subMeshes.Length > 0)
+                    {
+                        foreach (var item in bd.Info.m_subMeshes)
+                        {
+                            jsonstr.Append($"\"{item.m_subInfo.name}\",");
+                        }
+                        jsonstr.Remove(jsonstr.Length - 1, 1);
+                    }
+                    jsonstr.Append("]},");
+                }
+            }
+
+            jsonstr.Remove(jsonstr.Length - 1, 1);
+            jsonstr.Append("]");
+            Logger.Warning(jsonstr.ToString());
+
+            string path = Path.Combine(DataLocation.addonsPath, "ExportBuildings");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            string fileName = Path.Combine(path, "ExportedBuildings.json");
+            using (StreamWriter sw = new StreamWriter(fileName))
+                sw.WriteLine(jsonstr.ToString());
         }
 
         public static string DumpBuilding(
@@ -63,6 +127,7 @@ namespace ModTools.Utils
             }
 
             Logger.Warning($"Successfully dumped asset \"{assetName}\"");
+            DumpAllBuildingsData();
             return assetName;
         }
 
